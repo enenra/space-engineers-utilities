@@ -6,8 +6,8 @@ bl_info = {
     "blender": (2, 81, 0),
     "location": "View3D > Tools ",
     "warning": "",
-    "wiki_url": "https://github.com/ ",
-    "tracker_url": "https://github.com/ /issues",
+    "wiki_url": "https://github.com/enenra/space-engineers-utilities",
+    "tracker_url": "https://github.com/enenra/space-engineers-utilities/issues",
     "support": "COMMUNITY",
     "category": "Scene"
 }
