@@ -8,5 +8,6 @@ class SEUT_OT_BBox(bpy.types.Operator):
 
     def execute(self, context):
 
+        print('OT: Bounding Box')
 
         return {'FINISHED'}

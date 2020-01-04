@@ -33,6 +33,7 @@ Plan:
         Clean Materials: seut_remapLibraryMaterials.py
 
     Export: seut_export.py
+        https://docs.blender.org/api/current/bpy.ops.export_scene.html
         - exportAll(scene)
         - export(collection)
         - Option: Generate SG version
@@ -66,6 +67,7 @@ Plan:
         https://www.youtube.com/watch?v=EgrgEoNFNsA&list=PLboXykqtm8dw-TCdMNrxz4cEemox0jBn0&index=7&t=0s
         panel to adjust its size, toggle on / off
     link to online documentation?
+    collision / mwmb support: https://discordapp.com/channels/125011928711036928/161758345856811008/662957710874247178
 '''
 
 import bpy
@@ -84,15 +86,16 @@ from bpy.types import (Panel,
                        PropertyGroup,
                        )
 
-from .seut_panel                import SEUT_PT_Panel
-from .seut_panel                import SEUT_PT_Panel_BoundingBox
-from .seut_panel                import SEUT_PT_Panel_Export
-from .seut_panel                import SEUT_PT_Panel_Import
-from .seut_export               import SEUT_OT_Export
-from .seut_import               import SEUT_OT_Import
-from .seut_gridScale            import SEUT_OT_GridScale
-from .seut_bBox                 import SEUT_OT_BBox
-from .seut_recreateCollections  import SEUT_OT_RecreateCollections
+from .seut_panel                    import SEUT_PT_Panel
+from .seut_panel                    import SEUT_PT_Panel_BoundingBox
+from .seut_panel                    import SEUT_PT_Panel_Export
+from .seut_panel                    import SEUT_PT_Panel_Import
+from .seut_export                   import SEUT_OT_Export
+from .seut_import                   import SEUT_OT_Import
+from .seut_import_remapMaterials    import SEUT_OT_RemapMaterials
+from .seut_gridScale                import SEUT_OT_GridScale
+from .seut_bBox                     import SEUT_OT_BBox
+from .seut_recreateCollections      import SEUT_OT_RecreateCollections
 
 def register():
     bpy.utils.register_class(SEUT_PT_Panel)
@@ -101,6 +104,7 @@ def register():
     bpy.utils.register_class(SEUT_PT_Panel_Import)
     bpy.utils.register_class(SEUT_OT_Export)
     bpy.utils.register_class(SEUT_OT_Import)
+    bpy.utils.register_class(SEUT_OT_RemapMaterials)
     bpy.utils.register_class(SEUT_OT_GridScale)
     bpy.utils.register_class(SEUT_OT_BBox)
     bpy.utils.register_class(SEUT_OT_RecreateCollections)
@@ -188,6 +192,7 @@ def unregister():
     bpy.utils.unregister_class(SEUT_PT_Panel_Import)
     bpy.utils.unregister_class(SEUT_OT_Export)
     bpy.utils.unregister_class(SEUT_OT_Import)
+    bpy.utils.unregister_class(SEUT_OT_RemapMaterials)
     bpy.utils.unregister_class(SEUT_OT_GridScale)
     bpy.utils.unregister_class(SEUT_OT_BBox)
     bpy.utils.unregister_class(SEUT_OT_RecreateCollections)
@@ -208,6 +213,7 @@ def unregister():
 def menu_func(self, context):
     self.layout.operator(SEUT_OT_Export.bl_idname)
     self.layout.operator(SEUT_OT_Import.bl_idname)
+    self.layout.operator(SEUT_OT_RemapMaterials.bl_idname)
     self.layout.operator(SEUT_OT_GridScale.bl_idname)
     self.layout.operator(SEUT_OT_BBox.bl_idname)
     self.layout.operator(SEUT_OT_RecreateCollections.bl_idname)

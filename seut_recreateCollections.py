@@ -10,6 +10,6 @@ class SEUT_OT_RecreateCollections(bpy.types.Operator):
     def execute(self, context):
 
         # Debug
-        print('OP: Recreate Collections')
+        print('OT: Recreate Collections')
 
         return {'FINISHED'}

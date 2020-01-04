@@ -52,6 +52,9 @@ class SEUT_PT_Panel_BoundingBox(bpy.types.Panel):
         row.prop(scene, "prop_bBox_Y")
         row.prop(scene, "prop_bBox_Z")
 
+        # ========== TODO ==========
+        # Add "Automatic"-button to dynamically adjust the box depending on object size.
+
 class SEUT_PT_Panel_Export(bpy.types.Panel):
     bl_idname = "SEUT_PT_Panel_Export"
     bl_label = "Export"
@@ -120,4 +123,4 @@ class SEUT_PT_Panel_Import(bpy.types.Panel):
         # Fix
         box = layout.box()
         box.label(text="Repair")
-        box.operator('object.import', text="Remap Materials")
+        box.operator('object.remapmaterials', text="Remap Materials")

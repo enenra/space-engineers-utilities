@@ -11,7 +11,7 @@ class SEUT_OT_Export(bpy.types.Operator):
     def execute(self, context):
 
         # Debug
-        print('OP: Export')
+        print('OT: Export')
 
         return {'FINISHED'}
 
