@@ -1,2 +1,5 @@
 # Space Engineers Utilities
-A Blender 2.8 add-on written by Kamikaze for enenra. Hopefully to be expanded with further functionality in the future.
+A Blender 2.81 add-on.
+
+## Credits
+* Kamikaze (Blender Discord) - Writing the `remap_To_Library_Materials`-function and generally helping out constantly by answering a lot of questions.
