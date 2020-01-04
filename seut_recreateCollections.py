@@ -9,9 +9,6 @@ class SEUT_OT_RecreateCollections(bpy.types.Operator):
 
     def execute(self, context):
 
-        # Debug
-        print('OT: Recreate Collections')
-
         SEUT_OT_RecreateCollections.create_Collections(context)
 
         return {'FINISHED'}
@@ -105,4 +102,4 @@ class SEUT_OT_RecreateCollections(bpy.types.Operator):
             collections['lod3'] = bpy.data.collections.new('LOD3')
             collections['seut'].children.link(collections['lod3'])
 
-        return
+        return collections

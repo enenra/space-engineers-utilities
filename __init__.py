@@ -27,11 +27,6 @@ bl_info = {
 
 '''
 Plan:
-    Import
-        Import FBX
-
-        Clean Materials: seut_remapLibraryMaterials.py
-
     Export: seut_export.py
         https://docs.blender.org/api/current/bpy.ops.export_scene.html
         - exportAll(scene)
@@ -62,7 +57,6 @@ Plan:
     Mirroring ? (instances of object, rotate, separate collection)
     Icon render ? (camera alignment might be too complicated)
     Dummies - context menu to create one and link it?
-    recreate collections
     toggle bounding box
         https://www.youtube.com/watch?v=EgrgEoNFNsA&list=PLboXykqtm8dw-TCdMNrxz4cEemox0jBn0&index=7&t=0s
         panel to adjust its size, toggle on / off

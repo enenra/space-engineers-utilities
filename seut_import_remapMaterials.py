@@ -56,5 +56,5 @@ class SEUT_OT_RemapMaterials(bpy.types.Operator):
         for mtl in mtl_to_delete:
             bpy.data.materials.remove(
                 mtl, do_unlink=True, do_id_user=True, do_ui_user=False)
-
-        bpy.context.view_layer.objects.active = active
+    
+        return
