@@ -17,5 +17,3 @@ class SEUT_OT_Import(bpy.types.Operator):
         # Then run material remap
 
         return {'FINISHED'}
-
-        

@@ -12,4 +12,13 @@ class SEUT_OT_RecreateCollections(bpy.types.Operator):
         # Debug
         print('OT: Recreate Collections')
 
+        # Create a list filled with placeholders for all necessary collections (make this a global prop or list in init?)
+
+
+        # Loop over existing collections to see whether any already exist. if so, add them to the list.
+        # https://blenderartists.org/t/loop-over-collections-in-the-outliner/1172818/4
+
+
+        # Recreate missing collections and register them to the list
+
         return {'FINISHED'}

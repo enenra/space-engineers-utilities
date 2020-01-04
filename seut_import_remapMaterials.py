@@ -1,21 +1,32 @@
 import bpy
 
 class SEUT_OT_RemapMaterials(bpy.types.Operator):
-    """Remap materials on object to linked library materials."""
+    """Remap materials on selected object to linked library materials."""
     bl_idname = "object.remapmaterials"
     bl_label = "Remap Materials"
     bl_options = {'REGISTER', 'UNDO'}
 
-    # This code was entirely written by Kamikaze
-    # ========== TODO ========== 
-    # Change this to use a passed object, and not the selected one, then pass the selected object to it when execute is called for just remap
     def execute(self, context):
 
         # Debug
         print('OT: Remap Materials')
+        
+        # In order to be able to call on this code from the import operator as well, the target object needs to be passed to the function doing the remapping.
+        # object.remapmaterials will always execute on the selected object, but import will need to run the function below on the importer object.
+        target = bpy.context.view_layer.objects.active
+        SEUT_OT_RemapMaterials.remap_To_Library_Materials(context, target)
 
+
+        return {'FINISHED'}
+        
+    # This code was written by Kamikaze
+    # ========== TODO ========== 
+    # Change this to use a passed object, and not the selected one, then pass the selected object to it when execute is called for just remap
+    def remap_To_Library_Materials(context, target):
+
+        # The original script
         mtl_to_delete = []
-        active = bpy.context.view_layer.objects.active
+        active = target
 
         # For each selected object
         for obj in bpy.context.view_layer.objects.selected:
@@ -47,5 +58,3 @@ class SEUT_OT_RemapMaterials(bpy.types.Operator):
                 mtl, do_unlink=True, do_id_user=True, do_ui_user=False)
 
         bpy.context.view_layer.objects.active = active
-
-        return {'FINISHED'}
