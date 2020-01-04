@@ -14,21 +14,3 @@ class SEUT_OT_Export(bpy.types.Operator):
         print('OT: Export')
 
         return {'FINISHED'}
-
-    def exportXML(self, collection):
-
-        # a
-
-        return
-
-    def exportFBX(self, collection):
-
-        # a
-
-        return
-
-    def exportCollision(self, collection):
-
-        # a
-
-        return

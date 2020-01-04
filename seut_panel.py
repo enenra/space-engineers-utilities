@@ -77,12 +77,12 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         split = box.split()
         
         col = split.column()
-        col.operator('object.export', text="Main")
-        col.operator('object.export', text="LODs")
+        col.operator('object.export_main', text="Main")
+        col.operator('object.export_lod', text="LODs")
 
         col = split.column(align=True)
-        col.operator('object.export', text="Build Stages")
-        col.operator('object.export', text="Collision")
+        col.operator('object.export_bs', text="Build Stages")
+        col.operator('object.export_hkt', text="Collision")
 
         # Options
         box = layout.box()

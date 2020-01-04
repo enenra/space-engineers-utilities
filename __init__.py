@@ -68,6 +68,7 @@ Plan:
         panel to adjust its size, toggle on / off
     link to online documentation?
     collision / mwmb support: https://discordapp.com/channels/125011928711036928/161758345856811008/662957710874247178
+    cubeblocks output?
 '''
 
 import bpy
@@ -90,6 +91,10 @@ from .seut_panel                    import SEUT_PT_Panel
 from .seut_panel                    import SEUT_PT_Panel_BoundingBox
 from .seut_panel                    import SEUT_PT_Panel_Export
 from .seut_panel                    import SEUT_PT_Panel_Import
+from .seut_export_exportMain        import SEUT_OT_ExportMain
+from .seut_export_exportBS          import SEUT_OT_ExportBS
+from .seut_export_exportLOD         import SEUT_OT_ExportLOD
+from .seut_export_exportHKT         import SEUT_OT_ExportHKT
 from .seut_export                   import SEUT_OT_Export
 from .seut_import                   import SEUT_OT_Import
 from .seut_import_remapMaterials    import SEUT_OT_RemapMaterials
@@ -103,6 +108,10 @@ def register():
     bpy.utils.register_class(SEUT_PT_Panel_Export)
     bpy.utils.register_class(SEUT_PT_Panel_Import)
     bpy.utils.register_class(SEUT_OT_Export)
+    bpy.utils.register_class(SEUT_OT_ExportMain)
+    bpy.utils.register_class(SEUT_OT_ExportBS)
+    bpy.utils.register_class(SEUT_OT_ExportLOD)
+    bpy.utils.register_class(SEUT_OT_ExportHKT)
     bpy.utils.register_class(SEUT_OT_Import)
     bpy.utils.register_class(SEUT_OT_RemapMaterials)
     bpy.utils.register_class(SEUT_OT_GridScale)
@@ -191,6 +200,10 @@ def unregister():
     bpy.utils.unregister_class(SEUT_PT_Panel_Export)
     bpy.utils.unregister_class(SEUT_PT_Panel_Import)
     bpy.utils.unregister_class(SEUT_OT_Export)
+    bpy.utils.unregister_class(SEUT_OT_ExportMain)
+    bpy.utils.unregister_class(SEUT_OT_ExportBS)
+    bpy.utils.unregister_class(SEUT_OT_ExportLOD)
+    bpy.utils.unregister_class(SEUT_OT_ExportHKT)
     bpy.utils.unregister_class(SEUT_OT_Import)
     bpy.utils.unregister_class(SEUT_OT_RemapMaterials)
     bpy.utils.unregister_class(SEUT_OT_GridScale)
@@ -212,6 +225,10 @@ def unregister():
 
 def menu_func(self, context):
     self.layout.operator(SEUT_OT_Export.bl_idname)
+    self.layout.operator(SEUT_OT_ExportMain.bl_idname)
+    self.layout.operator(SEUT_OT_ExportBS.bl_idname)
+    self.layout.operator(SEUT_OT_ExportLOD.bl_idname)
+    self.layout.operator(SEUT_OT_ExportHKT.bl_idname)
     self.layout.operator(SEUT_OT_Import.bl_idname)
     self.layout.operator(SEUT_OT_RemapMaterials.bl_idname)
     self.layout.operator(SEUT_OT_GridScale.bl_idname)
