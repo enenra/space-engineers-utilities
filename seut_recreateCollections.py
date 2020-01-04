@@ -12,7 +12,7 @@ class SEUT_OT_RecreateCollections(bpy.types.Operator):
         # Debug
         print('OT: Recreate Collections')
 
-        # Create a list filled with placeholders for all necessary collections (make this a global prop or list in init?)
+        # Create a dictionary filled with placeholders for all necessary collections (make this a global prop or dictionary in init?)
 
 
         # Loop over existing collections to see whether any already exist. if so, add them to the list.

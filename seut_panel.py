@@ -86,7 +86,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
 
         # Options
         box = layout.box()
-        box.label(text="Options")
+        box.label(text="Export Options")
         split = box.split()
         
         col = split.column()

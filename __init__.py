@@ -160,12 +160,12 @@ def register():
     )
 
     bpy.types.Scene.prop_export_fbx = BoolProperty(
-        name="Export FBX",
+        name="FBX",
         description="Whether to export to FBX",
         default=True
     )
     bpy.types.Scene.prop_export_xml = BoolProperty(
-        name="Export XML",
+        name="XML",
         description="Whether to export to XML",
         default=True
     )
@@ -229,8 +229,10 @@ def menu_func(self, context):
     self.layout.operator(SEUT_OT_ExportBS.bl_idname)
     self.layout.operator(SEUT_OT_ExportLOD.bl_idname)
     self.layout.operator(SEUT_OT_ExportHKT.bl_idname)
+
     self.layout.operator(SEUT_OT_Import.bl_idname)
     self.layout.operator(SEUT_OT_RemapMaterials.bl_idname)
+
     self.layout.operator(SEUT_OT_GridScale.bl_idname)
     self.layout.operator(SEUT_OT_BBox.bl_idname)
     self.layout.operator(SEUT_OT_RecreateCollections.bl_idname)
