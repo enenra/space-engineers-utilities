@@ -28,6 +28,30 @@ class SEUT_PT_Panel(bpy.types.Panel):
         
         layout.operator('object.recreate_collections', text="Recreate Collections")
 
+
+class SEUT_PT_Panel_BoundingBox(bpy.types.Panel):
+    bl_idname = "SEUT_PT_Panel_BoundingBox"
+    bl_label = "Bounding Box"
+    bl_category = "SEUT"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+
+        # Toggle
+        layout.prop(scene,'prop_bBoxToggle', expand=True)
+
+        # Size
+        box = layout.box()
+        box.label(text="Size")
+        row = box.row()
+        row.prop(scene, "prop_bBox_X")
+        row.prop(scene, "prop_bBox_Y")
+        row.prop(scene, "prop_bBox_Z")
+
 class SEUT_PT_Panel_Export(bpy.types.Panel):
     bl_idname = "SEUT_PT_Panel_Export"
     bl_label = "Export"

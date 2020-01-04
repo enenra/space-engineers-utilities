@@ -85,20 +85,24 @@ from bpy.types import (Panel,
                        )
 
 from .seut_panel                import SEUT_PT_Panel
+from .seut_panel                import SEUT_PT_Panel_BoundingBox
 from .seut_panel                import SEUT_PT_Panel_Export
 from .seut_panel                import SEUT_PT_Panel_Import
 from .seut_export               import SEUT_OT_Export
 from .seut_import               import SEUT_OT_Import
 from .seut_gridScale            import SEUT_OT_GridScale
+from .seut_bBox                 import SEUT_OT_BBox
 from .seut_recreateCollections  import SEUT_OT_RecreateCollections
 
 def register():
     bpy.utils.register_class(SEUT_PT_Panel)
+    bpy.utils.register_class(SEUT_PT_Panel_BoundingBox)
     bpy.utils.register_class(SEUT_PT_Panel_Export)
     bpy.utils.register_class(SEUT_PT_Panel_Import)
     bpy.utils.register_class(SEUT_OT_Export)
     bpy.utils.register_class(SEUT_OT_Import)
     bpy.utils.register_class(SEUT_OT_GridScale)
+    bpy.utils.register_class(SEUT_OT_BBox)
     bpy.utils.register_class(SEUT_OT_RecreateCollections)
 
     bpy.types.Scene.prop_gridScale = bpy.props.EnumProperty(
@@ -109,6 +113,37 @@ def register():
             ),
         default='0',
         update=update_GridScale
+    )
+
+    bpy.types.Scene.prop_bBoxToggle = bpy.props.EnumProperty(
+        name='Scale',
+        items=(
+            ('0', 'On', ''),
+            ('1', 'Off', '')
+            ),
+        default='0',
+        update=update_BBox
+    )
+    bpy.types.Scene.prop_bBox_X = IntProperty(
+        name="X",
+        description="",
+        default=1,
+        min=1,
+        update=update_BBox
+    )
+    bpy.types.Scene.prop_bBox_Y = IntProperty(
+        name="Y",
+        description="",
+        default=1,
+        min=1,
+        update=update_BBox
+    )
+    bpy.types.Scene.prop_bBox_Z = IntProperty(
+        name="Z",
+        description="",
+        default=1,
+        min=1,
+        update=update_BBox
     )
 
     bpy.types.Scene.prop_export_fbx = BoolProperty(
@@ -148,14 +183,20 @@ def register():
 
 def unregister():
     bpy.utils.unregister_class(SEUT_PT_Panel)
+    bpy.utils.unregister_class(SEUT_PT_Panel_BoundingBox)
     bpy.utils.unregister_class(SEUT_PT_Panel_Export)
     bpy.utils.unregister_class(SEUT_PT_Panel_Import)
     bpy.utils.unregister_class(SEUT_OT_Export)
     bpy.utils.unregister_class(SEUT_OT_Import)
     bpy.utils.unregister_class(SEUT_OT_GridScale)
+    bpy.utils.unregister_class(SEUT_OT_BBox)
     bpy.utils.unregister_class(SEUT_OT_RecreateCollections)
 
     del bpy.types.Scene.prop_gridScale
+    del bpy.types.Scene.prop_bBoxToggle
+    del bpy.types.Scene.prop_bBox_X
+    del bpy.types.Scene.prop_bBox_Y
+    del bpy.types.Scene.prop_bBox_Z
     del bpy.types.Scene.prop_export_fbx
     del bpy.types.Scene.prop_export_xml
     del bpy.types.Scene.prop_export_rescaleFactor
@@ -168,10 +209,14 @@ def menu_func(self, context):
     self.layout.operator(SEUT_OT_Export.bl_idname)
     self.layout.operator(SEUT_OT_Import.bl_idname)
     self.layout.operator(SEUT_OT_GridScale.bl_idname)
+    self.layout.operator(SEUT_OT_BBox.bl_idname)
     self.layout.operator(SEUT_OT_RecreateCollections.bl_idname)
 
 def update_GridScale(self, context):
     SEUT_OT_GridScale.execute(self, context)
+
+def update_BBox(self, context):
+    SEUT_OT_BBox.execute(self, context)
 
 addon_keymaps = []
 
