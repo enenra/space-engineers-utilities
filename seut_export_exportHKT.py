@@ -15,8 +15,8 @@ class SEUT_OT_ExportHKT(bpy.types.Operator):
         return {'FINISHED'}
     
 
-    def export_HKT(context, target):
+    def export_HKT(context):
 
-        # a
+        # Needs to check properties as to whether to export FBX and XML
         
         return

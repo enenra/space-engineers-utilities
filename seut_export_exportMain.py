@@ -15,9 +15,9 @@ class SEUT_OT_ExportMain(bpy.types.Operator):
         return {'FINISHED'}
     
 
-    def export_Main(context, target):
+    def export_Main(context):
 
-        # a
+        # Needs to check properties as to whether to export FBX and XML
         
         return
         

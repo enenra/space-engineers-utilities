@@ -15,8 +15,8 @@ class SEUT_OT_ExportLOD(bpy.types.Operator):
         return {'FINISHED'}
     
 
-    def export_LOD(context, target):
+    def export_LOD(context):
 
-        # a
+        # Needs to check properties as to whether to export FBX and XML
         
         return
