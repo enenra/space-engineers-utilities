@@ -1,7 +1,7 @@
 import bpy
 
 class SEUT_OT_ExportLOD(bpy.types.Operator):
-    """Exports all LODs."""
+    """Exports all LODs"""
     bl_idname = "object.export_lod"
     bl_label = "Export LODs"
     bl_options = {'REGISTER', 'UNDO'}

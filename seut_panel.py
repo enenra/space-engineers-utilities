@@ -27,7 +27,6 @@ class SEUT_PT_Panel_BoundingBox(bpy.types.Panel):
     bl_category = "SEUT"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
         layout = self.layout
@@ -54,6 +53,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
     bl_category = "SEUT"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
+    bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
         layout = self.layout
@@ -84,19 +84,20 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         
         col = split.column()
         col.prop(scene, "prop_export_fbx")
+        col.prop(scene, "prop_export_sbc")
 
         col = split.column(align=True)
         col.prop(scene, "prop_export_xml")
+        col.prop(scene, "prop_export_hkt")
         
-        col = split.column(align=True)
-        col.prop(scene, "prop_export_sbc")
-
         box.prop(scene, "prop_export_rescaleFactor")
+        
+        box.prop(scene, "prop_exportPath", text="Folder", expand=True)
 
         # SubtypeId
         box = layout.box()
         box.label(text="SubtypeId")
-        box.prop(scene, 'prop_subtypeId', text='', expand=True)
+        box.prop(scene, "prop_subtypeId", text="", expand=True)
         
         # LOD
         box = layout.box()

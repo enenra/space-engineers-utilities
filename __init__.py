@@ -94,6 +94,7 @@ from .seut_export_exportMain        import SEUT_OT_ExportMain
 from .seut_export_exportBS          import SEUT_OT_ExportBS
 from .seut_export_exportLOD         import SEUT_OT_ExportLOD
 from .seut_export_exportHKT         import SEUT_OT_ExportHKT
+from .seut_export_exportSBC         import SEUT_OT_ExportSBC
 from .seut_export                   import SEUT_OT_Export
 from .seut_import                   import SEUT_OT_Import
 from .seut_import_remapMaterials    import SEUT_OT_RemapMaterials
@@ -112,6 +113,7 @@ def register():
     bpy.utils.register_class(SEUT_OT_ExportBS)
     bpy.utils.register_class(SEUT_OT_ExportLOD)
     bpy.utils.register_class(SEUT_OT_ExportHKT)
+    bpy.utils.register_class(SEUT_OT_ExportSBC)
     bpy.utils.register_class(SEUT_OT_Import)
     bpy.utils.register_class(SEUT_OT_RemapMaterials)
     bpy.utils.register_class(SEUT_OT_GridScale)
@@ -173,9 +175,14 @@ def register():
         description="Whether to export to XML",
         default=True
     )
+    bpy.types.Scene.prop_export_hkt = BoolProperty(
+        name="HKT",
+        description="Whether to export to HKT (Collision model filetype)",
+        default=True
+    )
     bpy.types.Scene.prop_export_sbc = BoolProperty(
         name="SBC",
-        description="Whether to export to SBC",
+        description="Whether to export to SBC (CubeBlocks definition)",
         default=True
     )
     bpy.types.Scene.prop_export_rescaleFactor = FloatProperty(
@@ -183,6 +190,10 @@ def register():
         description="What to set the Rescale Factor to",
         default=1,
         min=0
+    )
+    bpy.types.Scene.prop_exportPath = StringProperty(
+        name="Export Folder",
+        subtype="DIR_PATH"
     )
     bpy.types.Scene.prop_export_lod1Distance = IntProperty(
         name="LOD1:",
@@ -214,6 +225,7 @@ def unregister():
     bpy.utils.unregister_class(SEUT_OT_ExportBS)
     bpy.utils.unregister_class(SEUT_OT_ExportLOD)
     bpy.utils.unregister_class(SEUT_OT_ExportHKT)
+    bpy.utils.unregister_class(SEUT_OT_ExportSBC)
     bpy.utils.unregister_class(SEUT_OT_Import)
     bpy.utils.unregister_class(SEUT_OT_RemapMaterials)
     bpy.utils.unregister_class(SEUT_OT_GridScale)
@@ -228,8 +240,10 @@ def unregister():
     del bpy.types.Scene.prop_subtypeId
     del bpy.types.Scene.prop_export_fbx
     del bpy.types.Scene.prop_export_xml
+    del bpy.types.Scene.prop_export_hkt
     del bpy.types.Scene.prop_export_sbc
     del bpy.types.Scene.prop_export_rescaleFactor
+    del bpy.types.Scene.prop_exportPath
     del bpy.types.Scene.prop_export_lod1Distance
     del bpy.types.Scene.prop_export_lod2Distance
     del bpy.types.Scene.prop_export_lod3Distance

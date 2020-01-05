@@ -1,7 +1,7 @@
 import bpy
 
 class SEUT_OT_ExportHKT(bpy.types.Operator):
-    """Exports the HKT."""
+    """Exports the HKT"""
     bl_idname = "object.export_hkt"
     bl_label = "Export HKT"
     bl_options = {'REGISTER', 'UNDO'}
