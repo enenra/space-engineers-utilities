@@ -17,8 +17,8 @@ from bpy.types import (Panel,
 from .seut_import_remapMaterials    import SEUT_OT_RemapMaterials
 
 class SEUT_OT_Import(bpy.types.Operator):
-    """Import FBX files and remap materials."""
-    bl_idname = "object.import"
+    """Import FBX files and remap materials"""
+    bl_idname = "scene.import"
     bl_label = "Import FBX"
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -33,7 +33,7 @@ class SEUT_OT_Import(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.object is not None
+        return context.scene is not None
 
     def execute(self, context):
 

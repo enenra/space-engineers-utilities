@@ -118,7 +118,7 @@ class SEUT_PT_Panel_Import(bpy.types.Panel):
         # Import
         row = layout.row()
         row.scale_y = 2.0
-        row.operator('object.import', text="Import")
+        row.operator('scene.import', text="Import")
 
         # Fix
         box = layout.box()
