@@ -132,27 +132,31 @@ def register():
         update=update_BBox
     )
     bpy.types.Scene.prop_bBox_X = IntProperty(
-        name="X",
+        name="X:",
         description="",
         default=1,
         min=1,
         update=update_BBox
     )
     bpy.types.Scene.prop_bBox_Y = IntProperty(
-        name="Y",
+        name="Y:",
         description="",
         default=1,
         min=1,
         update=update_BBox
     )
     bpy.types.Scene.prop_bBox_Z = IntProperty(
-        name="Z",
+        name="Z:",
         description="",
         default=1,
         min=1,
         update=update_BBox
     )
 
+    bpy.types.Scene.prop_subtypeId = StringProperty(
+        name="SubtypeId",
+        description="The SubtypeId for this model"
+    )
     bpy.types.Scene.prop_export_fbx = BoolProperty(
         name="FBX",
         description="Whether to export to FBX",
@@ -163,26 +167,31 @@ def register():
         description="Whether to export to XML",
         default=True
     )
+    bpy.types.Scene.prop_export_sbc = BoolProperty(
+        name="SBC",
+        description="Whether to export to SBC",
+        default=True
+    )
     bpy.types.Scene.prop_export_rescaleFactor = FloatProperty(
-        name="Rescale Factor",
+        name="Rescale Factor:",
         description="What to set the Rescale Factor to",
         default=1,
         min=0
     )
     bpy.types.Scene.prop_export_lod1Distance = IntProperty(
-        name="LOD1",
+        name="LOD1:",
         description="From what distance this LOD should display",
         default=25,
         min=0
     )
     bpy.types.Scene.prop_export_lod2Distance = IntProperty(
-        name="LOD2",
+        name="LOD2:",
         description="From what distance this LOD should display",
         default=50,
         min=0
     )
     bpy.types.Scene.prop_export_lod3Distance = IntProperty(
-        name="LOD3",
+        name="LOD3:",
         description="From what distance this LOD should display",
         default=150,
         min=0
@@ -209,8 +218,10 @@ def unregister():
     del bpy.types.Scene.prop_bBox_X
     del bpy.types.Scene.prop_bBox_Y
     del bpy.types.Scene.prop_bBox_Z
+    del bpy.types.Scene.prop_subtypeId
     del bpy.types.Scene.prop_export_fbx
     del bpy.types.Scene.prop_export_xml
+    del bpy.types.Scene.prop_export_sbc
     del bpy.types.Scene.prop_export_rescaleFactor
     del bpy.types.Scene.prop_export_lod1Distance
     del bpy.types.Scene.prop_export_lod2Distance

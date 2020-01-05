@@ -6,10 +6,12 @@ class SEUT_OT_RemapMaterials(bpy.types.Operator):
     bl_label = "Remap Materials"
     bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):
+    # Greys the button out if there is no object.
+    @classmethod
+    def poll(cls, context):
+        return context.view_layer.objects.active is not None
 
-        # Debug
-        print('OT: Remap Materials')
+    def execute(self, context):
         
         # In order to be able to call on this code from the import operator as well, the target object needs to be passed to the function doing the remapping.
         # object.remapmaterials will always execute on the selected object, but import will need to run the function below on the importer object.
@@ -23,6 +25,8 @@ class SEUT_OT_RemapMaterials(bpy.types.Operator):
     # ========== TODO ========== 
     # Change this to use a passed object, and not the selected one, then pass the selected object to it when execute is called for just remap
     def remap_To_Library_Materials(context, target):
+
+        print("SEUT Info: Remapping materials of: " + context.view_layer.objects.active.name + ".")
 
         # The original script
         mtl_to_delete = []
@@ -38,6 +42,8 @@ class SEUT_OT_RemapMaterials(bpy.types.Operator):
                 if slot.material != None and slot.material.library == None:
                     # This material is not linked from a library
                     old_material = slot.material
+
+                    print("SEUT Error 002: Material '" + slot.material.name + "' not found in linked MatLibs.")
 
                     new_material = None
                     # Try to find a linked material with the same name

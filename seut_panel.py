@@ -15,16 +15,6 @@ class SEUT_PT_Panel(bpy.types.Panel):
         box.label(text="Grid Scale")
         row = box.row()
         row.prop(scene,'prop_gridScale', expand=True)
-        """
-        split = box.split()
-        col = split.column()
-        prop = col.operator('object.gridsize', text='Large')
-        prop.size = 'large'
-        
-        col = split.column(align=True)
-        prop = col.operator('object.gridsize', text='Small')
-        prop.size = 'small'
-        """
         
         layout.operator('object.recreate_collections', text="Recreate Collections")
 
@@ -94,8 +84,16 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
 
         col = split.column(align=True)
         col.prop(scene, "prop_export_xml")
+        
+        col = split.column(align=True)
+        col.prop(scene, "prop_export_sbc")
 
         box.prop(scene, "prop_export_rescaleFactor")
+
+        # SubtypeId
+        box = layout.box()
+        box.label(text="SubtypeId")
+        box.prop(scene, 'prop_subtypeId', text='', expand=True)
         
         # LOD
         box = layout.box()
