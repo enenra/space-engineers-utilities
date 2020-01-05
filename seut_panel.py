@@ -1,6 +1,7 @@
 import bpy
 
 class SEUT_PT_Panel(bpy.types.Panel):
+    """Creates the topmost panel for SEUT"""
     bl_idname = "SEUT_PT_Panel"
     bl_label = "Space Engineers Utilities"
     bl_category = "SEUT"
@@ -20,6 +21,7 @@ class SEUT_PT_Panel(bpy.types.Panel):
 
 
 class SEUT_PT_Panel_BoundingBox(bpy.types.Panel):
+    """Creates the bounding box panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_BoundingBox"
     bl_label = "Bounding Box"
     bl_category = "SEUT"
@@ -46,6 +48,7 @@ class SEUT_PT_Panel_BoundingBox(bpy.types.Panel):
         # Add "Automatic"-button to dynamically adjust the box depending on object size.
 
 class SEUT_PT_Panel_Export(bpy.types.Panel):
+    """Creates the export panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_Export"
     bl_label = "Export"
     bl_category = "SEUT"
@@ -104,6 +107,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
 
 
 class SEUT_PT_Panel_Import(bpy.types.Panel):
+    """Creates the import panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_Import"
     bl_label = "Import"
     bl_category = "SEUT"
@@ -118,7 +122,7 @@ class SEUT_PT_Panel_Import(bpy.types.Panel):
         row.scale_y = 2.0
         row.operator('scene.import', text="Import")
 
-        # Fix
+        # Repair
         box = layout.box()
         box.label(text="Repair")
         box.operator('object.remapmaterials', text="Remap Materials")

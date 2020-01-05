@@ -1,20 +1,18 @@
 import bpy
 
 class SEUT_OT_RemapMaterials(bpy.types.Operator):
-    """Remap materials on selected object to linked library materials."""
+    """Remap materials of the active object to linked library materials"""
     bl_idname = "object.remapmaterials"
     bl_label = "Remap Materials"
     bl_options = {'REGISTER', 'UNDO'}
 
-    # Greys the button out if there is no object.
+    # Greys the button out if there is no active object.
     @classmethod
     def poll(cls, context):
         return context.view_layer.objects.active is not None
 
     def execute(self, context):
         
-        # In order to be able to call on this code from the import operator as well, the target object needs to be passed to the function doing the remapping.
-        # object.remapmaterials will always execute on the selected object, but import will need to run the function below on the importer object.
         target = bpy.context.view_layer.objects.active
         SEUT_OT_RemapMaterials.remap_To_Library_Materials(context, target)
 
@@ -22,8 +20,8 @@ class SEUT_OT_RemapMaterials(bpy.types.Operator):
         return {'FINISHED'}
         
     # This code was written by Kamikaze
-    # ========== TODO ========== 
-    # Change this to use a passed object, and not the selected one, then pass the selected object to it when execute is called for just remap
+    # It currently doesn't care too much about the passed target, always uses the current active object.
+    # But that doesn't matter much because the only place elsewhere I use it is after import, which sets imported objects as active.
     def remap_To_Library_Materials(context, target):
 
         print("SEUT Info: Remapping materials of: " + context.view_layer.objects.active.name + ".")
@@ -43,7 +41,7 @@ class SEUT_OT_RemapMaterials(bpy.types.Operator):
                     # This material is not linked from a library
                     old_material = slot.material
 
-                    print("SEUT Error 002: Material '" + slot.material.name + "' not found in linked MatLibs.")
+                    print("SEUT Info: Material '" + slot.material.name + "' not found in linked MatLibs.")
 
                     new_material = None
                     # Try to find a linked material with the same name

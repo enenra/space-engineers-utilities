@@ -31,7 +31,6 @@ Plan:
         https://docs.blender.org/api/current/bpy.ops.export_scene.html
         - exportAll(scene)
         - export(collection)
-        - Option: Generate SG version
         - Need error handling if collections are not found.
         XML
             - Rescale factor needs to be settable
@@ -55,6 +54,7 @@ Plan:
             * HKT for 2.79
     
     Mirroring ? (instances of object, rotate, separate collection)
+        - 
     Icon render ? (camera alignment might be too complicated)
     Dummies - context menu to create one and link it?
     toggle bounding box
@@ -63,6 +63,10 @@ Plan:
     link to online documentation?
     collision / mwmb support: https://discordapp.com/channels/125011928711036928/161758345856811008/662957710874247178
     cubeblocks output?
+    materials:
+        - Add material template in by default for users to create their own materials from
+        - change materials over to node groups, might make things easier, especially for custom materials
+        - also: possibly add option to export a materials.xml from a matlib?
 '''
 
 import bpy
