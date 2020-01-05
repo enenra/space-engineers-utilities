@@ -4,7 +4,7 @@ import xml.dom.minidom
 
 
 class SEUT_OT_Export(bpy.types.Operator):
-    """Exports shit."""
+    """Exports all enabled file types and collections"""
     bl_idname = "object.export"
     bl_label = "Export"
     bl_options = {'REGISTER', 'UNDO'}
@@ -71,15 +71,5 @@ class SEUT_OT_Export(bpy.types.Operator):
         # Copy dummies over if not present as safety? to LOD1 for sure, but are they needed in LOD2?
 
         # What happens if there's multiple objects in the collection? Can I input a collection into the export operator?
-
-        return
-
-    
-    def export_SBC(context):
-        """Exports the SBC file for a defined collection"""
-
-        # Pull info together and create nodes
-
-        # Write to file, place in export folder
 
         return

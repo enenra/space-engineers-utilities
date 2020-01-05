@@ -1,7 +1,6 @@
 import bpy
 
 from .seut_recreateCollections    import SEUT_OT_RecreateCollections
-from .seut_export                 import SEUT_OT_Export
 
 class SEUT_OT_ExportSBC(bpy.types.Operator):
     """Exports to SBC"""
@@ -11,16 +10,17 @@ class SEUT_OT_ExportSBC(bpy.types.Operator):
 
 
     def execute(self, context):
-        """Exports a CubeBlocks definition to SBC"""
+        """Exports the SBC file for a defined collection"""
+
+        # Debug
+        print('OT: ExportSBC')
 
         scene = context.scene
 
         collections = SEUT_OT_RecreateCollections.get_collections()
 
-        # Create new
+        # Pull info together and create nodes
 
-
-        # Update existing
-
+        # Write to file, place in export folder
 
         return {'FINISHED'}
