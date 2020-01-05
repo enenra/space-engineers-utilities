@@ -42,9 +42,9 @@ class SEUT_PT_Panel_BoundingBox(bpy.types.Panel):
         row.prop(scene, "prop_bBox_X")
         row.prop(scene, "prop_bBox_Y")
         row.prop(scene, "prop_bBox_Z")
-
-        # ========== TODO ==========
-        # Add "Automatic"-button to dynamically adjust the box depending on object size.
+        
+        row = box.row()
+        row.operator('object.bbox', text="Automatic")
 
 class SEUT_PT_Panel_Export(bpy.types.Panel):
     """Creates the export panel for SEUT"""
@@ -92,7 +92,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         
         box.prop(scene, "prop_export_rescaleFactor")
         
-        box.prop(scene, "prop_exportPath", text="Folder", expand=True)
+        box.prop(scene, "prop_export_exportPath", text="Folder", expand=True)
 
         # SubtypeId
         box = layout.box()

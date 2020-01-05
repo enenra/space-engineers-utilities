@@ -17,7 +17,7 @@ class SEUT_OT_ExportSBC(bpy.types.Operator):
 
         scene = context.scene
 
-        collections = SEUT_OT_RecreateCollections.get_collections()
+        collections = SEUT_OT_RecreateCollections.get_Collections()
 
         # Pull info together and create nodes
 

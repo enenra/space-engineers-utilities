@@ -191,7 +191,7 @@ def register():
         default=1,
         min=0
     )
-    bpy.types.Scene.prop_exportPath = StringProperty(
+    bpy.types.Scene.prop_export_exportPath = StringProperty(
         name="Export Folder",
         subtype="DIR_PATH"
     )
@@ -243,7 +243,7 @@ def unregister():
     del bpy.types.Scene.prop_export_hkt
     del bpy.types.Scene.prop_export_sbc
     del bpy.types.Scene.prop_export_rescaleFactor
-    del bpy.types.Scene.prop_exportPath
+    del bpy.types.Scene.prop_export_exportPath
     del bpy.types.Scene.prop_export_lod1Distance
     del bpy.types.Scene.prop_export_lod2Distance
     del bpy.types.Scene.prop_export_lod3Distance

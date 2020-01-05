@@ -15,7 +15,7 @@ class SEUT_OT_ExportMain(bpy.types.Operator):
 
         scene = context.scene
 
-        collections = SEUT_OT_RecreateCollections.get_collections()
+        collections = SEUT_OT_RecreateCollections.get_Collections()
 
         # If main collection isn't found, error out.
         if collections['main'] == None:

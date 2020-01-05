@@ -36,6 +36,7 @@ class SEUT_OT_Export(bpy.types.Operator):
         return {'FINISHED'}
 
 
+    # Will initially ONLY support MatLib materials!
     def export_XML(context, collection):
         """Exports the XML file for a defined collection"""
         
@@ -44,10 +45,10 @@ class SEUT_OT_Export(bpy.types.Operator):
 
         # create string and add initial nodes
         paramCenteredVal = 'false'
-        paramRescaleFactorVal = context.scene.prop_export_rescaleFactor.toString()
+        paramRescaleFactorVal = str(context.scene.prop_export_rescaleFactor)
         paramRescaleToLengthInMetersVal = 'false'
 
-        print(paramRescaleFactorVal)
+
 
 
         # set up LOD nodes, depending on what type of collection it is and what LOD collections have children

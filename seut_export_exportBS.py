@@ -15,7 +15,7 @@ class SEUT_OT_ExportBS(bpy.types.Operator):
 
         scene = context.scene
 
-        collections = SEUT_OT_RecreateCollections.get_collections()
+        collections = SEUT_OT_RecreateCollections.get_Collections()
 
         # If no collections are found, error out.
         if collections['bs1'] == None and collections['bs2'] == None and collections['bs3'] == None:

@@ -15,7 +15,7 @@ class SEUT_OT_ExportLOD(bpy.types.Operator):
 
         scene = context.scene
 
-        collections = SEUT_OT_RecreateCollections.get_collections()
+        collections = SEUT_OT_RecreateCollections.get_Collections()
 
         # If no collections are found, error out.
         if collections['lod1'] == None and collections['lod2'] == None and collections['lod3'] == None:
