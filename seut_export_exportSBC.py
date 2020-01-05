@@ -19,6 +19,11 @@ class SEUT_OT_ExportSBC(bpy.types.Operator):
 
         collections = SEUT_OT_RecreateCollections.get_Collections()
 
+        # If no SubtypeId is set, error out.
+        if scene.prop_subtypeId == "":
+            print("SEUT Error 004: No SubtypeId set.")
+            return {'CANCELLED'}
+
         # Pull info together and create nodes
 
         # Write to file, place in export folder

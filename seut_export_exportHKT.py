@@ -15,4 +15,9 @@ class SEUT_OT_ExportHKT(bpy.types.Operator):
         # Debug
         print('OT: ExportHKT')
 
+        # If no SubtypeId is set, error out.
+        if scene.prop_subtypeId == "":
+            print("SEUT Error 004: No SubtypeId set.")
+            return {'CANCELLED'}
+
         return {'FINISHED'}
