@@ -85,6 +85,7 @@ from bpy.types import (Panel,
                        PropertyGroup,
                        )
 
+from .seut_preferences              import SEUT_AddonPreferences
 from .seut_panel                    import SEUT_PT_Panel
 from .seut_panel                    import SEUT_PT_Panel_BoundingBox
 from .seut_panel                    import SEUT_PT_Panel_Export
@@ -101,6 +102,7 @@ from .seut_bBox                     import SEUT_OT_BBox
 from .seut_recreateCollections      import SEUT_OT_RecreateCollections
 
 def register():
+    bpy.utils.register_class(SEUT_AddonPreferences)
     bpy.utils.register_class(SEUT_PT_Panel)
     bpy.utils.register_class(SEUT_PT_Panel_BoundingBox)
     bpy.utils.register_class(SEUT_PT_Panel_Export)
@@ -202,6 +204,7 @@ def register():
     )
 
 def unregister():
+    bpy.utils.unregister_class(SEUT_AddonPreferences)
     bpy.utils.unregister_class(SEUT_PT_Panel)
     bpy.utils.unregister_class(SEUT_PT_Panel_BoundingBox)
     bpy.utils.unregister_class(SEUT_PT_Panel_Export)
