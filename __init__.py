@@ -27,36 +27,46 @@ bl_info = {
 
 '''
 Plan:
-    Export: seut_export.py
-        BLEND
-            - exportCollision(collection)
-            * HKT for 2.79
-    
-    Mirroring ? (instances of object, rotate, separate collection)
-        - 
-    Mountpoints
-        - gonna be quite complex if I allow multiple entries per side (because the need to translate them into the format)
-        - use matrix to store them, per side
-    Icon render ? (camera alignment might be too complicated)
-    Dummies - context menu to create one and link it?
-        also automatically copy them to LODs if not present?
-    toggle bounding box
+    1. Dummies:
+        - context menu to create one and link it?
+        - also automatically copy them to LODs if not present?
+
+    2. auto updater stuff!
+
+    3. bounding box:
         https://www.youtube.com/watch?v=EgrgEoNFNsA&list=PLboXykqtm8dw-TCdMNrxz4cEemox0jBn0&index=7&t=0s
         panel to adjust its size, toggle on / off
-    link to online documentation?
-    collision / mwmb support: https://discordapp.com/channels/125011928711036928/161758345856811008/662957710874247178
-        https://discordapp.com/channels/125011928711036928/161758345856811008/663595128115560479 - summary
-    cubeblocks output?
-    materials:
+        way to display forward, left, right, up, down, back, maybe just as a functionality of bBox?
+    
+    4. Mirroring:
+        - instances of object, rotate, separate collection
+
+    5. Mountpoints:
+        - gonna be quite complex if I allow multiple entries per side (because the need to translate them into the format)
+        - use matrix to store them, per side
+
+    6. HKT:
+        - collision / mwmb support: https://discordapp.com/channels/125011928711036928/161758345856811008/662957710874247178
+        - https://discordapp.com/channels/125011928711036928/161758345856811008/663595128115560479 - summary
+    
+    7. MWM output:
+        - 
+
+    8. Icon render:
+        - camera alignment might be too complicated
+
+    9. materials:
         - Add material template in by default for users to create their own materials from
+            * do via template material that is then copied?
         - change materials over to node groups, might make things easier, especially for custom materials
+            * but would also break XML export code - mind that!
         - also: possibly add option to export a materials.xml from a matlib?
         - figure out what to do about <Parameter Name="Technique">MESH</Parameter> - how to set it for a custom texture?
-    Need to eventually go through and streamline all context. stuff, also bpy. stuff. 
-    way to display forward, left, right, up, down, back, maybe just as a functionality of bBox?
+
+    10. Need to eventually go through and streamline all context. stuff, also bpy. stuff. 
+
     set up the whole folder "models" as "SEUT" and provide as complete solution
-    auto updater stuff!
-    also add functionality to export materials.xml files.
+    
 '''
 
 import bpy
