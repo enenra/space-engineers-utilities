@@ -34,6 +34,9 @@ Plan:
     
     Mirroring ? (instances of object, rotate, separate collection)
         - 
+    Mountpoints
+        - gonna be quite complex if I allow multiple entries per side (because the need to translate them into the format)
+        - use matrix to store them, per side
     Icon render ? (camera alignment might be too complicated)
     Dummies - context menu to create one and link it?
         also automatically copy them to LODs if not present?
