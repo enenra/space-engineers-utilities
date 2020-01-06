@@ -33,7 +33,6 @@ Plan:
         - export(collection)
         - Need error handling if collections are not found.
         XML
-            - Rescale factor needs to be settable
             - exportXML(collection)
             Materials
                 - printMaterialReferences(object)
@@ -62,11 +61,15 @@ Plan:
         panel to adjust its size, toggle on / off
     link to online documentation?
     collision / mwmb support: https://discordapp.com/channels/125011928711036928/161758345856811008/662957710874247178
+        https://discordapp.com/channels/125011928711036928/161758345856811008/663595128115560479 - summary
     cubeblocks output?
     materials:
         - Add material template in by default for users to create their own materials from
         - change materials over to node groups, might make things easier, especially for custom materials
         - also: possibly add option to export a materials.xml from a matlib?
+    Need to eventually go through and streamline all context. stuff, also bpy. stuff. 
+    way to display forward, left, right, up, down, back, maybe just as a functionality of bBox?
+    set up the whole folder "models" as "SEUT" and provide as complete solution
 '''
 
 import bpy

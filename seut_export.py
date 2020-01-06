@@ -70,20 +70,68 @@ class SEUT_OT_Export(bpy.types.Operator):
 
         paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
         paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
-        paramRescaleToLengthInMeters.text ='false'
+        paramRescaleToLengthInMeters.text = 'false'
+        
+        # Currently no support for the other material parameters - are those even needed anymore?
 
-        # iterate through all materials of all objects within the collection and create nodes for them
+        # iterate through all linked materials and create nodes
+        # Iterate through all materials in the file
+        for mat in bpy.data.materials:
+            if mat == None:
+                continue
+
+            elif mat.library == None:
+                # If the material is not part of a linked library, I have to account for the possibility that it is a leftover material from import.
+                # Those do get cleaned up, but only after the BLEND file is saved, closed and reopened. That may no have happened.
+
+                isLocal = False
+
+                for mtl in bpy.data.materials:
+                    if mtl.library != None and mtl.name == mat.name:
+                        isLocal = False
+                    elif mtl.library != None:
+                        isLocal = True
+                
+                if isLocal:
+                    matEntry = ET.SubElement(model, 'Material')
+                    matEntry.set('Name', mat.name)
+
+                    matTechnique = ET.SubElement(matEntry, 'Parameter')
+                    matTechnique.set('Name', 'Technique')
+                    matTechnique.text = 'MESH'
+
+                    # Currently no support for the other parameters - are those even needed anymore?
+                    
+                    # _cm ColorMask texture
+                    matCM = ET.SubElement(matEntry, 'Parameter')
+                    matCM.set('Name', 'ColorMetalTexture')
+                    matCM.text = mat. + 'TIF'
+                    
+                    # _ng NormalGloss texture
+                    matNG = ET.SubElement(matEntry, 'Parameter')
+                    matNG.set('Name', 'ColorMetalTexture')
+                    matNG.text = mat. + 'TIF'
+                    
+                    # _add AddMaps texture
+                    matADD = ET.SubElement(matEntry, 'Parameter')
+                    matADD.set('Name', 'ColorMetalTexture')
+                    matADD.text = mat. + 'TIF'
+                    
+                    # _alphamask Alphamask texture
+                    matAM = ET.SubElement(matEntry, 'Parameter')
+                    matAM.set('Name', 'ColorMetalTexture')
+                    matAM.text = mat. + 'TIF'
+
+
+            elif mat.library != None:
+                matRef = ET.SubElement(model, 'MaterialRef')
+                matRef.set('Name', mat.name)
 
         # if the material is not a linked material, create material instead of materialref
         # will need to iterate through the image textures of the selected material
         # ========== TODO ==========
         # add support for those custom material paremeters?
         
-        # set up LOD nodes, depending on what type of collection it is and what LOD collections have children
-
-        # ========== TODO ==========
-        # Should LOD2 and 3 be generated if there is no LOD1? probably a good sanity check to implement.
-
         # Only add LODs to XML if exporting the main collection, the LOD collections exist and are not empty.
         if collection == collections['main']:
             
@@ -127,9 +175,17 @@ class SEUT_OT_Export(bpy.types.Operator):
 
         xmlString = xml.dom.minidom.parseString(ET.tostring(model))
         xmlFormatted = xmlString.toprettyxml()
+
+        if collection == collections['main']:
+            filename = scene.prop_subtypeId
+        else:
+            filename = scene.prop_subtypeId + '_' + collection.name
+
+        print(filename + '.xml:')
         print(xmlFormatted)
+
         """
-        xml = open(scene.prop_export_subtypeId + ".xml", "w")           # probably need to change stuff here
+        xml = open(filename, "w")           # probably need to change stuff here
         xml.write(xmlFormatted)
         """
 
