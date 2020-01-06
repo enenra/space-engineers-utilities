@@ -71,6 +71,8 @@ Plan:
     way to display forward, left, right, up, down, back, maybe just as a functionality of bBox?
     set up the whole folder "models" as "SEUT" and provide as complete solution
     auto updater stuff!
+    figure out what to do about <Parameter Name="Technique">MESH</Parameter> - how to set it for a custom texture?
+    also add functionality to export materials.xml files.
 '''
 
 import bpy

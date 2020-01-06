@@ -1,4 +1,5 @@
 import bpy
+import os
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
@@ -13,22 +14,21 @@ class SEUT_OT_Export(bpy.types.Operator):
     def execute(self, context):
         
         scene = context.scene
+        preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
 
         # Debug
         print('OT: Export')
+
+        # If no export folder is set, error out.
+        if scene.prop_export_exportPath == "":
+            print("SEUT Error 003: No export folder defined.")
+            return {'CANCELLED'}
 
         # If no SubtypeId is set, error out.
         if scene.prop_subtypeId == "":
             print("SEUT Error 004: No SubtypeId set.")
             return {'CANCELLED'}
-
-        """ TODO: Re-enable after testing is done!
-        # If no export folder is set, error out.
-        if scene.prop_export_exportPath == "":
-            print("SEUT Error 003: No export folder defined.")
-            return {'CANCELLED'}
-        """
-
+        
         # Call all the individual export operators
         bpy.ops.object.export_main()
         bpy.ops.object.export_bs()
@@ -40,6 +40,8 @@ class SEUT_OT_Export(bpy.types.Operator):
 
         if scene.prop_export_sbc:
             bpy.ops.object.export_sbc()
+        
+        # Once I implement MWM export, make it adhere to export folder - may need to check for it again?
 
         return {'FINISHED'}
 
@@ -48,7 +50,8 @@ class SEUT_OT_Export(bpy.types.Operator):
         """Exports the XML file for a defined collection"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections()     
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+        preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
 
         # Create XML tree and add initial parameters.
         model = ET.Element('Model')
@@ -123,11 +126,11 @@ class SEUT_OT_Export(bpy.types.Operator):
 
                     # _cm ColorMask texture
                     if images['cm'] == None:
-                        print("SEUT Info: No 'CM' texture or node found for material '" + mat.name + "'. Skipping.")
+                        print("SEUT Info: No 'CM' texture or node found for local material '" + mat.name + "'. Skipping.")
                     else:
                         offset = images['cm'].filepath.find("Textures\\")
                         if offset == -1:
-                            print("SEUT Error 007: 'CM' texture filepath in '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
+                            print("SEUT Error 007: 'CM' texture filepath in local material '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
                         else:
                             matCM = ET.SubElement(matEntry, 'Parameter')
                             matCM.set('Name', 'ColorMetalTexture')
@@ -135,11 +138,11 @@ class SEUT_OT_Export(bpy.types.Operator):
                     
                     # _ng NormalGloss texture
                     if images['ng'] == None:
-                        print("SEUT Info: No 'NG' texture or node found for material '" + mat.name + "'. Skipping.")
+                        print("SEUT Info: No 'NG' texture or node found for local material '" + mat.name + "'. Skipping.")
                     else:
                         offset = images['ng'].filepath.find("Textures\\")
                         if offset == -1:
-                            print("SEUT Error 007: 'NG' texture filepath in '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
+                            print("SEUT Error 007: 'NG' texture filepath in local material '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
                         else:
                             matNG = ET.SubElement(matEntry, 'Parameter')
                             matNG.set('Name', 'NormalGlossTexture')
@@ -147,11 +150,11 @@ class SEUT_OT_Export(bpy.types.Operator):
                     
                     # _add AddMaps texture
                     if images['add'] == None:
-                        print("SEUT Info: No 'ADD' texture or node found for material '" + mat.name + "'. Skipping.")
+                        print("SEUT Info: No 'ADD' texture or node found for local material '" + mat.name + "'. Skipping.")
                     else:
                         offset = images['add'].filepath.find("Textures\\")
                         if offset == -1:
-                            print("SEUT Error 007: 'ADD' texture filepath in '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
+                            print("SEUT Error 007: 'ADD' texture filepath in local material '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
                         else:
                             matADD = ET.SubElement(matEntry, 'Parameter')
                             matADD.set('Name', 'AddMapsTexture')
@@ -169,6 +172,10 @@ class SEUT_OT_Export(bpy.types.Operator):
                             matAM.set('Name', 'AlphamaskTexture')
                             matAM.text = images['am'].filepath[offset:]
 
+                    # If no textures are added to the material, remove the entry again.
+                    if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
+                        print("SEUT Info: Local material '" + mat.name + "' does not contain any valid textures. Skipping.")
+                        model.remove(matEntry)
 
             elif mat.library != None:
                 matRef = ET.SubElement(model, 'MaterialRef')
@@ -215,7 +222,6 @@ class SEUT_OT_Export(bpy.types.Operator):
 
 
         # Create file with subtypename + collection name and write string to it
-
         xmlString = xml.dom.minidom.parseString(ET.tostring(model))
         xmlFormatted = xmlString.toprettyxml()
 
@@ -224,13 +230,25 @@ class SEUT_OT_Export(bpy.types.Operator):
         else:
             filename = scene.prop_subtypeId + '_' + collection.name
 
-        print(filename + '.xml:')
-        print(xmlFormatted)
+        # print(filename + '.xml:')
+        # print(xmlFormatted)
 
-        """
-        xml = open(filename, "w")           # probably need to change stuff here
-        xml.write(xmlFormatted)
-        """
+        path = ""
+
+        # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
+        if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
+            print("SEUT Error 008: BLEND file must be saved before XML can be exported to its directory.")
+            return
+        else:
+            if preferences.pref_looseFilesExportFolder == '0':
+                path = os.path.dirname(bpy.data.filepath) + "\\"
+
+            elif preferences.pref_looseFilesExportFolder == '1':
+                path = bpy.path.abspath(scene.prop_export_exportPath)           # This is needed because else the path gets an extra \ and if you try to remove that there's none, it's stupid.
+
+        exportedXML = open(path + filename + ".xml", "w")
+        exportedXML.write(xmlFormatted)
+        print("SEUT Info: '" + path + filename + ".xml' has been created.")
 
         return
 

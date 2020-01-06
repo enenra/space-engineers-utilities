@@ -12,6 +12,10 @@ class SEUT_OT_ExportHKT(bpy.types.Operator):
     def execute(self, context):
         """Exports collision to HKT"""
 
+        scene = context.scene
+
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+
         # Debug
         print('OT: ExportHKT')
 
