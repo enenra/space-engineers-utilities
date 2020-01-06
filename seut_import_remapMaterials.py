@@ -24,7 +24,7 @@ class SEUT_OT_RemapMaterials(bpy.types.Operator):
     # But that doesn't matter much because the only place elsewhere I use it is after import, which sets imported objects as active.
     def remap_To_Library_Materials(context, target):
 
-        print("SEUT Info: Remapping materials of: " + context.view_layer.objects.active.name + ".")
+        print("SEUT Info: Remapping materials.")
 
         # The original script
         mtl_to_delete = []

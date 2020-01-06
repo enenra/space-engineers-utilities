@@ -30,6 +30,12 @@ Plan:
     1. Dummies:
         - context menu to create one and link it?
         - also automatically copy them to LODs if not present?
+        - behaviour
+            * mesh selected --> context menu --> connect detector
+            * renames the mesh to detector_[TYPE]_section_[NUMBER] (need to make sure numbering stays consistent)
+            * spawns empty on location of mesh, names it detector_[TYPE]_[NUMBER] (pivot point? if possible set equal to mesh)
+            * connects empty to mesh via its custom properties
+            * (scales empty to cover mesh, with some relative-size padding)
 
     2. auto updater stuff!
 
