@@ -28,26 +28,6 @@ bl_info = {
 '''
 Plan:
     Export: seut_export.py
-        https://docs.blender.org/api/current/bpy.ops.export_scene.html
-        - exportAll(scene)
-        - export(collection)
-        - Need error handling if collections are not found.
-        XML
-            - exportXML(collection)
-            Materials
-                - printMaterialReferences(object)
-
-            LODs
-                - Pull in LOD distances
-                - printLODReferences(object)
-                - BS LOD?
-
-        FBX
-            - exportFBX(collection)
-            * Main Model
-            * LODs
-            * Build Stages
-
         BLEND
             - exportCollision(collection)
             * HKT for 2.79
@@ -56,6 +36,7 @@ Plan:
         - 
     Icon render ? (camera alignment might be too complicated)
     Dummies - context menu to create one and link it?
+        also automatically copy them to LODs if not present?
     toggle bounding box
         https://www.youtube.com/watch?v=EgrgEoNFNsA&list=PLboXykqtm8dw-TCdMNrxz4cEemox0jBn0&index=7&t=0s
         panel to adjust its size, toggle on / off
@@ -67,11 +48,11 @@ Plan:
         - Add material template in by default for users to create their own materials from
         - change materials over to node groups, might make things easier, especially for custom materials
         - also: possibly add option to export a materials.xml from a matlib?
+        - figure out what to do about <Parameter Name="Technique">MESH</Parameter> - how to set it for a custom texture?
     Need to eventually go through and streamline all context. stuff, also bpy. stuff. 
     way to display forward, left, right, up, down, back, maybe just as a functionality of bBox?
     set up the whole folder "models" as "SEUT" and provide as complete solution
     auto updater stuff!
-    figure out what to do about <Parameter Name="Technique">MESH</Parameter> - how to set it for a custom texture?
     also add functionality to export materials.xml files.
 '''
 

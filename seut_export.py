@@ -230,9 +230,6 @@ class SEUT_OT_Export(bpy.types.Operator):
         else:
             filename = scene.prop_subtypeId + '_' + collection.name
 
-        # print(filename + '.xml:')
-        # print(xmlFormatted)
-
         path = ""
 
         # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
@@ -244,7 +241,7 @@ class SEUT_OT_Export(bpy.types.Operator):
                 path = os.path.dirname(bpy.data.filepath) + "\\"
 
             elif preferences.pref_looseFilesExportFolder == '1':
-                path = bpy.path.abspath(scene.prop_export_exportPath)           # This is needed because else the path gets an extra \ and if you try to remove that there's none, it's stupid.
+                path = bpy.path.abspath(scene.prop_export_exportPath)
 
         exportedXML = open(path + filename + ".xml", "w")
         exportedXML.write(xmlFormatted)
@@ -256,8 +253,42 @@ class SEUT_OT_Export(bpy.types.Operator):
     def export_FBX(context, collection):
         """Exports the FBX file for a defined collection"""
 
+        scene = context.scene
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+        preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
+
+        # ========== TODO ==========
         # Copy dummies over if not present as safety? to LOD1 for sure, but are they needed in LOD2?
 
-        # What happens if there's multiple objects in the collection? Can I input a collection into the export operator?
+        # Determining the directory to export to.
+        if collection == collections['main']:
+            filename = scene.prop_subtypeId
+        else:
+            filename = scene.prop_subtypeId + '_' + collection.name
+
+        path = ""
+
+        # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
+        if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
+            print("SEUT Error 008: BLEND file must be saved before FBX can be exported to its directory.")
+            return
+        else:
+            if preferences.pref_looseFilesExportFolder == '0':
+                path = os.path.dirname(bpy.data.filepath) + "\\"
+
+            elif preferences.pref_looseFilesExportFolder == '1':
+                path = bpy.path.abspath(scene.prop_export_exportPath)
+        
+        # Exporting the collection.
+        # I can only export the currently active collection, so I need to set the target collection to active (for which I have to link it for some reason),
+        # then export, then unlink. User won't see it and it shouldn't make a difference.
+        bpy.context.scene.collection.children.link(collection)
+        layer_collection = bpy.context.view_layer.layer_collection.children[collection.name]
+        bpy.context.view_layer.active_layer_collection = layer_collection
+
+        bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
+
+        bpy.context.scene.collection.children.unlink(collection)
+        print("SEUT Info: '" + path + filename + ".fbx' has been created.")
 
         return
