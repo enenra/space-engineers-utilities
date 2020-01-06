@@ -70,6 +70,7 @@ Plan:
     Need to eventually go through and streamline all context. stuff, also bpy. stuff. 
     way to display forward, left, right, up, down, back, maybe just as a functionality of bBox?
     set up the whole folder "models" as "SEUT" and provide as complete solution
+    auto updater stuff!
 '''
 
 import bpy

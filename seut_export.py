@@ -44,17 +44,11 @@ class SEUT_OT_Export(bpy.types.Operator):
         return {'FINISHED'}
 
 
-    # Will initially ONLY support MatLib materials!
     def export_XML(context, collection):
         """Exports the XML file for a defined collection"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections()
-        
-        # analyze what collection type it is by looking at its name
-
-        # Make sure the collection isn't empty
-        
+        collections = SEUT_OT_RecreateCollections.get_Collections()     
 
         # Create XML tree and add initial parameters.
         model = ET.Element('Model')
@@ -74,15 +68,15 @@ class SEUT_OT_Export(bpy.types.Operator):
         
         # Currently no support for the other material parameters - are those even needed anymore?
 
-        # iterate through all linked materials and create nodes
         # Iterate through all materials in the file
         for mat in bpy.data.materials:
             if mat == None:
                 continue
 
             elif mat.library == None:
+
                 # If the material is not part of a linked library, I have to account for the possibility that it is a leftover material from import.
-                # Those do get cleaned up, but only after the BLEND file is saved, closed and reopened. That may no have happened.
+                # Those do get cleaned up, but only after the BLEND file is saved, closed and reopened. That may not have happened.
 
                 isLocal = False
 
@@ -101,36 +95,85 @@ class SEUT_OT_Export(bpy.types.Operator):
                     matTechnique.text = 'MESH'
 
                     # Currently no support for the other parameters - are those even needed anymore?
+
+                    # Need to first check whether a texture node with the respective texture exists and is linked to a file 
+                    #   This could be done better if I defined the names for the texture map nodes properly. --> Yes: CM, NG, ADD, ALPHAMASK.
+                    #   For now just look at linked filename for last couple characters
                     
+                    # Iterate through all image textures in material and register relevant ones to dictionary.
+                    images = {
+                        'cm': None,
+                        'ng': None,
+                        'add': None,
+                        'am': None
+                        }
+                    for node in mat.node_tree.nodes:
+                        if node.type == 'TEX_IMAGE':
+                            if node.name == 'CM':
+                                images['cm'] = node.image
+                            if node.name == 'NG':
+                                images['ng'] = node.image
+                            if node.name == 'ADD':
+                                images['add'] = node.image
+                            if node.name == 'ALPHAMASK':
+                                images['am'] = node.image
+
+                    # Used to create the relative paths for the textures.
+                    offset = 0
+
                     # _cm ColorMask texture
-                    matCM = ET.SubElement(matEntry, 'Parameter')
-                    matCM.set('Name', 'ColorMetalTexture')
-                    matCM.text = mat. + 'TIF'
+                    if images['cm'] == None:
+                        print("SEUT Info: No 'CM' texture or node found for material '" + mat.name + "'. Skipping.")
+                    else:
+                        offset = images['cm'].filepath.find("Textures\\")
+                        if offset == -1:
+                            print("SEUT Error 007: 'CM' texture filepath in '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
+                        else:
+                            matCM = ET.SubElement(matEntry, 'Parameter')
+                            matCM.set('Name', 'ColorMetalTexture')
+                            matCM.text = images['cm'].filepath[offset:]
                     
                     # _ng NormalGloss texture
-                    matNG = ET.SubElement(matEntry, 'Parameter')
-                    matNG.set('Name', 'ColorMetalTexture')
-                    matNG.text = mat. + 'TIF'
+                    if images['ng'] == None:
+                        print("SEUT Info: No 'NG' texture or node found for material '" + mat.name + "'. Skipping.")
+                    else:
+                        offset = images['ng'].filepath.find("Textures\\")
+                        if offset == -1:
+                            print("SEUT Error 007: 'NG' texture filepath in '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
+                        else:
+                            matNG = ET.SubElement(matEntry, 'Parameter')
+                            matNG.set('Name', 'NormalGlossTexture')
+                            matNG.text = images['ng'].filepath[offset:]
                     
                     # _add AddMaps texture
-                    matADD = ET.SubElement(matEntry, 'Parameter')
-                    matADD.set('Name', 'ColorMetalTexture')
-                    matADD.text = mat. + 'TIF'
+                    if images['add'] == None:
+                        print("SEUT Info: No 'ADD' texture or node found for material '" + mat.name + "'. Skipping.")
+                    else:
+                        offset = images['add'].filepath.find("Textures\\")
+                        if offset == -1:
+                            print("SEUT Error 007: 'ADD' texture filepath in '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
+                        else:
+                            matADD = ET.SubElement(matEntry, 'Parameter')
+                            matADD.set('Name', 'AddMapsTexture')
+                            matADD.text = images['add'].filepath[offset:]
                     
                     # _alphamask Alphamask texture
-                    matAM = ET.SubElement(matEntry, 'Parameter')
-                    matAM.set('Name', 'ColorMetalTexture')
-                    matAM.text = mat. + 'TIF'
+                    if images['am'] == None:
+                        print("SEUT Info: No 'ALPHAMASK' texture or node found for material '" + mat.name + "'. Skipping.")
+                    else:
+                        offset = images['am'].filepath.find("Textures\\")
+                        if offset == -1:
+                            print("SEUT Error 007: 'ALPHAMASK' texture filepath in '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
+                        else:
+                            matAM = ET.SubElement(matEntry, 'Parameter')
+                            matAM.set('Name', 'AlphamaskTexture')
+                            matAM.text = images['am'].filepath[offset:]
 
 
             elif mat.library != None:
                 matRef = ET.SubElement(model, 'MaterialRef')
                 matRef.set('Name', mat.name)
-
-        # if the material is not a linked material, create material instead of materialref
-        # will need to iterate through the image textures of the selected material
-        # ========== TODO ==========
-        # add support for those custom material paremeters?
+                
         
         # Only add LODs to XML if exporting the main collection, the LOD collections exist and are not empty.
         if collection == collections['main']:
