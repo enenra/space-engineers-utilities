@@ -19,14 +19,17 @@ class SEUT_OT_ReplaceWithSubpart(Operator):
         items=(
             ('DoorLeft', 'Door Left', ''),
             ('DoorRight', 'Door Right', ''),
-            ('DrillHead', 'Drill Head', ''),
+            ('DrillHead', 'Drill Head', ''), # file: DrillHead
+            ('Propeller', 'Propeller', ''),
             ('InteriorTurretBase1', 'Interior Turret Base 1', ''),
             ('InteriorTurretBase2', 'Interior Turret Base 2', ''),
             ('MissileTurretBase1', 'Missile Turret Base 1', ''),
             ('MissileTurretBarrels', 'Missile Turret Barrels', ''),
             ('GatlingTurretBase1', 'Gatling Turret Base 1', ''),
             ('GatlingTurretBase2', 'Gatling Turret Base 2', ''),
-            ('GatlingBarrel', 'Gatling Barrel', '')
+            ('GatlingBarrel', 'Gatling Barrel', ''),
+            ('grinder1', 'Grinder 1', ''),
+            ('grinder2', 'Grinder 2', '')
             ),
         default='DoorLeft'
     )

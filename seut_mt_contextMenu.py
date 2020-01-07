@@ -13,4 +13,4 @@ class SEUT_MT_ContextMenu(Menu):
 
         layout.operator('object.add_highlight_empty', text="Add Highlight Empty")
         layout.operator('object.add_dummy', text="Add Dummy")
-        layout.operator('object.replace_with_subpart', text="Replace with Subpart")
+        # layout.operator('object.replace_with_subpart', text="Replace with Subpart")
