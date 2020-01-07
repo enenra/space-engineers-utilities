@@ -36,11 +36,14 @@ Plan:
             * spawns empty on location of mesh, names it detector_[TYPE]_[NUMBER] (pivot point? if possible set equal to mesh)
             * connects empty to mesh via its custom properties
             * (scales empty to cover mesh, with some relative-size padding)
+        - types:
+            * conveyor, terminal, upgrade
 
     2. auto updater stuff!
 
     3. bounding box:
         https://www.youtube.com/watch?v=EgrgEoNFNsA&list=PLboXykqtm8dw-TCdMNrxz4cEemox0jBn0&index=7&t=0s
+        https://docs.blender.org/api/current/bpy.ops.object.html
         panel to adjust its size, toggle on / off
         way to display forward, left, right, up, down, back, maybe just as a functionality of bBox?
     
@@ -104,6 +107,7 @@ from .seut_export_exportSBC         import SEUT_OT_ExportSBC
 from .seut_export                   import SEUT_OT_Export
 from .seut_import                   import SEUT_OT_Import
 from .seut_import_remapMaterials    import SEUT_OT_RemapMaterials
+from .seut_import_emptyToCubeType   import SEUT_OT_EmptiesToCubeType
 from .seut_gridScale                import SEUT_OT_GridScale
 from .seut_bBox                     import SEUT_OT_BBox
 from .seut_recreateCollections      import SEUT_OT_RecreateCollections
@@ -122,6 +126,7 @@ def register():
     bpy.utils.register_class(SEUT_OT_ExportSBC)
     bpy.utils.register_class(SEUT_OT_Import)
     bpy.utils.register_class(SEUT_OT_RemapMaterials)
+    bpy.utils.register_class(SEUT_OT_EmptiesToCubeType)
     bpy.utils.register_class(SEUT_OT_GridScale)
     bpy.utils.register_class(SEUT_OT_BBox)
     bpy.utils.register_class(SEUT_OT_RecreateCollections)
@@ -234,6 +239,7 @@ def unregister():
     bpy.utils.unregister_class(SEUT_OT_ExportSBC)
     bpy.utils.unregister_class(SEUT_OT_Import)
     bpy.utils.unregister_class(SEUT_OT_RemapMaterials)
+    bpy.utils.unregister_class(SEUT_OT_EmptiesToCubeType)
     bpy.utils.unregister_class(SEUT_OT_GridScale)
     bpy.utils.unregister_class(SEUT_OT_BBox)
     bpy.utils.unregister_class(SEUT_OT_RecreateCollections)
@@ -264,6 +270,7 @@ def menu_func(self, context):
 
     self.layout.operator(SEUT_OT_Import.bl_idname)
     self.layout.operator(SEUT_OT_RemapMaterials.bl_idname)
+    self.layout.operator(SEUT_OT_EmptiesToCubeType.bl_idname)
 
     self.layout.operator(SEUT_OT_GridScale.bl_idname)
     self.layout.operator(SEUT_OT_BBox.bl_idname)

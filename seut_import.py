@@ -58,11 +58,11 @@ class SEUT_OT_Import(bpy.types.Operator):
             print("SEUT Error 001: Import error. Imported object not found.")
             return
 
-        # ========== TODO ==========
-        # iterate through imported objects, switch empties to displaymode = cube
+        # Convert empties to display type 'cube'
+        bpy.ops.object.emptytocubetype()
         
         # Then run material remap
-        SEUT_OT_RemapMaterials.remap_To_Library_Materials(context, importedObjects)
+        bpy.ops.object.remapmaterials()
 
         return {'FINISHED'}
 
