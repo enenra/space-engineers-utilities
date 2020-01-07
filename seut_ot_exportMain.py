@@ -1,7 +1,7 @@
 import bpy
 
-from .seut_recreateCollections    import SEUT_OT_RecreateCollections
-from .seut_export                 import SEUT_OT_Export
+from .seut_ot_recreateCollections    import SEUT_OT_RecreateCollections
+from .seut_ot_export                 import SEUT_OT_Export
 
 class SEUT_OT_ExportMain(bpy.types.Operator):
     """Exports the main model"""

@@ -14,7 +14,7 @@ from bpy.types import (Panel,
                        PropertyGroup,
                        )
 
-from .seut_import_remapMaterials    import SEUT_OT_RemapMaterials
+from .seut_ot_remapMaterials    import SEUT_OT_RemapMaterials
 
 class SEUT_OT_Import(bpy.types.Operator):
     """Import FBX files and remap materials"""

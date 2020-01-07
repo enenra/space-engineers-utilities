@@ -1,6 +1,6 @@
 import bpy
 
-from .seut_recreateCollections    import SEUT_OT_RecreateCollections
+from .seut_ot_recreateCollections    import SEUT_OT_RecreateCollections
 
 class SEUT_OT_ExportHKT(bpy.types.Operator):
     """Exports the HKT"""

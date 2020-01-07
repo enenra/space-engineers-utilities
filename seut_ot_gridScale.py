@@ -25,6 +25,7 @@ class SEUT_OT_GridScale(bpy.types.Operator):
                         if s.type == 'VIEW_3D':
                             s.overlay.grid_scale = scale
                             break
-
+        
+        print("SEUT Info: Grid Scale adjusted to: " + str(scale))
 
         return {'FINISHED'}

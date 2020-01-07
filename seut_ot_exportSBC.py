@@ -3,7 +3,7 @@ import os
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
-from .seut_recreateCollections    import SEUT_OT_RecreateCollections
+from .seut_ot_recreateCollections    import SEUT_OT_RecreateCollections
 
 class SEUT_OT_ExportSBC(bpy.types.Operator):
     """Exports to SBC"""

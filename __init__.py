@@ -95,22 +95,23 @@ from bpy.types import (Panel,
                        )
 
 from .seut_preferences              import SEUT_AddonPreferences
-from .seut_panel                    import SEUT_PT_Panel
-from .seut_panel                    import SEUT_PT_Panel_BoundingBox
-from .seut_panel                    import SEUT_PT_Panel_Export
-from .seut_panel                    import SEUT_PT_Panel_Import
-from .seut_export_exportMain        import SEUT_OT_ExportMain
-from .seut_export_exportBS          import SEUT_OT_ExportBS
-from .seut_export_exportLOD         import SEUT_OT_ExportLOD
-from .seut_export_exportHKT         import SEUT_OT_ExportHKT
-from .seut_export_exportSBC         import SEUT_OT_ExportSBC
-from .seut_export                   import SEUT_OT_Export
-from .seut_import                   import SEUT_OT_Import
-from .seut_import_remapMaterials    import SEUT_OT_RemapMaterials
-from .seut_import_emptyToCubeType   import SEUT_OT_EmptiesToCubeType
-from .seut_gridScale                import SEUT_OT_GridScale
-from .seut_bBox                     import SEUT_OT_BBox
-from .seut_recreateCollections      import SEUT_OT_RecreateCollections
+from .seut_pt_toolbar               import SEUT_PT_Panel
+from .seut_pt_toolbar               import SEUT_PT_Panel_BoundingBox
+from .seut_pt_toolbar               import SEUT_PT_Panel_Export
+from .seut_pt_toolbar               import SEUT_PT_Panel_Import
+from .seut_mt_contextMenu           import SEUT_MT_ContextMenu
+from .seut_ot_exportMain            import SEUT_OT_ExportMain
+from .seut_ot_exportBS              import SEUT_OT_ExportBS
+from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
+from .seut_ot_exportHKT             import SEUT_OT_ExportHKT
+from .seut_ot_exportSBC             import SEUT_OT_ExportSBC
+from .seut_ot_export                import SEUT_OT_Export
+from .seut_ot_import                import SEUT_OT_Import
+from .seut_ot_remapMaterials        import SEUT_OT_RemapMaterials
+from .seut_ot_emptyToCubeType       import SEUT_OT_EmptiesToCubeType
+from .seut_ot_gridScale             import SEUT_OT_GridScale
+from .seut_ot_bBox                  import SEUT_OT_BBox
+from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 
 def register():
     bpy.utils.register_class(SEUT_AddonPreferences)
@@ -118,6 +119,7 @@ def register():
     bpy.utils.register_class(SEUT_PT_Panel_BoundingBox)
     bpy.utils.register_class(SEUT_PT_Panel_Export)
     bpy.utils.register_class(SEUT_PT_Panel_Import)
+    bpy.utils.register_class(SEUT_MT_ContextMenu)
     bpy.utils.register_class(SEUT_OT_Export)
     bpy.utils.register_class(SEUT_OT_ExportMain)
     bpy.utils.register_class(SEUT_OT_ExportBS)
@@ -130,6 +132,8 @@ def register():
     bpy.utils.register_class(SEUT_OT_GridScale)
     bpy.utils.register_class(SEUT_OT_BBox)
     bpy.utils.register_class(SEUT_OT_RecreateCollections)
+        
+    bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
 
     bpy.types.Scene.prop_gridScale = bpy.props.EnumProperty(
         name='Scale',
@@ -231,6 +235,7 @@ def unregister():
     bpy.utils.unregister_class(SEUT_PT_Panel_BoundingBox)
     bpy.utils.unregister_class(SEUT_PT_Panel_Export)
     bpy.utils.unregister_class(SEUT_PT_Panel_Import)
+    bpy.utils.unregister_class(SEUT_MT_ContextMenu)
     bpy.utils.unregister_class(SEUT_OT_Export)
     bpy.utils.unregister_class(SEUT_OT_ExportMain)
     bpy.utils.unregister_class(SEUT_OT_ExportBS)
@@ -243,6 +248,8 @@ def unregister():
     bpy.utils.unregister_class(SEUT_OT_GridScale)
     bpy.utils.unregister_class(SEUT_OT_BBox)
     bpy.utils.unregister_class(SEUT_OT_RecreateCollections)
+        
+    bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
 
     del bpy.types.Scene.prop_gridScale
     del bpy.types.Scene.prop_bBoxToggle
@@ -275,6 +282,12 @@ def menu_func(self, context):
     self.layout.operator(SEUT_OT_GridScale.bl_idname)
     self.layout.operator(SEUT_OT_BBox.bl_idname)
     self.layout.operator(SEUT_OT_RecreateCollections.bl_idname)
+
+def menu_draw(self, context):
+    layout = self.layout
+
+    layout.separator()
+    layout.menu('SEUT_MT_ContextMenu')
 
 def update_GridScale(self, context):
     SEUT_OT_GridScale.execute(self, context)
