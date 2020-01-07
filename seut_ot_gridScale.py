@@ -8,10 +8,12 @@ class SEUT_OT_GridScale(bpy.types.Operator):
 
     def execute(self, context):
 
+        scene = context.scene
+
         # Grid scale is SE block size divided by 2 because else the lines don't line up with the block edges.
-        if context.scene.prop_gridScale == '0':
+        if scene.prop_gridScale == 'large':
             scale = 1.25
-        elif context.scene.prop_gridScale == '1':
+        elif scene.prop_gridScale == 'small':
             scale = 0.25
 
         # It needs to be set for all viewports in all workspaces.
@@ -26,6 +28,6 @@ class SEUT_OT_GridScale(bpy.types.Operator):
                             s.overlay.grid_scale = scale
                             break
         
-        print("SEUT Info: Grid Scale adjusted to: " + str(scale))
+        print("SEUT Info: Grid Scale adjusted to: " + scene.prop_gridScale)
 
         return {'FINISHED'}

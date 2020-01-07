@@ -75,6 +75,11 @@ Plan:
     10. Need to eventually go through and streamline all context. stuff, also bpy. stuff. 
 
     set up the whole folder "models" as "SEUT" and provide as complete solution
+
+    subparts... replace objects tagged with "subpart_" on export with empties, export objects to separate files?
+    https://discordapp.com/channels/125011928711036928/161758345856811008/664143268409507860
+    maybe even replace subpart empties with proper models on import?
+    allow custom tags for subpart empties
     
 '''
 
@@ -100,6 +105,9 @@ from .seut_pt_toolbar               import SEUT_PT_Panel_BoundingBox
 from .seut_pt_toolbar               import SEUT_PT_Panel_Export
 from .seut_pt_toolbar               import SEUT_PT_Panel_Import
 from .seut_mt_contextMenu           import SEUT_MT_ContextMenu
+from .seut_ot_addHighlightEmpty     import SEUT_OT_AddHighlightEmpty
+from .seut_ot_addDummy              import SEUT_OT_AddDummy
+from .seut_ot_replaceWithSubpart    import SEUT_OT_ReplaceWithSubpart
 from .seut_ot_exportMain            import SEUT_OT_ExportMain
 from .seut_ot_exportBS              import SEUT_OT_ExportBS
 from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
@@ -120,6 +128,9 @@ def register():
     bpy.utils.register_class(SEUT_PT_Panel_Export)
     bpy.utils.register_class(SEUT_PT_Panel_Import)
     bpy.utils.register_class(SEUT_MT_ContextMenu)
+    bpy.utils.register_class(SEUT_OT_AddHighlightEmpty)
+    bpy.utils.register_class(SEUT_OT_AddDummy)
+    bpy.utils.register_class(SEUT_OT_ReplaceWithSubpart)
     bpy.utils.register_class(SEUT_OT_Export)
     bpy.utils.register_class(SEUT_OT_ExportMain)
     bpy.utils.register_class(SEUT_OT_ExportBS)
@@ -138,10 +149,10 @@ def register():
     bpy.types.Scene.prop_gridScale = bpy.props.EnumProperty(
         name='Scale',
         items=(
-            ('0', 'Large', 'Large grid blocks (2.5m)'),
-            ('1', 'Small', 'Small grid blocks (0.5m)')
+            ('large', 'Large', 'Large grid blocks (2.5m)'),
+            ('small', 'Small', 'Small grid blocks (0.5m)')
             ),
-        default='0',
+        default='large',
         update=update_GridScale
     )
 
@@ -236,6 +247,9 @@ def unregister():
     bpy.utils.unregister_class(SEUT_PT_Panel_Export)
     bpy.utils.unregister_class(SEUT_PT_Panel_Import)
     bpy.utils.unregister_class(SEUT_MT_ContextMenu)
+    bpy.utils.unregister_class(SEUT_OT_AddHighlightEmpty)
+    bpy.utils.unregister_class(SEUT_OT_AddDummy)
+    bpy.utils.unregister_class(SEUT_OT_ReplaceWithSubpart)
     bpy.utils.unregister_class(SEUT_OT_Export)
     bpy.utils.unregister_class(SEUT_OT_ExportMain)
     bpy.utils.unregister_class(SEUT_OT_ExportBS)
@@ -269,6 +283,10 @@ def unregister():
 
 
 def menu_func(self, context):
+    self.layout.operator(SEUT_OT_AddHighlightEmpty.bl_idname)
+    self.layout.operator(SEUT_OT_AddDummy.bl_idname)
+    self.layout.operator(SEUT_OT_ReplaceWithSubpart.bl_idname)
+
     self.layout.operator(SEUT_OT_Export.bl_idname)
     self.layout.operator(SEUT_OT_ExportMain.bl_idname)
     self.layout.operator(SEUT_OT_ExportBS.bl_idname)
@@ -287,6 +305,7 @@ def menu_draw(self, context):
     layout = self.layout
 
     layout.separator()
+    layout.label(text="Space Engineers Utilities")
     layout.menu('SEUT_MT_ContextMenu')
 
 def update_GridScale(self, context):

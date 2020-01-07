@@ -1,12 +1,13 @@
 import bpy
 
 class SEUT_OT_RecreateCollections(bpy.types.Operator):
-    """Recreates the collections."""
+    """Recreates the collections"""
     bl_idname = "object.recreate_collections"
     bl_label = "Recreate Collections"
     bl_options = {'REGISTER', 'UNDO'}
 
-
+    # ========== TODO ==========
+    # Restructure into execute and have other files call the operator
     def execute(self, context):
 
         SEUT_OT_RecreateCollections.create_Collections(context)
@@ -15,7 +16,7 @@ class SEUT_OT_RecreateCollections(bpy.types.Operator):
 
 
     def get_Collections():
-        """Scans existing collections to find the SEUT ones."""
+        """Scans existing collections to find the SEUT ones"""
 
         collections = {
             'seut': None,
@@ -62,7 +63,7 @@ class SEUT_OT_RecreateCollections(bpy.types.Operator):
 
 
     def create_Collections(context):
-        """Recreates the collections SEUT requires."""
+        """Recreates the collections SEUT requires"""
 
         collections = SEUT_OT_RecreateCollections.get_Collections()
 
