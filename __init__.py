@@ -27,35 +27,32 @@ bl_info = {
 
 '''
 Plan:
-    1. Dummies:
-        - subpart adding
-        - new subpart creation
-
-    2. bounding box:
+    1. bounding box:
         https://www.youtube.com/watch?v=EgrgEoNFNsA&list=PLboXykqtm8dw-TCdMNrxz4cEemox0jBn0&index=7&t=0s
         https://docs.blender.org/api/current/bpy.ops.object.html
+        https://docs.blender.org/api/current/gpu.html
         panel to adjust its size, toggle on / off
         way to display forward, left, right, up, down, back, maybe just as a functionality of bBox? https://docs.blender.org/api/current/blf.html 
             https://blender.stackexchange.com/questions/137816/draw-text-with-python-in-3d-coordinate-system/139022
     
-    3. Mirroring:
+    2. Mirroring:
         - instances of object, rotate, separate collection
 
-    4. Mountpoints:
+    3. Mountpoints:
         - gonna be quite complex if I allow multiple entries per side (because the need to translate them into the format)
         - use matrix to store them, per side
 
-    5. HKT:
+    4. HKT:
         - collision / mwmb support: https://discordapp.com/channels/125011928711036928/161758345856811008/662957710874247178
         - https://discordapp.com/channels/125011928711036928/161758345856811008/663595128115560479 - summary
     
-    6. MWM output:
+    5. MWM output:
         - 
 
-    7. Icon render:
+    6. Icon render:
         - camera alignment might be too complicated
 
-    8. materials:
+    7. materials:
         - Add material template in by default for users to create their own materials from
             * do via template material that is then copied?
         - change materials over to node groups, might make things easier, especially for custom materials
@@ -63,9 +60,9 @@ Plan:
         - also: possibly add option to export a materials.xml from a matlib?
         - figure out what to do about <Parameter Name="Technique">MESH</Parameter> - how to set it for a custom texture?
 
-    9. Need to eventually go through and streamline all context. stuff, also bpy. stuff. 
+    8. Need to eventually go through and streamline all context. stuff, also bpy. stuff. 
 
-    10. auto updater stuff!
+    9. auto updater stuff!
         https://github.com/CGCookie/blender-addon-updater
         https://medium.com/cg-cookie/blender-updater-tutorial-3509edfc442
 
@@ -76,9 +73,18 @@ Plan:
         on export then just scan for the empties... but hard to do without destruction because I'd need to delete the above and couldn't really get it back I think.
     https://discordapp.com/channels/125011928711036928/161758345856811008/664143268409507860
     maybe even replace subpart empties with proper models on import?
-    allow custom tags for subpart empties
 
+    investigate behaviours of dummies and preset subparts and add to descriptions (specifically rotation axis etc.)
 
+    on export, check for unparented dummies / detectors parented falsely, and give warning
+
+    fix remap materials issue with repeated importing
+
+    create setup to make procedural SE textures in Blender:
+        https://www.youtube.com/watch?v=2Ea7JKvTYhg&feature=emb_title
+        https://www.youtube.com/watch?v=svzKoq3vew0 pane, divide into 9 squares, assign squares to whole texture image each, that shoul allow to account for tiling
+
+        use this instead of print: self.report({'INFO'}, "Mouse coords are %d %d" % (self.x, self.y))
     
 '''
 
@@ -119,6 +125,7 @@ from .seut_ot_remapMaterials        import SEUT_OT_RemapMaterials
 from .seut_ot_emptyToCubeType       import SEUT_OT_EmptiesToCubeType
 from .seut_ot_gridScale             import SEUT_OT_GridScale
 from .seut_ot_bBox                  import SEUT_OT_BBox
+from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 
 def register():
@@ -143,6 +150,7 @@ def register():
     bpy.utils.register_class(SEUT_OT_EmptiesToCubeType)
     bpy.utils.register_class(SEUT_OT_GridScale)
     bpy.utils.register_class(SEUT_OT_BBox)
+    bpy.utils.register_class(SEUT_OT_BBoxAuto)
     bpy.utils.register_class(SEUT_OT_RecreateCollections)
         
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
@@ -158,12 +166,12 @@ def register():
     )
 
     bpy.types.Scene.prop_bBoxToggle = bpy.props.EnumProperty(
-        name='Scale',
+        name='Bounding Box',
         items=(
-            ('0', 'On', ''),
-            ('1', 'Off', '')
+            ('on', 'On', ''),
+            ('off', 'Off', '')
             ),
-        default='0',
+        default='off',
         update=update_BBox
     )
     bpy.types.Scene.prop_bBox_X = IntProperty(
@@ -186,6 +194,9 @@ def register():
         default=1,
         min=1,
         update=update_BBox
+    )
+    bpy.types.Scene.prop_bBox_refresh = BoolProperty(
+        default=False
     )
 
     bpy.types.Scene.prop_subtypeId = StringProperty(
@@ -263,6 +274,7 @@ def unregister():
     bpy.utils.unregister_class(SEUT_OT_EmptiesToCubeType)
     bpy.utils.unregister_class(SEUT_OT_GridScale)
     bpy.utils.unregister_class(SEUT_OT_BBox)
+    bpy.utils.unregister_class(SEUT_OT_BBoxAuto)
     bpy.utils.unregister_class(SEUT_OT_RecreateCollections)
         
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
@@ -272,6 +284,7 @@ def unregister():
     del bpy.types.Scene.prop_bBox_X
     del bpy.types.Scene.prop_bBox_Y
     del bpy.types.Scene.prop_bBox_Z
+    del bpy.types.Scene.prop_bBox_refresh
     del bpy.types.Scene.prop_subtypeId
     del bpy.types.Scene.prop_export_fbx
     del bpy.types.Scene.prop_export_xml
@@ -302,6 +315,7 @@ def menu_func(self, context):
 
     self.layout.operator(SEUT_OT_GridScale.bl_idname)
     self.layout.operator(SEUT_OT_BBox.bl_idname)
+    self.layout.operator(SEUT_OT_BBoxAuto.bl_idname)
     self.layout.operator(SEUT_OT_RecreateCollections.bl_idname)
 
 def menu_draw(self, context):
@@ -315,7 +329,8 @@ def update_GridScale(self, context):
     SEUT_OT_GridScale.execute(self, context)
 
 def update_BBox(self, context):
-    SEUT_OT_BBox.execute(self, context)
+    context.scene.prop_bBox_refresh = True
+    bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 addon_keymaps = []
 

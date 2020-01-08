@@ -28,8 +28,8 @@ class SEUT_OT_AddDummy(Operator):
             ('shiptool', 'Ship Tool', 'The point of origin for ship tool effects (not visual)'),
             ('electric_motor', 'Electric Motor', 'The location onto which a rotor head will be placed'),
             ('character', 'Character', 'The location in which the character model will be placed'),
-            ('particles1', 'Particles 1', 'Point of origin for particles'),
-            ('particles2', 'Particles 2', 'Point of origin for particles'),
+            ('particles1', 'Particles 1', 'Point of origin for particles (used in grinder and welder)'),
+            ('particles2', 'Particles 2', 'Point of origin for particles (used in grinder)'),
             ('TopBlock', 'Piston Top', 'The top part of a piston')
             ),
         default='Connector'

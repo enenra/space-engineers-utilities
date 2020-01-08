@@ -16,6 +16,7 @@ class SEUT_OT_AddCustomSubpart(Operator):
 
     prefix: StringProperty(
         name="Subpart Prefix",
+        description="The prefix with which to combine the selected object's name to create the name for the empty",
         default="subpart_",
     )
 

@@ -44,7 +44,7 @@ class SEUT_PT_Panel_BoundingBox(bpy.types.Panel):
         row.prop(scene, "prop_bBox_Z")
         
         row = box.row()
-        row.operator('object.bbox', text="Automatic")
+        row.operator('object.bbox_auto', text="Automatic")
 
 class SEUT_PT_Panel_Export(bpy.types.Panel):
     """Creates the export panel for SEUT"""
