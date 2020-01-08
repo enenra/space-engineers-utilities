@@ -28,43 +28,34 @@ bl_info = {
 '''
 Plan:
     1. Dummies:
-        - context menu to create one and link it?
-        - also automatically copy them to LODs if not present?
-        - behaviour
-            * mesh selected --> context menu --> connect detector
-            * renames the mesh to detector_[TYPE]_section_[NUMBER] (need to make sure numbering stays consistent)
-            * spawns empty on location of mesh, names it detector_[TYPE]_[NUMBER] (pivot point? if possible set equal to mesh)
-            * connects empty to mesh via its custom properties
-            * (scales empty to cover mesh, with some relative-size padding)
-        - types:
-            * conveyor, terminal, upgrade
+        - subpart adding
+        - new subpart creation
 
-    2. auto updater stuff!
-
-    3. bounding box:
+    2. bounding box:
         https://www.youtube.com/watch?v=EgrgEoNFNsA&list=PLboXykqtm8dw-TCdMNrxz4cEemox0jBn0&index=7&t=0s
         https://docs.blender.org/api/current/bpy.ops.object.html
         panel to adjust its size, toggle on / off
-        way to display forward, left, right, up, down, back, maybe just as a functionality of bBox?
+        way to display forward, left, right, up, down, back, maybe just as a functionality of bBox? https://docs.blender.org/api/current/blf.html 
+            https://blender.stackexchange.com/questions/137816/draw-text-with-python-in-3d-coordinate-system/139022
     
-    4. Mirroring:
+    3. Mirroring:
         - instances of object, rotate, separate collection
 
-    5. Mountpoints:
+    4. Mountpoints:
         - gonna be quite complex if I allow multiple entries per side (because the need to translate them into the format)
         - use matrix to store them, per side
 
-    6. HKT:
+    5. HKT:
         - collision / mwmb support: https://discordapp.com/channels/125011928711036928/161758345856811008/662957710874247178
         - https://discordapp.com/channels/125011928711036928/161758345856811008/663595128115560479 - summary
     
-    7. MWM output:
+    6. MWM output:
         - 
 
-    8. Icon render:
+    7. Icon render:
         - camera alignment might be too complicated
 
-    9. materials:
+    8. materials:
         - Add material template in by default for users to create their own materials from
             * do via template material that is then copied?
         - change materials over to node groups, might make things easier, especially for custom materials
@@ -72,14 +63,22 @@ Plan:
         - also: possibly add option to export a materials.xml from a matlib?
         - figure out what to do about <Parameter Name="Technique">MESH</Parameter> - how to set it for a custom texture?
 
-    10. Need to eventually go through and streamline all context. stuff, also bpy. stuff. 
+    9. Need to eventually go through and streamline all context. stuff, also bpy. stuff. 
+
+    10. auto updater stuff!
+        https://github.com/CGCookie/blender-addon-updater
+        https://medium.com/cg-cookie/blender-updater-tutorial-3509edfc442
 
     set up the whole folder "models" as "SEUT" and provide as complete solution
 
     subparts... replace objects tagged with "subpart_" on export with empties, export objects to separate files?
+        add subpart empty as child of object, so it inherits all animation of object it replaces. 
+        on export then just scan for the empties... but hard to do without destruction because I'd need to delete the above and couldn't really get it back I think.
     https://discordapp.com/channels/125011928711036928/161758345856811008/664143268409507860
     maybe even replace subpart empties with proper models on import?
     allow custom tags for subpart empties
+
+
     
 '''
 
@@ -107,7 +106,8 @@ from .seut_pt_toolbar               import SEUT_PT_Panel_Import
 from .seut_mt_contextMenu           import SEUT_MT_ContextMenu
 from .seut_ot_addHighlightEmpty     import SEUT_OT_AddHighlightEmpty
 from .seut_ot_addDummy              import SEUT_OT_AddDummy
-from .seut_ot_replaceWithSubpart    import SEUT_OT_ReplaceWithSubpart
+from .seut_ot_addPresetSubpart      import SEUT_OT_AddPresetSubpart
+from .seut_ot_addCustomSubpart      import SEUT_OT_AddCustomSubpart
 from .seut_ot_exportMain            import SEUT_OT_ExportMain
 from .seut_ot_exportBS              import SEUT_OT_ExportBS
 from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
@@ -130,7 +130,8 @@ def register():
     bpy.utils.register_class(SEUT_MT_ContextMenu)
     bpy.utils.register_class(SEUT_OT_AddHighlightEmpty)
     bpy.utils.register_class(SEUT_OT_AddDummy)
-    bpy.utils.register_class(SEUT_OT_ReplaceWithSubpart)
+    bpy.utils.register_class(SEUT_OT_AddPresetSubpart)
+    bpy.utils.register_class(SEUT_OT_AddCustomSubpart)
     bpy.utils.register_class(SEUT_OT_Export)
     bpy.utils.register_class(SEUT_OT_ExportMain)
     bpy.utils.register_class(SEUT_OT_ExportBS)
@@ -249,7 +250,8 @@ def unregister():
     bpy.utils.unregister_class(SEUT_MT_ContextMenu)
     bpy.utils.unregister_class(SEUT_OT_AddHighlightEmpty)
     bpy.utils.unregister_class(SEUT_OT_AddDummy)
-    bpy.utils.unregister_class(SEUT_OT_ReplaceWithSubpart)
+    bpy.utils.unregister_class(SEUT_OT_AddPresetSubpart)
+    bpy.utils.unregister_class(SEUT_OT_AddCustomSubpart)
     bpy.utils.unregister_class(SEUT_OT_Export)
     bpy.utils.unregister_class(SEUT_OT_ExportMain)
     bpy.utils.unregister_class(SEUT_OT_ExportBS)
@@ -285,7 +287,8 @@ def unregister():
 def menu_func(self, context):
     self.layout.operator(SEUT_OT_AddHighlightEmpty.bl_idname)
     self.layout.operator(SEUT_OT_AddDummy.bl_idname)
-    self.layout.operator(SEUT_OT_ReplaceWithSubpart.bl_idname)
+    self.layout.operator(SEUT_OT_AddPresetSubpart.bl_idname)
+    self.layout.operator(SEUT_OT_AddCustomSubpart.bl_idname)
 
     self.layout.operator(SEUT_OT_Export.bl_idname)
     self.layout.operator(SEUT_OT_ExportMain.bl_idname)
