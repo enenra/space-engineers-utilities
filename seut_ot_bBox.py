@@ -1,5 +1,4 @@
 import bpy
-import bgl
 import gpu
 
 from gpu_extras.batch   import batch_for_shader
@@ -25,9 +24,14 @@ class SEUT_OT_BBox(Operator):
         if scene.prop_bBoxToggle == 'off':
             return {'CANCELLED'}
 
-        x = scene.prop_bBox_X * 2.5
-        y = scene.prop_bBox_Y * 2.5
-        z = scene.prop_bBox_Z * 2.5
+        factor = 1
+
+        if scene.prop_gridScale == 'large': factor = 2.5
+        if scene.prop_gridScale == 'small': factor = 0.5
+
+        x = scene.prop_bBox_X * factor
+        y = scene.prop_bBox_Y * factor
+        z = scene.prop_bBox_Z * factor
 
         self.coords = (
             (-x/2, -y/2, -z/2), (+x/2, -y/2, -z/2),
@@ -49,8 +53,6 @@ class SEUT_OT_BBox(Operator):
 
         context.window_manager.modal_handler_add(self)
 
-        context.scene.prop_bBox_refresh = False
-
         return {'RUNNING_MODAL'}
 
 
@@ -59,7 +61,7 @@ class SEUT_OT_BBox(Operator):
             self.draw_callback_3d, args, "WINDOW", "POST_VIEW"
         )
 
-        self.draw_event = context.window_manager.event_timer_add(0.1, window=context.window)
+        self.draw_event = context.window_manager.event_timer_add(1, window=context.window)
 
     def unregister_handlers(self, context):
 
@@ -77,9 +79,25 @@ class SEUT_OT_BBox(Operator):
             context.area.tag_redraw()
 
         # Escape condition for when the user turns off the bounding box.
-        if context.scene.prop_bBoxToggle == 'off' or scene.prop_bBox_refresh:
+        if context.scene.prop_bBoxToggle == 'off':
             self.unregister_handlers(context)
             return {'CANCELLED'}
+
+        factor = 1
+
+        if scene.prop_gridScale == 'large': factor = 2.5
+        if scene.prop_gridScale == 'small': factor = 0.5
+
+        x = scene.prop_bBox_X * factor
+        y = scene.prop_bBox_Y * factor
+        z = scene.prop_bBox_Z * factor
+
+        self.coords = (
+            (-x/2, -y/2, -z/2), (+x/2, -y/2, -z/2),
+            (-x/2, +y/2, -z/2), (+x/2, +y/2, -z/2),
+            (-x/2, -y/2, +z/2), (+x/2, -y/2, +z/2),
+            (-x/2, +y/2, +z/2), (+x/2, +y/2, +z/2)
+        )
 
         self.create_batch()
         
@@ -96,6 +114,9 @@ class SEUT_OT_BBox(Operator):
 
     def draw_callback_3d(self, op, context):
 
-        self.shader.bind()
-        self.shader.uniform_float("color", (1, 1, 1, 0.2))
-        self.batch.draw(self.shader)
+        try:
+            self.shader.bind()
+            self.shader.uniform_float("color", (0.42, 0.827, 1, 1))
+            self.batch.draw(self.shader)
+        except:
+            return

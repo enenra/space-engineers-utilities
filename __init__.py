@@ -85,6 +85,8 @@ Plan:
         https://www.youtube.com/watch?v=svzKoq3vew0 pane, divide into 9 squares, assign squares to whole texture image each, that shoul allow to account for tiling
 
         use this instead of print: self.report({'INFO'}, "Mouse coords are %d %d" % (self.x, self.y))
+
+    color faces of bounding box red if collision mesh exceeds it
     
 '''
 
@@ -178,25 +180,19 @@ def register():
         name="X:",
         description="",
         default=1,
-        min=1,
-        update=update_BBox
+        min=1
     )
     bpy.types.Scene.prop_bBox_Y = IntProperty(
         name="Y:",
         description="",
         default=1,
-        min=1,
-        update=update_BBox
+        min=1
     )
     bpy.types.Scene.prop_bBox_Z = IntProperty(
         name="Z:",
         description="",
         default=1,
-        min=1,
-        update=update_BBox
-    )
-    bpy.types.Scene.prop_bBox_refresh = BoolProperty(
-        default=False
+        min=1
     )
 
     bpy.types.Scene.prop_subtypeId = StringProperty(
@@ -284,7 +280,6 @@ def unregister():
     del bpy.types.Scene.prop_bBox_X
     del bpy.types.Scene.prop_bBox_Y
     del bpy.types.Scene.prop_bBox_Z
-    del bpy.types.Scene.prop_bBox_refresh
     del bpy.types.Scene.prop_subtypeId
     del bpy.types.Scene.prop_export_fbx
     del bpy.types.Scene.prop_export_xml
@@ -327,9 +322,9 @@ def menu_draw(self, context):
 
 def update_GridScale(self, context):
     SEUT_OT_GridScale.execute(self, context)
+    bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_BBox(self, context):
-    context.scene.prop_bBox_refresh = True
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 addon_keymaps = []
