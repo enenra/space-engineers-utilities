@@ -1,7 +1,9 @@
 import bpy
 
-class SEUT_OT_GridScale(bpy.types.Operator):
-    """Sets the grid scale."""
+from bpy.types import Operator
+
+class SEUT_OT_GridScale(Operator):
+    """Sets the grid scale"""
     bl_idname = "object.gridscale"
     bl_label = "Grid Scale"
     bl_options = {'REGISTER', 'UNDO'}
@@ -27,7 +29,7 @@ class SEUT_OT_GridScale(bpy.types.Operator):
                         if s.type == 'VIEW_3D':
                             s.overlay.grid_scale = scale
                             break
-        
-        print("SEUT Info: Grid Scale adjusted to: " + scene.prop_gridScale)
+
+        self.report({'INFO'}, "SEUT: Grid Scale adjusted to: %s" % (scene.prop_gridScale))
 
         return {'FINISHED'}

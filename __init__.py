@@ -28,10 +28,6 @@ bl_info = {
 '''
 Plan:
     1. bounding box:
-        https://www.youtube.com/watch?v=EgrgEoNFNsA&list=PLboXykqtm8dw-TCdMNrxz4cEemox0jBn0&index=7&t=0s
-        https://docs.blender.org/api/current/bpy.ops.object.html
-        https://docs.blender.org/api/current/gpu.html
-        panel to adjust its size, toggle on / off
         way to display forward, left, right, up, down, back, maybe just as a functionality of bBox? https://docs.blender.org/api/current/blf.html 
             https://blender.stackexchange.com/questions/137816/draw-text-with-python-in-3d-coordinate-system/139022
     
@@ -321,7 +317,7 @@ def menu_draw(self, context):
     layout.menu('SEUT_MT_ContextMenu')
 
 def update_GridScale(self, context):
-    SEUT_OT_GridScale.execute(self, context)
+    bpy.ops.object.gridscale()
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_BBox(self, context):
