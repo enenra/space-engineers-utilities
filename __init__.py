@@ -25,67 +25,6 @@ bl_info = {
     "category": "Scene"
 }
 
-'''
-Plan:
-    1. bounding box:
-        way to display forward, left, right, up, down, back, maybe just as a functionality of bBox? https://docs.blender.org/api/current/blf.html 
-            https://blender.stackexchange.com/questions/137816/draw-text-with-python-in-3d-coordinate-system/139022
-    
-    2. Mirroring:
-        - instances of object, rotate, separate collection
-
-    3. Mountpoints:
-        - gonna be quite complex if I allow multiple entries per side (because the need to translate them into the format)
-        - use matrix to store them, per side
-
-    4. HKT:
-        - collision / mwmb support: https://discordapp.com/channels/125011928711036928/161758345856811008/662957710874247178
-        - https://discordapp.com/channels/125011928711036928/161758345856811008/663595128115560479 - summary
-    
-    5. MWM output:
-        - 
-
-    6. Icon render:
-        - camera alignment might be too complicated
-
-    7. materials:
-        - Add material template in by default for users to create their own materials from
-            * do via template material that is then copied?
-        - change materials over to node groups, might make things easier, especially for custom materials
-            * but would also break XML export code - mind that!
-        - also: possibly add option to export a materials.xml from a matlib?
-        - figure out what to do about <Parameter Name="Technique">MESH</Parameter> - how to set it for a custom texture?
-
-    8. Need to eventually go through and streamline all context. stuff, also bpy. stuff. 
-
-    9. auto updater stuff!
-        https://github.com/CGCookie/blender-addon-updater
-        https://medium.com/cg-cookie/blender-updater-tutorial-3509edfc442
-
-    set up the whole folder "models" as "SEUT" and provide as complete solution
-
-    subparts... replace objects tagged with "subpart_" on export with empties, export objects to separate files?
-        add subpart empty as child of object, so it inherits all animation of object it replaces. 
-        on export then just scan for the empties... but hard to do without destruction because I'd need to delete the above and couldn't really get it back I think.
-    https://discordapp.com/channels/125011928711036928/161758345856811008/664143268409507860
-    maybe even replace subpart empties with proper models on import?
-
-    investigate behaviours of dummies and preset subparts and add to descriptions (specifically rotation axis etc.)
-
-    on export, check for unparented dummies / detectors parented falsely, and give warning
-
-    fix remap materials issue with repeated importing
-
-    create setup to make procedural SE textures in Blender:
-        https://www.youtube.com/watch?v=2Ea7JKvTYhg&feature=emb_title
-        https://www.youtube.com/watch?v=svzKoq3vew0 pane, divide into 9 squares, assign squares to whole texture image each, that shoul allow to account for tiling
-
-        use this instead of print: self.report({'INFO'}, "Mouse coords are %d %d" % (self.x, self.y))
-
-    color faces of bounding box red if collision mesh exceeds it
-    
-'''
-
 import bpy
 
 from bpy.props import (StringProperty,
