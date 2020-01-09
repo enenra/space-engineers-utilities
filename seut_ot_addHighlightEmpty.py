@@ -44,7 +44,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         targetObjects = bpy.context.view_layer.objects.selected
         
         if len(targetObjects) > 1:
-            print("SEUT Error 009: Cannot create empties for more than one object at a time.")
+            self.report({'ERROR'}, "SEUT: Cannot create empties for more than one object at a time. (009)")
             return {'CANCELLED'}
         
         # I need to figure out how I can get the first in the list but so far idk, this works
@@ -120,5 +120,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
             empty.name = emptyName
 
         bpy.data.objects[empty.name][customPropName] = targetObject.name
+        
+        self.report({'INFO'}, "SEUT: Highlight '%s' created for object: '%s'" % (empty.name,targetObject.name))
 
         return {'FINISHED'}

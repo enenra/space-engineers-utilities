@@ -6,8 +6,7 @@ class SEUT_OT_RecreateCollections(bpy.types.Operator):
     bl_label = "Recreate Collections"
     bl_options = {'REGISTER', 'UNDO'}
 
-    # ========== TODO ==========
-    # Restructure into execute and have other files call the operator
+
     def execute(self, context):
 
         SEUT_OT_RecreateCollections.create_Collections(context)

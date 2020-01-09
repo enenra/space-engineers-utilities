@@ -37,7 +37,6 @@ class SEUT_OT_Import(bpy.types.Operator):
 
     def execute(self, context):
 
-        # First import FBX
         # The import FBX operator doesn't actually return the imported objects, so I need to compare the before and after.
         importObject = None
 
@@ -55,7 +54,7 @@ class SEUT_OT_Import(bpy.types.Operator):
 
         # Sanity check to catch import failure
         if importedObjects == None:
-            print("SEUT Error 001: Import error. Imported object not found.")
+            self.report({'ERROR'}, "SEUT: Import error. Imported object not found. (001)")
             return
 
         # Convert empties to display type 'cube'

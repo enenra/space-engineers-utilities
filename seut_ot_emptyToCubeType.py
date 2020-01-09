@@ -18,6 +18,6 @@ class SEUT_OT_EmptiesToCubeType(bpy.types.Operator):
             if obj.type == "EMPTY":
                 obj.empty_display_type = "CUBE"
         
-        print("SEUT Info: Changed all empties to display type 'Cube'.")
+        self.report({'INFO'}, "SEUT: Changed all empties to display type 'Cube'.")
 
         return {'FINISHED'}

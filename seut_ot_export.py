@@ -17,16 +17,14 @@ class SEUT_OT_Export(bpy.types.Operator):
         preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
 
         # Debug
-        print('OT: Export')
+        self.report({'DEBUG'}, "SEUT: OT Export executed.")
 
-        # If no export folder is set, error out.
         if scene.prop_export_exportPath == "":
-            print("SEUT Error 003: No export folder defined.")
+            self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             return {'CANCELLED'}
 
-        # If no SubtypeId is set, error out.
         if scene.prop_subtypeId == "":
-            print("SEUT Error 004: No SubtypeId set.")
+            self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             return {'CANCELLED'}
         
         # Call all the individual export operators
@@ -98,10 +96,6 @@ class SEUT_OT_Export(bpy.types.Operator):
                     matTechnique.text = 'MESH'
 
                     # Currently no support for the other parameters - are those even needed anymore?
-
-                    # Need to first check whether a texture node with the respective texture exists and is linked to a file 
-                    #   This could be done better if I defined the names for the texture map nodes properly. --> Yes: CM, NG, ADD, ALPHAMASK.
-                    #   For now just look at linked filename for last couple characters
                     
                     # Iterate through all image textures in material and register relevant ones to dictionary.
                     images = {
@@ -126,11 +120,11 @@ class SEUT_OT_Export(bpy.types.Operator):
 
                     # _cm ColorMask texture
                     if images['cm'] == None:
-                        print("SEUT Info: No 'CM' texture or node found for local material '" + mat.name + "'. Skipping.")
+                        self.report({'WARNING'}, "SEUT: No 'CM' texture or node found for local material '%s'. Skipping." % (mat.name))
                     else:
                         offset = images['cm'].filepath.find("Textures\\")
                         if offset == -1:
-                            print("SEUT Error 007: 'CM' texture filepath in local material '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
+                            self.report({'ERROR'}, "SEUT: 'CM' texture filepath in local material '%s' does not contain 'Textures\\'. Cannot be transformed into relative path. (007)" % (mat.name))
                         else:
                             matCM = ET.SubElement(matEntry, 'Parameter')
                             matCM.set('Name', 'ColorMetalTexture')
@@ -138,11 +132,11 @@ class SEUT_OT_Export(bpy.types.Operator):
                     
                     # _ng NormalGloss texture
                     if images['ng'] == None:
-                        print("SEUT Info: No 'NG' texture or node found for local material '" + mat.name + "'. Skipping.")
+                        self.report({'WARNING'}, "SEUT: No 'NG' texture or node found for local material '%s'. Skipping." % (mat.name))
                     else:
                         offset = images['ng'].filepath.find("Textures\\")
                         if offset == -1:
-                            print("SEUT Error 007: 'NG' texture filepath in local material '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
+                            self.report({'ERROR'}, "SEUT: 'NG' texture filepath in local material '%s' does not contain 'Textures\\'. Cannot be transformed into relative path. (007)" % (mat.name))
                         else:
                             matNG = ET.SubElement(matEntry, 'Parameter')
                             matNG.set('Name', 'NormalGlossTexture')
@@ -150,11 +144,11 @@ class SEUT_OT_Export(bpy.types.Operator):
                     
                     # _add AddMaps texture
                     if images['add'] == None:
-                        print("SEUT Info: No 'ADD' texture or node found for local material '" + mat.name + "'. Skipping.")
+                        self.report({'WARNING'}, "SEUT: No 'ADD' texture or node found for local material '%s'. Skipping." % (mat.name))
                     else:
                         offset = images['add'].filepath.find("Textures\\")
                         if offset == -1:
-                            print("SEUT Error 007: 'ADD' texture filepath in local material '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
+                            self.report({'ERROR'}, "SEUT: 'ADD' texture filepath in local material '%s' does not contain 'Textures\\'. Cannot be transformed into relative path. (007)" % (mat.name))
                         else:
                             matADD = ET.SubElement(matEntry, 'Parameter')
                             matADD.set('Name', 'AddMapsTexture')
@@ -162,11 +156,11 @@ class SEUT_OT_Export(bpy.types.Operator):
                     
                     # _alphamask Alphamask texture
                     if images['am'] == None:
-                        print("SEUT Info: No 'ALPHAMASK' texture or node found for material '" + mat.name + "'. Skipping.")
+                        self.report({'WARNING'}, "SEUT: No 'ALPHAMASK' texture or node found for local material '%s'. Skipping." % (mat.name))
                     else:
                         offset = images['am'].filepath.find("Textures\\")
                         if offset == -1:
-                            print("SEUT Error 007: 'ALPHAMASK' texture filepath in '" + mat.name + "' does not contain 'Textures\\'. Cannot be transformed into relative path.")
+                            self.report({'ERROR'}, "SEUT: 'ALPHAMASK' texture filepath in local material '%s' does not contain 'Textures\\'. Cannot be transformed into relative path. (007)" % (mat.name))
                         else:
                             matAM = ET.SubElement(matEntry, 'Parameter')
                             matAM.set('Name', 'AlphamaskTexture')
@@ -174,7 +168,7 @@ class SEUT_OT_Export(bpy.types.Operator):
 
                     # If no textures are added to the material, remove the entry again.
                     if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
-                        print("SEUT Info: Local material '" + mat.name + "' does not contain any valid textures. Skipping.")
+                        self.report({'INFO'}, "SEUT: Local material '%s' does not contain any valid textures. Skipping." % (mat.name))
                         model.remove(matEntry)
 
             elif mat.library != None:
@@ -189,7 +183,7 @@ class SEUT_OT_Export(bpy.types.Operator):
             lod2Printed = False
 
             if collections['lod1'] == None or len(collections['lod1'].objects) == 0:
-                print("SEUT Info: Collection 'LOD1' not found or empty. Skipping.")
+                self.report({'INFO'}, "SEUT: Collection 'LOD1' not found or empty. Skipping.")
             else:
                 lod1 = ET.SubElement(model, 'LOD')
                 lod1.set('Distance', str(scene.prop_export_lod1Distance))
@@ -198,7 +192,7 @@ class SEUT_OT_Export(bpy.types.Operator):
                 lod1Printed = True
 
             if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
-                print("SEUT Info: Collection 'LOD2' not found or empty. Skipping.")
+                self.report({'INFO'}, "SEUT: Collection 'LOD2' not found or empty. Skipping.")
             else:
                 if lod1Printed: 
                     lod2 = ET.SubElement(model, 'LOD')
@@ -207,10 +201,10 @@ class SEUT_OT_Export(bpy.types.Operator):
                     lod2Model.text = scene.prop_subtypeId + '_LOD2'
                     lod2Printed = True
                 else:
-                    print("SEUT Error 006: LOD2 cannot be set if LOD1 is not.")
+                    self.report({'ERROR'}, "SEUT: LOD2 cannot be set if LOD1 is not. (006)")
 
             if collections['lod3'] == None or len(collections['lod3'].objects) == 0:
-                print("SEUT Info: Collection 'LOD3' not found or empty. Skipping.")
+                self.report({'INFO'}, "SEUT: Collection 'LOD3' not found or empty. Skipping.")
             else:
                 if lod1Printed and lod2Printed:
                     lod3 = ET.SubElement(model, 'LOD')
@@ -218,7 +212,7 @@ class SEUT_OT_Export(bpy.types.Operator):
                     lod3Model = ET.SubElement(lod3, 'Model')
                     lod3Model.text = scene.prop_subtypeId + '_LOD3'
                 else:
-                    print("SEUT Error 006: LOD3 cannot be set if LOD1 or LOD2 is not.")
+                    self.report({'ERROR'}, "SEUT: LOD3 cannot be set if LOD1 or LOD2 is not. (006)")
 
 
         # Create file with subtypename + collection name and write string to it
@@ -234,7 +228,7 @@ class SEUT_OT_Export(bpy.types.Operator):
 
         # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
         if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
-            print("SEUT Error 008: BLEND file must be saved before XML can be exported to its directory.")
+            self.report({'ERROR'}, "SEUT: BLEND file must be saved before XML can be exported to its directory. (008)")
             return
         else:
             if preferences.pref_looseFilesExportFolder == '0':
@@ -245,7 +239,7 @@ class SEUT_OT_Export(bpy.types.Operator):
 
         exportedXML = open(path + filename + ".xml", "w")
         exportedXML.write(xmlFormatted)
-        print("SEUT Info: '" + path + filename + ".xml' has been created.")
+        self.report({'INFO'}, "SEUT: '%s.xml' has been created." % (path + filename))
 
         return
 
@@ -270,7 +264,7 @@ class SEUT_OT_Export(bpy.types.Operator):
 
         # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
         if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
-            print("SEUT Error 008: BLEND file must be saved before FBX can be exported to its directory.")
+            self.report({'ERROR'}, "SEUT: BLEND file must be saved before FBX can be exported to its directory. (008)")
             return
         else:
             if preferences.pref_looseFilesExportFolder == '0':
@@ -289,6 +283,6 @@ class SEUT_OT_Export(bpy.types.Operator):
         bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
 
         bpy.context.scene.collection.children.unlink(collection)
-        print("SEUT Info: '" + path + filename + ".fbx' has been created.")
+        self.report({'INFO'}, "SEUT: '%s.fbx' has been created." % (path + filename))
 
         return

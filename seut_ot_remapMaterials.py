@@ -17,7 +17,7 @@ class SEUT_OT_RemapMaterials(bpy.types.Operator):
     # This code was written by Kamikaze
     def execute(self, context):
 
-        print("SEUT Info: Remapping materials.")
+        self.report({'INFO'}, "SEUT: Remapping local materials to library.")
         
         mtl_to_delete = []
 

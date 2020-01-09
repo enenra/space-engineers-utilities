@@ -19,19 +19,16 @@ class SEUT_OT_ExportSBC(bpy.types.Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections()
         preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
 
-        # If no export folder is set, error out.
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
-            print("SEUT Error 003: No export folder defined.")
+            self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             return {'CANCELLED'}
 
-        # If no SubtypeId is set, error out.
         if scene.prop_subtypeId == "":
-            print("SEUT Error 004: No SubtypeId set.")
+            self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
-        # If SBC is not toggled, cancel.
         if not scene.prop_export_sbc:
-            print("SEUT Info: 'SBC' is toggled off. SBC export skipped.")
+            self.report({'WARNING'}, "SEUT: 'SBC' is toggled off. SBC export skipped.")
             return {'CANCELLED'}
 
         # Create XML tree and add initial parameters.
@@ -113,7 +110,7 @@ class SEUT_OT_ExportSBC(bpy.types.Operator):
 
         # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
         if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
-            print("SEUT Error 008: BLEND file must be saved before SBC can be exported to its directory.")
+            self.report({'ERROR'}, "SEUT: BLEND file must be saved before SBC can be exported to its directory. (008)")
             return
         else:
             if preferences.pref_looseFilesExportFolder == '0':
@@ -124,6 +121,6 @@ class SEUT_OT_ExportSBC(bpy.types.Operator):
 
         exportedXML = open(path + filename + ".sbc", "w")
         exportedXML.write(xmlFormatted)
-        print("SEUT Info: '" + path + filename + ".sbc' has been created.")
+        self.report({'INFO'}, "SEUT: '%s.sbc' has been created." % (path + filename))
 
         return {'FINISHED'}

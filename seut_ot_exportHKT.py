@@ -17,11 +17,10 @@ class SEUT_OT_ExportHKT(bpy.types.Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections()
 
         # Debug
-        print('OT: ExportHKT')
+        self.report({'DEBUG'}, "SEUT: OT Export HKT executed.")
 
-        # If no SubtypeId is set, error out.
         if scene.prop_subtypeId == "":
-            print("SEUT Error 004: No SubtypeId set.")
+            self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
         return {'FINISHED'}
