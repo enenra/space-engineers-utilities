@@ -34,6 +34,10 @@ class SEUT_OT_ExportLOD(bpy.types.Operator):
             self.report({'ERROR'}, "SEUT: All 'LOD'-type collections are empty. Export not possible. (005)")
             return {'CANCELLED'}
 
+        if scene.prop_export_lod1Distance > prop_export_lod2Distance or prop_export_lod2Distance > prop_export_lod3Distance:
+            self.report({'ERROR'}, "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
+            return {'CANCELLED'}
+
         # Export LOD1, if present.
         if collections['lod1'] == None or len(collections['lod1'].objects) == 0:
             self.report({'ERROR'}, "SEUT: Collection 'LOD1' not found or empty. Export not possible. (002)")
