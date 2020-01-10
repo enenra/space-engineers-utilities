@@ -11,9 +11,6 @@ class SEUT_OT_RemapMaterials(bpy.types.Operator):
     def poll(cls, context):
         return len(context.selected_objects) != 0
 
-    # ========== TODO ==========
-    # Need to rewrite this so that when you import a second object after the first one, the shared textures aren't pink.
-
     # This code was written by Kamikaze
     def execute(self, context):
 

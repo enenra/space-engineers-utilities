@@ -251,9 +251,6 @@ class SEUT_OT_Export(bpy.types.Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections()
         preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
 
-        # ========== TODO ==========
-        # Copy dummies over if not present as safety? to LOD1 for sure, but are they needed in LOD2?
-
         # Determining the directory to export to.
         if collection == collections['main']:
             filename = scene.prop_subtypeId

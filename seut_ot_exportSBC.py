@@ -72,8 +72,6 @@ class SEUT_OT_ExportSBC(bpy.types.Operator):
         def_ModelOffset.set('y', '0')
         def_ModelOffset.set('z', '0')
 
-        # ========== TODO ==========
-        # I guess for the path here I'll need to do evaluation on the export folder?
         # Dependant on main collection existing
         def_Model = ET.SubElement(def_definition, 'Model')
         def_Model.text = scene.prop_subtypeId + '.mwm'
@@ -89,16 +87,11 @@ class SEUT_OT_ExportSBC(bpy.types.Operator):
         def_Mountpoint.set('Default', 'PLACEHOLDER')
         """
         
-        # ========== TODO ==========
-        # Calculate BuildPercentUpperBound based on amount of BS. Same for amount of entries ofc.
         # Dependant on bs collections existing
         def_BuildProgressModels = ET.SubElement(def_definition, 'BuildProgressModels')
         def_BS_Model = ET.SubElement(def_BuildProgressModels, 'Model')
         def_BS_Model.set('BuildPercentUpperBound', 'PLACEHOLDER')
         def_BS_Model.set('File', scene.prop_subtypeId + '_BS1.mwm')
-
-        # ========== TODO ==========
-        # The whole mirroring shebang.
 
         # Write to file, place in export folder
         xmlString = xml.dom.minidom.parseString(ET.tostring(definitions))
