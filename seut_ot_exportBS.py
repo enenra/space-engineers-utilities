@@ -23,7 +23,7 @@ class SEUT_OT_ExportBS(Operator):
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             return {'CANCELLED'}
 
-        if scene.prop_export_exportPath.find("Models\\") == -1:
+        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath.find("Models\\") == -1:
             self.report({'ERROR'}, "SEUT: Export folder does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
@@ -37,6 +37,10 @@ class SEUT_OT_ExportBS(Operator):
 
         if len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) == 0:
             self.report({'ERROR'}, "SEUT: All 'BS'-type collections are empty. Export not possible. (005)")
+            return {'CANCELLED'}
+
+        if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
+            self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
             return {'CANCELLED'}
 
         # Export BS1, if present.
