@@ -3,8 +3,8 @@ import os
 import subprocess
 import tempfile
 
-from .seut_ot_recreateCollections import SEUT_OT_RecreateCollections
-from .seut_havok_options import HAVOK_OPTION_FILE_CONTENT
+from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_havok_options            import HAVOK_OPTION_FILE_CONTENT
 
 class SEUT_OT_ExportHKT(bpy.types.Operator):
     """Exports the HKT"""

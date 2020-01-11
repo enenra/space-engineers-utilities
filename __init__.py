@@ -42,6 +42,7 @@ from bpy.types import (Panel,
                        )
 
 from .seut_preferences              import SEUT_AddonPreferences
+from .seut_havok_options            import HAVOK_OPTION_FILE_CONTENT
 from .seut_pt_toolbar               import SEUT_PT_Panel
 from .seut_pt_toolbar               import SEUT_PT_Panel_BoundingBox
 from .seut_pt_toolbar               import SEUT_PT_Panel_Export
