@@ -8,7 +8,7 @@ class SEUT_OT_RemapMaterials(Operator):
     bl_label = "Remap Materials"
     bl_options = {'REGISTER', 'UNDO'}
 
-    # Greys the button out if there is no active object.
+    # Greys the button out if there is no selected object.
     @classmethod
     def poll(cls, context):
         return len(context.selected_objects) != 0
@@ -34,7 +34,9 @@ class SEUT_OT_RemapMaterials(Operator):
                     new_material = None
                     # Try to find a linked material with the same name
                     for mtl in bpy.data.materials:
-                        if mtl.library != None and mtl.name == old_material.name:
+                        # If an object is imported that has a material that already exists in the scene, it is numbered.
+                        # Thus checking the substring of the name is necessary to catch all of them.
+                        if mtl.library != None and ( mtl.name == old_material.name or mtl.name == old_material.name[:-4] ):
                             new_material = mtl
                             break                            
 
