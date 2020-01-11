@@ -1,9 +1,10 @@
 import bpy
 
+from bpy.types                       import Operator
 from .seut_ot_recreateCollections    import SEUT_OT_RecreateCollections
 from .seut_ot_export                 import SEUT_OT_Export
 
-class SEUT_OT_ExportBS(bpy.types.Operator):
+class SEUT_OT_ExportBS(Operator):
     """Exports Build Stages"""
     bl_idname = "object.export_bs"
     bl_label = "Export Build Stages"

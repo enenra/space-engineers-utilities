@@ -1,6 +1,8 @@
 import bpy
 
-class SEUT_OT_EmptiesToCubeType(bpy.types.Operator):
+from bpy.types import Operator
+
+class SEUT_OT_EmptiesToCubeType(Operator):
     """Changes display type of selected empties to 'Cube'"""
     bl_idname = "object.emptytocubetype"
     bl_label = "Display Empties as 'Cube'"

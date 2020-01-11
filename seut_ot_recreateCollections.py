@@ -1,6 +1,8 @@
 import bpy
 
-class SEUT_OT_RecreateCollections(bpy.types.Operator):
+from bpy.types import Operator
+
+class SEUT_OT_RecreateCollections(Operator):
     """Recreates the collections"""
     bl_idname = "object.recreate_collections"
     bl_label = "Recreate Collections"

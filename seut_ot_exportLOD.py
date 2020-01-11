@@ -1,9 +1,10 @@
 import bpy
 
+from bpy.types                       import Operator
 from .seut_ot_recreateCollections    import SEUT_OT_RecreateCollections
 from .seut_ot_export                 import SEUT_OT_Export
 
-class SEUT_OT_ExportLOD(bpy.types.Operator):
+class SEUT_OT_ExportLOD(Operator):
     """Exports all LODs"""
     bl_idname = "object.export_lod"
     bl_label = "Export LODs"

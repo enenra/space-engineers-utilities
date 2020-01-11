@@ -1,6 +1,8 @@
 import bpy
 
-class SEUT_OT_RemapMaterials(bpy.types.Operator):
+from bpy.types                      import Operator
+
+class SEUT_OT_RemapMaterials(Operator):
     """Remap materials of the active object to linked library materials"""
     bl_idname = "object.remapmaterials"
     bl_label = "Remap Materials"
