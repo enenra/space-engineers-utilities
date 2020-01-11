@@ -14,7 +14,7 @@ class SEUT_OT_ExportBS(bpy.types.Operator):
         """Exports the 'Build Stages' collections"""
 
         scene = context.scene
-        preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
 
         collections = SEUT_OT_RecreateCollections.get_Collections()
 

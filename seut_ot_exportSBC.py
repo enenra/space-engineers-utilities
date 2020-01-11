@@ -17,7 +17,7 @@ class SEUT_OT_ExportSBC(bpy.types.Operator):
 
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.get_Collections()
-        preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")

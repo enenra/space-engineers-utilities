@@ -14,7 +14,7 @@ class SEUT_OT_ExportLOD(bpy.types.Operator):
         """Exports the 'LOD' collections"""
 
         scene = context.scene
-        preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
 
         collections = SEUT_OT_RecreateCollections.get_Collections()
 

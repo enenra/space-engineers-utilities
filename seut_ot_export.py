@@ -14,7 +14,7 @@ class SEUT_OT_Export(bpy.types.Operator):
     def execute(self, context):
         
         scene = context.scene
-        preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
 
         # Debug
         self.report({'DEBUG'}, "SEUT: OT Export executed.")
@@ -49,7 +49,7 @@ class SEUT_OT_Export(bpy.types.Operator):
 
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.get_Collections()
-        preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
 
         # Create XML tree and add initial parameters.
         model = ET.Element('Model')
@@ -249,7 +249,7 @@ class SEUT_OT_Export(bpy.types.Operator):
 
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.get_Collections()
-        preferences = bpy.context.preferences.addons.get("space-engineers-utilities").preferences
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
 
         # Determining the directory to export to.
         if collection == collections['main']:
