@@ -28,6 +28,10 @@ class SEUT_OT_ExportHKT(Operator):
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             return {'CANCELLED'}
 
+        if scene.prop_export_exportPath.find("Models\\") == -1:
+            self.report({'ERROR'}, "SEUT: Export folder does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
+            return {'CANCELLED'}
+
         if preferences.pref_fbxImporterPath == "":
             self.report({'ERROR'}, "SEUT: No Custom FBX Importer linked. (012)")
             return {'CANCELLED'}
@@ -70,7 +74,7 @@ class SEUT_OT_ExportHKT(Operator):
 
         # FBX export via Custom FBX Importer
         # subprocess.call(scene.pref_fbxImporterPath)
-
+        # out = subprocess.check_output(cmdline, cwd=cwd, stderr=subprocess.STDOUT)
 
         # Then create the HKO file.
         # The try / finally ensures that the file is only removed after the export has completed.

@@ -23,6 +23,10 @@ class SEUT_OT_ExportBS(Operator):
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             return {'CANCELLED'}
 
+        if scene.prop_export_exportPath.find("Models\\") == -1:
+            self.report({'ERROR'}, "SEUT: Export folder does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
+            return {'CANCELLED'}
+
         if scene.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             return {'CANCELLED'}
