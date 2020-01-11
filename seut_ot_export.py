@@ -3,9 +3,10 @@ import os
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
+from bpy.types                       import Operator
 from .seut_ot_recreateCollections    import SEUT_OT_RecreateCollections
 
-class SEUT_OT_Export(bpy.types.Operator):
+class SEUT_OT_Export(Operator):
     """Exports all enabled file types and collections"""
     bl_idname = "object.export"
     bl_label = "Export"
