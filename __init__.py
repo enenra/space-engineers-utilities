@@ -14,8 +14,8 @@
 bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
-    "author": "enenra, Kamikaze",
-    "version": (0, 1, 0),
+    "author": "enenra, Stollie, Kamikaze",
+    "version": (0, 2, 5),
     "blender": (2, 81, 0),
     "location": "View3D > Tools ",
     "warning": "",
@@ -42,11 +42,11 @@ from bpy.types import (Panel,
                        )
 
 from .seut_preferences              import SEUT_AddonPreferences
-from .seut_havok_options            import HAVOK_OPTION_FILE_CONTENT
 from .seut_pt_toolbar               import SEUT_PT_Panel
 from .seut_pt_toolbar               import SEUT_PT_Panel_BoundingBox
 from .seut_pt_toolbar               import SEUT_PT_Panel_Export
 from .seut_pt_toolbar               import SEUT_PT_Panel_Import
+from .seut_pt_toolbar               import SEUT_PT_Panel_Materials
 from .seut_mt_contextMenu           import SEUT_MT_ContextMenu
 from .seut_ot_addHighlightEmpty     import SEUT_OT_AddHighlightEmpty
 from .seut_ot_addDummy              import SEUT_OT_AddDummy
@@ -65,6 +65,8 @@ from .seut_ot_gridScale             import SEUT_OT_GridScale
 from .seut_ot_bBox                  import SEUT_OT_BBox
 from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_matCreate             import SEUT_OT_MatCreate
+from .seut_materials                import SEUT_Materials
 
 def register():
     bpy.utils.register_class(SEUT_AddonPreferences)
@@ -72,6 +74,7 @@ def register():
     bpy.utils.register_class(SEUT_PT_Panel_BoundingBox)
     bpy.utils.register_class(SEUT_PT_Panel_Export)
     bpy.utils.register_class(SEUT_PT_Panel_Import)
+    bpy.utils.register_class(SEUT_PT_Panel_Materials)
     bpy.utils.register_class(SEUT_MT_ContextMenu)
     bpy.utils.register_class(SEUT_OT_AddHighlightEmpty)
     bpy.utils.register_class(SEUT_OT_AddDummy)
@@ -90,9 +93,13 @@ def register():
     bpy.utils.register_class(SEUT_OT_BBox)
     bpy.utils.register_class(SEUT_OT_BBoxAuto)
     bpy.utils.register_class(SEUT_OT_RecreateCollections)
+    bpy.utils.register_class(SEUT_OT_MatCreate)
+    bpy.utils.register_class(SEUT_Materials)
         
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
+    bpy.types.Material.seut = bpy.props.PointerProperty(type=SEUT_Materials)
 
+    # Grid Scale
     bpy.types.Scene.prop_gridScale = bpy.props.EnumProperty(
         name='Scale',
         items=(
@@ -103,6 +110,7 @@ def register():
         update=update_GridScale
     )
 
+    # Bounding Box
     bpy.types.Scene.prop_bBoxToggle = bpy.props.EnumProperty(
         name='Bounding Box',
         items=(
@@ -131,6 +139,7 @@ def register():
         min=1
     )
 
+    # Export
     bpy.types.Scene.prop_subtypeId = StringProperty(
         name="SubtypeId",
         description="The SubtypeId for this model"
@@ -163,6 +172,7 @@ def register():
     )
     bpy.types.Scene.prop_export_exportPath = StringProperty(
         name="Export Folder",
+        description="What folder to export to",
         subtype="DIR_PATH"
     )
     bpy.types.Scene.prop_export_lod1Distance = IntProperty(
@@ -190,6 +200,7 @@ def unregister():
     bpy.utils.unregister_class(SEUT_PT_Panel_BoundingBox)
     bpy.utils.unregister_class(SEUT_PT_Panel_Export)
     bpy.utils.unregister_class(SEUT_PT_Panel_Import)
+    bpy.utils.unregister_class(SEUT_PT_Panel_Materials)
     bpy.utils.unregister_class(SEUT_MT_ContextMenu)
     bpy.utils.unregister_class(SEUT_OT_AddHighlightEmpty)
     bpy.utils.unregister_class(SEUT_OT_AddDummy)
@@ -208,6 +219,8 @@ def unregister():
     bpy.utils.unregister_class(SEUT_OT_BBox)
     bpy.utils.unregister_class(SEUT_OT_BBoxAuto)
     bpy.utils.unregister_class(SEUT_OT_RecreateCollections)
+    bpy.utils.unregister_class(SEUT_OT_MatCreate)
+    bpy.utils.unregister_class(SEUT_Materials)
         
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
 
@@ -248,6 +261,8 @@ def menu_func(self, context):
     self.layout.operator(SEUT_OT_BBox.bl_idname)
     self.layout.operator(SEUT_OT_BBoxAuto.bl_idname)
     self.layout.operator(SEUT_OT_RecreateCollections.bl_idname)
+    
+    self.layout.operator(SEUT_OT_MatCreate.bl_idname)
 
 def menu_draw(self, context):
     layout = self.layout

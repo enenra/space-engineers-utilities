@@ -128,3 +128,37 @@ class SEUT_PT_Panel_Import(bpy.types.Panel):
         box.label(text="Repair")
         box.operator('object.emptytocubetype', text="Display Empties as 'Cube'")
         box.operator('object.remapmaterials', text="Remap Materials")
+
+
+class SEUT_PT_Panel_Materials(bpy.types.Panel):
+    """Creates the materials panel for SEUT"""
+    bl_idname = "SEUT_PT_Panel_Materials"
+    bl_label = "Space Engineers Utilities"
+    bl_category = "SEUT"
+    bl_space_type = "NODE_EDITOR"
+    bl_region_type = "UI"
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+
+        if bpy.context.active_object.active_material != None:
+
+            material = bpy.context.active_object.active_material
+
+            box = layout.box()
+            box.label(text=material.name, icon_value=layout.icon(material))
+            box.prop(material.seut, "technique")
+
+            boxSpec = box.box()
+            boxSpec.label(text="Specularity")
+            boxSpec.prop(material.seut, "specularIntensity")
+            boxSpec.prop(material.seut, "specularPower")
+
+            boxDiff = box.box()
+            boxDiff.label(text="Diffuse")
+            boxDiff.prop(material.seut, "diffuseColorX")
+            boxDiff.prop(material.seut, "diffuseColorY")
+            boxDiff.prop(material.seut, "diffuseColorZ")
+
+        layout.operator('object.mat_create')
