@@ -4,10 +4,17 @@ from bpy.types  import PropertyGroup
 from bpy.props  import (EnumProperty,
                         FloatProperty,
                         IntProperty,
-                        StringProperty)
+                        StringProperty,
+                        BoolProperty)
 
 class SEUT_Materials(PropertyGroup):
-    technique: bpy.props.EnumProperty(
+    
+    overrideMatLib: BoolProperty(
+        name="Override MatLib",
+        description="Whether the material should replace its MatLib counterpart on export",
+        default=False
+    )
+    technique: EnumProperty(
         name='Technique',
         description="",
         items=(

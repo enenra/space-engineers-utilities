@@ -148,6 +148,7 @@ class SEUT_PT_Panel_Materials(bpy.types.Panel):
 
             box = layout.box()
             box.label(text=material.name, icon_value=layout.icon(material))
+            box.prop(material.seut, "overrideMatLib")
             box.prop(material.seut, "technique")
 
             boxSpec = box.box()

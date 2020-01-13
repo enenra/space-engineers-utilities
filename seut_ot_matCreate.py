@@ -7,7 +7,7 @@ from bpy.props  import (EnumProperty,
 class SEUT_OT_MatCreate(Operator):
     """Create a SMAT material"""
     bl_idname = "object.mat_create"
-    bl_label = "Create Material"
+    bl_label = "Create SEUT Material"
     bl_options = {'REGISTER', 'UNDO'}
 
     # Greys the button out if there is no active object.
