@@ -148,18 +148,25 @@ class SEUT_PT_Panel_Materials(bpy.types.Panel):
 
             box = layout.box()
             box.label(text=material.name, icon_value=layout.icon(material))
-            box.prop(material.seut, "overrideMatLib")
-            box.prop(material.seut, "technique")
+            box.prop(material.seut, 'overrideMatLib')
+            box.prop(material.seut, 'technique')
 
-            boxSpec = box.box()
-            boxSpec.label(text="Specularity")
-            boxSpec.prop(material.seut, "specularIntensity")
-            boxSpec.prop(material.seut, "specularPower")
+            if material.seut.technique == 'GLASS':
+                boxSpec = box.box()
+                boxSpec.label(text="Specularity")
+                boxSpec.prop(material.seut, 'specularIntensity')
+                boxSpec.prop(material.seut, 'specularPower')
 
-            boxDiff = box.box()
-            boxDiff.label(text="Diffuse")
-            boxDiff.prop(material.seut, "diffuseColorX")
-            boxDiff.prop(material.seut, "diffuseColorY")
-            boxDiff.prop(material.seut, "diffuseColorZ")
+                boxDiff = box.box()
+                boxDiff.prop(material.seut, 'diffuseColor', text="Diffuse Color")
+                """
+                boxDiff.label(text="Diffuse")
+                boxDiff.prop(material.seut, 'diffuseColorX')
+                boxDiff.prop(material.seut, 'diffuseColorY')
+                boxDiff.prop(material.seut, 'diffuseColorZ')
+                """
 
-        layout.operator('object.mat_create')
+        box = layout.box()
+        box.label(text="Create new SEUT Material")
+        box.prop(scene, 'prop_matPreset', text="Preset")
+        box.operator('object.mat_create')

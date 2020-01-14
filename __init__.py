@@ -193,6 +193,20 @@ def register():
         default=150,
         min=0
     )
+    
+    # Materials
+    bpy.types.Scene.prop_matPreset = EnumProperty(
+        name='SEUT Material Preset',
+        description="Select a node tree preset for your material",
+        items=(
+            ('SMAT_Full', 'Full', '[X] Alpha\n[X] Emissive\n[X] ADD\n[X] NG'),
+            ('SMAT_Full_NoEmissive', 'No Emissive', '[X] Alpha\n[_] Emissive\n[X] ADD\n[X] NG'),
+            ('SMAT_NoAlpha', 'No Alpha', '[_] Alpha\n[X] Emissive\n[X] ADD\n[X] NG'),
+            ('SMAT_NoAlpha_NoEmissive', 'No Alpha, No Emissive', '[_] Alpha\n[_] Emissive\n[X] ADD\n[X] NG'),
+            ('SMAT_NoADD', 'No ADD', '[_] Alpha\n[_] Emissive\n[_] ADD\n[X] NG')
+            ),
+        default='SMAT_Full'
+    )
 
 def unregister():
     bpy.utils.unregister_class(SEUT_AddonPreferences)
@@ -239,6 +253,7 @@ def unregister():
     del bpy.types.Scene.prop_export_lod1Distance
     del bpy.types.Scene.prop_export_lod2Distance
     del bpy.types.Scene.prop_export_lod3Distance
+    del bpy.types.Scene.prop_matPreset
 
 
 def menu_func(self, context):
