@@ -1,11 +1,12 @@
 import bpy
 import os
-import subprocess
-import tempfile
 
+from os.path                        import join
 from bpy.types                      import Operator
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_havok_options            import HAVOK_OPTION_FILE_CONTENT
+from .seut_havok_export             import ExportSettings, export_hktfbx_for_fbximporter, process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
+
 
 class SEUT_OT_ExportHKT(Operator):
     """Exports the HKT"""
@@ -18,11 +19,10 @@ class SEUT_OT_ExportHKT(Operator):
         """Exports collision to HKT"""
 
         scene = context.scene
+        depsgraph = None
         collections = SEUT_OT_RecreateCollections.get_Collections()
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-
-        # Debug
-        self.report({'DEBUG'}, "SEUT: OT Export HKT executed.")
+        settings = ExportSettings(scene, depsgraph)
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
@@ -37,7 +37,7 @@ class SEUT_OT_ExportHKT(Operator):
             return {'CANCELLED'}
 
         if preferences.pref_havokPath == "":
-            self.report({'ERROR'}, "SEUT: No path to Havok Standalone File Manager defined. (013)")
+            self.report({'ERROR'}, "SEUT: No path to Havok Standalone Filter Tool defined. (013)")
             return {'CANCELLED'}
 
         if scene.prop_subtypeId == "":
@@ -52,41 +52,29 @@ class SEUT_OT_ExportHKT(Operator):
             self.report({'ERROR'}, "SEUT: Collection 'Collision' is empty. Export not possible. (005)")
             return {'CANCELLED'}
 
+        for obj in collections['hkt'].objects:
+            context.view_layer.objects.active = obj
+            bpy.ops.rigidbody.object_add(type='ACTIVE')
+
         # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
         if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
             self.report({'ERROR'}, "SEUT: BLEND file must be saved before HKT can be exported to its directory. (008)")
-            return
+            return {'CANCELLED'}
         else:
             if preferences.pref_looseFilesExportFolder == '0':
                 path = os.path.dirname(bpy.data.filepath) + "\\"
 
             elif preferences.pref_looseFilesExportFolder == '1':
                 path = bpy.path.abspath(scene.prop_export_exportPath)
-        
-        # Exporting the collection.
-        # I can only export the currently active collection, so I need to set the target collection to active (for which I have to link it for some reason),
-        # then export, then unlink. User won't see it and it shouldn't make a difference.
-        bpy.context.scene.collection.children.link(collection)
-        layer_collection = bpy.context.view_layer.layer_collection.children[collection.name]
-        bpy.context.view_layer.active_layer_collection = layer_collection
-        
-        # Change stuff in preparation for FBX export
 
         # FBX export via Custom FBX Importer
-        # subprocess.call(scene.pref_fbxImporterPath)
-        # out = subprocess.check_output(cmdline, cwd=cwd, stderr=subprocess.STDOUT)
+        fbxhktfile = join(path, scene.prop_subtypeId + ".hkt.fbx")
+        hktfile = join(path, scene.prop_subtypeId + ".hkt")
+        
+        export_hktfbx_for_fbximporter(settings, fbxhktfile, collections['hkt'].objects)
 
-        # Then create the HKO file.
-        # The try / finally ensures that the file is only removed after the export has completed.
-        """
-        try:
-            hko = tempfile.NamedTemporaryFile(mode='wt', prefix='space_engineers_', suffix=".hko", delete=False)
-            hko.write(HAVOK_OPTION_FILE_CONTENT)
-
-
-        # Finally, call the havok standalone file manager with the two files.
-        finally:
-            os.remove(hko.name)
-        """
+        # Then create the HKT file.
+        process_hktfbx_to_fbximporterhkt(settings, fbxhktfile, hktfile)
+        process_fbximporterhkt_to_final_hkt_for_mwm(settings, hktfile, hktfile)
 
         return {'FINISHED'}
