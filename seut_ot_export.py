@@ -66,7 +66,7 @@ class SEUT_OT_Export(Operator):
 
         paramRescaleFactor = ET.SubElement(model, 'Parameter')
         paramRescaleFactor.set('Name', 'RescaleFactor')
-        paramRescaleFactor.text = str(context.scene.prop_export_rescaleFactor)
+        paramRescaleFactor.text = str(context.scene.prop_export_rescaleFactor * 0.01)       # Blender exports are always 100 times the size in SE for some godforsaken reason
 
         paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
         paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
@@ -77,6 +77,10 @@ class SEUT_OT_Export(Operator):
         # Iterate through all materials in the file
         for mat in bpy.data.materials:
             if mat == None:
+                continue
+            
+            # This ensures that the material presets used internally are not written to the XML.
+            if mat.name[:5] == 'SMAT_':
                 continue
             
             # mat is a local material.
