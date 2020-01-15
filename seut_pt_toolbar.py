@@ -148,6 +148,12 @@ class SEUT_PT_Panel_Materials(bpy.types.Panel):
 
             box = layout.box()
             box.label(text=material.name, icon_value=layout.icon(material))
+
+            for node in material.node_tree.nodes:
+                if node.name == "SEUT_MAT":
+                    box.label(text="Preset: " + node.node_tree.name)
+                    break
+                
             box.prop(material.seut, 'overrideMatLib')
             box.prop(material.seut, 'technique')
 
@@ -159,12 +165,6 @@ class SEUT_PT_Panel_Materials(bpy.types.Panel):
 
                 boxDiff = box.box()
                 boxDiff.prop(material.seut, 'diffuseColor', text="Diffuse Color")
-                """
-                boxDiff.label(text="Diffuse")
-                boxDiff.prop(material.seut, 'diffuseColorX')
-                boxDiff.prop(material.seut, 'diffuseColorY')
-                boxDiff.prop(material.seut, 'diffuseColorZ')
-                """
 
         box = layout.box()
         box.label(text="Create new SEUT Material")

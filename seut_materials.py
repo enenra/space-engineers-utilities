@@ -12,7 +12,7 @@ class SEUT_Materials(PropertyGroup):
     
     overrideMatLib: BoolProperty(
         name="Override MatLib",
-        description="Whether the material should replace its MatLib counterpart during export of this file",
+        description="Whether the material should replace its MatLib counterpart during export of this file (non-destructively)",
         default=False
     )
     technique: EnumProperty(
@@ -70,9 +70,9 @@ class SEUT_Materials(PropertyGroup):
         min=0,
         max=255
     )
-    """
     diffuseTexture: StringProperty(
         name="Diffuse Texture:",
         description="",
         subtype="FILE_PATH"
     )
+    """
