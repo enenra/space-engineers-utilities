@@ -57,7 +57,6 @@ from .seut_ot_exportBS              import SEUT_OT_ExportBS
 from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
 from .seut_ot_exportHKT             import SEUT_OT_ExportHKT
 from .seut_ot_exportSBC             import SEUT_OT_ExportSBC
-from .seut_ot_exportMWM             import SEUT_OT_ExportMWM
 from .seut_ot_export                import SEUT_OT_Export
 from .seut_ot_import                import SEUT_OT_Import
 from .seut_ot_remapMaterials        import SEUT_OT_RemapMaterials
@@ -87,7 +86,6 @@ def register():
     bpy.utils.register_class(SEUT_OT_ExportLOD)
     bpy.utils.register_class(SEUT_OT_ExportHKT)
     bpy.utils.register_class(SEUT_OT_ExportSBC)
-    bpy.utils.register_class(SEUT_OT_ExportMWM)
     bpy.utils.register_class(SEUT_OT_Import)
     bpy.utils.register_class(SEUT_OT_RemapMaterials)
     bpy.utils.register_class(SEUT_OT_EmptiesToCubeType)
@@ -229,7 +227,6 @@ def unregister():
     bpy.utils.unregister_class(SEUT_OT_ExportLOD)
     bpy.utils.unregister_class(SEUT_OT_ExportHKT)
     bpy.utils.unregister_class(SEUT_OT_ExportSBC)
-    bpy.utils.unregister_class(SEUT_OT_ExportMWM)
     bpy.utils.unregister_class(SEUT_OT_Import)
     bpy.utils.unregister_class(SEUT_OT_RemapMaterials)
     bpy.utils.unregister_class(SEUT_OT_EmptiesToCubeType)
@@ -271,7 +268,6 @@ def menu_func(self, context):
     self.layout.operator(SEUT_OT_ExportBS.bl_idname)
     self.layout.operator(SEUT_OT_ExportLOD.bl_idname)
     self.layout.operator(SEUT_OT_ExportHKT.bl_idname)
-    self.layout.operator(SEUT_OT_ExportMWM.bl_idname)
 
     self.layout.operator(SEUT_OT_Import.bl_idname)
     self.layout.operator(SEUT_OT_RemapMaterials.bl_idname)
