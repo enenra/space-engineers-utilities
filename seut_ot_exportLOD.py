@@ -49,10 +49,10 @@ class SEUT_OT_ExportLOD(Operator):
         else:
             if scene.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'LOD1'.")
-                SEUT_OT_Export.export_XML(context, collections['lod1'])
+                SEUT_OT_Export.export_XML(self, context, collections['lod1'])
             if scene.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD1'.")
-                SEUT_OT_Export.export_FBX(context, collections['lod1'])
+                SEUT_OT_Export.export_FBX(self, context, collections['lod1'])
         
         # Export LOD2, if present.
         if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
@@ -60,10 +60,10 @@ class SEUT_OT_ExportLOD(Operator):
         else:
             if scene.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'LOD2'.")
-                SEUT_OT_Export.export_XML(context, collections['lod2'])
+                SEUT_OT_Export.export_XML(self, context, collections['lod2'])
             if scene.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD2'.")
-                SEUT_OT_Export.export_FBX(context, collections['lod2'])
+                SEUT_OT_Export.export_FBX(self, context, collections['lod2'])
 
         # Export LOD3, if present.
         if collections['lod3'] == None or len(collections['lod3'].objects) == 0:
@@ -71,10 +71,10 @@ class SEUT_OT_ExportLOD(Operator):
         else:
             if scene.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'LOD3'.")
-                SEUT_OT_Export.export_XML(context, collections['lod3'])
+                SEUT_OT_Export.export_XML(self, context, collections['lod3'])
             if scene.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD3'.")
-                SEUT_OT_Export.export_FBX(context, collections['lod3'])
+                SEUT_OT_Export.export_FBX(self, context, collections['lod3'])
 
 
         return {'FINISHED'}

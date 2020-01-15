@@ -42,12 +42,12 @@ class SEUT_OT_ExportMain(Operator):
         # Export XML if boolean is set.
         if scene.prop_export_xml:
             self.report({'INFO'}, "SEUT: Exporting XML for 'Main'.")
-            SEUT_OT_Export.export_XML(context, collections['main'])
+            SEUT_OT_Export.export_XML(self, context, collections['main'])
 
         # Export FBX if boolean is set.
         if scene.prop_export_fbx:
             self.report({'INFO'}, "SEUT: Exporting FBX for 'Main'.")
-            SEUT_OT_Export.export_FBX(context, collections['main'])
+            SEUT_OT_Export.export_FBX(self, context, collections['main'])
 
 
         return {'FINISHED'}

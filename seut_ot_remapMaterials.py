@@ -36,7 +36,7 @@ class SEUT_OT_RemapMaterials(Operator):
                     for mtl in bpy.data.materials:
                         # If an object is imported that has a material that already exists in the scene, it is numbered.
                         # Thus checking the substring of the name is necessary to catch all of them.
-                        if mtl.library != None and ( mtl.name == old_material.name or mtl.name == old_material.name[:-4] ):
+                        if mtl.library != None and ( mtl.name == old_material.name or mtl.name == old_material.name[:-4] ) and old_material.seut.overrideMatLib == False:
                             new_material = mtl
                             break                            
 

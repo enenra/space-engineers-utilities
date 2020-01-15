@@ -48,31 +48,10 @@ class SEUT_Materials(PropertyGroup):
         subtype='COLOR',
         default=(0, 0, 0)
     )
-    """
-    diffuseColorX: IntProperty(
-        name="Color R:",
-        description="",
-        default=0,
-        min=0,
-        max=255
-    )
-    diffuseColorY: IntProperty(
-        name="Color G:",
-        description="",
-        default=0,
-        min=0,
-        max=255
-    )
-    diffuseColorZ: IntProperty(
-        name="Color B:",
-        description="",
-        default=0,
-        min=0,
-        max=255
-    )
+
     diffuseTexture: StringProperty(
         name="Diffuse Texture:",
         description="",
-        subtype="FILE_PATH"
+        subtype="FILE_PATH",
+        default="Dummy.dds"
     )
-    """

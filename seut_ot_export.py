@@ -49,7 +49,7 @@ class SEUT_OT_Export(Operator):
         return {'FINISHED'}
 
 
-    def export_XML(context, collection):
+    def export_XML(self, context, collection):
         """Exports the XML file for a defined collection"""
 
         scene = context.scene
@@ -78,29 +78,60 @@ class SEUT_OT_Export(Operator):
         for mat in bpy.data.materials:
             if mat == None:
                 continue
-
+            
+            # mat is a local material.
             elif mat.library == None:
 
                 # If the material is not part of a linked library, I have to account for the possibility that it is a leftover material from import.
                 # Those do get cleaned up, but only after the BLEND file is saved, closed and reopened. That may not have happened.
-
-                isLocal = False
-
+                isUnique = False
                 for mtl in bpy.data.materials:
-                    if mtl.library != None and mtl.name == mat.name:
-                        isLocal = False
-                    elif mtl.library != None:
-                        isLocal = True
+                    # There is a material with its name in a linked library but override is turned on.
+                    if mtl.library != None and mtl.name == mat.name and mat.seut.overrideMatLib == True:
+                        print("check: mat:" + mat.name + ", mtl: " + mtl.name + ", override: " + str(mat.seut.overrideMatLib))
+                        isUnique = True
+                    # There is a material with its name in a linked library and override is turned off.
+                    if mtl.library != None and mtl.name == mat.name and mat.seut.overrideMatLib == False:
+                        print("check2: mat:" + mat.name + ", mtl: " + mtl.name + ", override: " + str(mat.seut.overrideMatLib))
+                        isUnique = False
+                    # There is no material with its name in a linked library.
+                    elif mtl.library == None and mat.library == None and mtl.name == mat.name:
+                        print("check3: mat:" + mat.name + ", mtl: " + mtl.name + ", override: " + str(mat.seut.overrideMatLib))
+                        isUnique = True
                 
-                if isLocal:
+                if isUnique:
                     matEntry = ET.SubElement(model, 'Material')
                     matEntry.set('Name', mat.name)
 
                     matTechnique = ET.SubElement(matEntry, 'Parameter')
                     matTechnique.set('Name', 'Technique')
-                    matTechnique.text = 'MESH'
+                    matTechnique.text = mat.seut.technique
 
-                    # Currently no support for the other parameters - are those even needed anymore?
+                    # These properties are only relevant for GLASS
+                    if mat.seut.technique == 'GLASS':
+                        matSpecIntensity = ET.SubElement(matEntry, 'Parameter')
+                        matSpecIntensity.set('Name', 'SpecularIntensity')
+                        matSpecIntensity.text = str(mat.seut.specularIntensity)
+
+                        matSpecPower = ET.SubElement(matEntry, 'Parameter')
+                        matSpecPower.set('Name', 'SpecularPower')
+                        matSpecPower.text = str(mat.seut.specularPower)
+
+                        matDiffColorX = ET.SubElement(matEntry, 'Parameter')
+                        matDiffColorX.set('Name', 'DiffuseColorX')
+                        matDiffColorX.text = str(int(mat.seut.diffuseColor[0] * 255))
+
+                        matDiffColorY = ET.SubElement(matEntry, 'Parameter')
+                        matDiffColorY.set('Name', 'DiffuseColorY')
+                        matDiffColorY.text = str(int(mat.seut.diffuseColor[1] * 255))
+
+                        matDiffColorZ = ET.SubElement(matEntry, 'Parameter')
+                        matDiffColorZ.set('Name', 'DiffuseColorZ')
+                        matDiffColorZ.text = str(int(mat.seut.diffuseColor[2] * 255))
+
+                        matDiffTexture = ET.SubElement(matEntry, 'Parameter')
+                        matDiffTexture.set('Name', 'DiffuseTexture')
+                        matDiffTexture.text = mat.seut.diffuseTexture
                     
                     # Iterate through all image textures in material and register relevant ones to dictionary.
                     images = {
@@ -109,6 +140,7 @@ class SEUT_OT_Export(Operator):
                         'add': None,
                         'am': None
                         }
+
                     for node in mat.node_tree.nodes:
                         if node.type == 'TEX_IMAGE':
                             if node.name == 'CM':
@@ -249,7 +281,7 @@ class SEUT_OT_Export(Operator):
         return
 
     
-    def export_FBX(context, collection):
+    def export_FBX(self, context, collection):
         """Exports the FBX file for a defined collection"""
 
         scene = context.scene
