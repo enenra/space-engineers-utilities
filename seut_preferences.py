@@ -27,7 +27,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         subtype='FILE_PATH',
     )
     pref_havokPath: StringProperty(
-        name="Standalone File Manager",
+        name="Havok Standalone Filter Tool",
         subtype='FILE_PATH',
     )
 
