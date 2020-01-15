@@ -33,14 +33,14 @@ class SEUT_Materials(PropertyGroup):
         description="Determines the intensity of the transparent material's specularity",
         default=0,
         min=0,
-        max=1
+        max=100
     )
     specularPower: FloatProperty(
         name="Power:",
         description="Determines the power of the transparent material's specularity",
         default=0,
         min=0,
-        max=1
+        max=100
     )
     diffuseColor: FloatVectorProperty(
         name="Color",
@@ -53,5 +53,5 @@ class SEUT_Materials(PropertyGroup):
         name="Diffuse Texture:",
         description="",
         subtype="FILE_PATH",
-        default="Dummy.dds"
+        default=""
     )

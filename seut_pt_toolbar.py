@@ -153,11 +153,11 @@ class SEUT_PT_Panel_Materials(bpy.types.Panel):
                 if node.name == "SEUT_MAT":
                     box.label(text="Preset: " + node.node_tree.name)
                     break
-                
+
             box.prop(material.seut, 'overrideMatLib')
             box.prop(material.seut, 'technique')
 
-            if material.seut.technique == 'GLASS':
+            if material.seut.technique == 'GLASS' or material.seut.technique == 'ALPHA_MASKED':
                 boxSpec = box.box()
                 boxSpec.label(text="Specularity")
                 boxSpec.prop(material.seut, 'specularIntensity')

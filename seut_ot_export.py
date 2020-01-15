@@ -108,30 +108,34 @@ class SEUT_OT_Export(Operator):
                     matTechnique.text = mat.seut.technique
 
                     # These properties are only relevant for GLASS
-                    if mat.seut.technique == 'GLASS':
-                        matSpecIntensity = ET.SubElement(matEntry, 'Parameter')
-                        matSpecIntensity.set('Name', 'SpecularIntensity')
-                        matSpecIntensity.text = str(mat.seut.specularIntensity)
+                    if mat.seut.technique == 'GLASS' or mat.seut.technique == 'ALPHA_MASKED':
+                        if mat.seut.specularIntensity != 0:
+                            matSpecIntensity = ET.SubElement(matEntry, 'Parameter')
+                            matSpecIntensity.set('Name', 'SpecularIntensity')
+                            matSpecIntensity.text = str(mat.seut.specularIntensity)
 
-                        matSpecPower = ET.SubElement(matEntry, 'Parameter')
-                        matSpecPower.set('Name', 'SpecularPower')
-                        matSpecPower.text = str(mat.seut.specularPower)
+                        if mat.seut.specularPower != 0:
+                            matSpecPower = ET.SubElement(matEntry, 'Parameter')
+                            matSpecPower.set('Name', 'SpecularPower')
+                            matSpecPower.text = str(mat.seut.specularPower)
+                        
+                        if mat.seut.diffuseColor[0] != 0 and mat.seut.diffuseColor[1] != 0 and mat.seut.diffuseColor[2] != 0:
+                            matDiffColorX = ET.SubElement(matEntry, 'Parameter')
+                            matDiffColorX.set('Name', 'DiffuseColorX')
+                            matDiffColorX.text = str(int(mat.seut.diffuseColor[0] * 255))
 
-                        matDiffColorX = ET.SubElement(matEntry, 'Parameter')
-                        matDiffColorX.set('Name', 'DiffuseColorX')
-                        matDiffColorX.text = str(int(mat.seut.diffuseColor[0] * 255))
+                            matDiffColorY = ET.SubElement(matEntry, 'Parameter')
+                            matDiffColorY.set('Name', 'DiffuseColorY')
+                            matDiffColorY.text = str(int(mat.seut.diffuseColor[1] * 255))
 
-                        matDiffColorY = ET.SubElement(matEntry, 'Parameter')
-                        matDiffColorY.set('Name', 'DiffuseColorY')
-                        matDiffColorY.text = str(int(mat.seut.diffuseColor[1] * 255))
+                            matDiffColorZ = ET.SubElement(matEntry, 'Parameter')
+                            matDiffColorZ.set('Name', 'DiffuseColorZ')
+                            matDiffColorZ.text = str(int(mat.seut.diffuseColor[2] * 255))
 
-                        matDiffColorZ = ET.SubElement(matEntry, 'Parameter')
-                        matDiffColorZ.set('Name', 'DiffuseColorZ')
-                        matDiffColorZ.text = str(int(mat.seut.diffuseColor[2] * 255))
-
-                        matDiffTexture = ET.SubElement(matEntry, 'Parameter')
-                        matDiffTexture.set('Name', 'DiffuseTexture')
-                        matDiffTexture.text = mat.seut.diffuseTexture
+                        if mat.seut.diffuseTexture != "":
+                            matDiffTexture = ET.SubElement(matEntry, 'Parameter')
+                            matDiffTexture.set('Name', 'DiffuseTexture')
+                            matDiffTexture.text = mat.seut.diffuseTexture
                     
                     # Iterate through all image textures in material and register relevant ones to dictionary.
                     images = {
