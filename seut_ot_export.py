@@ -70,6 +70,7 @@ class ExportSettings:
         # set on first access, see properties below
         self._fbximporter = None
         self._havokfilter = None
+        self._mwmbuilder = None
 
     @property
     def fbximporter(self):
@@ -82,6 +83,12 @@ class ExportSettings:
         if self._havokfilter == None:
             self._havokfilter = tool_path('pref_havokPath', 'Havok Standalone Filter Tool')
         return self._havokfilter
+
+    @property
+    def mwmbuilder(self):
+        if self._mwmbuilder == None:
+            self._mwmbuilder = tool_path('pref_mwmbPath', 'MWM Builder')
+        return self._mwmbuilder
 
     def callTool(self, cmdline, logfile=None, cwd=None, successfulExitCodes=[0], loglines=[], logtextInspector=None):
         try:

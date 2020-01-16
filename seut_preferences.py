@@ -18,16 +18,16 @@ class SEUT_AddonPreferences(AddonPreferences):
         default='0'
     )
 
-    pref_mwmbPath: StringProperty(
-        name="MWM Builder",
-        subtype='FILE_PATH',
-    )
     pref_fbxImporterPath: StringProperty(
         name="Custom FBX Importer",
         subtype='FILE_PATH',
     )
     pref_havokPath: StringProperty(
         name="Havok Standalone Filter Tool",
+        subtype='FILE_PATH',
+    )
+    pref_mwmbPath: StringProperty(
+        name="MWM Builder",
         subtype='FILE_PATH',
     )
 
