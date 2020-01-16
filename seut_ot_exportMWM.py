@@ -37,5 +37,5 @@ class SEUT_OT_ExportMWM(Operator):
         # verify file paths
 
         # call mwmb
-    
+        
         return {'FINISHED'}

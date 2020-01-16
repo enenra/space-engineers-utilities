@@ -1,10 +1,112 @@
 import bpy
 import os
+import subprocess
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
 from bpy.types                       import Operator
 from .seut_ot_recreateCollections    import SEUT_OT_RecreateCollections
+
+# STOLLIE: Standard output error operator class for catching error return codes.
+class StdoutOperator():
+    def report(self, type, message):
+        print(message)
+
+# STOLLIE: Assigning of above class to a global constant.
+STDOUT_OPERATOR = StdoutOperator()
+
+# STOLLIE: Processes subprocesss tool error messages, e.g. FBXImporter/HavokTool/MWMBuilder.
+class MissbehavingToolError(subprocess.SubprocessError):
+    def __init__(self, message: str):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+# STOLLIE: Returns a tools path from the user preferences config, e.g. FBXImporter/HavokTool/MWMBuilder.
+def tool_path(propertyName, displayName, toolPath=None):
+    """Gets path to tool from user preferences.
+
+    Returns:
+    toolPath
+    """
+    if toolPath is None:
+        # STOLLIE: This is referencing the folder name the addon is stored in.
+        toolPath = getattr(bpy.context.preferences.addons.get(__package__).preferences, propertyName)
+
+    if toolPath is None:
+        raise FileNotFoundError("%s is not configured", (displayName))
+
+    toolPath = os.path.normpath(bpy.path.abspath(toolPath))
+    if os.path.isfile(toolPath) is None:
+        raise FileNotFoundError("%s: no such file %s" % (displayName, toolPath))
+
+    return toolPath
+
+# STOLLIE: Called by other methods to write to a log file when an errors occur.
+def write_to_log(logfile, content, cmdline=None, cwd=None, loglines=[]):
+    with open(logfile, 'wb') as log: # wb params here represent writing/create file and binary mode.
+        if cwd:
+            str = "Running from: %s \n" % (cwd)
+            log.write(str.encode('utf-8'))
+
+        if cmdline:
+            str = "Command: %s \n" % (" ".join(cmdline))
+            log.write(str.encode('utf-8'))
+
+        for line in loglines:
+            log.write(line.encode('utf-8'))
+            log.write(b"\n")
+
+        log.write(content)
+
+class ExportSettings:
+    def __init__(self, scene, depsgraph, mwmDir=None):
+        self.scene = scene # ObjectSource.getObjects() uses .utils.scene() instead
+        self.depsgraph = depsgraph
+        self.operator = STDOUT_OPERATOR
+        self.isLogToolOutput = True
+        
+        # set on first access, see properties below
+        self._fbximporter = None
+        self._havokfilter = None
+
+    @property
+    def fbximporter(self):
+        if self._fbximporter == None:
+            self._fbximporter = tool_path('pref_fbxImporterPath', 'Custom FBX Importer')
+        return self._fbximporter
+
+    @property
+    def havokfilter(self):
+        if self._havokfilter == None:
+            self._havokfilter = tool_path('pref_havokPath', 'Havok Standalone Filter Tool')
+        return self._havokfilter
+
+    def callTool(self, cmdline, logfile=None, cwd=None, successfulExitCodes=[0], loglines=[], logtextInspector=None):
+        try:
+            out = subprocess.check_output(cmdline, cwd=cwd, stderr=subprocess.STDOUT)
+            if self.isLogToolOutput and logfile:
+                write_to_log(logfile, out, cmdline=cmdline, cwd=cwd, loglines=loglines)
+            if logtextInspector is not None:
+                logtextInspector(out)
+
+        except subprocess.CalledProcessError as e:
+            if self.isLogToolOutput and logfile:
+                write_to_log(logfile, e.output, cmdline=cmdline, cwd=cwd, loglines=loglines)
+            if e.returncode not in successfulExitCodes:
+                raise
+    
+    def __getitem__(self, key): # makes all attributes available for parameter substitution
+        if not type(key) is str or key.startswith('_'):
+            raise KeyError(key)
+        try:
+            value = getattr(self, key)
+            if value is None or type(value) is _FUNCTION_TYPE:
+                raise KeyError(key)
+            return value
+        except AttributeError:
+            raise KeyError(key)
 
 class SEUT_OT_Export(Operator):
     """Exports all enabled file types and collections"""
@@ -34,8 +136,10 @@ class SEUT_OT_Export(Operator):
         
         # Call all the individual export operators
         bpy.ops.object.export_main()
-        bpy.ops.object.export_bs()
-        bpy.ops.object.export_lod()
+        bpy.ops.object.export_hkt()
+        # bpy.ops.object.export_buildstages()
+        # bpy.ops.object.export_lod()
+        bpy.ops.object.export_mwm()
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
         if scene.prop_export_hkt:

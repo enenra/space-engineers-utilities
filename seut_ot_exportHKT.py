@@ -5,7 +5,8 @@ from os.path                        import join
 from bpy.types                      import Operator
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_havok_options            import HAVOK_OPTION_FILE_CONTENT
-from .seut_havok_export             import ExportSettings, export_hktfbx_for_fbximporter, process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
+from .seut_ot_export                import ExportSettings
+from .seut_havok_export             import export_hktfbx_for_fbximporter, process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
 
 
 class SEUT_OT_ExportHKT(Operator):
