@@ -47,7 +47,7 @@ class SEUT_OT_ExportMain(Operator):
         # Export FBX if boolean is set.
         if scene.prop_export_fbx:
             self.report({'INFO'}, "SEUT: Exporting FBX for 'Main'.")
-            SEUT_OT_Export.export_FBX(self, context, collections['main'])
+            SEUT_OT_Export.export_FBX(self, context, collections['main']) #STOLLIE: This exports the Main Model using Blenders in-built method.
 
 
         return {'FINISHED'}

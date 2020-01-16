@@ -199,7 +199,7 @@ def process_hktfbx_to_fbximporterhkt(settings: ExportSettings, srcfile, dstfile)
         logfile=dstfile+'.convert.log'
     )
 
-def process_fbximporterhkt_to_final_hkt_for_mwm(settings: ExportSettings, srcfile, dstfile, havokoptions=HAVOK_OPTION_FILE_CONTENT):
+def process_fbximporterhkt_to_final_hkt_for_mwm(self, settings: ExportSettings, srcfile, dstfile, havokoptions=HAVOK_OPTION_FILE_CONTENT):
     hko = tempfile.NamedTemporaryFile(mode='wt', prefix='space_engineers_', suffix=".hko", delete=False) # wt mode is write plus text mode.
     try:
         with hko.file as tempfile_to_process:
@@ -213,3 +213,5 @@ def process_fbximporterhkt_to_final_hkt_for_mwm(settings: ExportSettings, srcfil
             successfulExitCodes=[0,1])
     finally:
         os.remove(hko.name)
+        self.report({'INFO'}, "SEUT: Collision files have been created.")
+        
