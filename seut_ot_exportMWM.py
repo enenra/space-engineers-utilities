@@ -31,6 +31,14 @@ class SEUT_OT_ExportMWM(Operator):
             self.report({'ERROR'}, "SEUT: Export folder does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
+        if preferences.pref_mwmbPath == "":
+            self.report({'ERROR'}, "SEUT: No path to MWM Builder defined. (018)")
+            return {'CANCELLED'}
+
+        if preferences.pref_materialsPath == "":
+            self.report({'ERROR'}, "SEUT: No Materials Folder defined. (017)")
+            return {'CANCELLED'}
+
         if scene.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             return {'CANCELLED'}
@@ -45,10 +53,6 @@ class SEUT_OT_ExportMWM(Operator):
 
             elif preferences.pref_looseFilesExportFolder == '1':
                 path = bpy.path.abspath(scene.prop_export_exportPath)
-            
-        # check whether files are present
-
-        # verify file paths
 
         # call mwmb
         fbxfile = join(path, scene.prop_subtypeId + ".fbx")
