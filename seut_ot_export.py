@@ -141,8 +141,8 @@ class SEUT_OT_Export(Operator):
         # Call all the individual export operators
         bpy.ops.object.export_main()
         bpy.ops.object.export_hkt()
-        # bpy.ops.object.export_buildstages()
-        # bpy.ops.object.export_lod()
+        bpy.ops.object.export_buildstages()
+        bpy.ops.object.export_lod()
         bpy.ops.object.export_mwm()
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
