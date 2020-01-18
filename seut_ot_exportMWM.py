@@ -56,6 +56,6 @@ class SEUT_OT_ExportMWM(Operator):
         paramsfile = join(path, scene.prop_subtypeId + ".xml")
         mwmfile = join(path, scene.prop_subtypeId + ".mwm")
 
-        mwmbuilder(self, path, settings, fbxfile, havokfile, paramsfile, mwmfile)
+        mwmbuilder(self, context, path, settings, fbxfile, havokfile, paramsfile, mwmfile)
         
         return {'FINISHED'}
