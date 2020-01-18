@@ -146,6 +146,11 @@ def register():
         name="SubtypeId",
         description="The SubtypeId for this model"
     )
+    bpy.types.Scene.prop_export_deleteLooseFiles = BoolProperty(
+        name="Delete Loose Files",
+        description="Whether the intermediary files should be deleted after the MWM has been created",
+        default=True
+    )
     bpy.types.Scene.prop_export_fbx = BoolProperty(
         name="FBX",
         description="Whether to export to FBX",
@@ -248,6 +253,7 @@ def unregister():
     del bpy.types.Scene.prop_bBox_Y
     del bpy.types.Scene.prop_bBox_Z
     del bpy.types.Scene.prop_subtypeId
+    del bpy.types.Scene.prop_export_deleteLooseFiles
     del bpy.types.Scene.prop_export_fbx
     del bpy.types.Scene.prop_export_xml
     del bpy.types.Scene.prop_export_hkt

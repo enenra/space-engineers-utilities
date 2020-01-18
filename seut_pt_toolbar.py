@@ -63,6 +63,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         row = layout.row()
         row.scale_y = 2.0
         row.operator('object.export', text="Export")
+        layout.prop(scene, "prop_export_deleteLooseFiles")
         
         # Partial
         box = layout.box()
