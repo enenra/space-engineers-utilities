@@ -30,11 +30,16 @@ class SEUT_AddonPreferences(AddonPreferences):
         name="MWM Builder",
         subtype='FILE_PATH',
     )
+    pref_materialsPath: StringProperty(
+        name="Materials Folder",
+        subtype='FILE_PATH',
+    )
 
     def draw(self, context):
         layout = self.layout
         layout.prop(self, "pref_looseFilesExportFolder")
         layout.prop(self, "pref_mwmbPath", expand=True)
+        layout.prop(self, "pref_materialsPath", expand=True)
         box = layout.box()
         box.label(text="Havok")
         box.prop(self, "pref_fbxImporterPath", expand=True)
