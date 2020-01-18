@@ -49,5 +49,4 @@ class SEUT_OT_ExportMain(Operator):
             self.report({'INFO'}, "SEUT: Exporting FBX for 'Main'.")
             SEUT_OT_Export.export_FBX(self, context, collections['main']) #STOLLIE: This exports the Main Model using Blenders in-built method.
 
-
         return {'FINISHED'}
