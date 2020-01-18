@@ -17,9 +17,6 @@ class SEUT_OT_Export(Operator):
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
 
-        # Debug
-        self.report({'DEBUG'}, "SEUT: OT Export executed.")
-
         if scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             return {'CANCELLED'}
@@ -92,15 +89,12 @@ class SEUT_OT_Export(Operator):
                 for mtl in bpy.data.materials:
                     # There is a material with its name in a linked library but override is turned on.
                     if mtl.library != None and mtl.name == mat.name and mat.seut.overrideMatLib == True:
-                        print("check: mat:" + mat.name + ", mtl: " + mtl.name + ", override: " + str(mat.seut.overrideMatLib))
                         isUnique = True
                     # There is a material with its name in a linked library and override is turned off.
                     if mtl.library != None and mtl.name == mat.name and mat.seut.overrideMatLib == False:
-                        print("check2: mat:" + mat.name + ", mtl: " + mtl.name + ", override: " + str(mat.seut.overrideMatLib))
                         isUnique = False
                     # There is no material with its name in a linked library.
                     elif mtl.library == None and mat.library == None and mtl.name == mat.name:
-                        print("check3: mat:" + mat.name + ", mtl: " + mtl.name + ", override: " + str(mat.seut.overrideMatLib))
                         isUnique = True
                 
                 if isUnique:
@@ -322,9 +316,92 @@ class SEUT_OT_Export(Operator):
         layer_collection = bpy.context.view_layer.layer_collection.children[collection.name]
         bpy.context.view_layer.active_layer_collection = layer_collection
 
+        for obj in collection.objects:
+            for objMat in obj.data.materials:
+                SEUT_OT_Export.prepMatForExport(self, context, objMat)
+
         bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
+
+        for obj in collection.objects:
+            for objMat in obj.data.materials:
+                SEUT_OT_Export.removeExportDummiesFromMat(self, context, objMat)
 
         bpy.context.scene.collection.children.unlink(collection)
         self.report({'INFO'}, "SEUT: '%s.fbx' has been created." % (path + filename))
+
+        return
+    
+    def prepMatForExport(self, context, material):
+        """Switches material around so that SE can properly read it"""
+        
+        # See if relevant nodes already exist
+        dummyShaderNode = None
+        dummyImageNode = None
+        dummyImage = None
+        materialOutput = None
+
+        for node in material.node_tree.nodes:
+            if node.type == 'BSDF_PRINCIPLED' and node.name == 'EXPORT_DUMMY':
+                dummyShaderNode = node
+            elif node.type == 'TEX_IMAGE' and node.name == 'DUMMY_IMAGE':
+                dummyImageNode = node
+            elif node.type == 'OUTPUT_MATERIAL':
+                materialOutput = node
+
+        # Iterate through images to find the dummy image
+        for img in bpy.data.images:
+            if img.name == 'DUMMY':
+                dummyImage = img
+
+        # If no, create it and DUMMY image node, and link them up
+        if dummyImageNode is None:
+            dummyImageNode = material.node_tree.nodes.new('ShaderNodeTexImage')
+            dummyImageNode.name = 'DUMMY_IMAGE'
+            dummyImageNode.label = 'DUMMY_IMAGE'
+
+        if dummyImage is None:
+            dummyImage = bpy.data.images.new('DUMMY', 1, 1)
+
+        if dummyShaderNode is None:
+            dummyShaderNode = material.node_tree.nodes.new('ShaderNodeBsdfPrincipled')
+            dummyShaderNode.name = 'EXPORT_DUMMY'
+            dummyShaderNode.label = 'EXPORT_DUMMY'
+        
+        if materialOutput is None:
+            materialOutput = material.node_tree.nodes.new('ShaderNodeOutputMaterial')
+            material.seut.nodeLinkedToOutputName = ""
+        # This allows the reestablishment of connections after the export is complete.
+        else:
+            material.seut.nodeLinkedToOutputName = materialOutput.inputs[0].links[0].from_node.name
+
+        # link nodes, add image to node
+        material.node_tree.links.new(dummyImageNode.outputs[0], dummyShaderNode.inputs[0])
+        material.node_tree.links.new(dummyShaderNode.outputs[0], materialOutput.inputs[0])
+        dummyImageNode.image = dummyImage
+
+        return
+
+    def removeExportDummiesFromMat(self, context, material):
+        """Removes the dummy nodes from the material again after export"""
+
+        materialOutput = None
+        nodeLinkedToOutput = None
+
+        # Remove dummy nodes - do I need to remove the links too?
+        # Image can stay, it's 1x1 px so nbd
+        for node in material.node_tree.nodes:
+            if node.type == 'TEX_IMAGE' and node.name == 'DUMMY_IMAGE':
+                material.node_tree.nodes.remove(node)
+            elif node.type == 'BSDF_PRINCIPLED' and node.name == 'EXPORT_DUMMY':
+                material.node_tree.nodes.remove(node)
+
+            elif node.type == 'OUTPUT_MATERIAL':
+                materialOutput = node
+            elif node.name == material.seut.nodeLinkedToOutputName:
+                nodeLinkedToOutput = node
+        
+        # link the node group back to output
+        if nodeLinkedToOutput is not None:
+            material.node_tree.links.new(nodeLinkedToOutput.outputs[0], materialOutput.inputs[0])
 
         return

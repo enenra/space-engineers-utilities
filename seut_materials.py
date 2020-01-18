@@ -55,3 +55,8 @@ class SEUT_Materials(PropertyGroup):
         subtype="FILE_PATH",
         default=""
     )
+
+    nodeLinkedToOutputName: StringProperty(
+        name="Node Linked to Output",
+        default=""
+    )
