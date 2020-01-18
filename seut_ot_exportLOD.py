@@ -1,4 +1,5 @@
 import bpy
+import os
 
 from bpy.types                       import Operator
 from .seut_ot_recreateCollections    import SEUT_OT_RecreateCollections
