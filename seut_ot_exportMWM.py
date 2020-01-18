@@ -53,13 +53,16 @@ class SEUT_OT_ExportMWM(Operator):
 
             elif preferences.pref_looseFilesExportFolder == '1':
                 path = bpy.path.abspath(scene.prop_export_exportPath)
+            
+            mwmpath = bpy.path.abspath(scene.prop_export_exportPath)
 
         # call mwmb
         fbxfile = join(path, scene.prop_subtypeId + ".fbx")
         havokfile = join(path, scene.prop_subtypeId + ".hkt")
         paramsfile = join(path, scene.prop_subtypeId + ".xml")
-        mwmfile = join(path, scene.prop_subtypeId + ".mwm")
+        mwmfile = join(mwmpath, scene.prop_subtypeId + ".mwm")
+        materialspath = bpy.path.abspath(preferences.pref_materialsPath)
 
-        mwmbuilder(self, context, path, settings, fbxfile, havokfile, paramsfile, mwmfile)
+        mwmbuilder(self, context, path, settings, fbxfile, havokfile, paramsfile, mwmfile, materialspath)
         
         return {'FINISHED'}
