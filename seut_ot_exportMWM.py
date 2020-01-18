@@ -23,24 +23,12 @@ class SEUT_OT_ExportMWM(Operator):
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         settings = ExportSettings(scene, depsgraph)
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
-            self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
-            return {'CANCELLED'}
-
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath.find("Models\\") == -1:
-            self.report({'ERROR'}, "SEUT: Export folder does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
-            return {'CANCELLED'}
-
         if preferences.pref_mwmbPath == "":
             self.report({'ERROR'}, "SEUT: No path to MWM Builder defined. (018)")
             return {'CANCELLED'}
 
         if preferences.pref_materialsPath == "":
             self.report({'ERROR'}, "SEUT: No Materials Folder defined. (017)")
-            return {'CANCELLED'}
-
-        if scene.prop_subtypeId == "":
-            self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
         # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.

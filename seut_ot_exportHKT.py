@@ -25,8 +25,8 @@ class SEUT_OT_ExportHKT(Operator):
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         settings = ExportSettings(scene, depsgraph)
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
-            self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
+        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "" or os.path.exists(scene.prop_export_exportPath) == False:
+            self.report({'ERROR'}, "SEUT: No export folder defined or export folder doesn't exist. (003)")
             return {'CANCELLED'}
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath.find("Models\\") == -1:

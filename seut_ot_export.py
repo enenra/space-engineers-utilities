@@ -126,8 +126,8 @@ class SEUT_OT_Export(Operator):
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
 
-        if scene.prop_export_exportPath == "":
-            self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
+        if scene.prop_export_exportPath == "" or os.path.exists(scene.prop_export_exportPath) == False:
+            self.report({'ERROR'}, "SEUT: No export folder defined or export folder doesn't exist. (003)")
             return {'CANCELLED'}
 
         if scene.prop_export_exportPath.find("Models\\") == -1:
