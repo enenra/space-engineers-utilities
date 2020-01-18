@@ -316,14 +316,14 @@ class SEUT_OT_Export(Operator):
         layer_collection = bpy.context.view_layer.layer_collection.children[collection.name]
         bpy.context.view_layer.active_layer_collection = layer_collection
 
-        for obj in collection.objects:
-            for objMat in obj.data.materials:
+        for objMat in bpy.data.materials:
+            if objMat is not None:
                 SEUT_OT_Export.prepMatForExport(self, context, objMat)
 
         bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
 
-        for obj in collection.objects:
-            for objMat in obj.data.materials:
+        for objMat in bpy.data.materials:
+            if objMat is not None:
                 SEUT_OT_Export.removeExportDummiesFromMat(self, context, objMat)
 
         bpy.context.scene.collection.children.unlink(collection)
