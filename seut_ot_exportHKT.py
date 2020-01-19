@@ -24,11 +24,16 @@ class SEUT_OT_ExportHKT(Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections()
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         settings = ExportSettings(scene, depsgraph)
-
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "" or os.path.exists(scene.prop_export_exportPath) == False:
-            self.report({'ERROR'}, "SEUT: No export folder defined or export folder doesn't exist. (ExportHKT: 003)")
+        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
+        
+        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
+            self.report({'ERROR'}, "SEUT: No export folder defined. (ExportHKT: 003)")
+            print("SEUT: No export folder defined. (ExportHKT: 003)")
+        elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
+            self.report({'ERROR'}, "SEUT: Export folder "+exportPath+" doesn't exist. (ExportHKT: 003)")
+            print("SEUT: Export folder "+exportPath+" doesn't exist. (ExportHKT: 003)")
             return {'CANCELLED'}
-
+        
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath.find("Models\\") == -1:
             self.report({'ERROR'}, "SEUT: Export folder does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}

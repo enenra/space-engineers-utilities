@@ -38,8 +38,8 @@ class SEUT_OT_Export(Operator):
         # Call all the individual export operators
         bpy.ops.object.export_main()
         bpy.ops.object.export_hkt()
-        bpy.ops.object.export_buildstages()
-        bpy.ops.object.export_lod()
+        # bpy.ops.object.export_buildstages() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
+        # bpy.ops.object.export_lod() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
         bpy.ops.object.export_mwm()
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
@@ -414,15 +414,22 @@ class SEUT_OT_Export(Operator):
 
         return
     
-    def recursiveViewLayerCollectionSearch(layer_collection = None, collectionName = "Main"):
-        print("Current: " + layer_collection.name + " - " + str(layer_collection.exclude) + " | Children: " + str(len(layer_collection.children)))
-        if layer_collection.name == collectionName:
-            print("Found: " + layer_collection.name + " - " + str(layer_collection.exclude))
-            return layer_collection
-        elif len(layer_collection.children) > 0:
-            for col in layer_collection.children:
-                if col != None:
-                    return SEUT_OT_Export.recursiveViewLayerCollectionSearch(col, collectionName)
+    def isCollectionExcluded(collectionName, allCurrentViewLayerCollections):
+            for topLevelCollection in allCurrentViewLayerCollections:
+                if topLevelCollection.name == collectionName:
+                    os.system("cls")
+                    if topLevelCollection.exclude:
+                        return True
+                    else:
+                        return False
+                if collectionName in topLevelCollection.children.keys():
+                    for collection in topLevelCollection.children:
+                        if collection.name == "Main":
+                            os.system("cls")
+                            if collection.exclude:
+                                return True
+                            else:
+                                return False
 
 # STOLLIE: Standard output error operator class for catching error return codes.
 class StdoutOperator():
