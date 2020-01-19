@@ -410,11 +410,14 @@ class SEUT_OT_Export(Operator):
         return
 
     def recursiveViewLayerCollectionSearch(layer_collection, collectionName):
+        print("Current: " + layer_collection.name + " - " + str(layer_collection.exclude) + " | Children: " + str(layer_collection.children) + " (" + str(len(layer_collection.children)) + ")")
         if layer_collection.name == collectionName:
+            print("Found: " + layer_collection.name + " - " + str(layer_collection.exclude))
             return layer_collection
         elif len(layer_collection.children) > 0 and layer_collection.children is not None:
             for col in layer_collection.children:
-                SEUT_OT_Export.recursiveViewLayerCollectionSearch(col, collectionName)
+                if col != None:
+                    return SEUT_OT_Export.recursiveViewLayerCollectionSearch(col, collectionName)
 
 
 # STOLLIE: Standard output error operator class for catching error return codes.

@@ -32,6 +32,17 @@ class SEUT_OT_ExportMain(Operator):
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
+        layerCollection = None
+        layerCollection = SEUT_OT_Export.recursiveViewLayerCollectionSearch(context.layer_collection, "Main")
+
+        print("Result: " + str(layerCollection))
+
+        print("up top: " + layerCollection.name + " - " + str(layerCollection.exclude))
+
+        if layerCollection is not None and layerCollection.exclude is True:
+            self.report({'ERROR'}, "SEUT: Collection 'Main' excluded from view layer. Export not possible. (019)")
+            return {'CANCELLED'}
+
         if collections['main'] == None:
             self.report({'ERROR'}, "SEUT: Collection 'Main' not found. Export not possible. (002)")
             return {'CANCELLED'}
