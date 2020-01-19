@@ -25,7 +25,7 @@ class SEUT_OT_ExportHKT(Operator):
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         settings = ExportSettings(scene, depsgraph)
 
-        self.report({'DEBUG'}, "SEUT: Running operator: 'object.export_hkt'")
+        self.report({'INFO'}, "SEUT: Running operator: 'object.export_hkt'")
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "" or os.path.exists(scene.prop_export_exportPath) == False:
             self.report({'ERROR'}, "SEUT: No export folder defined or export folder doesn't exist. (ExportHKT: 003)")

@@ -19,7 +19,7 @@ class SEUT_OT_Export(Operator):
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
-        self.report({'DEBUG'}, "SEUT: Running operator: 'object.export'")
+        self.report({'INFO'}, "SEUT: Running operator: 'object.export'")
 
         if scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (Export: 003)")
@@ -418,7 +418,7 @@ class SEUT_OT_Export(Operator):
     
     def recursiveViewLayerCollectionSearch(self, layer_collection, collectionName):
         if layer_collection.name == collectionName:
-            self.report({'DEBUG'}, "SEUT: '%s' found. Excluded: %s " % (layer_collection.name, str(layer_collection.exclude)))
+            self.report({'INFO'}, "SEUT: '%s' found. Excluded: %s " % (layer_collection.name, str(layer_collection.exclude)))
             return layer_collection
         elif len(layer_collection.children) > 0:
             for col in layer_collection.children:
