@@ -24,7 +24,7 @@ class SEUT_OT_BBoxAuto(Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections()
 
         if scene.prop_bBoxToggle == 'off':
-            self.report({'DEBUG'}, "SEUT: Triggered auto BBox even though BBox is turned off. This should never happen.")
+            self.report({'INFO'}, "SEUT: Triggered auto BBox even though BBox is turned off. This should never happen.")
             return {'CANCELLED'}
 
         if collections['main'] == None or len(collections['main'].objects) == 0:

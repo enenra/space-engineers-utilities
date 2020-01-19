@@ -21,6 +21,8 @@ class SEUT_OT_ExportMain(Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections()
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
+        self.report({'INFO'}, "SEUT: Running operator: 'object.export_main'")
+
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (Export: 003)")
             print("SEUT: No export folder defined. (Export: 003)")

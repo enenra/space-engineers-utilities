@@ -20,6 +20,8 @@ class SEUT_OT_ExportBS(Operator):
 
         collections = SEUT_OT_RecreateCollections.get_Collections()
 
+        self.report({'INFO'}, "SEUT: Running operator: 'object.export_buildstages'")
+
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "" or os.path.exists(scene.prop_export_exportPath) == False:
             self.report({'ERROR'}, "SEUT: No export folder defined or export folder doesn't exist. (ExportBS: 003)")
             return {'CANCELLED'}
