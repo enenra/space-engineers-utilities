@@ -19,23 +19,28 @@ class SEUT_OT_ExportMain(Operator):
         preferences = bpy.context.preferences.addons.get(__package__).preferences
 
         collections = SEUT_OT_RecreateCollections.get_Collections()
+        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "" or os.path.exists(scene.prop_export_exportPath) == False:
-            self.report({'ERROR'}, "SEUT: No export folder defined or export folder doesn't exist. (003)")
+        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
+            self.report({'ERROR'}, "SEUT: No export folder defined. (Export: 003)")
+            print("SEUT: No export folder defined. (Export: 003)")
+        elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
+            self.report({'ERROR'}, "SEUT: Export folder "+exportPath+" doesn't exist. (Export: 003)")
+            print("SEUT: Export folder "+exportPath+" doesn't exist. (Export: 003)")
             return {'CANCELLED'}
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath.find("Models\\") == -1:
-            self.report({'ERROR'}, "SEUT: Export folder does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
+            exportPath = scene.prop_export_exportPath
+            self.report({'ERROR'}, "SEUT: Export folder"+exportPath+" does not contain 'Models\\'. Cannot be transformed into relative path. (ExportMain: 014)")
             return {'CANCELLED'}
 
         if scene.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
-        layerCollection = None
         layerCollection = SEUT_OT_Export.recursiveViewLayerCollectionSearch(context.layer_collection, "Main")
 
-        print("Result: " + str(layerCollection))
+        print("DEBUG: Result AFTER func call: " + str(layerCollection))
 
         print("up top: " + layerCollection.name + " - " + str(layerCollection.exclude))
 

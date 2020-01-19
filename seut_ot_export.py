@@ -17,9 +17,14 @@ class SEUT_OT_Export(Operator):
         
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
+        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
-        if scene.prop_export_exportPath == "" or os.path.exists(scene.prop_export_exportPath) == False:
-            self.report({'ERROR'}, "SEUT: No export folder defined or export folder doesn't exist. (003)")
+        if scene.prop_export_exportPath == "":
+            self.report({'ERROR'}, "SEUT: No export folder defined. (Export: 003)")
+            print("SEUT: No export folder defined. (Export: 003)")
+        elif os.path.exists(exportPath) == False:
+            self.report({'ERROR'}, "SEUT: Export folder "+exportPath+" doesn't exist. (Export: 003)")
+            print("SEUT: Export folder "+exportPath+" doesn't exist. (Export: 003)")
             return {'CANCELLED'}
 
         if scene.prop_export_exportPath.find("Models\\") == -1:
@@ -408,17 +413,16 @@ class SEUT_OT_Export(Operator):
             material.node_tree.links.new(nodeLinkedToOutput.outputs[0], materialOutput.inputs[0])
 
         return
-
-    def recursiveViewLayerCollectionSearch(layer_collection, collectionName):
-        print("Current: " + layer_collection.name + " - " + str(layer_collection.exclude) + " | Children: " + str(layer_collection.children) + " (" + str(len(layer_collection.children)) + ")")
+    
+    def recursiveViewLayerCollectionSearch(layer_collection = None, collectionName = "Main"):
+        print("Current: " + layer_collection.name + " - " + str(layer_collection.exclude) + " | Children: " + str(len(layer_collection.children)))
         if layer_collection.name == collectionName:
             print("Found: " + layer_collection.name + " - " + str(layer_collection.exclude))
             return layer_collection
-        elif len(layer_collection.children) > 0 and layer_collection.children is not None:
+        elif len(layer_collection.children) > 0:
             for col in layer_collection.children:
                 if col != None:
                     return SEUT_OT_Export.recursiveViewLayerCollectionSearch(col, collectionName)
-
 
 # STOLLIE: Standard output error operator class for catching error return codes.
 class StdoutOperator():
