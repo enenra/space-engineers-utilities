@@ -21,6 +21,8 @@ class SEUT_OT_ExportMain(Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections()
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
+        self.report({'DEBUG'}, "SEUT: Running operator: 'object.export_main'")
+
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (Export: 003)")
             print("SEUT: No export folder defined. (Export: 003)")
@@ -38,11 +40,8 @@ class SEUT_OT_ExportMain(Operator):
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
-        layerCollection = SEUT_OT_Export.recursiveViewLayerCollectionSearch(context.layer_collection, "Main")
-
-        print("DEBUG: Result AFTER func call: " + str(layerCollection))
-
-        print("up top: " + layerCollection.name + " - " + str(layerCollection.exclude))
+        layerCollection = SEUT_OT_Export.recursiveViewLayerCollectionSearch(self, context.layer_collection, "Main")
+        self.report({'DEBUG'}, "SEUT: Result AFTER func call: %s" % (layerCollection))
 
         if layerCollection is not None and layerCollection.exclude is True:
             self.report({'ERROR'}, "SEUT: Collection 'Main' excluded from view layer. Export not possible. (019)")

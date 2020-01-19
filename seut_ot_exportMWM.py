@@ -23,6 +23,8 @@ class SEUT_OT_ExportMWM(Operator):
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         settings = ExportSettings(scene, depsgraph)
 
+        self.report({'DEBUG'}, "SEUT: Running operator: 'object.export_mwm'")
+
         if preferences.pref_mwmbPath == "":
             self.report({'ERROR'}, "SEUT: No path to MWM Builder defined. (018)")
             return {'CANCELLED'}

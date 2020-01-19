@@ -19,6 +19,8 @@ class SEUT_OT_Export(Operator):
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
+        self.report({'DEBUG'}, "SEUT: Running operator: 'object.export'")
+
         if scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (Export: 003)")
             print("SEUT: No export folder defined. (Export: 003)")
@@ -414,15 +416,14 @@ class SEUT_OT_Export(Operator):
 
         return
     
-    def recursiveViewLayerCollectionSearch(layer_collection = None, collectionName = "Main"):
-        print("Current: " + layer_collection.name + " - " + str(layer_collection.exclude) + " | Children: " + str(len(layer_collection.children)))
+    def recursiveViewLayerCollectionSearch(self, layer_collection, collectionName):
         if layer_collection.name == collectionName:
-            print("Found: " + layer_collection.name + " - " + str(layer_collection.exclude))
+            self.report({'DEBUG'}, "SEUT: '%s' found. Excluded: %s " % (layer_collection.name, str(layer_collection.exclude)))
             return layer_collection
         elif len(layer_collection.children) > 0:
             for col in layer_collection.children:
                 if col != None:
-                    return SEUT_OT_Export.recursiveViewLayerCollectionSearch(col, collectionName)
+                    return SEUT_OT_Export.recursiveViewLayerCollectionSearch(self, col, collectionName)
 
 # STOLLIE: Standard output error operator class for catching error return codes.
 class StdoutOperator():
