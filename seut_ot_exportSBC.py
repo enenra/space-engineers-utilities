@@ -19,32 +19,41 @@ class SEUT_OT_ExportSBC(Operator):
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.get_Collections()
         preferences = bpy.context.preferences.addons.get(__package__).preferences
+        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
-        self.report({'INFO'}, "SEUT: Running operator: 'object.export_sbc'")
-
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "" or os.path.exists(scene.prop_export_exportPath) == False:
-            self.report({'ERROR'}, "SEUT: No export folder defined or export folder doesn't exist. (ExportSBC: 003)")
+        self.report({'INFO'}, "SEUT: Running operator: 'object.export_sbc' ---------------------------")
+        
+        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
+            self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
+            self.report({'INFO'}, "SEUT: No export folder defined. (003)")
+        elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
+            self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
+            self.report({'INFO'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
             return {'CANCELLED'}
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath.find("Models\\") == -1:
-            self.report({'ERROR'}, "SEUT: Export folder does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
+            self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
+            self.report({'INFO'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
             return {'CANCELLED'}
 
         if scene.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
+            self.report({'INFO'}, "SEUT: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
         if collections['main'] == None:
             self.report({'ERROR'}, "SEUT: Collection 'Main' not found. Export not possible. (002)")
+            self.report({'INFO'}, "SEUT: Collection 'Main' not found. Export not possible. (002)")
             return {'CANCELLED'}
 
         if len(collections['main'].objects) == 0:
             self.report({'ERROR'}, "SEUT: Collection 'Main' is empty. Export not possible. (005)")
+            self.report({'INFO'}, "SEUT: Collection 'Main' is empty. Export not possible. (005)")
             return {'CANCELLED'}
 
         if not scene.prop_export_sbc:
             self.report({'WARNING'}, "SEUT: 'SBC' is toggled off. SBC export skipped.")
-            return {'CANCELLED'}
+            return {'FINISHED'}
 
         if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
             self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
@@ -97,6 +106,7 @@ class SEUT_OT_ExportSBC(Operator):
         # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
         if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
             self.report({'ERROR'}, "SEUT: BLEND file must be saved before SBC can be exported to its directory. (008)")
+            self.report({'INFO'}, "SEUT: BLEND file must be saved before SBC can be exported to its directory. (008)")
             return
         else:
             if preferences.pref_looseFilesExportFolder == '0':
