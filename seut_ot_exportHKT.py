@@ -5,9 +5,8 @@ from os.path                        import join
 from bpy.types                      import Operator
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_havok_options            import HAVOK_OPTION_FILE_CONTENT
-from .seut_ot_export                import ExportSettings
+from .seut_ot_export                import ExportSettings, SEUT_OT_Export
 from .seut_havok_export             import export_hktfbx_for_fbximporter, process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
-
 
 class SEUT_OT_ExportHKT(Operator):
     """Exports the HKT"""
@@ -48,6 +47,13 @@ class SEUT_OT_ExportHKT(Operator):
 
         if scene.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
+            return {'CANCELLED'}
+
+        allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
+        isCollectionExcluded = SEUT_OT_Export.isCollectionExcluded("Collision", allCurrentViewLayerCollections)
+
+        if isCollectionExcluded is True:
+            self.report({'ERROR'}, "SEUT: Collection 'Collision' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
             return {'CANCELLED'}
 
         if collections['hkt'] == None:

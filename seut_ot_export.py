@@ -419,15 +419,13 @@ class SEUT_OT_Export(Operator):
     def isCollectionExcluded(collectionName, allCurrentViewLayerCollections):
             for topLevelCollection in allCurrentViewLayerCollections:
                 if topLevelCollection.name == collectionName:
-                    os.system("cls")
                     if topLevelCollection.exclude:
                         return True
                     else:
                         return False
                 if collectionName in topLevelCollection.children.keys():
                     for collection in topLevelCollection.children:
-                        if collection.name == "Main":
-                            os.system("cls")
+                        if collection.name == collectionName:
                             if collection.exclude:
                                 return True
                             else:

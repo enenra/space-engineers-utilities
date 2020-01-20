@@ -40,7 +40,6 @@ class SEUT_OT_ExportMain(Operator):
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
-        
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
         isCollectionExcluded = SEUT_OT_Export.isCollectionExcluded("Main", allCurrentViewLayerCollections)
 
