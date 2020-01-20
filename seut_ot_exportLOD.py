@@ -15,35 +15,45 @@ class SEUT_OT_ExportLOD(Operator):
     def execute(self, context):
         """Exports the 'LOD' collections"""
 
+        print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_lod'")
+
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-
         collections = SEUT_OT_RecreateCollections.get_Collections()
 
-        # self.report({'INFO'}, "SEUT: Running operator: 'object.export_lod'")
+        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "" or os.path.exists(scene.prop_export_exportPath) == False:
-            self.report({'ERROR'}, "SEUT: No export folder defined or export folder doesn't exist. (ExportLOD: 003)")
+        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
+            self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
+            print("SEUT Error: No export folder defined. (003)")
+        elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
+            self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
+            print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
             return {'CANCELLED'}
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath.find("Models\\") == -1:
-            self.report({'ERROR'}, "SEUT: Export folder does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
+            self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
+            print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
         if scene.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
+            print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
         if collections['lod1'] == None and collections['lod2'] == None and collections['lod3'] == None:
             self.report({'ERROR'}, "SEUT: No 'LOD'-type collections found. Export not possible. (002)")
+            print("SEUT Error: No 'LOD'-type collections found. Export not possible. (002)")
             return {'CANCELLED'}
 
         if len(collections['lod1'].objects) == 0 and len(collections['lod2'].objects) == 0 and len(collections['lod3'].objects) == 0:
             self.report({'ERROR'}, "SEUT: All 'LOD'-type collections are empty. Export not possible. (005)")
+            print("SEUT Error: All 'LOD'-type collections are empty. Export not possible. (005)")
             return {'CANCELLED'}
 
         if scene.prop_export_lod1Distance > prop_export_lod2Distance or prop_export_lod2Distance > prop_export_lod3Distance:
             self.report({'ERROR'}, "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
+            print("SEUT Error: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
             return {'CANCELLED'}
 
         # Export LOD1, if present.
@@ -79,5 +89,6 @@ class SEUT_OT_ExportLOD(Operator):
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD3'.")
                 SEUT_OT_Export.export_FBX(self, context, collections['lod3'])
 
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_lod'")
 
         return {'FINISHED'}

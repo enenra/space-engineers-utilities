@@ -14,35 +14,35 @@ class SEUT_OT_Export(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
+
+        print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export'")
         
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
-        # self.report({'INFO'}, "SEUT: Running operator: 'object.export'")
-
         if scene.prop_export_exportPath == "":
-            self.report({'ERROR'}, "SEUT: No export folder defined. (Export: 003)")
-            print("SEUT: No export folder defined. (Export: 003)")
+            self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
+            print("SEUT Error: No export folder defined. (003)")
         elif os.path.exists(exportPath) == False:
-            self.report({'ERROR'}, "SEUT: Export folder "+exportPath+" doesn't exist. (Export: 003)")
-            print("SEUT: Export folder "+exportPath+" doesn't exist. (Export: 003)")
+            self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
+            print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
             return {'CANCELLED'}
 
         if scene.prop_export_exportPath.find("Models\\") == -1:
-            self.report({'ERROR'}, "SEUT: Export folder does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
+            self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
+            print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
         if scene.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
+            print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
         
         # Call all the individual export operators
         bpy.ops.object.export_main()
-        bpy.ops.object.export_hkt()
         # bpy.ops.object.export_buildstages() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
         # bpy.ops.object.export_lod() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
-        bpy.ops.object.export_mwm()
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
         if scene.prop_export_hkt:
@@ -51,7 +51,10 @@ class SEUT_OT_Export(Operator):
         if scene.prop_export_sbc:
             bpy.ops.object.export_sbc()
         
-        # Once I implement MWM export, make it adhere to export folder - may need to check for it again?
+        # Finally, compile everything to MWM
+        bpy.ops.object.export_mwm()
+
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export'")
 
         return {'FINISHED'}
 
@@ -232,7 +235,7 @@ class SEUT_OT_Export(Operator):
             lod2Printed = False
 
             if collections['lod1'] == None or len(collections['lod1'].objects) == 0:
-                self.report({'INFO'}, "SEUT: Collection 'LOD1' not found or empty. Skipping.")
+                self.report({'INFO'}, "SEUT: Collection 'LOD1' not found or empty. Skipping XML entry.")
             else:
                 lod1 = ET.SubElement(model, 'LOD')
                 lod1.set('Distance', str(scene.prop_export_lod1Distance))
@@ -241,7 +244,7 @@ class SEUT_OT_Export(Operator):
                 lod1Printed = True
 
             if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
-                self.report({'INFO'}, "SEUT: Collection 'LOD2' not found or empty. Skipping.")
+                self.report({'INFO'}, "SEUT: Collection 'LOD2' not found or empty. Skipping XML entry.")
             else:
                 if lod1Printed: 
                     lod2 = ET.SubElement(model, 'LOD')
@@ -253,7 +256,7 @@ class SEUT_OT_Export(Operator):
                     self.report({'ERROR'}, "SEUT: LOD2 cannot be set if LOD1 is not. (006)")
 
             if collections['lod3'] == None or len(collections['lod3'].objects) == 0:
-                self.report({'INFO'}, "SEUT: Collection 'LOD3' not found or empty. Skipping.")
+                self.report({'INFO'}, "SEUT: Collection 'LOD3' not found or empty. Skipping XML entry.")
             else:
                 if lod1Printed and lod2Printed:
                     lod3 = ET.SubElement(model, 'LOD')
