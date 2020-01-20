@@ -1,5 +1,6 @@
 import bpy
 import os
+import glob
 import subprocess
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
@@ -41,8 +42,8 @@ class SEUT_OT_Export(Operator):
         
         # Call all the individual export operators
         bpy.ops.object.export_main()
-        # bpy.ops.object.export_buildstages() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
-        # bpy.ops.object.export_lod() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
+        bpy.ops.object.export_buildstages() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
+        bpy.ops.object.export_lod() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
         if scene.prop_export_hkt:
@@ -487,7 +488,18 @@ def write_to_log(logfile, content, cmdline=None, cwd=None, loglines=[]):
 
         log.write(content)
 
-def delete_loose_files(fbxfile, havokfile, paramsfile):
+def delete_loose_files(path, fbxfile, havokfile, paramsfile):
+
+    """
+    fileList = glob.glob(path + '*.fbx', recursive=False)
+
+    for filePath in fileList:
+        try:
+            os.remove(filePath)
+        except OSError:
+            print("Error while deleting file")
+
+    """    
     if os.path.exists(fbxfile):
         print("RemoveFBXFile: " + str(fbxfile))
         os.remove(os.path.normpath(os.path.abspath(fbxfile)))
