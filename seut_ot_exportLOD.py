@@ -50,7 +50,7 @@ class SEUT_OT_ExportLOD(Operator):
             print("SEUT Error: All 'LOD'-type collections are empty. Export not possible. (005)")
             return {'CANCELLED'}
 
-        if scene.prop_export_lod1Distance > prop_export_lod2Distance or prop_export_lod2Distance > prop_export_lod3Distance:
+        if scene.prop_export_lod1Distance > scene.prop_export_lod2Distance or scene.prop_export_lod2Distance > scene.prop_export_lod3Distance:
             self.report({'ERROR'}, "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
             print("SEUT Error: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
             return {'CANCELLED'}
