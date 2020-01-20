@@ -80,9 +80,6 @@ def export_hktfbx_for_fbximporter(settings: ExportSettings, filepath, objects, k
         global_matrix = Matrix.Scale(scale, 4) @ global_matrix
 
     kwargs['global_matrix'] = global_matrix
-
-    
-    print("DEBUG:" + filepath)
     
     return save_single(
         settings.operator,
@@ -98,7 +95,7 @@ def process_hktfbx_to_fbximporterhkt(settings: ExportSettings, srcfile, dstfile)
         logfile=dstfile+'.convert.log'
     )
 
-def process_fbximporterhkt_to_final_hkt_for_mwm(self, settings: ExportSettings, srcfile, dstfile, havokoptions=HAVOK_OPTION_FILE_CONTENT):
+def process_fbximporterhkt_to_final_hkt_for_mwm(self, scene, path, settings: ExportSettings, srcfile, dstfile, havokoptions=HAVOK_OPTION_FILE_CONTENT):
     hko = tempfile.NamedTemporaryFile(mode='wt', prefix='space_engineers_', suffix=".hko", delete=False) # wt mode is write plus text mode.
     try:
         with hko.file as tempfile_to_process:

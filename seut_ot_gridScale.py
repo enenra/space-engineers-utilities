@@ -31,5 +31,5 @@ class SEUT_OT_GridScale(Operator):
                             break
 
         self.report({'INFO'}, "SEUT: Grid Scale adjusted to: %s" % (scene.prop_gridScale))
-
+        
         return {'FINISHED'}

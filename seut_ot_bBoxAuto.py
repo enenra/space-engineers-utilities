@@ -25,10 +25,12 @@ class SEUT_OT_BBoxAuto(Operator):
 
         if scene.prop_bBoxToggle == 'off':
             self.report({'INFO'}, "SEUT: Triggered auto BBox even though BBox is turned off. This should never happen.")
+            
             return {'CANCELLED'}
 
         if collections['main'] == None or len(collections['main'].objects) == 0:
             self.report({'ERROR'}, "SEUT: Collection 'Main' not found or empty. Not possible to set automatic bounding box. (010)")
+            
             return {'CANCELLED'}
 
         xD = 0
@@ -61,5 +63,5 @@ class SEUT_OT_BBoxAuto(Operator):
         bpy.ops.object.bbox('INVOKE_DEFAULT')
 
         self.report({'INFO'}, "SEUT: Bounding Box set for dimensions X: %f Y: %f Z: %f in 'Main' collection." % (xD, yD, zD))
-
+        
         return {'FINISHED'}

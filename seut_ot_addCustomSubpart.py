@@ -57,5 +57,5 @@ class SEUT_OT_AddCustomSubpart(Operator):
         bpy.data.objects[empty.name][customPropName] = targetObject.name
         
         self.report({'INFO'}, "SEUT: Subpart '%s' created for file: '%s'" % (empty.name,targetObject.name))
-
+        
         return {'FINISHED'}

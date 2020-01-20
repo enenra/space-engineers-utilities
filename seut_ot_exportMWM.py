@@ -4,8 +4,8 @@ import os
 from os.path                        import join
 from bpy.types                      import Operator
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_ot_export                import ExportSettings
-from .seut_MWM_export               import mwmbuilder
+from .seut_ot_export                import ExportSettings, delete_loose_files
+from .seut_mwmbuilder               import mwmbuilder
 
 class SEUT_OT_ExportMWM(Operator):
     """Compiles the MWM from the previously exported loose files"""
@@ -51,15 +51,18 @@ class SEUT_OT_ExportMWM(Operator):
             
             mwmpath = bpy.path.abspath(scene.prop_export_exportPath)
 
-        # call mwmb
         fbxfile = join(path, scene.prop_subtypeId + ".fbx")
         havokfile = join(path, scene.prop_subtypeId + ".hkt")
         paramsfile = join(path, scene.prop_subtypeId + ".xml")
         mwmfile = join(mwmpath, scene.prop_subtypeId + ".mwm")
         materialspath = bpy.path.abspath(preferences.pref_materialsPath)
 
-        mwmbuilder(self, context, path, settings, fbxfile, havokfile, paramsfile, mwmfile, materialspath)
-
+        try:
+            mwmbuilder(self, context, path, settings, fbxfile, havokfile, paramsfile, mwmfile, materialspath)
+        finally:
+            if scene.prop_export_deleteLooseFiles:
+                delete_loose_files(fbxfile, havokfile, paramsfile)
+                
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_mwm'")
-        
+
         return {'FINISHED'}
