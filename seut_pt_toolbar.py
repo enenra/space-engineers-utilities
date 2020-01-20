@@ -87,7 +87,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         col.prop(scene, "prop_export_fbx")
         col.prop(scene, "prop_export_sbc")
 
-        col = split.column(align=True)
+        col = split.column()
         col.prop(scene, "prop_export_xml")
         col.prop(scene, "prop_export_hkt")
         
