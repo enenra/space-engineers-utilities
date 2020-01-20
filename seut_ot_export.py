@@ -17,9 +17,16 @@ class SEUT_OT_Export(Operator):
         
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
+        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
-        if scene.prop_export_exportPath == "" or os.path.exists(scene.prop_export_exportPath) == False:
-            self.report({'ERROR'}, "SEUT: No export folder defined or export folder doesn't exist. (003)")
+        self.report({'INFO'}, "SEUT: Running operator: 'object.export'")
+
+        if scene.prop_export_exportPath == "":
+            self.report({'ERROR'}, "SEUT: No export folder defined. (Export: 003)")
+            print("SEUT: No export folder defined. (Export: 003)")
+        elif os.path.exists(exportPath) == False:
+            self.report({'ERROR'}, "SEUT: Export folder "+exportPath+" doesn't exist. (Export: 003)")
+            print("SEUT: Export folder "+exportPath+" doesn't exist. (Export: 003)")
             return {'CANCELLED'}
 
         if scene.prop_export_exportPath.find("Models\\") == -1:
@@ -33,8 +40,8 @@ class SEUT_OT_Export(Operator):
         # Call all the individual export operators
         bpy.ops.object.export_main()
         bpy.ops.object.export_hkt()
-        bpy.ops.object.export_buildstages()
-        bpy.ops.object.export_lod()
+        # bpy.ops.object.export_buildstages() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
+        # bpy.ops.object.export_lod() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
         bpy.ops.object.export_mwm()
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
@@ -408,14 +415,23 @@ class SEUT_OT_Export(Operator):
             material.node_tree.links.new(nodeLinkedToOutput.outputs[0], materialOutput.inputs[0])
 
         return
-
-    def recursiveViewLayerCollectionSearch(layer_collection, collectionName):
-        if layer_collection.name == collectionName:
-            return layer_collection
-        elif len(layer_collection.children) > 0 and layer_collection.children is not None:
-            for col in layer_collection.children:
-                SEUT_OT_Export.recursiveViewLayerCollectionSearch(col, collectionName)
-
+    
+    def isCollectionExcluded(collectionName, allCurrentViewLayerCollections):
+            for topLevelCollection in allCurrentViewLayerCollections:
+                if topLevelCollection.name == collectionName:
+                    os.system("cls")
+                    if topLevelCollection.exclude:
+                        return True
+                    else:
+                        return False
+                if collectionName in topLevelCollection.children.keys():
+                    for collection in topLevelCollection.children:
+                        if collection.name == "Main":
+                            os.system("cls")
+                            if collection.exclude:
+                                return True
+                            else:
+                                return False
 
 # STOLLIE: Standard output error operator class for catching error return codes.
 class StdoutOperator():
