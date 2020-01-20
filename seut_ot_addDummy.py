@@ -14,6 +14,8 @@ class SEUT_OT_AddDummy(Operator):
     detectorType: EnumProperty(
         name='Dummy Type',
         items=(
+            ('conveyorline', 'Conveyorline', 'Conveyor connection point without direct access'),
+            ('conveyorline_small', 'Conveyorline Small', 'Small conveyor connection point without direct access'),
             ('Connector', 'Connector', 'Adds connector functionality'),
             ('merge', 'Merge Block', 'Adds merge block functionality'),
             ('thruster_flame', 'Thruster Flame', 'Determines the point where the thruster flame will appear'),
@@ -32,7 +34,7 @@ class SEUT_OT_AddDummy(Operator):
             ('particles2', 'Particles 2', 'Point of origin for particles (used in grinder)'),
             ('TopBlock', 'Piston Top', 'The top part of a piston')
             ),
-        default='Connector'
+        default='conveyorline'
     )
     index: IntProperty(
         name='Dummy Type Index',
@@ -48,6 +50,14 @@ class SEUT_OT_AddDummy(Operator):
         # Determine name strings.
         emptyName = ""
         usesIndex = False
+
+        if self.detectorType == 'conveyorline':
+            emptyName = "dummy_detector_conveyorline_"
+            usesIndex = True
+
+        if self.detectorType == 'conveyorline_small':
+            emptyName = "dummy_detector_conveyorline_small_"
+            usesIndex = True
 
         if self.detectorType == 'Connector':
             emptyName = "dummy_detector_Connector_"
