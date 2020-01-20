@@ -15,44 +15,44 @@ class SEUT_OT_ExportBS(Operator):
     def execute(self, context):
         """Exports the 'Build Stages' collections"""
 
+        print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_buildstages'")
+
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         collections = SEUT_OT_RecreateCollections.get_Collections()
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
-        self.report({'INFO'}, "SEUT: Running operator: 'object.export_buildstages' ---------------------------")
-        
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
-            self.report({'INFO'}, "SEUT: No export folder defined. (003)")
+            print("SEUT Error: No export folder defined. (003)")
         elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
             self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
-            self.report({'INFO'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
+            print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
             return {'CANCELLED'}
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath.find("Models\\") == -1:
             self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
-            self.report({'INFO'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
+            print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
         if scene.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
-            self.report({'INFO'}, "SEUT: No SubtypeId set. (004)")
+            print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
         if collections['bs1'] == None and collections['bs2'] == None and collections['bs3'] == None:
             self.report({'ERROR'}, "SEUT: No 'BS'-type collections found. Export not possible. (002)")
-            self.report({'INFO'}, "SEUT: No 'BS'-type collections found. Export not possible. (002)")
+            print("SEUT Error: No 'BS'-type collections found. Export not possible. (002)")
             return {'CANCELLED'}
 
         if len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) == 0:
             self.report({'ERROR'}, "SEUT: All 'BS'-type collections are empty. Export not possible. (005)")
-            self.report({'INFO'}, "SEUT: All 'BS'-type collections are empty. Export not possible. (005)")
+            print("SEUT Error: All 'BS'-type collections are empty. Export not possible. (005)")
             return {'CANCELLED'}
 
         if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
             self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
-            self.report({'INFO'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
+            print("SEUT Error: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
             return {'CANCELLED'}
 
         # Export BS1, if present.
@@ -88,5 +88,6 @@ class SEUT_OT_ExportBS(Operator):
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS3'.")
                 SEUT_OT_Export.export_FBX(self, context, collections['bs3'])
 
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_buildstages'")
 
         return {'FINISHED'}
