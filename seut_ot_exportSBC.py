@@ -144,7 +144,7 @@ class SEUT_OT_ExportSBC(Operator):
             
         percentage = 1 / counter
 
-        for bs in counter:
+        for bs in range(0, counter):
             def_BS_Model = ET.SubElement(def_BuildProgressModels, 'Model')
 
             # This makes sure the last build stage is set to upper bound 1.0
