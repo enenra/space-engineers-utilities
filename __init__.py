@@ -52,7 +52,6 @@ from .seut_ot_addHighlightEmpty     import SEUT_OT_AddHighlightEmpty
 from .seut_ot_addDummy              import SEUT_OT_AddDummy
 from .seut_ot_addPresetSubpart      import SEUT_OT_AddPresetSubpart
 from .seut_ot_addCustomSubpart      import SEUT_OT_AddCustomSubpart
-from .seut_ot_deleteloose           import SEUT_OT_DeleteLoose
 from .seut_ot_exportMain            import SEUT_OT_ExportMain
 from .seut_ot_exportBS              import SEUT_OT_ExportBS
 from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
@@ -83,7 +82,6 @@ def register():
     bpy.utils.register_class(SEUT_OT_AddPresetSubpart)
     bpy.utils.register_class(SEUT_OT_AddCustomSubpart)
     bpy.utils.register_class(SEUT_OT_Export)
-    bpy.utils.register_class(SEUT_OT_DeleteLoose)
     bpy.utils.register_class(SEUT_OT_ExportMain)
     bpy.utils.register_class(SEUT_OT_ExportBS)
     bpy.utils.register_class(SEUT_OT_ExportLOD)
@@ -231,7 +229,6 @@ def unregister():
     bpy.utils.unregister_class(SEUT_OT_AddPresetSubpart)
     bpy.utils.unregister_class(SEUT_OT_AddCustomSubpart)
     bpy.utils.unregister_class(SEUT_OT_Export)
-    bpy.utils.unregister_class(SEUT_OT_DeleteLoose)
     bpy.utils.unregister_class(SEUT_OT_ExportMain)
     bpy.utils.unregister_class(SEUT_OT_ExportBS)
     bpy.utils.unregister_class(SEUT_OT_ExportLOD)
@@ -276,7 +273,6 @@ def menu_func(self, context):
     self.layout.operator(SEUT_OT_AddCustomSubpart.bl_idname)
 
     self.layout.operator(SEUT_OT_Export.bl_idname)
-    self.layout.operator(SEUT_OT_DeleteLoose.bl_idname)
     self.layout.operator(SEUT_OT_ExportMain.bl_idname)
     self.layout.operator(SEUT_OT_ExportBS.bl_idname)
     self.layout.operator(SEUT_OT_ExportLOD.bl_idname)

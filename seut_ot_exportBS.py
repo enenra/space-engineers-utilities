@@ -20,7 +20,6 @@ class SEUT_OT_ExportBS(Operator):
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         collections = SEUT_OT_RecreateCollections.get_Collections()
-
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":

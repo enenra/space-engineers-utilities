@@ -71,7 +71,6 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         split = box.split()
         
         col = split.column()
-        col.operator('object.deleteloose', text="Delete Loose")
         col.operator('object.export_main', text="Main")
         col.operator('object.export_lod', text="LODs")
 
