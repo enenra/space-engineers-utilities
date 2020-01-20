@@ -40,6 +40,8 @@ class SEUT_OT_ExportSBC(Operator):
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
         
+        SEUT_OT_ExportSBC.export_SBC(self, context)
+        
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_sbc'")
 
         return {'FINISHED'}

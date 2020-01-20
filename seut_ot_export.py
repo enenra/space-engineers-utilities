@@ -11,6 +11,7 @@ from .seut_ot_exportBS              import SEUT_OT_ExportBS
 from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
 from .seut_ot_exportHKT             import SEUT_OT_ExportHKT
 from .seut_ot_exportMWM             import SEUT_OT_ExportMWM
+from .seut_ot_exportSBC             import SEUT_OT_ExportSBC
 
 class SEUT_OT_Export(Operator):
     """Exports all enabled file types and collections"""
@@ -54,7 +55,7 @@ class SEUT_OT_Export(Operator):
             SEUT_OT_ExportHKT.export_HKT(self, context)
 
         if scene.prop_export_sbc:
-            bpy.ops.object.export_sbc()
+            SEUT_OT_ExportSBC.export_SBC(self, context)
         
         # Finally, compile everything to MWM
         SEUT_OT_ExportMWM.export_MWM(self, context)
