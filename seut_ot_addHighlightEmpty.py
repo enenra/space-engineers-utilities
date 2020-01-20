@@ -122,5 +122,5 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         bpy.data.objects[empty.name][customPropName] = targetObject.name
         
         self.report({'INFO'}, "SEUT: Highlight '%s' created for object: '%s'" % (empty.name,targetObject.name))
-
+        
         return {'FINISHED'}

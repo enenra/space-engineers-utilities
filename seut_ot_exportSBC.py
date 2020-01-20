@@ -12,7 +12,6 @@ class SEUT_OT_ExportSBC(Operator):
     bl_label = "Export SBC"
     bl_options = {'REGISTER', 'UNDO'}
 
-
     def execute(self, context):
         """Exports the SBC file for a defined collection"""
 
@@ -20,7 +19,7 @@ class SEUT_OT_ExportSBC(Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections()
         preferences = bpy.context.preferences.addons.get(__package__).preferences
 
-        self.report({'INFO'}, "SEUT: Running operator: 'object.export_sbc'")
+        # self.report({'INFO'}, "SEUT: Running operator: 'object.export_sbc'")
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "" or os.path.exists(scene.prop_export_exportPath) == False:
             self.report({'ERROR'}, "SEUT: No export folder defined or export folder doesn't exist. (ExportSBC: 003)")

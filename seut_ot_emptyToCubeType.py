@@ -21,5 +21,5 @@ class SEUT_OT_EmptiesToCubeType(Operator):
                 obj.empty_display_type = "CUBE"
         
         self.report({'INFO'}, "SEUT: Changed all empties to display type 'Cube'.")
-
+        
         return {'FINISHED'}

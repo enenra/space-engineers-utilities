@@ -10,18 +10,16 @@ class SEUT_OT_ExportMain(Operator):
     bl_idname = "object.export_main"
     bl_label = "Export Main"
     bl_options = {'REGISTER', 'UNDO'}
-
-
+        
     def execute(self, context):
         """Exports the 'Main' collection"""
 
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-
         collections = SEUT_OT_RecreateCollections.get_Collections()
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
-        self.report({'INFO'}, "SEUT: Running operator: 'object.export_main'")
+        # self.report({'INFO'}, "SEUT: Running operator: 'object.export_main'")
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (Export: 003)")
@@ -63,6 +61,6 @@ class SEUT_OT_ExportMain(Operator):
         # Export FBX if boolean is set.
         if scene.prop_export_fbx:
             self.report({'INFO'}, "SEUT: Exporting FBX for 'Main'.")
-            SEUT_OT_Export.export_FBX(self, context, collections['main']) #STOLLIE: This exports the Main Model using Blenders in-built method.
+            SEUT_OT_Export.export_FBX(self, context, collections['main'])
 
         return {'FINISHED'}

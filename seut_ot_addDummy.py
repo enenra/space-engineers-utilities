@@ -139,5 +139,5 @@ class SEUT_OT_AddDummy(Operator):
             empty.name = emptyName
         
         self.report({'INFO'}, "SEUT: Dummy '%s' created." % (empty.name))
-
+        
         return {'FINISHED'}

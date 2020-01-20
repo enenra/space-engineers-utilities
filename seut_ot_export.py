@@ -19,7 +19,7 @@ class SEUT_OT_Export(Operator):
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
-        self.report({'INFO'}, "SEUT: Running operator: 'object.export'")
+        # self.report({'INFO'}, "SEUT: Running operator: 'object.export'")
 
         if scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (Export: 003)")
@@ -290,7 +290,7 @@ class SEUT_OT_Export(Operator):
         exportedXML.write(xmlFormatted)
         self.report({'INFO'}, "SEUT: '%s.xml' has been created." % (path + filename))
 
-        return
+        return {'FINISHED'}
 
     
     def export_FBX(self, context, collection):
@@ -339,7 +339,7 @@ class SEUT_OT_Export(Operator):
         bpy.context.scene.collection.children.unlink(collection)
         self.report({'INFO'}, "SEUT: '%s.fbx' has been created." % (path + filename))
 
-        return
+        return {'FINISHED'}
     
     def prepMatForExport(self, context, material):
         """Switches material around so that SE can properly read it"""
@@ -484,6 +484,20 @@ def write_to_log(logfile, content, cmdline=None, cwd=None, loglines=[]):
 
         log.write(content)
 
+def delete_loose_files(fbxfile, havokfile, paramsfile):
+    if os.path.exists(fbxfile):
+        print("RemoveFBXFile: " + str(fbxfile))
+        os.remove(os.path.normpath(os.path.abspath(fbxfile)))
+        
+    if os.path.exists(os.path.normpath(os.path.abspath(havokfile))):
+        print("RemoveHavokFile: " + str(os.path.normpath(os.path.abspath(havokfile))))
+        os.remove(os.path.normpath(os.path.abspath(havokfile)))
+        os.remove(os.path.normpath(os.path.abspath(havokfile + ".fbx")))
+
+    if os.path.exists(paramsfile):
+        print("RemoveParamsFile: " + str(paramsfile))
+        os.remove(os.path.normpath(os.path.abspath(paramsfile)))
+
 class ExportSettings:
     def __init__(self, scene, depsgraph, mwmDir=None):
         self.scene = scene # ObjectSource.getObjects() uses .utils.scene() instead
@@ -496,6 +510,9 @@ class ExportSettings:
         self._havokfilter = None
         self._mwmbuilder = None
 
+        if scene.prop_export_deleteLooseFiles:
+            self.isLogToolOutput = False
+        
     @property
     def fbximporter(self):
         if self._fbximporter == None:
@@ -516,7 +533,7 @@ class ExportSettings:
 
     def callTool(self, cmdline, logfile=None, cwd=None, successfulExitCodes=[0], loglines=[], logtextInspector=None):
         try:
-            out = subprocess.check_output(cmdline, cwd=cwd, stderr=subprocess.STDOUT)
+            out = subprocess.check_output(cmdline, cwd=cwd, stderr=subprocess.STDOUT, shell=True)
             if self.isLogToolOutput and logfile:
                 write_to_log(logfile, out, cmdline=cmdline, cwd=cwd, loglines=loglines)
             if logtextInspector is not None:
