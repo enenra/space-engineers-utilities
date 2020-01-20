@@ -39,6 +39,17 @@ class SEUT_OT_ExportSBC(Operator):
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
+        
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_sbc'")
+
+        return {'FINISHED'}
+    
+    def export_SBC(self, context):
+        """Exports the SBC file for a defined collection"""
+
+        scene = context.scene
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
 
         if collections['main'] == None:
             self.report({'ERROR'}, "SEUT: Collection 'Main' not found. Export not possible. (002)")
@@ -164,7 +175,5 @@ class SEUT_OT_ExportSBC(Operator):
         exportedXML = open(path + filename + ".sbc", "w")
         exportedXML.write(xmlFormatted)
         self.report({'INFO'}, "SEUT: '%s.sbc' has been created." % (path + filename))
-        
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_sbc'")
 
-        return {'FINISHED'}
+        return

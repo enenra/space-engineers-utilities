@@ -18,10 +18,40 @@ class SEUT_OT_ExportMWM(Operator):
         """Compiles all loose files into a MWM"""
 
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_main'")
+        
+        scene = context.scene
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
+        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
+            self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
+            print("SEUT Error: No export folder defined. (003)")
+        elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
+            self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
+            print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
+            return {'CANCELLED'}
+
+        if scene.prop_export_exportPath.find("Models\\") == -1:
+            self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
+            print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
+            return {'CANCELLED'}
+
+        if scene.prop_subtypeId == "":
+            self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
+            print("SEUT Error: No SubtypeId set. (004)")
+            return {'CANCELLED'}
+
+        SEUT_OT_ExportMWM.export_MWM(self, context)
+                
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_mwm'")
+
+        return {'FINISHED'}
+
+    def export_MWM(self, context):
+        """Compiles all loose files into a MWM"""
+        
         scene = context.scene
         depsgraph = None
-        collections = SEUT_OT_RecreateCollections.get_Collections()
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         settings = ExportSettings(scene, depsgraph)
         mwmbPath = os.path.normpath(bpy.path.abspath(preferences.pref_mwmbPath))
@@ -62,7 +92,5 @@ class SEUT_OT_ExportMWM(Operator):
         finally:
             if scene.prop_export_deleteLooseFiles:
                 delete_loose_files(fbxfile, havokfile, paramsfile)
-                
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_mwm'")
-
-        return {'FINISHED'}
+        
+        return

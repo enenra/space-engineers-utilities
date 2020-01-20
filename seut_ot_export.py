@@ -4,8 +4,13 @@ import subprocess
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
-from bpy.types                       import Operator
-from .seut_ot_recreateCollections    import SEUT_OT_RecreateCollections
+from bpy.types                      import Operator
+from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_exportMain            import SEUT_OT_ExportMain
+from .seut_ot_exportBS              import SEUT_OT_ExportBS
+from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
+from .seut_ot_exportHKT             import SEUT_OT_ExportHKT
+from .seut_ot_exportMWM             import SEUT_OT_ExportMWM
 
 class SEUT_OT_Export(Operator):
     """Exports all enabled file types and collections"""
@@ -21,10 +26,10 @@ class SEUT_OT_Export(Operator):
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
-        if scene.prop_export_exportPath == "":
+        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             print("SEUT Error: No export folder defined. (003)")
-        elif os.path.exists(exportPath) == False:
+        elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
             self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
             print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
             return {'CANCELLED'}
@@ -39,20 +44,20 @@ class SEUT_OT_Export(Operator):
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
         
-        # Call all the individual export operators
-        bpy.ops.object.export_main()
-        # bpy.ops.object.export_buildstages() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
-        # bpy.ops.object.export_lod() # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
+        # Call all the individual export functions
+        SEUT_OT_ExportMain.export_Main(self, context)
+        # SEUT_OT_ExportBS.export_BS(self, context) # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
+        # SEUT_OT_ExportLOD.export_LOD(self, context) # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
         if scene.prop_export_hkt:
-            bpy.ops.object.export_hkt()
+            SEUT_OT_ExportHKT.export_HKT(self, context)
 
         if scene.prop_export_sbc:
             bpy.ops.object.export_sbc()
         
         # Finally, compile everything to MWM
-        bpy.ops.object.export_mwm()
+        SEUT_OT_ExportMWM.export_MWM(self, context)
 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export'")
 

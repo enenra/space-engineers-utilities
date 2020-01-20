@@ -19,7 +19,6 @@ class SEUT_OT_ExportBS(Operator):
 
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        collections = SEUT_OT_RecreateCollections.get_Collections()
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
@@ -39,6 +38,19 @@ class SEUT_OT_ExportBS(Operator):
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
+
+        SEUT_OT_ExportBS.export_BS(self, context)
+
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_buildstages'")
+
+        return {'FINISHED'}
+    
+    def export_BS(self, context):
+        """Exports the 'Build Stages' collections"""
+
+        scene = context.scene
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        collections = SEUT_OT_RecreateCollections.get_Collections()
 
         if collections['bs1'] == None and collections['bs2'] == None and collections['bs3'] == None:
             self.report({'ERROR'}, "SEUT: No 'BS'-type collections found. Export not possible. (002)")
@@ -87,7 +99,5 @@ class SEUT_OT_ExportBS(Operator):
             if scene.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS3'.")
                 SEUT_OT_Export.export_FBX(self, context, collections['bs3'])
-
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_buildstages'")
-
-        return {'FINISHED'}
+        
+        return

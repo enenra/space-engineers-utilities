@@ -18,7 +18,6 @@ class SEUT_OT_ExportMain(Operator):
 
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        collections = SEUT_OT_RecreateCollections.get_Collections()
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
@@ -38,6 +37,19 @@ class SEUT_OT_ExportMain(Operator):
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
+
+        SEUT_OT_ExportMain.export_Main(self, context)
+
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_main'")
+
+        return {'FINISHED'}
+    
+    def export_Main(self, context):
+        """Exports the 'Main' collection"""
+
+        scene = context.scene
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        collections = SEUT_OT_RecreateCollections.get_Collections()
 
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
         isCollectionExcluded = SEUT_OT_Export.isCollectionExcluded("Main", allCurrentViewLayerCollections)
@@ -71,7 +83,5 @@ class SEUT_OT_ExportMain(Operator):
             SEUT_OT_Export.export_FBX(self, context, collections['main'])
         else:
             print("SEUT Info: 'FBX' export disabled.")
-
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_main'")
-
-        return {'FINISHED'}
+        
+        return

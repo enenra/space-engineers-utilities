@@ -19,7 +19,6 @@ class SEUT_OT_ExportLOD(Operator):
 
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        collections = SEUT_OT_RecreateCollections.get_Collections()
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
@@ -39,6 +38,19 @@ class SEUT_OT_ExportLOD(Operator):
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
+        
+        SEUT_OT_ExportLOD.export_LOD(self, context)
+
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_lod'")
+
+        return {'FINISHED'}
+    
+    def export_LOD(self, context):
+        """Exports the 'LOD' collections"""
+
+        scene = context.scene
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        collections = SEUT_OT_RecreateCollections.get_Collections()
 
         if collections['lod1'] == None and collections['lod2'] == None and collections['lod3'] == None:
             self.report({'ERROR'}, "SEUT: No 'LOD'-type collections found. Export not possible. (002)")
@@ -87,7 +99,5 @@ class SEUT_OT_ExportLOD(Operator):
             if scene.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD3'.")
                 SEUT_OT_Export.export_FBX(self, context, collections['lod3'])
-
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_lod'")
-
-        return {'FINISHED'}
+        
+        return
