@@ -74,7 +74,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         col.operator('object.export_main', text="Main")
         col.operator('object.export_lod', text="LODs")
 
-        col = split.column(align=True)
+        col = split.column()
         col.operator('object.export_buildstages', text="Build Stages")
         col.operator('object.export_hkt', text="Collision")
 
