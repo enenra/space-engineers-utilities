@@ -83,7 +83,8 @@ class SEUT_OT_Export(Operator):
         paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
         paramRescaleToLengthInMeters.text = 'false'
 
-        # Set path from preference style and path given if appropriate.
+        path = ""
+
         if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
             self.report({'ERROR'}, "SEUT: BLEND file must be saved before Models can be exported. (021)")
             print("SEUT Error: BLEND file must be saved before Models can be exported. (021)")
@@ -288,26 +289,14 @@ class SEUT_OT_Export(Operator):
             filename = scene.prop_subtypeId
         else:
             filename = scene.prop_subtypeId + '_' + collection.name
-
-        path = ""
-
-        # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
-        if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
-            self.report({'ERROR'}, "SEUT: BLEND file must be saved before XML can be exported to its directory. (008)")
-            return
-        else:
-            if preferences.pref_looseFilesExportFolder == '0':
-                path = os.path.dirname(bpy.data.filepath) + "\\"
-
-            elif preferences.pref_looseFilesExportFolder == '1':
-                path = bpy.path.abspath(scene.prop_export_exportPath)
-
+        
         exportedXML = open(path + filename + ".xml", "w")
         exportedXML.write(xmlFormatted)
         self.report({'INFO'}, "SEUT: '%s.xml' has been created." % (path + filename))
 
         return {'FINISHED'}
-    
+
+
     def export_FBX(self, context, collection):
         """Exports the FBX file for a defined collection"""
 
