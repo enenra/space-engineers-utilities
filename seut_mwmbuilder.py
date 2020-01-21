@@ -8,6 +8,4 @@ def mwmbuilder(self, context, path, settings: ExportSettings, mwmfile: str, mate
         # cmdline = [settings.mwmbuilder, '/s:Sources', '/m:'+basename+'.fbx', '/o:.\\' , '/x:'+settings.materialref , '/lod:'+settings.lodsmwmDir]
         settings.callTool(cmdline, cwd=path, logfile=mwmfile+'.log')
     finally:
-        self.report({'INFO'}, "SEUT: MWM file(s) have been created.")
-        
-        return {'FINISHED'}
+        self.report({'INFO'}, "SEUT: MWM file(s) have been created.")        

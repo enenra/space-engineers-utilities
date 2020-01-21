@@ -94,6 +94,7 @@ class SEUT_OT_ExportSBC(Operator):
         def_Icon.text = 'PLACEHOLDER'
         
         def_CubeSize = ET.SubElement(def_definition, 'CubeSize')
+
         if scene.prop_gridScale == 'large':
             def_CubeSize.text = 'Large'
         elif scene.prop_gridScale == 'small':
