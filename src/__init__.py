@@ -144,7 +144,8 @@ def register():
     # Export
     bpy.types.Scene.prop_subtypeId = StringProperty(
         name="SubtypeId",
-        description="The SubtypeId for this model"
+        description="The SubtypeId for this model",
+        update=update_SceneName
     )
     bpy.types.Scene.prop_export_deleteLooseFiles = BoolProperty(
         name="Delete Loose Files",
@@ -303,6 +304,11 @@ def update_GridScale(self, context):
 
 def update_BBox(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
+
+def update_SceneName(self, context):
+    scene = context.scene
+
+    scene.name = scene.prop_subtypeId
 
 addon_keymaps = []
 
