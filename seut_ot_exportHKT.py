@@ -71,9 +71,9 @@ class SEUT_OT_ExportHKT(Operator):
             return {'CANCELLED'}
 
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
-        isCollectionExcluded = isCollectionExcluded("Collision", allCurrentViewLayerCollections)
+        isExcluded = isCollectionExcluded("Collision", allCurrentViewLayerCollections)
 
-        if isCollectionExcluded is True:
+        if isExcluded is True:
             self.report({'ERROR'}, "SEUT: Collection 'Collision' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
             return {'CANCELLED'}
 

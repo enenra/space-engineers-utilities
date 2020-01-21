@@ -52,9 +52,9 @@ class SEUT_OT_ExportMain(Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections()
 
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
-        isCollectionExcluded = isCollectionExcluded("Main", allCurrentViewLayerCollections)
+        isExcluded = isCollectionExcluded("Main", allCurrentViewLayerCollections)
 
-        if isCollectionExcluded is True:
+        if isExcluded is True:
             self.report({'ERROR'}, "SEUT: Collection 'Main' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
             print("SEUT Error: Collection 'Main' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
             return {'CANCELLED'}
