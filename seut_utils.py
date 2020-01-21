@@ -29,6 +29,19 @@ def export_XML(self, context, collection):
     paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
     paramRescaleToLengthInMeters.text = 'false'
     
+    path = ""
+
+    if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
+        self.report({'ERROR'}, "SEUT: BLEND file must be saved before Models can be exported. (021)")
+        print("SEUT Error: BLEND file must be saved before Models can be exported. (021)")
+        return {'CANCELLED'}
+    else:
+        if preferences.pref_looseFilesExportFolder == '0':
+            path = os.path.dirname(bpy.data.filepath) + "\\"
+
+        elif preferences.pref_looseFilesExportFolder == '1':
+            path = bpy.path.abspath(scene.prop_export_exportPath)
+
     # Currently no support for the other material parameters - are those even needed anymore?
 
     # Iterate through all materials in the file
@@ -187,7 +200,7 @@ def export_XML(self, context, collection):
             lod1 = ET.SubElement(model, 'LOD')
             lod1.set('Distance', str(scene.prop_export_lod1Distance))
             lod1Model = ET.SubElement(lod1, 'Model')
-            lod1Model.text = scene.prop_subtypeId + '_LOD1'
+            lod1Model.text = path + scene.prop_subtypeId + '_LOD1'
             lod1Printed = True
 
         if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
@@ -197,7 +210,7 @@ def export_XML(self, context, collection):
                 lod2 = ET.SubElement(model, 'LOD')
                 lod2.set('Distance', str(scene.prop_export_lod2Distance))
                 lod2Model = ET.SubElement(lod2, 'Model')
-                lod2Model.text = scene.prop_subtypeId + '_LOD2'
+                lod2Model.text = path + scene.prop_subtypeId + '_LOD2'
                 lod2Printed = True
             else:
                 self.report({'ERROR'}, "SEUT: LOD2 cannot be set if LOD1 is not. (006)")
@@ -209,7 +222,7 @@ def export_XML(self, context, collection):
                 lod3 = ET.SubElement(model, 'LOD')
                 lod3.set('Distance', str(scene.prop_export_lod3Distance))
                 lod3Model = ET.SubElement(lod3, 'Model')
-                lod3Model.text = scene.prop_subtypeId + '_LOD3'
+                lod3Model.text = path + scene.prop_subtypeId + '_LOD3'
             else:
                 self.report({'ERROR'}, "SEUT: LOD3 cannot be set if LOD1 or LOD2 is not. (006)")
 
@@ -222,19 +235,6 @@ def export_XML(self, context, collection):
         filename = scene.prop_subtypeId
     else:
         filename = scene.prop_subtypeId + '_' + collection.name
-
-    path = ""
-
-    # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
-    if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
-        self.report({'ERROR'}, "SEUT: BLEND file must be saved before XML can be exported to its directory. (008)")
-        return
-    else:
-        if preferences.pref_looseFilesExportFolder == '0':
-            path = os.path.dirname(bpy.data.filepath) + "\\"
-
-        elif preferences.pref_looseFilesExportFolder == '1':
-            path = bpy.path.abspath(scene.prop_export_exportPath)
 
     exportedXML = open(path + filename + ".xml", "w")
     exportedXML.write(xmlFormatted)
@@ -291,6 +291,7 @@ def export_FBX(self, context, collection):
 
     return {'FINISHED'}
 
+
 def prepMatForExport(self, context, material):
     """Switches material around so that SE can properly read it"""
     
@@ -341,6 +342,7 @@ def prepMatForExport(self, context, material):
 
     return
 
+
 def removeExportDummiesFromMat(self, context, material):
     """Removes the dummy nodes from the material again after export"""
 
@@ -365,6 +367,7 @@ def removeExportDummiesFromMat(self, context, material):
         material.node_tree.links.new(nodeLinkedToOutput.outputs[0], materialOutput.inputs[0])
 
     return
+
 
 def isCollectionExcluded(collectionName, allCurrentViewLayerCollections):
         for topLevelCollection in allCurrentViewLayerCollections:
@@ -435,19 +438,17 @@ def write_to_log(logfile, content, cmdline=None, cwd=None, loglines=[]):
 
         log.write(content)
 
-def delete_loose_files(fbxfile, havokfile, paramsfile):
-    if os.path.exists(fbxfile):
-        print("RemoveFBXFile: " + str(fbxfile))
-        os.remove(os.path.normpath(os.path.abspath(fbxfile)))
-        
-    if os.path.exists(os.path.normpath(os.path.abspath(havokfile))):
-        print("RemoveHavokFile: " + str(os.path.normpath(os.path.abspath(havokfile))))
-        os.remove(os.path.normpath(os.path.abspath(havokfile)))
-        os.remove(os.path.normpath(os.path.abspath(havokfile + ".fbx")))
+def delete_loose_files(path):
+    fileRemovalList = [fileName for fileName in glob.glob(path + "*.*") if "fbx" in fileName or
+        "xml" in fileName or "hkt" in fileName or "log" in fileName]
 
-    if os.path.exists(paramsfile):
-        print("RemoveParamsFile: " + str(paramsfile))
-        os.remove(os.path.normpath(os.path.abspath(paramsfile)))
+    try:
+        for fileName in fileRemovalList:
+            os.remove(fileName)
+
+    except EnvironmentError:
+        self.report({'ERROR'}, "SEUT: Loose files file deletion failed. (020)")
+        print("SEUT Error: File Deletion failed. (020)")
 
 class ExportSettings:
     def __init__(self, scene, depsgraph, mwmDir=None):

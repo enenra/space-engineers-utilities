@@ -88,9 +88,9 @@ class SEUT_OT_ExportMWM(Operator):
         materialspath = bpy.path.abspath(preferences.pref_materialsPath)
 
         try:
-            mwmbuilder(self, context, path, settings, fbxfile, havokfile, paramsfile, mwmfile, materialspath)
+            mwmbuilder(self, context, path, settings, mwmfile, materialspath)
         finally:
             if scene.prop_export_deleteLooseFiles:
-                delete_loose_files(fbxfile, havokfile, paramsfile)
+                delete_loose_files(path)
         
         return
