@@ -82,7 +82,19 @@ class SEUT_OT_Export(Operator):
         paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
         paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
         paramRescaleToLengthInMeters.text = 'false'
-        
+
+        # Set path from preference style and path given if appropriate.
+        if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
+            self.report({'ERROR'}, "SEUT: BLEND file must be saved before Models can be exported. (021)")
+            print("SEUT Error: BLEND file must be saved before Models can be exported. (021)")
+            return {'CANCELLED'}
+        else:
+            if preferences.pref_looseFilesExportFolder == '0':
+                path = os.path.dirname(bpy.data.filepath) + "\\"
+
+            elif preferences.pref_looseFilesExportFolder == '1':
+                path = bpy.path.abspath(scene.prop_export_exportPath)
+            
         # Currently no support for the other material parameters - are those even needed anymore?
 
         # Iterate through all materials in the file
@@ -241,7 +253,7 @@ class SEUT_OT_Export(Operator):
                 lod1 = ET.SubElement(model, 'LOD')
                 lod1.set('Distance', str(scene.prop_export_lod1Distance))
                 lod1Model = ET.SubElement(lod1, 'Model')
-                lod1Model.text = scene.prop_subtypeId + '_LOD1'
+                lod1Model.text = path + scene.prop_subtypeId + '_LOD1'
                 lod1Printed = True
 
             if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
@@ -251,7 +263,7 @@ class SEUT_OT_Export(Operator):
                     lod2 = ET.SubElement(model, 'LOD')
                     lod2.set('Distance', str(scene.prop_export_lod2Distance))
                     lod2Model = ET.SubElement(lod2, 'Model')
-                    lod2Model.text = scene.prop_subtypeId + '_LOD2'
+                    lod2Model.text = path + scene.prop_subtypeId + '_LOD2'
                     lod2Printed = True
                 else:
                     self.report({'ERROR'}, "SEUT: LOD2 cannot be set if LOD1 is not. (006)")
@@ -263,7 +275,7 @@ class SEUT_OT_Export(Operator):
                     lod3 = ET.SubElement(model, 'LOD')
                     lod3.set('Distance', str(scene.prop_export_lod3Distance))
                     lod3Model = ET.SubElement(lod3, 'Model')
-                    lod3Model.text = scene.prop_subtypeId + '_LOD3'
+                    lod3Model.text = path + scene.prop_subtypeId + '_LOD3'
                 else:
                     self.report({'ERROR'}, "SEUT: LOD3 cannot be set if LOD1 or LOD2 is not. (006)")
 
@@ -295,7 +307,6 @@ class SEUT_OT_Export(Operator):
         self.report({'INFO'}, "SEUT: '%s.xml' has been created." % (path + filename))
 
         return {'FINISHED'}
-
     
     def export_FBX(self, context, collection):
         """Exports the FBX file for a defined collection"""
@@ -488,30 +499,17 @@ def write_to_log(logfile, content, cmdline=None, cwd=None, loglines=[]):
 
         log.write(content)
 
-def delete_loose_files(path, fbxfile, havokfile, paramsfile):
-
-    """
-    fileList = glob.glob(path + '*.fbx', recursive=False)
-
-    for filePath in fileList:
-        try:
-            os.remove(filePath)
-        except OSError:
-            print("Error while deleting file")
-
-    """    
-    if os.path.exists(fbxfile):
-        print("RemoveFBXFile: " + str(fbxfile))
-        os.remove(os.path.normpath(os.path.abspath(fbxfile)))
-        
-    if os.path.exists(os.path.normpath(os.path.abspath(havokfile))):
-        print("RemoveHavokFile: " + str(os.path.normpath(os.path.abspath(havokfile))))
-        os.remove(os.path.normpath(os.path.abspath(havokfile)))
-        os.remove(os.path.normpath(os.path.abspath(havokfile + ".fbx")))
-
-    if os.path.exists(paramsfile):
-        print("RemoveParamsFile: " + str(paramsfile))
-        os.remove(os.path.normpath(os.path.abspath(paramsfile)))
+def delete_loose_files(path):
+    fileRemovalList = [fileName for fileName in glob.glob(path + "*.*") if "fbx" in fileName or
+        "xml" in fileName or "hkt" in fileName or "log" in fileName]
+    
+    try:
+        for fileName in fileRemovalList:
+            os.remove(fileName)
+    
+    except EnvironmentError:
+        self.report({'ERROR'}, "SEUT: Loose files file deletion failed. (020)")
+        print("SEUT Error: File Deletion failed. (020)")
 
 class ExportSettings:
     def __init__(self, scene, depsgraph, mwmDir=None):

@@ -51,17 +51,14 @@ class SEUT_OT_ExportMWM(Operator):
             
             mwmpath = bpy.path.abspath(scene.prop_export_exportPath)
 
-        fbxfile = join(path, scene.prop_subtypeId + ".fbx")
-        havokfile = join(path, scene.prop_subtypeId + ".hkt")
-        paramsfile = join(path, scene.prop_subtypeId + ".xml")
         mwmfile = join(mwmpath, scene.prop_subtypeId + ".mwm")
         materialspath = bpy.path.abspath(preferences.pref_materialsPath)
 
         try:
-            mwmbuilder(self, context, path, settings, fbxfile, havokfile, paramsfile, mwmfile, materialspath)
+            mwmbuilder(self, context, path, settings, mwmfile, materialspath)
         finally:
             if scene.prop_export_deleteLooseFiles:
-                delete_loose_files(path, fbxfile, havokfile, paramsfile)
+                delete_loose_files(path)
                 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_mwm'")
 
