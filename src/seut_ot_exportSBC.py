@@ -57,9 +57,15 @@ class SEUT_OT_ExportSBC(Operator):
             print("SEUT Info: 'SBC' is toggled off. SBC export skipped.")
             return {'FINISHED'}
 
-        if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
-            self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
-            return {'CANCELLED'}
+        if collections['bs1'] is not None and collections['bs2'] is not None:
+            if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
+                self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1. (015)")
+                return {'CANCELLED'}
+                
+        if collections['bs2'] is not None and collections['bs3'] is not None:
+            if (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
+                self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS3 but no BS2. (015)")
+                return {'CANCELLED'}
 
         # Create XML tree and add initial parameters.
         definitions = ET.Element('Definitions')
