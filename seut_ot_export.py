@@ -1,5 +1,10 @@
 import bpy
 import os
+import glob
+import subprocess
+import xml.etree.ElementTree as ET
+import xml.dom.minidom
+
 
 from bpy.types              import Operator
 from .seut_ot_exportMain    import SEUT_OT_ExportMain
@@ -41,10 +46,10 @@ class SEUT_OT_Export(Operator):
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
         
-        # Call all the individual export functions
-        SEUT_OT_ExportMain.export_Main(self, context)
-        # SEUT_OT_ExportBS.export_BS(self, context) # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
-        # SEUT_OT_ExportLOD.export_LOD(self, context) # TO-DO: Make exports for - don't re-enable until made, casues entire export to crash.
+        # Call all the individual export operators
+        bpy.ops.object.export_main()
+        bpy.ops.object.export_buildstages()
+        bpy.ops.object.export_lod()
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
         if scene.prop_export_hkt:
