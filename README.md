@@ -17,7 +17,7 @@ A Blender 2.8+ addon.
 
 ## Installation
 1. Download the latest release of the addon from the releases section, enable it in Blender.
-2. Download the supplementary ZIP containing additional required files.
+2. Download the supplementary ZIP (SEUT.zip) containing additional required files.
 3. Ensure you have downloaded the Space Engineers Mod SDK.
 4. Unpack the supplementary ZIP file onto a drive with ~15GB available disk space.
 5. Within the resulting directory you should have the following structure:
