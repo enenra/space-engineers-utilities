@@ -47,9 +47,9 @@ class SEUT_OT_Export(Operator):
             return {'CANCELLED'}
         
         # Call all the individual export operators
-        bpy.ops.object.export_main()
-        bpy.ops.object.export_buildstages()
-        bpy.ops.object.export_lod()
+        SEUT_OT_ExportMain.export_Main(self, context)
+        SEUT_OT_ExportBS.export_BS(self, context)
+        SEUT_OT_ExportLOD.export_LOD(self, context)
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
         if scene.prop_export_hkt:
