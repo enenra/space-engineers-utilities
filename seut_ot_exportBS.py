@@ -1,9 +1,9 @@
 import bpy
 import os
 
-from bpy.types                       import Operator
-from .seut_ot_recreateCollections    import SEUT_OT_RecreateCollections
-from .seut_ot_export                 import SEUT_OT_Export
+from bpy.types                      import Operator
+from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_utils                    import isCollectionExcluded, export_XML, export_FBX
 
 class SEUT_OT_ExportBS(Operator):
     """Exports Build Stages"""
@@ -19,7 +19,6 @@ class SEUT_OT_ExportBS(Operator):
 
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        collections = SEUT_OT_RecreateCollections.get_Collections()
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
@@ -39,6 +38,19 @@ class SEUT_OT_ExportBS(Operator):
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
+
+        SEUT_OT_ExportBS.export_BS(self, context)
+
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_buildstages'")
+
+        return {'FINISHED'}
+    
+    def export_BS(self, context):
+        """Exports the 'Build Stages' collections"""
+
+        scene = context.scene
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        collections = SEUT_OT_RecreateCollections.get_Collections()
 
         if collections['bs1'] == None and collections['bs2'] == None and collections['bs3'] == None:
             self.report({'ERROR'}, "SEUT: No 'BS'-type collections found. Export not possible. (002)")
@@ -61,10 +73,10 @@ class SEUT_OT_ExportBS(Operator):
         else:
             if scene.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'BS1'.")
-                SEUT_OT_Export.export_XML(self, context, collections['bs1'])
+                export_XML(self, context, collections['bs1'])
             if scene.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS1'.")
-                SEUT_OT_Export.export_FBX(self, context, collections['bs1'])
+                export_FBX(self, context, collections['bs1'])
         
         # Export BS2, if present.
         if collections['bs2'] == None or len(collections['bs2'].objects) == 0:
@@ -72,10 +84,10 @@ class SEUT_OT_ExportBS(Operator):
         else:
             if scene.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'BS2'.")
-                SEUT_OT_Export.export_XML(self, context, collections['bs2'])
+                export_XML(self, context, collections['bs2'])
             if scene.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS2'.")
-                SEUT_OT_Export.export_FBX(self, context, collections['bs2'])
+                export_FBX(self, context, collections['bs2'])
 
         # Export BS3, if present.
         if collections['bs3'] == None or len(collections['bs3'].objects) == 0:
@@ -83,11 +95,9 @@ class SEUT_OT_ExportBS(Operator):
         else:
             if scene.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'BS3'.")
-                SEUT_OT_Export.export_XML(self, context, collections['bs3'])
+                export_XML(self, context, collections['bs3'])
             if scene.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS3'.")
-                SEUT_OT_Export.export_FBX(self, context, collections['bs3'])
-
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_buildstages'")
-
-        return {'FINISHED'}
+                export_FBX(self, context, collections['bs3'])
+        
+        return

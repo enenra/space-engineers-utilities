@@ -1,9 +1,9 @@
 import bpy
 import os
 
-from bpy.types                       import Operator
-from .seut_ot_recreateCollections    import SEUT_OT_RecreateCollections
-from .seut_ot_export                 import SEUT_OT_Export
+from bpy.types                      import Operator
+from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_utils                    import isCollectionExcluded, export_XML, export_FBX
 
 class SEUT_OT_ExportMain(Operator):
     """Exports the main model"""
@@ -18,7 +18,6 @@ class SEUT_OT_ExportMain(Operator):
 
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        collections = SEUT_OT_RecreateCollections.get_Collections()
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
@@ -39,8 +38,21 @@ class SEUT_OT_ExportMain(Operator):
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
+        SEUT_OT_ExportMain.export_Main(self, context)
+
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_main'")
+
+        return {'FINISHED'}
+    
+    def export_Main(self, context):
+        """Exports the 'Main' collection"""
+
+        scene = context.scene
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
-        isCollectionExcluded = SEUT_OT_Export.isCollectionExcluded("Main", allCurrentViewLayerCollections)
+        isCollectionExcluded = isCollectionExcluded("Main", allCurrentViewLayerCollections)
 
         if isCollectionExcluded is True:
             self.report({'ERROR'}, "SEUT: Collection 'Main' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
@@ -60,7 +72,7 @@ class SEUT_OT_ExportMain(Operator):
         # Export XML if boolean is set.
         if scene.prop_export_xml:
             self.report({'INFO'}, "SEUT: Exporting XML for 'Main'.")
-            SEUT_OT_Export.export_XML(self, context, collections['main'])
+            export_XML(self, context, collections['main'])
         else:
             print("SEUT Info: 'XML' export disabled.")
 
@@ -68,10 +80,8 @@ class SEUT_OT_ExportMain(Operator):
         if scene.prop_export_fbx:
             self.report({'INFO'}, "SEUT: Exporting FBX for 'Main'.")
 
-            SEUT_OT_Export.export_FBX(self, context, collections['main'])
+            export_FBX(self, context, collections['main'])
         else:
             print("SEUT Info: 'FBX' export disabled.")
-
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_main'")
-
-        return {'FINISHED'}
+        
+        return

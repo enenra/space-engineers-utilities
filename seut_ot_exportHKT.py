@@ -5,7 +5,7 @@ from os.path                        import join
 from bpy.types                      import Operator
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_havok_options            import HAVOK_OPTION_FILE_CONTENT
-from .seut_ot_export                import ExportSettings, SEUT_OT_Export
+from .seut_utils                    import ExportSettings, isCollectionExcluded
 from .seut_havok_hkt                import export_hktfbx_for_fbximporter, process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
 
 class SEUT_OT_ExportHKT(Operator):
@@ -21,13 +21,8 @@ class SEUT_OT_ExportHKT(Operator):
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_hkt'")
 
         scene = context.scene
-        depsgraph = None
-        collections = SEUT_OT_RecreateCollections.get_Collections()
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        settings = ExportSettings(scene, depsgraph)
         exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
-        fbxImporterPath = os.path.normpath(bpy.path.abspath(preferences.pref_fbxImporterPath))
-        havokPath = os.path.normpath(bpy.path.abspath(preferences.pref_havokPath))
 
         if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
@@ -42,6 +37,29 @@ class SEUT_OT_ExportHKT(Operator):
             print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
+        if scene.prop_subtypeId == "":
+            self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
+            print("SEUT Error: No SubtypeId set. (004)")
+            return {'CANCELLED'}
+        
+        SEUT_OT_ExportHKT.export_HKT(self, context)
+
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_hkt'")
+
+        return {'FINISHED'}
+    
+    def export_HKT(self, context):
+        """Exports collision to HKT"""
+
+        scene = context.scene
+        depsgraph = None
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        settings = ExportSettings(scene, depsgraph)
+        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
+        fbxImporterPath = os.path.normpath(bpy.path.abspath(preferences.pref_fbxImporterPath))
+        havokPath = os.path.normpath(bpy.path.abspath(preferences.pref_havokPath))
+
         if preferences.pref_fbxImporterPath == "" or os.path.exists(fbxImporterPath) == False:
             self.report({'ERROR'}, "SEUT: Path to Custom FBX Importer '%s' not valid. (012)" % (fbxImporterPath))
             print("SEUT Error: Path to Custom FBX Importer '" + fbxImporterPath + "' not valid. (012)")
@@ -52,13 +70,8 @@ class SEUT_OT_ExportHKT(Operator):
             print("SEUT Error: Path to Havok Standalone Filter Tool '" + havokPath + "' not valid. (013)")
             return {'CANCELLED'}
 
-        if scene.prop_subtypeId == "":
-            self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
-            print("SEUT Error: No SubtypeId set. (004)")
-            return {'CANCELLED'}
-
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
-        isCollectionExcluded = SEUT_OT_Export.isCollectionExcluded("Collision", allCurrentViewLayerCollections)
+        isCollectionExcluded = isCollectionExcluded("Collision", allCurrentViewLayerCollections)
 
         if isCollectionExcluded is True:
             self.report({'ERROR'}, "SEUT: Collection 'Collision' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
@@ -100,6 +113,4 @@ class SEUT_OT_ExportHKT(Operator):
         process_hktfbx_to_fbximporterhkt(settings, fbxhktfile, hktfile)
         process_fbximporterhkt_to_final_hkt_for_mwm(self, scene, path, settings, hktfile, hktfile)
 
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_hkt'")
-
-        return {'FINISHED'}
+        return
