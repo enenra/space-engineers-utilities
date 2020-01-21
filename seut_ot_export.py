@@ -47,13 +47,13 @@ class SEUT_OT_Export(Operator):
             return {'CANCELLED'}
         
         # Call all the individual export operators
-        SEUT_OT_ExportMain.export_Main(self, context)
-        SEUT_OT_ExportBS.export_BS(self, context)
-        SEUT_OT_ExportLOD.export_LOD(self, context)
+        SEUT_OT_ExportMain.export_Main(self, context, True)
+        SEUT_OT_ExportBS.export_BS(self, context, True)
+        SEUT_OT_ExportLOD.export_LOD(self, context, True)
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
         if scene.prop_export_hkt:
-            SEUT_OT_ExportHKT.export_HKT(self, context)
+            SEUT_OT_ExportHKT.export_HKT(self, context, True)
 
         if scene.prop_export_sbc:
             SEUT_OT_ExportSBC.export_SBC(self, context)

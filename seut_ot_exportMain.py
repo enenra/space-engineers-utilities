@@ -38,13 +38,13 @@ class SEUT_OT_ExportMain(Operator):
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
-        SEUT_OT_ExportMain.export_Main(self, context)
+        SEUT_OT_ExportMain.export_Main(self, context, False)
 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_main'")
 
         return {'FINISHED'}
     
-    def export_Main(self, context):
+    def export_Main(self, context, partial):
         """Exports the 'Main' collection"""
 
         scene = context.scene
@@ -55,19 +55,34 @@ class SEUT_OT_ExportMain(Operator):
         isExcluded = isCollectionExcluded("Main", allCurrentViewLayerCollections)
 
         if isExcluded is True:
-            self.report({'ERROR'}, "SEUT: Collection 'Main' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
-            print("SEUT Error: Collection 'Main' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
-            return {'CANCELLED'}
+            if partial:
+                self.report({'WARNING'}, "SEUT: Collection 'Main' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
+                print("SEUT Warning: Collection 'Main' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "SEUT: Collection 'Main' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
+                print("SEUT Error: Collection 'Main' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
+                return {'CANCELLED'}
 
         if collections['main'] == None:
-            self.report({'ERROR'}, "SEUT: Collection 'Main' not found. Export not possible. (002)")
-            print("SEUT Error: Collection 'Main' not found. Export not possible. (002)")
-            return {'CANCELLED'}
+            if partial:
+                self.report({'WARNING'}, "SEUT: Collection 'Main' not found. Export not possible. (002)")
+                print("SEUT Warning: Collection 'Main' not found. Export not possible. (002)")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "SEUT: Collection 'Main' not found. Export not possible. (002)")
+                print("SEUT Error: Collection 'Main' not found. Export not possible. (002)")
+                return {'CANCELLED'}
 
         if len(collections['main'].objects) == 0:
-            self.report({'ERROR'}, "SEUT: Collection 'Main' is empty. Export not possible. (005)")
-            print("SEUT Error: Collection 'Main' is empty. Export not possible. (005)")
-            return {'CANCELLED'}
+            if partial:
+                self.report({'WARNING'}, "SEUT: Collection 'Main' is empty. Export not possible. (005)")
+                print("SEUT Warning: Collection 'Main' is empty. Export not possible. (005)")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "SEUT: Collection 'Main' is empty. Export not possible. (005)")
+                print("SEUT Error: Collection 'Main' is empty. Export not possible. (005)")
+                return {'CANCELLED'}
 
         # Export XML if boolean is set.
         if scene.prop_export_xml:

@@ -53,18 +53,8 @@ class SEUT_OT_ExportSBC(Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections()
         preferences = bpy.context.preferences.addons.get(__package__).preferences
 
-        if collections['main'] == None:
-            self.report({'ERROR'}, "SEUT: Collection 'Main' not found. Export not possible. (002)")
-            print("SEUT Error: Collection 'Main' not found. Export not possible. (002)")
-            return {'CANCELLED'}
-
-        if len(collections['main'].objects) == 0:
-            self.report({'ERROR'}, "SEUT: Collection 'Main' is empty. Export not possible. (005)")
-            print("SEUT Error: Collection 'Main' is empty. Export not possible. (005)")
-            return {'CANCELLED'}
-
         if not scene.prop_export_sbc:
-            self.report({'WARNING'}, "SEUT: 'SBC' is toggled off. SBC export skipped.")
+            print("SEUT Info: 'SBC' is toggled off. SBC export skipped.")
             return {'FINISHED'}
 
         if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):

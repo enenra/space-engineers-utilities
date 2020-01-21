@@ -39,13 +39,13 @@ class SEUT_OT_ExportLOD(Operator):
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
         
-        SEUT_OT_ExportLOD.export_LOD(self, context)
+        SEUT_OT_ExportLOD.export_LOD(self, context, False)
 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_lod'")
 
         return {'FINISHED'}
     
-    def export_LOD(self, context):
+    def export_LOD(self, context, partial):
         """Exports the 'LOD' collections"""
 
         scene = context.scene
@@ -58,24 +58,44 @@ class SEUT_OT_ExportLOD(Operator):
         isExcludedLOD3 = isCollectionExcluded("LOD3", allCurrentViewLayerCollections)
 
         if isExcludedLOD1 and isExcludedLOD2 and isExcludedLOD3:
-            self.report({'ERROR'}, "SEUT: All 'LOD'-type collections excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
-            print("SEUT Error: All 'LOD'-type collections excluded from view layer. Re-enable in hierarchy. (019)")
-            return {'CANCELLED'}
+            if partial:
+                self.report({'WARNING'}, "SEUT: All 'LOD'-type collections excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
+                print("SEUT Warning: All 'LOD'-type collections excluded from view layer. Re-enable in hierarchy. (019)")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "SEUT: All 'LOD'-type collections excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
+                print("SEUT Error: All 'LOD'-type collections excluded from view layer. Re-enable in hierarchy. (019)")
+                return {'CANCELLED'}
 
         if collections['lod1'] == None and collections['lod2'] == None and collections['lod3'] == None:
-            self.report({'ERROR'}, "SEUT: No 'LOD'-type collections found. Export not possible. (002)")
-            print("SEUT Error: No 'LOD'-type collections found. Export not possible. (002)")
-            return {'CANCELLED'}
+            if partial:
+                self.report({'WARNING'}, "SEUT: No 'LOD'-type collections found. Export not possible. (002)")
+                print("SEUT Warning: No 'LOD'-type collections found. Export not possible. (002)")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "SEUT: No 'LOD'-type collections found. Export not possible. (002)")
+                print("SEUT Error: No 'LOD'-type collections found. Export not possible. (002)")
+                return {'CANCELLED'}
 
         if len(collections['lod1'].objects) == 0 and len(collections['lod2'].objects) == 0 and len(collections['lod3'].objects) == 0:
-            self.report({'ERROR'}, "SEUT: All 'LOD'-type collections are empty. Export not possible. (005)")
-            print("SEUT Error: All 'LOD'-type collections are empty. Export not possible. (005)")
-            return {'CANCELLED'}
+            if partial:
+                self.report({'WARNING'}, "SEUT: All 'LOD'-type collections are empty. Export not possible. (005)")
+                print("SEUT Warning: All 'LOD'-type collections are empty. Export not possible. (005)")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "SEUT: All 'LOD'-type collections are empty. Export not possible. (005)")
+                print("SEUT Error: All 'LOD'-type collections are empty. Export not possible. (005)")
+                return {'CANCELLED'}
 
         if scene.prop_export_lod1Distance > scene.prop_export_lod2Distance or scene.prop_export_lod2Distance > scene.prop_export_lod3Distance:
-            self.report({'ERROR'}, "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
-            print("SEUT Error: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
-            return {'CANCELLED'}
+            if partial:
+                self.report({'WARNING'}, "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
+                print("SEUT Warning: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
+                print("SEUT Error: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
+                return {'CANCELLED'}
 
         # Export LOD1, if present.
         if collections['lod1'] == None or len(collections['lod1'].objects) == 0 or isExcludedLOD1:

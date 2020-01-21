@@ -39,13 +39,13 @@ class SEUT_OT_ExportBS(Operator):
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
 
-        SEUT_OT_ExportBS.export_BS(self, context)
+        SEUT_OT_ExportBS.export_BS(self, context, False)
 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_buildstages'")
 
         return {'FINISHED'}
     
-    def export_BS(self, context):
+    def export_BS(self, context, partial):
         """Exports the 'Build Stages' collections"""
 
         scene = context.scene
@@ -58,24 +58,44 @@ class SEUT_OT_ExportBS(Operator):
         isExcludedBS3 = isCollectionExcluded("BS3", allCurrentViewLayerCollections)
 
         if isExcludedBS1 and isExcludedBS2 and isExcludedBS3:
-            self.report({'ERROR'}, "SEUT: All 'BS'-type collections excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
-            print("SEUT Error: All 'BS'-type collections excluded from view layer. Re-enable in hierarchy. (019)")
-            return {'CANCELLED'}
+            if partial:
+                self.report({'WARNING'}, "SEUT: All 'BS'-type collections excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
+                print("SEUT Warning: All 'BS'-type collections excluded from view layer. Re-enable in hierarchy. (019)")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "SEUT: All 'BS'-type collections excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
+                print("SEUT Error: All 'BS'-type collections excluded from view layer. Re-enable in hierarchy. (019)")
+                return {'CANCELLED'}
 
         if collections['bs1'] == None and collections['bs2'] == None and collections['bs3'] == None:
-            self.report({'ERROR'}, "SEUT: No 'BS'-type collections found. Export not possible. (002)")
-            print("SEUT Error: No 'BS'-type collections found. Export not possible. (002)")
-            return {'CANCELLED'}
+            if partial:
+                self.report({'WARNING'}, "SEUT: No 'BS'-type collections found. Export not possible. (002)")
+                print("SEUT Warning: No 'BS'-type collections found. Export not possible. (002)")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "SEUT: No 'BS'-type collections found. Export not possible. (002)")
+                print("SEUT Error: No 'BS'-type collections found. Export not possible. (002)")
+                return {'CANCELLED'}
 
         if len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) == 0:
-            self.report({'ERROR'}, "SEUT: All 'BS'-type collections are empty. Export not possible. (005)")
-            print("SEUT Error: All 'BS'-type collections are empty. Export not possible. (005)")
-            return {'CANCELLED'}
+            if partial:
+                self.report({'WARNING'}, "SEUT: All 'BS'-type collections are empty. Export not possible. (005)")
+                print("SEUT Warning: All 'BS'-type collections are empty. Export not possible. (005)")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "SEUT: All 'BS'-type collections are empty. Export not possible. (005)")
+                print("SEUT Error: All 'BS'-type collections are empty. Export not possible. (005)")
+                return {'CANCELLED'}
 
         if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
-            self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
-            print("SEUT Error: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
-            return {'CANCELLED'}
+            if partial:
+                self.report({'WARNING'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
+                print("SEUT Warning: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
+                print("SEUT Error: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
+                return {'CANCELLED'}
 
         # Export BS1, if present.
         if collections['bs1'] == None or len(collections['bs1'].objects) == 0 or isExcludedBS1:
