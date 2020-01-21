@@ -11,6 +11,11 @@ class SEUT_OT_ExportLOD(Operator):
     bl_label = "Export LODs"
     bl_options = {'REGISTER', 'UNDO'}
 
+    @classmethod
+    def poll(cls, context):
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+        return collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None
+
 
     def execute(self, context):
         """Exports the 'LOD' collections"""

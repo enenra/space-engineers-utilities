@@ -10,6 +10,11 @@ class SEUT_OT_ExportMain(Operator):
     bl_idname = "object.export_main"
     bl_label = "Export Main"
     bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+        return collections['main'] is not None
         
     def execute(self, context):
         """Exports the 'Main' collection"""

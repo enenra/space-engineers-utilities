@@ -12,6 +12,11 @@ class SEUT_OT_ExportSBC(Operator):
     bl_label = "Export SBC"
     bl_options = {'REGISTER', 'UNDO'}
 
+    @classmethod
+    def poll(cls, context):
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+        return collections['main'] is not None
+
     def execute(self, context):
         """Exports the SBC file for a defined collection"""
 
@@ -61,7 +66,7 @@ class SEUT_OT_ExportSBC(Operator):
             if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
                 self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1. (015)")
                 return {'CANCELLED'}
-                
+
         if collections['bs2'] is not None and collections['bs3'] is not None:
             if (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
                 self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS3 but no BS2. (015)")
@@ -139,30 +144,33 @@ class SEUT_OT_ExportSBC(Operator):
         """
         
         # Creating Build Stage references.
-        def_BuildProgressModels = ET.SubElement(def_definition, 'BuildProgressModels')
+        if collections['bs1'] is not None or collections['bs2'] is not None or collections['bs3'] is not None:
 
-        counter = 0
-        if collections['bs1'] != None and len(collections['bs1'].objects) > 0:
-            counter += 1
+            counter = 0
+            if collections['bs1'] != None and len(collections['bs1'].objects) > 0:
+                counter += 1
+                
+            if collections['bs2'] != None and len(collections['bs2'].objects) > 0:
+                counter += 1
+                
+            if collections['bs3'] != None and len(collections['bs3'].objects) > 0:
+                counter += 1
             
-        if collections['bs2'] != None and len(collections['bs2'].objects) > 0:
-            counter += 1
-            
-        if collections['bs3'] != None and len(collections['bs3'].objects) > 0:
-            counter += 1
-            
-        percentage = 1 / counter
+            if counter != 0:
+                def_BuildProgressModels = ET.SubElement(def_definition, 'BuildProgressModels')
 
-        for bs in range(0, counter):
-            def_BS_Model = ET.SubElement(def_BuildProgressModels, 'Model')
+                percentage = 1 / counter
 
-            # This makes sure the last build stage is set to upper bound 1.0
-            if bs + 1 == counter:
-                def_BS_Model.set('BuildPercentUpperBound', str(1.0))
-            else:
-                def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage))
+                for bs in range(0, counter):
+                    def_BS_Model = ET.SubElement(def_BuildProgressModels, 'Model')
 
-            def_BS_Model.set('File', path + scene.prop_subtypeId + '_BS' + str(bs + 1) + '.mwm')
+                    # This makes sure the last build stage is set to upper bound 1.0
+                    if bs + 1 == counter:
+                        def_BS_Model.set('BuildPercentUpperBound', str(1.0))
+                    else:
+                        def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage))
+
+                    def_BS_Model.set('File', path + scene.prop_subtypeId + '_BS' + str(bs + 1) + '.mwm')
 
 
         # Write to file, place in export folder

@@ -14,6 +14,11 @@ class SEUT_OT_ExportHKT(Operator):
     bl_label = "Export HKT"
     bl_options = {'REGISTER', 'UNDO'}
 
+    @classmethod
+    def poll(cls, context):
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+        return collections['hkt'] is not None
+
 
     def execute(self, context):
         """Exports collision to HKT"""

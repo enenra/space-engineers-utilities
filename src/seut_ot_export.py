@@ -6,19 +6,25 @@ import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
 
-from bpy.types              import Operator
-from .seut_ot_exportMain    import SEUT_OT_ExportMain
-from .seut_ot_exportBS      import SEUT_OT_ExportBS
-from .seut_ot_exportHKT     import SEUT_OT_ExportHKT
-from .seut_ot_exportLOD     import SEUT_OT_ExportLOD
-from .seut_ot_exportMWM     import SEUT_OT_ExportMWM
-from .seut_ot_exportSBC     import SEUT_OT_ExportSBC
+from bpy.types                      import Operator
+from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_exportMain            import SEUT_OT_ExportMain
+from .seut_ot_exportBS              import SEUT_OT_ExportBS
+from .seut_ot_exportHKT             import SEUT_OT_ExportHKT
+from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
+from .seut_ot_exportMWM             import SEUT_OT_ExportMWM
+from .seut_ot_exportSBC             import SEUT_OT_ExportSBC
 
 class SEUT_OT_Export(Operator):
     """Exports all enabled file types and collections"""
     bl_idname = "object.export"
     bl_label = "Export"
     bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+        return collections['main'] is not None
 
     def execute(self, context):
 

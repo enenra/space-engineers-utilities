@@ -11,6 +11,11 @@ class SEUT_OT_ExportBS(Operator):
     bl_label = "Export Build Stages"
     bl_options = {'REGISTER', 'UNDO'}
 
+    @classmethod
+    def poll(cls, context):
+        collections = SEUT_OT_RecreateCollections.get_Collections()
+        return collections['bs1'] is not None or collections['bs2'] is not None or collections['bs3'] is not None
+
 
     def execute(self, context):
         """Exports the 'Build Stages' collections"""
