@@ -52,6 +52,16 @@ class SEUT_OT_ExportBS(Operator):
         preferences = bpy.context.preferences.addons.get(__package__).preferences
         collections = SEUT_OT_RecreateCollections.get_Collections()
 
+        allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
+        isExcludedBS1 = isCollectionExcluded("BS1", allCurrentViewLayerCollections)
+        isExcludedBS2 = isCollectionExcluded("BS2", allCurrentViewLayerCollections)
+        isExcludedBS3 = isCollectionExcluded("BS3", allCurrentViewLayerCollections)
+
+        if isExcludedBS1 and isExcludedBS2 and isExcludedBS3:
+            self.report({'ERROR'}, "SEUT: All 'BS'-type collections excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
+            print("SEUT Error: All 'BS'-type collections excluded from view layer. Re-enable in hierarchy. (019)")
+            return {'CANCELLED'}
+
         if collections['bs1'] == None and collections['bs2'] == None and collections['bs3'] == None:
             self.report({'ERROR'}, "SEUT: No 'BS'-type collections found. Export not possible. (002)")
             print("SEUT Error: No 'BS'-type collections found. Export not possible. (002)")
@@ -68,7 +78,7 @@ class SEUT_OT_ExportBS(Operator):
             return {'CANCELLED'}
 
         # Export BS1, if present.
-        if collections['bs1'] == None or len(collections['bs1'].objects) == 0:
+        if collections['bs1'] == None or len(collections['bs1'].objects) == 0 or isExcludedBS1:
             self.report({'WARNING'}, "SEUT: Collection 'BS1' not found or empty. Export not possible.")
         else:
             if scene.prop_export_xml:
@@ -79,7 +89,7 @@ class SEUT_OT_ExportBS(Operator):
                 export_FBX(self, context, collections['bs1'])
         
         # Export BS2, if present.
-        if collections['bs2'] == None or len(collections['bs2'].objects) == 0:
+        if collections['bs2'] == None or len(collections['bs2'].objects) == 0 or isExcludedBS2:
             self.report({'WARNING'}, "SEUT: Collection 'BS2' not found or empty. Export not possible.")
         else:
             if scene.prop_export_xml:
@@ -90,7 +100,7 @@ class SEUT_OT_ExportBS(Operator):
                 export_FBX(self, context, collections['bs2'])
 
         # Export BS3, if present.
-        if collections['bs3'] == None or len(collections['bs3'].objects) == 0:
+        if collections['bs3'] == None or len(collections['bs3'].objects) == 0 or isExcludedBS3:
             self.report({'WARNING'}, "SEUT: Collection 'BS3' not found or empty. Export not possible.")
         else:
             if scene.prop_export_xml:
