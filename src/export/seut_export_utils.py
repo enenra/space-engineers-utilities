@@ -5,7 +5,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 
 def export_XML(self, context, collection):
     """Exports the XML file for a defined collection"""

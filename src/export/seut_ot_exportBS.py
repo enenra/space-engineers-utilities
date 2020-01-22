@@ -4,7 +4,7 @@ import os
 from bpy.types                      import Operator
 
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_utils                   import isCollectionExcluded, export_XML, export_FBX
+from .seut_export_utils             import isCollectionExcluded, export_XML, export_FBX
 
 class SEUT_OT_ExportBS(Operator):
     """Exports Build Stages"""

@@ -13,12 +13,12 @@ from bpy_extras.io_utils    import axis_conversion, ExportHelper
 
 from .seut_havok_fbx       import save_single
 from .seut_havok_options   import HAVOK_OPTION_FILE_CONTENT
-from ...seut_utils         import ExportSettings, StdoutOperator, MissbehavingToolError, tool_path, write_to_log
+from ..seut_export_utils   import ExportSettings, StdoutOperator, MissbehavingToolError, tool_path, write_to_log
 
-# HARAG: FWD = 'Z'	
-# HARAG: UP = 'Y'	
-# HARAG: MATRIX_NORMAL = axis_conversion(to_forward=FWD, to_up=UP).to_4x4()	
-# HARAG: MATRIX_SCALE_DOWN = Matrix.Scale(0.2, 4) * MATRIX_NORMAL	
+# HARAG: FWD = 'Z'
+# HARAG: UP = 'Y'
+# HARAG: MATRIX_NORMAL = axis_conversion(to_forward=FWD, to_up=UP).to_4x4()
+# HARAG: MATRIX_SCALE_DOWN = Matrix.Scale(0.2, 4) * MATRIX_NORMAL
 def export_hktfbx_for_fbximporter(settings: ExportSettings, filepath, objects, kwargs = None):	
     kwargs = {	
         # HARAG: FBX operator defaults	
