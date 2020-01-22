@@ -68,6 +68,7 @@ from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_ot_matCreate             import SEUT_OT_MatCreate
 from .seut_materials                import SEUT_Materials
+from .seut_scene                    import SEUT_Scene
 
 def register():
     bpy.utils.register_class(SEUT_AddonPreferences)
@@ -97,125 +98,11 @@ def register():
     bpy.utils.register_class(SEUT_OT_RecreateCollections)
     bpy.utils.register_class(SEUT_OT_MatCreate)
     bpy.utils.register_class(SEUT_Materials)
+    bpy.utils.register_class(SEUT_Scene)
         
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
     bpy.types.Material.seut = bpy.props.PointerProperty(type=SEUT_Materials)
-
-    # Grid Scale
-    bpy.types.Scene.prop_gridScale = bpy.props.EnumProperty(
-        name='Scale',
-        items=(
-            ('large', 'Large', 'Large grid blocks (2.5m)'),
-            ('small', 'Small', 'Small grid blocks (0.5m)')
-            ),
-        default='large',
-        update=update_GridScale
-    )
-
-    # Bounding Box
-    bpy.types.Scene.prop_bBoxToggle = bpy.props.EnumProperty(
-        name='Bounding Box',
-        items=(
-            ('on', 'On', ''),
-            ('off', 'Off', '')
-            ),
-        default='off',
-        update=update_BBox
-    )
-    bpy.types.Scene.prop_bBox_X = IntProperty(
-        name="X:",
-        description="",
-        default=1,
-        min=1
-    )
-    bpy.types.Scene.prop_bBox_Y = IntProperty(
-        name="Y:",
-        description="",
-        default=1,
-        min=1
-    )
-    bpy.types.Scene.prop_bBox_Z = IntProperty(
-        name="Z:",
-        description="",
-        default=1,
-        min=1
-    )
-
-    # Export
-    bpy.types.Scene.prop_subtypeId = StringProperty(
-        name="SubtypeId",
-        description="The SubtypeId for this model",
-        update=update_SceneName
-    )
-    bpy.types.Scene.prop_export_deleteLooseFiles = BoolProperty(
-        name="Delete Loose Files",
-        description="Whether the intermediary files should be deleted after the MWM has been created",
-        default=True
-    )
-    bpy.types.Scene.prop_export_fbx = BoolProperty(
-        name="FBX",
-        description="Whether to export to FBX",
-        default=True
-    )
-    bpy.types.Scene.prop_export_xml = BoolProperty(
-        name="XML",
-        description="Whether to export to XML",
-        default=True
-    )
-    bpy.types.Scene.prop_export_hkt = BoolProperty(
-        name="HKT",
-        description="Whether to export to HKT (Collision model filetype)",
-        default=True
-    )
-    bpy.types.Scene.prop_export_sbc = BoolProperty(
-        name="SBC",
-        description="Whether to export to SBC (CubeBlocks definition)",
-        default=True
-    )
-    bpy.types.Scene.prop_export_rescaleFactor = FloatProperty(
-        name="Rescale Factor:",
-        description="What to set the Rescale Factor to",
-        default=1,
-        min=0
-    )
-    bpy.types.Scene.prop_export_exportPath = StringProperty(
-        name="Export Folder",
-        description="What folder to export to",
-        subtype="DIR_PATH"
-    )
-    bpy.types.Scene.prop_export_lod1Distance = IntProperty(
-        name="LOD1:",
-        description="From what distance this LOD should display",
-        default=25,
-        min=0
-    )
-    bpy.types.Scene.prop_export_lod2Distance = IntProperty(
-        name="LOD2:",
-        description="From what distance this LOD should display",
-        default=50,
-        min=0
-    )
-    bpy.types.Scene.prop_export_lod3Distance = IntProperty(
-        name="LOD3:",
-        description="From what distance this LOD should display",
-        default=150,
-        min=0
-    )
-    
-    # Materials
-    bpy.types.Scene.prop_matPreset = EnumProperty(
-        name='SEUT Material Preset',
-        description="Select a node tree preset for your material",
-        items=(
-            ('SMAT_Preset_Full', 'Full', '[X] Alpha\n[X] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_Full_NoEmissive', 'No Emissive', '[X] Alpha\n[_] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_Full_NoADD', 'Full, No ADD', '[X] Alpha\n[_] Emissive\n[_] ADD\n[X] NG'),
-            ('SMAT_Preset_NoAlpha', 'No Alpha', '[_] Alpha\n[X] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_NoAlpha_NoEmissive', 'No Alpha, No Emissive', '[_] Alpha\n[_] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_NoADD', 'No ADD', '[_] Alpha\n[_] Emissive\n[_] ADD\n[X] NG')
-            ),
-        default='SMAT_Preset_Full'
-    )
+    bpy.types.Scene.seut = bpy.props.PointerProperty(type=SEUT_Scene)
 
 def unregister():
     bpy.utils.unregister_class(SEUT_AddonPreferences)
@@ -245,26 +132,12 @@ def unregister():
     bpy.utils.unregister_class(SEUT_OT_RecreateCollections)
     bpy.utils.unregister_class(SEUT_OT_MatCreate)
     bpy.utils.unregister_class(SEUT_Materials)
+    bpy.utils.unregister_class(SEUT_Scene)
         
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
 
-    del bpy.types.Scene.prop_gridScale
-    del bpy.types.Scene.prop_bBoxToggle
-    del bpy.types.Scene.prop_bBox_X
-    del bpy.types.Scene.prop_bBox_Y
-    del bpy.types.Scene.prop_bBox_Z
-    del bpy.types.Scene.prop_subtypeId
-    del bpy.types.Scene.prop_export_deleteLooseFiles
-    del bpy.types.Scene.prop_export_fbx
-    del bpy.types.Scene.prop_export_xml
-    del bpy.types.Scene.prop_export_hkt
-    del bpy.types.Scene.prop_export_sbc
-    del bpy.types.Scene.prop_export_rescaleFactor
-    del bpy.types.Scene.prop_export_exportPath
-    del bpy.types.Scene.prop_export_lod1Distance
-    del bpy.types.Scene.prop_export_lod2Distance
-    del bpy.types.Scene.prop_export_lod3Distance
-    del bpy.types.Scene.prop_matPreset
+    del bpy.types.Material.seut
+    del bpy.types.Scene.seut
 
 
 def menu_func(self, context):
@@ -297,18 +170,6 @@ def menu_draw(self, context):
     layout.separator()
     layout.label(text="Space Engineers Utilities")
     layout.menu('SEUT_MT_ContextMenu')
-
-def update_GridScale(self, context):
-    bpy.ops.object.gridscale()
-    bpy.ops.object.bbox('INVOKE_DEFAULT')
-
-def update_BBox(self, context):
-    bpy.ops.object.bbox('INVOKE_DEFAULT')
-
-def update_SceneName(self, context):
-    scene = context.scene
-
-    scene.name = scene.prop_subtypeId
 
 addon_keymaps = []
 

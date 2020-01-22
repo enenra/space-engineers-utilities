@@ -14,7 +14,7 @@ class SEUT_OT_BBoxAuto(Operator):
     # Button is unavailable when bounding box is turned off.
     @classmethod
     def poll(cls, context):
-        return context.scene.prop_bBoxToggle == 'on'
+        return context.scene.seut.prop_bBoxToggle == 'on'
 
     
     # This is what is executed if "Automatic" is pressed.
@@ -23,7 +23,7 @@ class SEUT_OT_BBoxAuto(Operator):
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.get_Collections()
 
-        if scene.prop_bBoxToggle == 'off':
+        if scene.seut.prop_bBoxToggle == 'off':
             self.report({'INFO'}, "SEUT: Triggered auto BBox even though BBox is turned off. This should never happen.")
             
             return {'CANCELLED'}
@@ -48,17 +48,17 @@ class SEUT_OT_BBoxAuto(Operator):
         
         factor = 1
 
-        if scene.prop_gridScale == 'large': factor = 2.5
-        if scene.prop_gridScale == 'small': factor = 0.5
+        if scene.seut.prop_gridScale == 'large': factor = 2.5
+        if scene.seut.prop_gridScale == 'small': factor = 0.5
 
         # This should technically be math.ceil(D / factor) * factor but when drawing the bounding box it's already being multiplied by the factor.
         xSize = math.ceil(xD / factor)
         ySize = math.ceil(yD / factor)
         zSize = math.ceil(zD / factor)
         
-        scene.prop_bBox_X = xSize
-        scene.prop_bBox_Y = ySize
-        scene.prop_bBox_Z = zSize
+        scene.seut.prop_bBox_X = xSize
+        scene.seut.prop_bBox_Y = ySize
+        scene.seut.prop_bBox_Z = zSize
 
         bpy.ops.object.bbox('INVOKE_DEFAULT')
 

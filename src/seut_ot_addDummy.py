@@ -45,8 +45,6 @@ class SEUT_OT_AddDummy(Operator):
 
     def execute(self, context):
         
-        scene = context.scene
-
         # Determine name strings.
         emptyName = ""
         usesIndex = False

@@ -9,6 +9,7 @@ from bpy.props  import (EnumProperty,
                         BoolProperty)
 
 class SEUT_Materials(PropertyGroup):
+    """Holder for the varios material properties"""
     
     overrideMatLib: BoolProperty(
         name="Override MatLib",

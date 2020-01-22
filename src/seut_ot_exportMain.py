@@ -23,9 +23,9 @@ class SEUT_OT_ExportMain(Operator):
 
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
+        exportPath = os.path.normpath(bpy.path.abspath(scene.seut.prop_export_exportPath))
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
+        if preferences.pref_looseFilesExportFolder == '1' and scene.seut.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             print("SEUT Error: No export folder defined. (003)")
         elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
@@ -33,12 +33,12 @@ class SEUT_OT_ExportMain(Operator):
             print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
             return {'CANCELLED'}
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath.find("Models\\") == -1:
+        if preferences.pref_looseFilesExportFolder == '1' and scene.seut.prop_export_exportPath.find("Models\\") == -1:
             self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
             print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
-        if scene.prop_subtypeId == "":
+        if scene.seut.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
@@ -90,14 +90,14 @@ class SEUT_OT_ExportMain(Operator):
                 return {'CANCELLED'}
 
         # Export XML if boolean is set.
-        if scene.prop_export_xml:
+        if scene.seut.prop_export_xml:
             self.report({'INFO'}, "SEUT: Exporting XML for 'Main'.")
             export_XML(self, context, collections['main'])
         else:
             print("SEUT Info: 'XML' export disabled.")
 
         # Export FBX if boolean is set.
-        if scene.prop_export_fbx:
+        if scene.seut.prop_export_fbx:
             self.report({'INFO'}, "SEUT: Exporting FBX for 'Main'.")
 
             export_FBX(self, context, collections['main'])

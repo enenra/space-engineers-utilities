@@ -21,9 +21,9 @@ class SEUT_OT_ExportMWM(Operator):
         
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
+        exportPath = os.path.normpath(bpy.path.abspath(scene.seut.prop_export_exportPath))
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
+        if preferences.pref_looseFilesExportFolder == '1' and scene.seut.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             print("SEUT Error: No export folder defined. (003)")
         elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
@@ -31,12 +31,12 @@ class SEUT_OT_ExportMWM(Operator):
             print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
             return {'CANCELLED'}
 
-        if scene.prop_export_exportPath.find("Models\\") == -1:
+        if scene.seut.prop_export_exportPath.find("Models\\") == -1:
             self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
             print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
-        if scene.prop_subtypeId == "":
+        if scene.seut.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
@@ -77,17 +77,17 @@ class SEUT_OT_ExportMWM(Operator):
                 path = os.path.dirname(bpy.data.filepath) + "\\"
 
             elif preferences.pref_looseFilesExportFolder == '1':
-                path = bpy.path.abspath(scene.prop_export_exportPath)
+                path = bpy.path.abspath(scene.seut.prop_export_exportPath)
             
-            mwmpath = bpy.path.abspath(scene.prop_export_exportPath)
+            mwmpath = bpy.path.abspath(scene.seut.prop_export_exportPath)
 
-        mwmfile = join(mwmpath, scene.prop_subtypeId + ".mwm")
+        mwmfile = join(mwmpath, scene.seut.prop_subtypeId + ".mwm")
         materialspath = bpy.path.abspath(preferences.pref_materialsPath)
 
         try:
             mwmbuilder(self, context, path, settings, mwmfile, materialspath)
         finally:
-            if scene.prop_export_deleteLooseFiles:
+            if scene.seut.prop_export_deleteLooseFiles:
                 delete_loose_files(path)
                 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_mwm'")

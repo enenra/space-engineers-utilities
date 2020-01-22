@@ -40,7 +40,6 @@ class SEUT_OT_AddHighlightEmpty(Operator):
 
     def execute(self, context):
         
-        scene = context.scene
         targetObjects = bpy.context.view_layer.objects.selected
         
         if len(targetObjects) > 1:

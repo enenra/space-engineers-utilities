@@ -21,17 +21,17 @@ class SEUT_OT_BBox(Operator):
         scene = context.scene
 
         # If the toggle is off, don't do anything.
-        if scene.prop_bBoxToggle == 'off':
+        if scene.seut.prop_bBoxToggle == 'off':
             return {'CANCELLED'}
 
         factor = 1
 
-        if scene.prop_gridScale == 'large': factor = 2.5
-        if scene.prop_gridScale == 'small': factor = 0.5
+        if scene.seut.prop_gridScale == 'large': factor = 2.5
+        if scene.seut.prop_gridScale == 'small': factor = 0.5
 
-        x = scene.prop_bBox_X * factor
-        y = scene.prop_bBox_Y * factor
-        z = scene.prop_bBox_Z * factor
+        x = scene.seut.prop_bBox_X * factor
+        y = scene.seut.prop_bBox_Y * factor
+        z = scene.seut.prop_bBox_Z * factor
 
         self.coords = (
             (-x/2, -y/2, -z/2), (+x/2, -y/2, -z/2),
@@ -79,18 +79,18 @@ class SEUT_OT_BBox(Operator):
             context.area.tag_redraw()
 
         # Escape condition for when the user turns off the bounding box.
-        if context.scene.prop_bBoxToggle == 'off':
+        if scene.seut.prop_bBoxToggle == 'off':
             self.unregister_handlers(context)
             return {'CANCELLED'}
 
         factor = 1
 
-        if scene.prop_gridScale == 'large': factor = 2.5
-        if scene.prop_gridScale == 'small': factor = 0.5
+        if scene.seut.prop_gridScale == 'large': factor = 2.5
+        if scene.seut.prop_gridScale == 'small': factor = 0.5
 
-        x = scene.prop_bBox_X * factor
-        y = scene.prop_bBox_Y * factor
-        z = scene.prop_bBox_Z * factor
+        x = scene.seut.prop_bBox_X * factor
+        y = scene.seut.prop_bBox_Y * factor
+        z = scene.seut.prop_bBox_Z * factor
 
         self.coords = (
             (-x/2, -y/2, -z/2), (+x/2, -y/2, -z/2),

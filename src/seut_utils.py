@@ -24,7 +24,7 @@ def export_XML(self, context, collection):
 
     paramRescaleFactor = ET.SubElement(model, 'Parameter')
     paramRescaleFactor.set('Name', 'RescaleFactor')
-    paramRescaleFactor.text = str(context.scene.prop_export_rescaleFactor * 0.01)       # Blender exports are always 100 times the size in SE for some godforsaken reason
+    paramRescaleFactor.text = str(context.scene.seut.prop_export_rescaleFactor * 0.01)       # Blender exports are always 100 times the size in SE for some godforsaken reason
 
     paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
     paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
@@ -41,7 +41,7 @@ def export_XML(self, context, collection):
             path = os.path.dirname(bpy.data.filepath) + "\\"
 
         elif preferences.pref_looseFilesExportFolder == '1':
-            path = bpy.path.abspath(scene.prop_export_exportPath)
+            path = bpy.path.abspath(scene.seut.prop_export_exportPath)
 
     # Currently no support for the other material parameters - are those even needed anymore?
 
@@ -199,9 +199,9 @@ def export_XML(self, context, collection):
             self.report({'INFO'}, "SEUT: Collection 'LOD1' not found or empty. Skipping XML entry.")
         else:
             lod1 = ET.SubElement(model, 'LOD')
-            lod1.set('Distance', str(scene.prop_export_lod1Distance))
+            lod1.set('Distance', str(scene.seut.prop_export_lod1Distance))
             lod1Model = ET.SubElement(lod1, 'Model')
-            lod1Model.text = path + scene.prop_subtypeId + '_LOD1'
+            lod1Model.text = path + scene.seut.prop_subtypeId + '_LOD1'
             lod1Printed = True
 
         if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
@@ -209,9 +209,9 @@ def export_XML(self, context, collection):
         else:
             if lod1Printed: 
                 lod2 = ET.SubElement(model, 'LOD')
-                lod2.set('Distance', str(scene.prop_export_lod2Distance))
+                lod2.set('Distance', str(scene.seut.prop_export_lod2Distance))
                 lod2Model = ET.SubElement(lod2, 'Model')
-                lod2Model.text = path + scene.prop_subtypeId + '_LOD2'
+                lod2Model.text = path + scene.seut.prop_subtypeId + '_LOD2'
                 lod2Printed = True
             else:
                 self.report({'ERROR'}, "SEUT: LOD2 cannot be set if LOD1 is not. (006)")
@@ -221,9 +221,9 @@ def export_XML(self, context, collection):
         else:
             if lod1Printed and lod2Printed:
                 lod3 = ET.SubElement(model, 'LOD')
-                lod3.set('Distance', str(scene.prop_export_lod3Distance))
+                lod3.set('Distance', str(scene.seut.prop_export_lod3Distance))
                 lod3Model = ET.SubElement(lod3, 'Model')
-                lod3Model.text = path + scene.prop_subtypeId + '_LOD3'
+                lod3Model.text = path + scene.seut.prop_subtypeId + '_LOD3'
             else:
                 self.report({'ERROR'}, "SEUT: LOD3 cannot be set if LOD1 or LOD2 is not. (006)")
 
@@ -233,9 +233,9 @@ def export_XML(self, context, collection):
     xmlFormatted = xmlString.toprettyxml()
 
     if collection == collections['main']:
-        filename = scene.prop_subtypeId
+        filename = scene.seut.prop_subtypeId
     else:
-        filename = scene.prop_subtypeId + '_' + collection.name
+        filename = scene.seut.prop_subtypeId + '_' + collection.name
 
     exportedXML = open(path + filename + ".xml", "w")
     exportedXML.write(xmlFormatted)
@@ -253,9 +253,9 @@ def export_FBX(self, context, collection):
 
     # Determining the directory to export to.
     if collection == collections['main']:
-        filename = scene.prop_subtypeId
+        filename = scene.seut.prop_subtypeId
     else:
-        filename = scene.prop_subtypeId + '_' + collection.name
+        filename = scene.seut.prop_subtypeId + '_' + collection.name
 
     path = ""
 
@@ -268,7 +268,7 @@ def export_FBX(self, context, collection):
             path = os.path.dirname(bpy.data.filepath) + "\\"
 
         elif preferences.pref_looseFilesExportFolder == '1':
-            path = bpy.path.abspath(scene.prop_export_exportPath)
+            path = bpy.path.abspath(scene.seut.prop_export_exportPath)
     
     # Exporting the collection.
     # I can only export the currently active collection, so I need to set the target collection to active (for which I have to link it for some reason),
@@ -463,7 +463,7 @@ class ExportSettings:
         self._havokfilter = None
         self._mwmbuilder = None
 
-        if scene.prop_export_deleteLooseFiles:
+        if scene.seut.prop_export_deleteLooseFiles:
             self.isLogToolOutput = False
         
     @property

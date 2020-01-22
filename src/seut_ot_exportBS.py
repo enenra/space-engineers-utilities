@@ -24,9 +24,9 @@ class SEUT_OT_ExportBS(Operator):
 
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
+        exportPath = os.path.normpath(bpy.path.abspath(scene.seut.prop_export_exportPath))
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
+        if preferences.pref_looseFilesExportFolder == '1' and scene.seut.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             print("SEUT Error: No export folder defined. (003)")
         elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
@@ -34,12 +34,12 @@ class SEUT_OT_ExportBS(Operator):
             print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
             return {'CANCELLED'}
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath.find("Models\\") == -1:
+        if preferences.pref_looseFilesExportFolder == '1' and scene.seut.prop_export_exportPath.find("Models\\") == -1:
             self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
             print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
-        if scene.prop_subtypeId == "":
+        if scene.seut.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
@@ -106,10 +106,10 @@ class SEUT_OT_ExportBS(Operator):
         if collections['bs1'] == None or len(collections['bs1'].objects) == 0 or isExcludedBS1:
             self.report({'WARNING'}, "SEUT: Collection 'BS1' not found or empty. Export not possible.")
         else:
-            if scene.prop_export_xml:
+            if scene.seut.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'BS1'.")
                 export_XML(self, context, collections['bs1'])
-            if scene.prop_export_fbx:
+            if scene.seut.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS1'.")
                 export_FBX(self, context, collections['bs1'])
         
@@ -117,10 +117,10 @@ class SEUT_OT_ExportBS(Operator):
         if collections['bs2'] == None or len(collections['bs2'].objects) == 0 or isExcludedBS2:
             self.report({'WARNING'}, "SEUT: Collection 'BS2' not found or empty. Export not possible.")
         else:
-            if scene.prop_export_xml:
+            if scene.seut.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'BS2'.")
                 export_XML(self, context, collections['bs2'])
-            if scene.prop_export_fbx:
+            if scene.seut.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS2'.")
                 export_FBX(self, context, collections['bs2'])
 
@@ -128,10 +128,10 @@ class SEUT_OT_ExportBS(Operator):
         if collections['bs3'] == None or len(collections['bs3'].objects) == 0 or isExcludedBS3:
             self.report({'WARNING'}, "SEUT: Collection 'BS3' not found or empty. Export not possible.")
         else:
-            if scene.prop_export_xml:
+            if scene.seut.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'BS3'.")
                 export_XML(self, context, collections['bs3'])
-            if scene.prop_export_fbx:
+            if scene.seut.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS3'.")
                 export_FBX(self, context, collections['bs3'])
         

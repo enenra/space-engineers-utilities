@@ -32,9 +32,9 @@ class SEUT_OT_Export(Operator):
         
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
+        exportPath = os.path.normpath(bpy.path.abspath(scene.seut.prop_export_exportPath))
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
+        if preferences.pref_looseFilesExportFolder == '1' and scene.seut.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             print("SEUT Error: No export folder defined. (003)")
         elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
@@ -42,12 +42,12 @@ class SEUT_OT_Export(Operator):
             print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
             return {'CANCELLED'}
 
-        if scene.prop_export_exportPath.find("Models\\") == -1:
+        if scene.seut.prop_export_exportPath.find("Models\\") == -1:
             self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
             print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
-        if scene.prop_subtypeId == "":
+        if scene.seut.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
@@ -58,10 +58,10 @@ class SEUT_OT_Export(Operator):
         SEUT_OT_ExportLOD.export_LOD(self, context, True)
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
-        if scene.prop_export_hkt:
+        if scene.seut.prop_export_hkt:
             SEUT_OT_ExportHKT.export_HKT(self, context, True)
 
-        if scene.prop_export_sbc:
+        if scene.seut.prop_export_sbc:
             SEUT_OT_ExportSBC.export_SBC(self, context)
         
         # Finally, compile everything to MWM

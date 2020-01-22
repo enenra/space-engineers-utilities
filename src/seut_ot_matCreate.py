@@ -14,7 +14,7 @@ class SEUT_OT_MatCreate(Operator):
         
         scene = context.scene
 
-        presetName = scene.prop_matPreset
+        presetName = scene.seut.prop_matPreset
         
         # Find SMAT to pull preset from.
         presetMat = None

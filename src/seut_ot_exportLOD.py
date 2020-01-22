@@ -24,9 +24,9 @@ class SEUT_OT_ExportLOD(Operator):
 
         scene = context.scene
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        exportPath = os.path.normpath(bpy.path.abspath(scene.prop_export_exportPath))
+        exportPath = os.path.normpath(bpy.path.abspath(scene.seut.prop_export_exportPath))
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath == "":
+        if preferences.pref_looseFilesExportFolder == '1' and scene.seut.prop_export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             print("SEUT Error: No export folder defined. (003)")
         elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
@@ -34,12 +34,12 @@ class SEUT_OT_ExportLOD(Operator):
             print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
             return {'CANCELLED'}
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.prop_export_exportPath.find("Models\\") == -1:
+        if preferences.pref_looseFilesExportFolder == '1' and scene.seut.prop_export_exportPath.find("Models\\") == -1:
             self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
             print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
-        if scene.prop_subtypeId == "":
+        if scene.seut.prop_subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
@@ -92,7 +92,7 @@ class SEUT_OT_ExportLOD(Operator):
                 print("SEUT Error: All 'LOD'-type collections are empty. Export not possible. (005)")
                 return {'CANCELLED'}
 
-        if scene.prop_export_lod1Distance > scene.prop_export_lod2Distance or scene.prop_export_lod2Distance > scene.prop_export_lod3Distance:
+        if scene.seut.prop_export_lod1Distance > scene.seut.prop_export_lod2Distance or scene.seut.prop_export_lod2Distance > scene.seut.prop_export_lod3Distance:
             if partial:
                 self.report({'WARNING'}, "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
                 print("SEUT Warning: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
@@ -106,10 +106,10 @@ class SEUT_OT_ExportLOD(Operator):
         if collections['lod1'] == None or len(collections['lod1'].objects) == 0 or isExcludedLOD1:
             self.report({'WARNING'}, "SEUT: Collection 'LOD1' not found or empty. Export not possible. (002)")
         else:
-            if scene.prop_export_xml:
+            if scene.seut.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'LOD1'.")
                 export_XML(self, context, collections['lod1'])
-            if scene.prop_export_fbx:
+            if scene.seut.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD1'.")
                 export_FBX(self, context, collections['lod1'])
         
@@ -117,10 +117,10 @@ class SEUT_OT_ExportLOD(Operator):
         if collections['lod2'] == None or len(collections['lod2'].objects) == 0 or isExcludedLOD2:
             self.report({'WARNING'}, "SEUT: Collection 'LOD2' not found or empty. Export not possible. (002)")
         else:
-            if scene.prop_export_xml:
+            if scene.seut.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'LOD2'.")
                 export_XML(self, context, collections['lod2'])
-            if scene.prop_export_fbx:
+            if scene.seut.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD2'.")
                 export_FBX(self, context, collections['lod2'])
 
@@ -128,10 +128,10 @@ class SEUT_OT_ExportLOD(Operator):
         if collections['lod3'] == None or len(collections['lod3'].objects) == 0 or isExcludedLOD3:
             self.report({'WARNING'}, "SEUT: Collection 'LOD3' not found or empty. Export not possible. (002)")
         else:
-            if scene.prop_export_xml:
+            if scene.seut.prop_export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'LOD3'.")
                 export_XML(self, context, collections['lod3'])
-            if scene.prop_export_fbx:
+            if scene.seut.prop_export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD3'.")
                 export_FBX(self, context, collections['lod3'])
         

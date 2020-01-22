@@ -15,7 +15,7 @@ class SEUT_PT_Panel(bpy.types.Panel):
         box = layout.box()
         box.label(text="Grid Scale")
         row = box.row()
-        row.prop(scene,'prop_gridScale', expand=True)
+        row.prop(scene.seut,'prop_gridScale', expand=True)
         
         layout.operator('object.recreate_collections', text="Recreate Collections")
 
@@ -33,15 +33,15 @@ class SEUT_PT_Panel_BoundingBox(bpy.types.Panel):
         scene = context.scene
 
         # Toggle
-        layout.prop(scene,'prop_bBoxToggle', expand=True)
+        layout.prop(scene.seut,'prop_bBoxToggle', expand=True)
 
         # Size
         box = layout.box()
         box.label(text="Size")
         row = box.row()
-        row.prop(scene, "prop_bBox_X")
-        row.prop(scene, "prop_bBox_Y")
-        row.prop(scene, "prop_bBox_Z")
+        row.prop(scene.seut, "prop_bBox_X")
+        row.prop(scene.seut, "prop_bBox_Y")
+        row.prop(scene.seut, "prop_bBox_Z")
         
         row = box.row()
         row.operator('object.bbox_auto', text="Automatic")
@@ -63,7 +63,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         row = layout.row()
         row.scale_y = 2.0
         row.operator('object.export', text="Export")
-        layout.prop(scene, "prop_export_deleteLooseFiles")
+        layout.prop(scene.seut, "prop_export_deleteLooseFiles")
         
         # Partial
         box = layout.box()
@@ -84,28 +84,28 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         split = box.split()
         
         col = split.column()
-        col.prop(scene, "prop_export_fbx")
-        col.prop(scene, "prop_export_sbc")
+        col.prop(scene.seut, "prop_export_fbx")
+        col.prop(scene.seut, "prop_export_sbc")
 
         col = split.column()
-        col.prop(scene, "prop_export_xml")
-        col.prop(scene, "prop_export_hkt")
+        col.prop(scene.seut, "prop_export_xml")
+        col.prop(scene.seut, "prop_export_hkt")
         
-        box.prop(scene, "prop_export_rescaleFactor")
+        box.prop(scene.seut, "prop_export_rescaleFactor")
         
-        box.prop(scene, "prop_export_exportPath", text="Folder", expand=True)
+        box.prop(scene.seut, "prop_export_exportPath", text="Folder", expand=True)
 
         # SubtypeId
         box = layout.box()
         box.label(text="SubtypeId")
-        box.prop(scene, "prop_subtypeId", text="", expand=True)
+        box.prop(scene.seut, "prop_subtypeId", text="", expand=True)
         
         # LOD
         box = layout.box()
         box.label(text="LOD Distance")
-        box.prop(scene, "prop_export_lod1Distance")
-        box.prop(scene, "prop_export_lod2Distance")
-        box.prop(scene, "prop_export_lod3Distance")
+        box.prop(scene.seut, "prop_export_lod1Distance")
+        box.prop(scene.seut, "prop_export_lod2Distance")
+        box.prop(scene.seut, "prop_export_lod3Distance")
 
 
 class SEUT_PT_Panel_Import(bpy.types.Panel):
@@ -169,5 +169,5 @@ class SEUT_PT_Panel_Materials(bpy.types.Panel):
 
         box = layout.box()
         box.label(text="Create new SEUT Material")
-        box.prop(scene, 'prop_matPreset', text="Preset")
+        box.prop(scene.seut, 'prop_matPreset', text="Preset")
         box.operator('object.mat_create')
