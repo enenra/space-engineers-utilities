@@ -20,4 +20,14 @@ class SEUT_OT_StructureConversion(Operator):
 
         print("I work!")
 
+        # Set subtypeId from scene name
+
+        # port subparts in scenes to new layout
+
+        # convert collections created from layers to corresponding SEUT collections
+
+        # convert LOD distances? and other variables
+
+        # how to handle custom materials?
+
         return
