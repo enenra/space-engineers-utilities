@@ -23,7 +23,8 @@ class SEUT_OT_ExportLOD(Operator):
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_lod'")
 
         scene = context.scene
-        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        addon = __package__[:__package__.find(".")]
+        preferences = bpy.context.preferences.addons.get(addon).preferences
         exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
 
         if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath == "":
@@ -54,7 +55,8 @@ class SEUT_OT_ExportLOD(Operator):
         """Exports the 'LOD' collections"""
 
         scene = context.scene
-        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        addon = __package__[:__package__.find(".")]
+        preferences = bpy.context.preferences.addons.get(addon).preferences
         collections = SEUT_OT_RecreateCollections.get_Collections()
 
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children

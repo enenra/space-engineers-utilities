@@ -27,7 +27,8 @@ class SEUT_OT_ExportHKT(Operator):
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_hkt'")
 
         scene = context.scene
-        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        addon = __package__[:__package__.find(".")]
+        preferences = bpy.context.preferences.addons.get(addon).preferences
         exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
 
         if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath == "":
@@ -60,7 +61,8 @@ class SEUT_OT_ExportHKT(Operator):
         scene = context.scene
         depsgraph = None
         collections = SEUT_OT_RecreateCollections.get_Collections()
-        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        addon = __package__[:__package__.find(".")]
+        preferences = bpy.context.preferences.addons.get(addon).preferences
         settings = ExportSettings(scene, depsgraph)
         exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
         fbxImporterPath = os.path.normpath(bpy.path.abspath(preferences.fbxImporterPath))

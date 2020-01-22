@@ -21,7 +21,8 @@ class SEUT_OT_ExportMWM(Operator):
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_main'")
         
         scene = context.scene
-        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        addon = __package__[:__package__.find(".")]
+        preferences = bpy.context.preferences.addons.get(addon).preferences
         exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
 
         if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath == "":
@@ -53,7 +54,8 @@ class SEUT_OT_ExportMWM(Operator):
         
         scene = context.scene
         depsgraph = None
-        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        addon = __package__[:__package__.find(".")]
+        preferences = bpy.context.preferences.addons.get(addon).preferences
         settings = ExportSettings(scene, depsgraph)
         mwmbPath = os.path.normpath(bpy.path.abspath(preferences.mwmbPath))
         materialsPath = os.path.normpath(bpy.path.abspath(preferences.materialsPath))

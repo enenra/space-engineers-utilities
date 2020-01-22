@@ -12,7 +12,8 @@ def export_XML(self, context, collection):
 
     scene = context.scene
     collections = SEUT_OT_RecreateCollections.get_Collections()
-    preferences = bpy.context.preferences.addons.get(__package__).preferences
+    addon = __package__[:__package__.find(".")]
+    preferences = bpy.context.preferences.addons.get(addon).preferences
 
     # Create XML tree and add initial parameters.
     model = ET.Element('Model')
@@ -249,7 +250,8 @@ def export_FBX(self, context, collection):
 
     scene = context.scene
     collections = SEUT_OT_RecreateCollections.get_Collections()
-    preferences = bpy.context.preferences.addons.get(__package__).preferences
+    addon = __package__[:__package__.find(".")]
+    preferences = bpy.context.preferences.addons.get(addon).preferences
 
     # Determining the directory to export to.
     if collection == collections['main']:

@@ -31,7 +31,8 @@ class SEUT_OT_Export(Operator):
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export'")
         
         scene = context.scene
-        preferences = bpy.context.preferences.addons.get(__package__).preferences
+        addon = __package__[:__package__.find(".")]
+        preferences = bpy.context.preferences.addons.get(addon).preferences
         exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
 
         if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath == "":
