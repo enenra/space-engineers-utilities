@@ -16,7 +16,7 @@ class SEUT_OT_RemapMaterials(Operator):
     # This code was written by Kamikaze
     def execute(self, context):
 
-        self.report({'INFO'}, "SEUT: Remapping local materials to library.")
+        print("SEUT Info: Remapping local materials to library.")
         
         mtl_to_delete = []
 

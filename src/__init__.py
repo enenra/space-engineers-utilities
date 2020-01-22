@@ -41,6 +41,7 @@ from bpy.types import (Panel,
                        PropertyGroup,
                        )
 
+from .empties.seut_mt_contextMenu           import SEUT_MT_ContextMenu
 from .empties.seut_ot_addHighlightEmpty     import SEUT_OT_AddHighlightEmpty
 from .empties.seut_ot_addDummy              import SEUT_OT_AddDummy
 from .empties.seut_ot_addPresetSubpart      import SEUT_OT_AddPresetSubpart
@@ -53,22 +54,21 @@ from .export.seut_ot_exportHKT              import SEUT_OT_ExportHKT
 from .export.seut_ot_exportSBC              import SEUT_OT_ExportSBC
 from .export.seut_ot_exportMWM              import SEUT_OT_ExportMWM
 from .export.seut_ot_export                 import SEUT_OT_Export
+from .materials.seut_materials              import SEUT_Materials
+from .materials.seut_pt_matToolbar          import SEUT_PT_Panel_Materials
+from .materials.seut_ot_remapMaterials      import SEUT_OT_RemapMaterials
+from .materials.seut_ot_matCreate           import SEUT_OT_MatCreate
 
 from .seut_preferences              import SEUT_AddonPreferences
 from .seut_pt_toolbar               import SEUT_PT_Panel
 from .seut_pt_toolbar               import SEUT_PT_Panel_BoundingBox
 from .seut_pt_toolbar               import SEUT_PT_Panel_Export
 from .seut_pt_toolbar               import SEUT_PT_Panel_Import
-from .seut_pt_toolbar               import SEUT_PT_Panel_Materials
-from .seut_mt_contextMenu           import SEUT_MT_ContextMenu
 from .seut_ot_import                import SEUT_OT_Import
-from .seut_ot_remapMaterials        import SEUT_OT_RemapMaterials
 from .seut_ot_gridScale             import SEUT_OT_GridScale
 from .seut_ot_bBox                  import SEUT_OT_BBox
 from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_ot_matCreate             import SEUT_OT_MatCreate
-from .seut_materials                import SEUT_Materials
 from .seut_scene                    import SEUT_Scene
 
 
