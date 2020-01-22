@@ -133,7 +133,7 @@ class SEUT_OT_ExportSBC(Operator):
                 path = bpy.path.abspath(scene.seut.export_exportPath)
         
         def_Model = ET.SubElement(def_definition, 'Model')
-        def_Model.text = path + scene.seut.subtypeId + '.mwm'
+        def_Model.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '.mwm'
         
         """
         def_Mountpoints = ET.SubElement(def_definition, 'Mountpoints')
@@ -171,7 +171,7 @@ class SEUT_OT_ExportSBC(Operator):
                     if bs + 1 == counter:
                         def_BS_Model.set('BuildPercentUpperBound', str(1.0))
                     else:
-                        def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage))
+                        def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage)[4:])
 
                     def_BS_Model.set('File', path + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
 
