@@ -35,6 +35,11 @@ SEUT\convert_textures.bat
 7. In Blender, use File --> Link and navigate to the MatLib_*.blend files within the `SEUT\Materials\`-folder. Select `MatLib_Materials.blend` and link all its contained materials. Do the same for `MatLib_Armors.blend` and `MatLib_Items.blend`. You likely won't usually need the remaining ones.
 8. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
 
+## Support
+Feel free to support the development of this addon by becoming one of Stollie's patreons! Without him, the development of the addon would never have gotten this far.
+
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Patreon_logo_with_wordmark.svg/512px-Patreon_logo_with_wordmark.svg.png)](https://www.patreon.com/Stollie)
+
 ## Credits
 * **Stollie** - So much general help but also writing everything havok-related, which I wouldn't have been able to do at all.
 * **Harag** - Writing the original Blender SE plugin. A lot of code in this addon is based on his.
