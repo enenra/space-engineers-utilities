@@ -6,7 +6,8 @@ from bpy.props  import (EnumProperty,
                         FloatVectorProperty,
                         IntProperty,
                         StringProperty,
-                        BoolProperty)
+                        BoolProperty
+                        )
 
 # These update_* functions need to be above the class... for some reason.
 def update_GridScale(self, context):

@@ -1,5 +1,6 @@
 import os
-from .seut_utils        import ExportSettings
+
+from ..seut_utils       import ExportSettings
 
 def mwmbuilder(self, context, path, settings: ExportSettings, mwmfile: str, materialspath):
     try:

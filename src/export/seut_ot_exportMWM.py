@@ -1,11 +1,12 @@
 import bpy
 import os
 
-from os.path                        import join
-from bpy.types                      import Operator
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_utils                    import ExportSettings, delete_loose_files
-from .seut_mwmbuilder               import mwmbuilder
+from os.path    import join
+from bpy.types  import Operator
+
+from .seut_mwmbuilder                import mwmbuilder
+from ..seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from ..seut_utils                    import ExportSettings, delete_loose_files
 
 class SEUT_OT_ExportMWM(Operator):
     """Compiles the MWM from the previously exported loose files"""

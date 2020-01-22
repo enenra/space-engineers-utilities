@@ -10,9 +10,10 @@ from string                 import Template
 from xml.etree              import ElementTree	
 from mathutils              import Matrix	
 from bpy_extras.io_utils    import axis_conversion, ExportHelper	
-from .seut_havok_fbx        import save_single
-from .seut_havok_options    import HAVOK_OPTION_FILE_CONTENT
-from .seut_utils            import ExportSettings, StdoutOperator, MissbehavingToolError, tool_path, write_to_log
+
+from .seut_havok_fbx       import save_single
+from .seut_havok_options   import HAVOK_OPTION_FILE_CONTENT
+from ...seut_utils         import ExportSettings, StdoutOperator, MissbehavingToolError, tool_path, write_to_log
 
 # HARAG: FWD = 'Z'	
 # HARAG: UP = 'Y'	
