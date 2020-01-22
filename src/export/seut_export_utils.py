@@ -202,7 +202,7 @@ def export_XML(self, context, collection):
             lod1 = ET.SubElement(model, 'LOD')
             lod1.set('Distance', str(scene.seut.export_lod1Distance))
             lod1Model = ET.SubElement(lod1, 'Model')
-            lod1Model.text = path + scene.seut.subtypeId + '_LOD1'
+            lod1Model.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '_LOD1'
             lod1Printed = True
 
         if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
@@ -212,7 +212,7 @@ def export_XML(self, context, collection):
                 lod2 = ET.SubElement(model, 'LOD')
                 lod2.set('Distance', str(scene.seut.export_lod2Distance))
                 lod2Model = ET.SubElement(lod2, 'Model')
-                lod2Model.text = path + scene.seut.subtypeId + '_LOD2'
+                lod2Model.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '_LOD2'
                 lod2Printed = True
             else:
                 self.report({'ERROR'}, "SEUT: LOD2 cannot be set if LOD1 is not. (006)")
@@ -224,7 +224,7 @@ def export_XML(self, context, collection):
                 lod3 = ET.SubElement(model, 'LOD')
                 lod3.set('Distance', str(scene.seut.export_lod3Distance))
                 lod3Model = ET.SubElement(lod3, 'Model')
-                lod3Model.text = path + scene.seut.subtypeId + '_LOD3'
+                lod3Model.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '_LOD3'
             else:
                 self.report({'ERROR'}, "SEUT: LOD3 cannot be set if LOD1 or LOD2 is not. (006)")
 

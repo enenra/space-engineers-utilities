@@ -171,9 +171,9 @@ class SEUT_OT_ExportSBC(Operator):
                     if bs + 1 == counter:
                         def_BS_Model.set('BuildPercentUpperBound', str(1.0))
                     else:
-                        def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage)[4:])
+                        def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage)[:4])
 
-                    def_BS_Model.set('File', path + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
+                    def_BS_Model.set('File', path[path.find("Models\\"):] + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
 
 
         # Write to file, place in export folder
