@@ -8,6 +8,7 @@ from bpy.props  import (EnumProperty,
                         StringProperty,
                         BoolProperty)
 
+# These update_* functions need to be above the class... for some reason.
 def update_GridScale(self, context):
     bpy.ops.object.gridscale()
     bpy.ops.object.bbox('INVOKE_DEFAULT')

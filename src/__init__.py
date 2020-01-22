@@ -70,72 +70,50 @@ from .seut_ot_matCreate             import SEUT_OT_MatCreate
 from .seut_materials                import SEUT_Materials
 from .seut_scene                    import SEUT_Scene
 
+classes = (
+    SEUT_AddonPreferences,
+    SEUT_PT_Panel,
+    SEUT_PT_Panel_BoundingBox,
+    SEUT_PT_Panel_Export,
+    SEUT_PT_Panel_Import,
+    SEUT_PT_Panel_Materials,
+    SEUT_MT_ContextMenu,
+    SEUT_OT_AddHighlightEmpty,
+    SEUT_OT_AddDummy,
+    SEUT_OT_AddPresetSubpart,
+    SEUT_OT_AddCustomSubpart,
+    SEUT_OT_Export,
+    SEUT_OT_ExportMain,
+    SEUT_OT_ExportBS,
+    SEUT_OT_ExportLOD,
+    SEUT_OT_ExportHKT,
+    SEUT_OT_ExportSBC,
+    SEUT_OT_ExportMWM,
+    SEUT_OT_Import,
+    SEUT_OT_RemapMaterials,
+    SEUT_OT_EmptiesToCubeType,
+    SEUT_OT_GridScale,
+    SEUT_OT_BBox,
+    SEUT_OT_BBoxAuto,
+    SEUT_OT_RecreateCollections,
+    SEUT_OT_MatCreate,
+    SEUT_Materials,
+    SEUT_Scene,
+)
+
 def register():
-    bpy.utils.register_class(SEUT_AddonPreferences)
-    bpy.utils.register_class(SEUT_PT_Panel)
-    bpy.utils.register_class(SEUT_PT_Panel_BoundingBox)
-    bpy.utils.register_class(SEUT_PT_Panel_Export)
-    bpy.utils.register_class(SEUT_PT_Panel_Import)
-    bpy.utils.register_class(SEUT_PT_Panel_Materials)
-    bpy.utils.register_class(SEUT_MT_ContextMenu)
-    bpy.utils.register_class(SEUT_OT_AddHighlightEmpty)
-    bpy.utils.register_class(SEUT_OT_AddDummy)
-    bpy.utils.register_class(SEUT_OT_AddPresetSubpart)
-    bpy.utils.register_class(SEUT_OT_AddCustomSubpart)
-    bpy.utils.register_class(SEUT_OT_Export)
-    bpy.utils.register_class(SEUT_OT_ExportMain)
-    bpy.utils.register_class(SEUT_OT_ExportBS)
-    bpy.utils.register_class(SEUT_OT_ExportLOD)
-    bpy.utils.register_class(SEUT_OT_ExportHKT)
-    bpy.utils.register_class(SEUT_OT_ExportSBC)
-    bpy.utils.register_class(SEUT_OT_ExportMWM)
-    bpy.utils.register_class(SEUT_OT_Import)
-    bpy.utils.register_class(SEUT_OT_RemapMaterials)
-    bpy.utils.register_class(SEUT_OT_EmptiesToCubeType)
-    bpy.utils.register_class(SEUT_OT_GridScale)
-    bpy.utils.register_class(SEUT_OT_BBox)
-    bpy.utils.register_class(SEUT_OT_BBoxAuto)
-    bpy.utils.register_class(SEUT_OT_RecreateCollections)
-    bpy.utils.register_class(SEUT_OT_MatCreate)
-    bpy.utils.register_class(SEUT_Materials)
-    bpy.utils.register_class(SEUT_Scene)
-        
+    for cls in classes:
+        bpy.utils.register_class(cls)
+
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
     bpy.types.Material.seut = bpy.props.PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = bpy.props.PointerProperty(type=SEUT_Scene)
 
 def unregister():
-    bpy.utils.unregister_class(SEUT_AddonPreferences)
-    bpy.utils.unregister_class(SEUT_PT_Panel)
-    bpy.utils.unregister_class(SEUT_PT_Panel_BoundingBox)
-    bpy.utils.unregister_class(SEUT_PT_Panel_Export)
-    bpy.utils.unregister_class(SEUT_PT_Panel_Import)
-    bpy.utils.unregister_class(SEUT_PT_Panel_Materials)
-    bpy.utils.unregister_class(SEUT_MT_ContextMenu)
-    bpy.utils.unregister_class(SEUT_OT_AddHighlightEmpty)
-    bpy.utils.unregister_class(SEUT_OT_AddDummy)
-    bpy.utils.unregister_class(SEUT_OT_AddPresetSubpart)
-    bpy.utils.unregister_class(SEUT_OT_AddCustomSubpart)
-    bpy.utils.unregister_class(SEUT_OT_Export)
-    bpy.utils.unregister_class(SEUT_OT_ExportMain)
-    bpy.utils.unregister_class(SEUT_OT_ExportBS)
-    bpy.utils.unregister_class(SEUT_OT_ExportLOD)
-    bpy.utils.unregister_class(SEUT_OT_ExportHKT)
-    bpy.utils.unregister_class(SEUT_OT_ExportSBC)
-    bpy.utils.unregister_class(SEUT_OT_ExportMWM)
-    bpy.utils.unregister_class(SEUT_OT_Import)
-    bpy.utils.unregister_class(SEUT_OT_RemapMaterials)
-    bpy.utils.unregister_class(SEUT_OT_EmptiesToCubeType)
-    bpy.utils.unregister_class(SEUT_OT_GridScale)
-    bpy.utils.unregister_class(SEUT_OT_BBox)
-    bpy.utils.unregister_class(SEUT_OT_BBoxAuto)
-    bpy.utils.unregister_class(SEUT_OT_RecreateCollections)
-    bpy.utils.unregister_class(SEUT_OT_MatCreate)
-    bpy.utils.unregister_class(SEUT_Materials)
-    bpy.utils.unregister_class(SEUT_Scene)
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)
         
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
-
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
 
