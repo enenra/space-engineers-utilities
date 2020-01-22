@@ -413,7 +413,8 @@ def tool_path(propertyName, displayName, toolPath=None):
     """
     if toolPath is None:
         # STOLLIE: This is referencing the folder name the addon is stored in.
-        toolPath = getattr(bpy.context.preferences.addons.get(__package__).preferences, propertyName)
+        addon = __package__[:__package__.find(".")]
+        toolPath = getattr(bpy.context.preferences.addons.get(addon).preferences, propertyName)
 
     if toolPath is None:
         raise FileNotFoundError("%s is not configured", (displayName))
