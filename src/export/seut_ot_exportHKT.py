@@ -6,8 +6,9 @@ from bpy.types      import Operator
 
 from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import export_hktfbx_for_fbximporter, process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
-from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from .seut_export_utils             import ExportSettings, isCollectionExcluded
+from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_errors                  import errorExportGeneral
 
 class SEUT_OT_ExportHKT(Operator):
     """Exports the HKT"""
@@ -26,28 +27,10 @@ class SEUT_OT_ExportHKT(Operator):
 
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_hkt'")
 
-        scene = context.scene
-        addon = __package__[:__package__.find(".")]
-        preferences = bpy.context.preferences.addons.get(addon).preferences
-        exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
-
-        if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath == "":
-            self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
-            print("SEUT Error: No export folder defined. (003)")
-        elif preferences.looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
-            self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
-            print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
-            return {'CANCELLED'}
-
-        if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath.find("Models\\") == -1:
-            self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
-            print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
-            return {'CANCELLED'}
-
-        if scene.seut.subtypeId == "":
-            self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
-            print("SEUT Error: No SubtypeId set. (004)")
-            return {'CANCELLED'}
+        # Checks export path and whether SubtypeId exists
+        result = errorExportGeneral(self, context)
+        if not result == 'CONTINUE':
+            return {result}
         
         SEUT_OT_ExportHKT.export_HKT(self, context, False)
 
@@ -88,38 +71,10 @@ class SEUT_OT_ExportHKT(Operator):
                 print("SEUT Error: Path to Havok Standalone Filter Tool '" + havokPath + "' not valid. (013)")
                 return {'CANCELLED'}
 
-        allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
-        isExcluded = isCollectionExcluded("Collision", allCurrentViewLayerCollections)
-
-        if isExcluded is True:
-            if partial:
-                self.report({'WARNING'}, "SEUT: Collection 'Collision' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
-                print("SEUT Warning: Collection 'Collision' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
-                return {'FINISHED'}
-            else:
-                self.report({'ERROR'}, "SEUT: Collection 'Collision' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
-                print("SEUT Error: Collection 'Collision' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
-                return {'CANCELLED'}
-
-        if collections['hkt'] == None:
-            if partial:
-                self.report({'WARNING'}, "SEUT: Collection 'Collision' not found. Export not possible. (002)")
-                print("SEUT Warning: Collection 'Collision' not found. Export not possible. (002)")
-                return {'FINISHED'}
-            else:
-                self.report({'ERROR'}, "SEUT: Collection 'Collision' not found. Export not possible. (002)")
-                print("SEUT Error: Collection 'Collision' not found. Export not possible. (002)")
-                return {'CANCELLED'}
-
-        if len(collections['hkt'].objects) == 0:
-            if partial:
-                self.report({'WARNING'}, "SEUT: Collection 'Collision' is empty. Export not possible. (005)")
-                print("SEUT Warning: Collection 'Collision' is empty. Export not possible. (005)")
-                return {'FINISHED'}
-            else:
-                self.report({'ERROR'}, "SEUT: Collection 'Collision' is empty. Export not possible. (005)")
-                print("SEUT Error: Collection 'Collision' is empty. Export not possible. (005)")
-                return {'CANCELLED'}
+        # Checks whether collection exists, is excluded or is empty
+        result = errorCollection(self, context, collections['hkt'], partial)
+        if not result == 'CONTINUE':
+            return {result}
 
         for obj in collections['hkt'].objects:
             context.view_layer.objects.active = obj

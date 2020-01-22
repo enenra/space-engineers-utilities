@@ -5,7 +5,8 @@ import xml.dom.minidom
 
 from bpy.types      import Operator
 
-from ..seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_errors                  import errorExportGeneral
 
 class SEUT_OT_ExportSBC(Operator):
     """Exports to SBC"""
@@ -23,29 +24,10 @@ class SEUT_OT_ExportSBC(Operator):
 
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_sbc'")
 
-        scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections()
-        addon = __package__[:__package__.find(".")]
-        preferences = bpy.context.preferences.addons.get(addon).preferences
-        exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
-        
-        if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath == "":
-            self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
-            print("SEUT Error: No export folder defined. (003)")
-        elif preferences.looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
-            self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
-            print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
-            return {'CANCELLED'}
-
-        if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath.find("Models\\") == -1:
-            self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
-            print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
-            return {'CANCELLED'}
-
-        if scene.seut.subtypeId == "":
-            self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
-            print("SEUT Error: No SubtypeId set. (004)")
-            return {'CANCELLED'}
+        # Checks export path and whether SubtypeId exists
+        result = errorExportGeneral(self, context)
+        if not result == 'CONTINUE':
+            return {result}
         
         SEUT_OT_ExportSBC.export_SBC(self, context)
         
