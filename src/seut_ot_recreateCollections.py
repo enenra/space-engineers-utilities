@@ -29,6 +29,7 @@ class SEUT_OT_RecreateCollections(Operator):
             'bs1': None,
             'bs2': None,
             'bs3': None,
+            'bs_lod': None,
             }
 
         if len(bpy.data.collections) > 0:
@@ -59,6 +60,9 @@ class SEUT_OT_RecreateCollections(Operator):
                     
                 elif col.name == 'BS3':
                     collections['bs3'] = col
+                    
+                elif col.name == 'BS_LOD':
+                    collections['bs_lod'] = col
         
         return collections
 
@@ -103,5 +107,9 @@ class SEUT_OT_RecreateCollections(Operator):
         if collections['lod3'] == None:
             collections['lod3'] = bpy.data.collections.new('LOD3')
             collections['seut'].children.link(collections['lod3'])
+
+        if collections['bs_lod'] == None:
+            collections['bs_lod'] = bpy.data.collections.new('BS_LOD')
+            collections['seut'].children.link(collections['bs_lod'])
 
         return collections

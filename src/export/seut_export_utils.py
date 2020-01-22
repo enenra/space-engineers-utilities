@@ -228,6 +228,14 @@ def export_XML(self, context, collection):
             else:
                 self.report({'ERROR'}, "SEUT: LOD3 cannot be set if LOD1 or LOD2 is not. (006)")
 
+    if collection == collections['bs1'] or collection == collections['bs2'] or collection == collections['bs3']:
+        if collections['bs_lod'] == None or len(collections['bs_lod'].objects) == 0:
+            self.report({'INFO'}, "SEUT: Collection 'BS_LOD' not found or empty. Skipping XML entry.")
+        else:
+            bs_lod = ET.SubElement(model, 'LOD')
+            bs_lod.set('Distance', str(scene.seut.export_bs_lodDistance))
+            bs_lodModel = ET.SubElement(bs_lod, 'Model')
+            bs_lodModel.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '_BS_LOD'
 
     # Create file with subtypename + collection name and write string to it
     xmlString = xml.dom.minidom.parseString(ET.tostring(model))

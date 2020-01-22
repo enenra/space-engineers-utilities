@@ -14,7 +14,7 @@ class SEUT_OT_ExportLOD(Operator):
     @classmethod
     def poll(cls, context):
         collections = SEUT_OT_RecreateCollections.get_Collections()
-        return collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None
+        return collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None or collections['bs_lod'] is not None
 
 
     def execute(self, context):
@@ -63,8 +63,9 @@ class SEUT_OT_ExportLOD(Operator):
         isExcludedLOD1 = isCollectionExcluded("LOD1", allCurrentViewLayerCollections)
         isExcludedLOD2 = isCollectionExcluded("LOD2", allCurrentViewLayerCollections)
         isExcludedLOD3 = isCollectionExcluded("LOD3", allCurrentViewLayerCollections)
+        isExcludedBS_LOD = isCollectionExcluded("BS_LOD", allCurrentViewLayerCollections)
 
-        if isExcludedLOD1 and isExcludedLOD2 and isExcludedLOD3:
+        if isExcludedLOD1 and isExcludedLOD2 and isExcludedLOD3 and isExcludedBS_LOD:
             if partial:
                 self.report({'WARNING'}, "SEUT: All 'LOD'-type collections excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
                 print("SEUT Warning: All 'LOD'-type collections excluded from view layer. Re-enable in hierarchy. (019)")
@@ -74,7 +75,7 @@ class SEUT_OT_ExportLOD(Operator):
                 print("SEUT Error: All 'LOD'-type collections excluded from view layer. Re-enable in hierarchy. (019)")
                 return {'CANCELLED'}
 
-        if collections['lod1'] == None and collections['lod2'] == None and collections['lod3'] == None:
+        if collections['lod1'] == None and collections['lod2'] == None and collections['lod3'] == None and collections['bs_lod'] == None:
             if partial:
                 self.report({'WARNING'}, "SEUT: No 'LOD'-type collections found. Export not possible. (002)")
                 print("SEUT Warning: No 'LOD'-type collections found. Export not possible. (002)")
@@ -84,7 +85,7 @@ class SEUT_OT_ExportLOD(Operator):
                 print("SEUT Error: No 'LOD'-type collections found. Export not possible. (002)")
                 return {'CANCELLED'}
 
-        if len(collections['lod1'].objects) == 0 and len(collections['lod2'].objects) == 0 and len(collections['lod3'].objects) == 0:
+        if len(collections['lod1'].objects) == 0 and len(collections['lod2'].objects) == 0 and len(collections['lod3'].objects) == 0 and len(collections['bs_lod'].objects) == 0:
             if partial:
                 self.report({'WARNING'}, "SEUT: All 'LOD'-type collections are empty. Export not possible. (005)")
                 print("SEUT Warning: All 'LOD'-type collections are empty. Export not possible. (005)")
@@ -136,5 +137,16 @@ class SEUT_OT_ExportLOD(Operator):
             if scene.seut.export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD3'.")
                 export_FBX(self, context, collections['lod3'])
+
+        # Export BS_LOD, if present.
+        if collections['bs_lod'] == None or len(collections['bs_lod'].objects) == 0 or isExcludedBS_LOD:
+            self.report({'WARNING'}, "SEUT: Collection 'BS_LOD' not found or empty. Export not possible. (002)")
+        else:
+            if scene.seut.export_xml:
+                self.report({'INFO'}, "SEUT: Exporting XML for 'BS_LOD'.")
+                export_XML(self, context, collections['bs_lod'])
+            if scene.seut.export_fbx:
+                self.report({'INFO'}, "SEUT: Exporting FBX for 'BS_LOD'.")
+                export_FBX(self, context, collections['bs_lod'])
         
         return

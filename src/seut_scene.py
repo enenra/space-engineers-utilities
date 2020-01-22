@@ -113,7 +113,7 @@ class SEUT_Scene(PropertyGroup):
     )
     export_lod2Distance: IntProperty(
         name="LOD2:",
-        description="From what distance this LOD should display",
+        description="From what distance this Build Stage LOD should display",
         default=50,
         min=0
     )
@@ -121,6 +121,12 @@ class SEUT_Scene(PropertyGroup):
         name="LOD3:",
         description="From what distance this LOD should display",
         default=150,
+        min=0
+    )
+    export_bs_lodDistance: IntProperty(
+        name="BS_LOD:",
+        description="From what distance this LOD should display",
+        default=50,
         min=0
     )
     

@@ -1,5 +1,7 @@
 import bpy
 
+from .seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+
 class SEUT_PT_Panel(bpy.types.Panel):
     """Creates the topmost panel for SEUT"""
     bl_idname = "SEUT_PT_Panel"
@@ -58,6 +60,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+        collections = SEUT_OT_RecreateCollections.get_Collections()
 
         # Export
         row = layout.row()
@@ -101,11 +104,17 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         box.prop(scene.seut, "subtypeId", text="", expand=True)
         
         # LOD
-        box = layout.box()
-        box.label(text="LOD Distance")
-        box.prop(scene.seut, "export_lod1Distance")
-        box.prop(scene.seut, "export_lod2Distance")
-        box.prop(scene.seut, "export_lod3Distance")
+        if collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None or collections['bs_lod'] is not None:
+            box = layout.box()
+            box.label(text="LOD Distance")
+            if collections['lod1'] is not None:
+                box.prop(scene.seut, "export_lod1Distance")
+            if collections['lod2'] is not None:
+                box.prop(scene.seut, "export_lod2Distance")
+            if collections['lod3'] is not None:
+                box.prop(scene.seut, "export_lod3Distance")
+            if collections['bs_lod'] is not None:
+                box.prop(scene.seut, "export_bs_lodDistance")
 
 
 class SEUT_PT_Panel_Import(bpy.types.Panel):
