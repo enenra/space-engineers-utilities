@@ -138,3 +138,4 @@ class SEUT_PT_Panel_Import(bpy.types.Panel):
         box.label(text="Repair")
         box.operator('object.emptytocubetype', text="Display Empties as 'Cube'")
         box.operator('object.remapmaterials', text="Remap Materials")
+        box.operator('object.structure_conversion', text="Convert to new structure")

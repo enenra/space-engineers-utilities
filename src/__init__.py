@@ -65,6 +65,7 @@ from .seut_pt_toolbar               import SEUT_PT_Panel_BoundingBox
 from .seut_pt_toolbar               import SEUT_PT_Panel_Export
 from .seut_pt_toolbar               import SEUT_PT_Panel_Import
 from .seut_ot_import                import SEUT_OT_Import
+from .seut_ot_structureConversion   import SEUT_OT_StructureConversion
 from .seut_ot_gridScale             import SEUT_OT_GridScale
 from .seut_ot_bBox                  import SEUT_OT_BBox
 from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
@@ -92,6 +93,7 @@ classes = (
     SEUT_OT_ExportSBC,
     SEUT_OT_ExportMWM,
     SEUT_OT_Import,
+    SEUT_OT_StructureConversion,
     SEUT_OT_RemapMaterials,
     SEUT_OT_EmptiesToCubeType,
     SEUT_OT_GridScale,
