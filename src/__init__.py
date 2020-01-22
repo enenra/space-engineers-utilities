@@ -70,6 +70,7 @@ from .seut_ot_matCreate             import SEUT_OT_MatCreate
 from .seut_materials                import SEUT_Materials
 from .seut_scene                    import SEUT_Scene
 
+
 classes = (
     SEUT_AddonPreferences,
     SEUT_PT_Panel,
@@ -101,6 +102,7 @@ classes = (
     SEUT_Scene,
 )
 
+
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
@@ -108,6 +110,7 @@ def register():
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
     bpy.types.Material.seut = bpy.props.PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = bpy.props.PointerProperty(type=SEUT_Scene)
+
 
 def unregister():
     for cls in reversed(classes):
@@ -119,28 +122,10 @@ def unregister():
 
 
 def menu_func(self, context):
-    self.layout.operator(SEUT_OT_AddHighlightEmpty.bl_idname)
-    self.layout.operator(SEUT_OT_AddDummy.bl_idname)
-    self.layout.operator(SEUT_OT_AddPresetSubpart.bl_idname)
-    self.layout.operator(SEUT_OT_AddCustomSubpart.bl_idname)
+    for cls in classes:
+        if str(cls).find("SEUT_OT_") != -1:
+            self.layout.operator(cls.bl_idname)
 
-    self.layout.operator(SEUT_OT_Export.bl_idname)
-    self.layout.operator(SEUT_OT_ExportMain.bl_idname)
-    self.layout.operator(SEUT_OT_ExportBS.bl_idname)
-    self.layout.operator(SEUT_OT_ExportLOD.bl_idname)
-    self.layout.operator(SEUT_OT_ExportHKT.bl_idname)
-    self.layout.operator(SEUT_OT_ExportMWM.bl_idname)
-
-    self.layout.operator(SEUT_OT_Import.bl_idname)
-    self.layout.operator(SEUT_OT_RemapMaterials.bl_idname)
-    self.layout.operator(SEUT_OT_EmptiesToCubeType.bl_idname)
-
-    self.layout.operator(SEUT_OT_GridScale.bl_idname)
-    self.layout.operator(SEUT_OT_BBox.bl_idname)
-    self.layout.operator(SEUT_OT_BBoxAuto.bl_idname)
-    self.layout.operator(SEUT_OT_RecreateCollections.bl_idname)
-    
-    self.layout.operator(SEUT_OT_MatCreate.bl_idname)
 
 def menu_draw(self, context):
     layout = self.layout
@@ -148,6 +133,7 @@ def menu_draw(self, context):
     layout.separator()
     layout.label(text="Space Engineers Utilities")
     layout.menu('SEUT_MT_ContextMenu')
+
 
 addon_keymaps = []
 
