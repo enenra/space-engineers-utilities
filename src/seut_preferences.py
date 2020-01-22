@@ -9,7 +9,7 @@ class SEUT_AddonPreferences(AddonPreferences):
     """Saves the preferences set by the user"""
     bl_idname = __package__
 
-    pref_looseFilesExportFolder: EnumProperty(
+    looseFilesExportFolder: EnumProperty(
         name='Loose Files Export Folder',
         items=(
             ('0', '.blend Folder', 'Directory containing the current .blend file.'),
@@ -18,31 +18,31 @@ class SEUT_AddonPreferences(AddonPreferences):
         default='0'
     )
 
-    pref_fbxImporterPath: StringProperty(
+    fbxImporterPath: StringProperty(
         name="Custom FBX Importer",
         subtype='FILE_PATH',
     )
-    pref_havokPath: StringProperty(
+    havokPath: StringProperty(
         name="Havok Standalone Filter Tool",
         subtype='FILE_PATH',
     )
-    pref_mwmbPath: StringProperty(
+    mwmbPath: StringProperty(
         name="MWM Builder",
         subtype='FILE_PATH',
     )
-    pref_materialsPath: StringProperty(
+    materialsPath: StringProperty(
         name="Materials Folder",
         subtype='FILE_PATH',
     )
 
     def draw(self, context):
         layout = self.layout
-        layout.prop(self, "pref_looseFilesExportFolder")
-        layout.prop(self, "pref_mwmbPath", expand=True)
-        layout.prop(self, "pref_materialsPath", expand=True)
+        layout.prop(self, "looseFilesExportFolder")
+        layout.prop(self, "mwmbPath", expand=True)
+        layout.prop(self, "materialsPath", expand=True)
         box = layout.box()
         box.label(text="Havok")
-        box.prop(self, "pref_fbxImporterPath", expand=True)
-        box.prop(self, "pref_havokPath", expand=True)
+        box.prop(self, "fbxImporterPath", expand=True)
+        box.prop(self, "havokPath", expand=True)
 
         return

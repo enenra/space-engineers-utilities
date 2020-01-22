@@ -13,9 +13,9 @@ class SEUT_OT_GridScale(Operator):
         scene = context.scene
 
         # Grid scale is SE block size divided by 2 because else the lines don't line up with the block edges.
-        if scene.seut.prop_gridScale == 'large':
+        if scene.seut.gridScale == 'large':
             scale = 1.25
-        elif scene.seut.prop_gridScale == 'small':
+        elif scene.seut.gridScale == 'small':
             scale = 0.25
 
         # It needs to be set for all viewports in all workspaces.
@@ -30,6 +30,6 @@ class SEUT_OT_GridScale(Operator):
                             s.overlay.grid_scale = scale
                             break
 
-        self.report({'INFO'}, "SEUT: Grid Scale adjusted to: %s" % (scene.seut.prop_gridScale))
+        self.report({'INFO'}, "SEUT: Grid Scale adjusted to: %s" % (scene.seut.gridScale))
         
         return {'FINISHED'}

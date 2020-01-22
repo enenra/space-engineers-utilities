@@ -25,22 +25,22 @@ class SEUT_OT_ExportSBC(Operator):
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.get_Collections()
         preferences = bpy.context.preferences.addons.get(__package__).preferences
-        exportPath = os.path.normpath(bpy.path.abspath(scene.seut.prop_export_exportPath))
+        exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
         
-        if preferences.pref_looseFilesExportFolder == '1' and scene.seut.prop_export_exportPath == "":
+        if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath == "":
             self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
             print("SEUT Error: No export folder defined. (003)")
-        elif preferences.pref_looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
+        elif preferences.looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
             self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
             print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
             return {'CANCELLED'}
 
-        if preferences.pref_looseFilesExportFolder == '1' and scene.seut.prop_export_exportPath.find("Models\\") == -1:
+        if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath.find("Models\\") == -1:
             self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
             print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             return {'CANCELLED'}
 
-        if scene.seut.prop_subtypeId == "":
+        if scene.seut.subtypeId == "":
             self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
             print("SEUT Error: No SubtypeId set. (004)")
             return {'CANCELLED'}
@@ -58,7 +58,7 @@ class SEUT_OT_ExportSBC(Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections()
         preferences = bpy.context.preferences.addons.get(__package__).preferences
 
-        if not scene.seut.prop_export_sbc:
+        if not scene.seut.export_sbc:
             print("SEUT Info: 'SBC' is toggled off. SBC export skipped.")
             return {'FINISHED'}
 
@@ -84,30 +84,30 @@ class SEUT_OT_ExportSBC(Operator):
         def_TypeId = ET.SubElement(def_Id, 'TypeId')
         def_TypeId.text = 'PLACEHOLDER'
         def_SubtypeId = ET.SubElement(def_Id, 'SubtypeId')
-        def_SubtypeId.text = scene.seut.prop_subtypeId
+        def_SubtypeId.text = scene.seut.subtypeId
 
         def_DisplayName = ET.SubElement(def_definition, 'DisplayName')
-        def_DisplayName.text = 'DisplayName_' + scene.seut.prop_subtypeId
+        def_DisplayName.text = 'DisplayName_' + scene.seut.subtypeId
         def_Description = ET.SubElement(def_definition, 'Description')
-        def_Description.text = 'Description_' + scene.seut.prop_subtypeId
+        def_Description.text = 'Description_' + scene.seut.subtypeId
         
         def_Icon = ET.SubElement(def_definition, 'Icon')
         def_Icon.text = 'PLACEHOLDER'
         
         def_CubeSize = ET.SubElement(def_definition, 'CubeSize')
 
-        if scene.seut.prop_gridScale == 'large':
+        if scene.seut.gridScale == 'large':
             def_CubeSize.text = 'Large'
-        elif scene.seut.prop_gridScale == 'small':
+        elif scene.seut.gridScale == 'small':
             def_CubeSize.text = 'Small'
         
         def_BlockTopology = ET.SubElement(def_definition, 'BlockTopology')
         def_BlockTopology.text = 'TriangleMesh'
 
         def_Size = ET.SubElement(def_definition, 'Size')
-        def_Size.set('x', str(scene.seut.prop_bBox_X))
-        def_Size.set('y', str(scene.seut.prop_bBox_Y))
-        def_Size.set('z', str(scene.seut.prop_bBox_Z))
+        def_Size.set('x', str(scene.seut.bBox_X))
+        def_Size.set('y', str(scene.seut.bBox_Y))
+        def_Size.set('z', str(scene.seut.bBox_Z))
 
         def_ModelOffset = ET.SubElement(def_definition, 'ModelOffset')
         def_ModelOffset.set('x', '0')
@@ -118,19 +118,19 @@ class SEUT_OT_ExportSBC(Operator):
         path = ""
 
         # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
-        if not bpy.data.is_saved and preferences.pref_looseFilesExportFolder == '0':
+        if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
             self.report({'ERROR'}, "SEUT: BLEND file must be saved before SBC can be exported to its directory. (008)")
             print("SEUT Error: BLEND file must be saved before SBC can be exported to its directory. (008)")
             return {'CANCELLED'}
         else:
-            if preferences.pref_looseFilesExportFolder == '0':
+            if preferences.looseFilesExportFolder == '0':
                 path = os.path.dirname(bpy.data.filepath) + "\\"
 
-            elif preferences.pref_looseFilesExportFolder == '1':
-                path = bpy.path.abspath(scene.seut.prop_export_exportPath)
+            elif preferences.looseFilesExportFolder == '1':
+                path = bpy.path.abspath(scene.seut.export_exportPath)
         
         def_Model = ET.SubElement(def_definition, 'Model')
-        def_Model.text = path + scene.seut.prop_subtypeId + '.mwm'
+        def_Model.text = path + scene.seut.subtypeId + '.mwm'
         
         """
         def_Mountpoints = ET.SubElement(def_definition, 'Mountpoints')
@@ -170,14 +170,14 @@ class SEUT_OT_ExportSBC(Operator):
                     else:
                         def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage))
 
-                    def_BS_Model.set('File', path + scene.seut.prop_subtypeId + '_BS' + str(bs + 1) + '.mwm')
+                    def_BS_Model.set('File', path + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
 
 
         # Write to file, place in export folder
         xmlString = xml.dom.minidom.parseString(ET.tostring(definitions))
         xmlFormatted = xmlString.toprettyxml()
 
-        filename = scene.seut.prop_subtypeId
+        filename = scene.seut.subtypeId
 
         exportedXML = open(path + filename + ".sbc", "w")
         exportedXML.write(xmlFormatted)
