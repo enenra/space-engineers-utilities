@@ -60,7 +60,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections()
+        collections = SEUT_OT_RecreateCollections.get_Collections(context)
 
         # Export
         row = layout.row()

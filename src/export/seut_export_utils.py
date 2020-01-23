@@ -11,7 +11,7 @@ def export_XML(self, context, collection):
     """Exports the XML file for a defined collection"""
 
     scene = context.scene
-    collections = SEUT_OT_RecreateCollections.get_Collections()
+    collections = SEUT_OT_RecreateCollections.get_Collections(context)
     addon = __package__[:__package__.find(".")]
     preferences = bpy.context.preferences.addons.get(addon).preferences
 
@@ -257,7 +257,7 @@ def export_FBX(self, context, collection):
     """Exports the FBX file for a defined collection"""
 
     scene = context.scene
-    collections = SEUT_OT_RecreateCollections.get_Collections()
+    collections = SEUT_OT_RecreateCollections.get_Collections(context)
     addon = __package__[:__package__.find(".")]
     preferences = bpy.context.preferences.addons.get(addon).preferences
 
