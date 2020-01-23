@@ -18,9 +18,17 @@ class SEUT_OT_StructureConversion(Operator):
     def convertToNewStructure(self, context):
         """Converts blend files created with the old plugin to the new structure"""
 
-        print("I work!")
+        scene = context.scene
 
-        # Set subtypeId from scene name
+        # Set scene indexes and SubtypeIds
+        for index in range(0, len(bpy.data.scenes)):
+            if bpy.data.scenes[index].seut.index == -1:
+                bpy.data.scenes[index].seut.index = index
+                bpy.data.scenes[index].seut.subtypeId = bpy.data.scenes[index].name
+
+                # For not active scenes, the update doesn't trigger apparently, so I have to add the index to the scene names manually.
+                if index > 0:
+                    bpy.data.scenes[index].name = bpy.data.scenes[index].name + ' (' + str(index) + ')'
 
         # port subparts in scenes to new layout
 
