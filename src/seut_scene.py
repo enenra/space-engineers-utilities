@@ -18,12 +18,12 @@ def update_BBox(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_SceneName(self, context):
-    sceneIndex = 0
+    sceneIndex = ""
     for index in range(0, len(bpy.data.scenes)):
         if context.scene == bpy.data.scenes[index]:
-            sceneIndex = index
+            sceneIndex = ' (' + str(index) + ')'
 
-    context.scene.name = context.scene.seut.subtypeId + ' (' + str(sceneIndex) + ')'
+    context.scene.name = context.scene.seut.subtypeId + sceneIndex
 
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
