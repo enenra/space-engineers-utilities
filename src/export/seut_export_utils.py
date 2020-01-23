@@ -313,13 +313,14 @@ def prepMatForExport(self, context, material):
     dummyImage = None
     materialOutput = None
 
-    for node in material.node_tree.nodes:
-        if node.type == 'BSDF_PRINCIPLED' and node.name == 'EXPORT_DUMMY':
-            dummyShaderNode = node
-        elif node.type == 'TEX_IMAGE' and node.name == 'DUMMY_IMAGE':
-            dummyImageNode = node
-        elif node.type == 'OUTPUT_MATERIAL':
-            materialOutput = node
+    if material.node_tree is not None:
+        for node in material.node_tree.nodes:
+            if node.type == 'BSDF_PRINCIPLED' and node.name == 'EXPORT_DUMMY':
+                dummyShaderNode = node
+            elif node.type == 'TEX_IMAGE' and node.name == 'DUMMY_IMAGE':
+                dummyImageNode = node
+            elif node.type == 'OUTPUT_MATERIAL':
+                materialOutput = node
 
     # Iterate through images to find the dummy image
     for img in bpy.data.images:
