@@ -6,7 +6,8 @@ from bpy.props  import (EnumProperty,
                         FloatVectorProperty,
                         IntProperty,
                         StringProperty,
-                        BoolProperty
+                        BoolProperty,
+                        PointerProperty
                         )
 
 # These update_* functions need to be above the class... for some reason.
@@ -42,6 +43,11 @@ class SEUT_Scene(PropertyGroup):
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene')
             ),
         default='mainScene'
+    )
+    parent: PointerProperty(
+        name='Parent',
+        description="Which parent scene this subpart scene is linked to"
+        type=bpy.types.Scene
     )
 
     # Grid Scale

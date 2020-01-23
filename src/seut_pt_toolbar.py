@@ -18,6 +18,8 @@ class SEUT_PT_Panel(bpy.types.Panel):
         box = layout.box()
         box.label(text=scene.name, icon_value=layout.icon(scene))
         box.prop(scene.seut, 'sceneType')
+        if scene.seut.sceneType == 'subpart':
+            box.prop(scene.seut, 'parent')
         
         box = layout.box()
         box.label(text="SubtypeId")
