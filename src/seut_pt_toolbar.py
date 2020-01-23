@@ -14,6 +14,15 @@ class SEUT_PT_Panel(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
 
+        # SubtypeId
+        box = layout.box()
+        box.label(text=scene.name, icon_value=layout.icon(scene))
+        box.prop(scene.seut, 'sceneType')
+        
+        box = layout.box()
+        box.label(text="SubtypeId")
+        box.prop(scene.seut, "subtypeId", text="", expand=True)
+
         box = layout.box()
         box.label(text="Grid Scale")
         row = box.row()
@@ -66,8 +75,8 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         row = layout.row()
         row.scale_y = 2.0
         row.operator('object.export', text="Export")
-        layout.prop(scene.seut, "export_deleteLooseFiles")
         
+        """
         # Partial
         box = layout.box()
         box.label(text="Partial Export")
@@ -80,12 +89,13 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         col = split.column()
         col.operator('object.export_buildstages', text="Build Stages")
         col.operator('object.export_hkt', text="Collision")
+        """
 
         # Options
         box = layout.box()
         box.label(text="Options")
+        """
         split = box.split()
-        
         col = split.column()
         col.prop(scene.seut, "export_fbx")
         col.prop(scene.seut, "export_sbc")
@@ -93,15 +103,11 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         col = split.column()
         col.prop(scene.seut, "export_xml")
         col.prop(scene.seut, "export_hkt")
-        
+        """
+        box.prop(scene.seut, "export_deleteLooseFiles")
         box.prop(scene.seut, "export_rescaleFactor")
         
         box.prop(scene.seut, "export_exportPath", text="Folder", expand=True)
-
-        # SubtypeId
-        box = layout.box()
-        box.label(text="SubtypeId")
-        box.prop(scene.seut, "subtypeId", text="", expand=True)
         
         # LOD
         if collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None or collections['bs_lod'] is not None:

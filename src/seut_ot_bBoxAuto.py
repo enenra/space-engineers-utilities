@@ -37,7 +37,7 @@ class SEUT_OT_BBoxAuto(Operator):
         yD = 0
         zD = 0
 
-        # 
+        # this currently does not take the object's children's dimensions into account 
         for obj in collections['main'].objects:
             if obj.dimensions.x > xD:
                 xD = obj.dimensions.x

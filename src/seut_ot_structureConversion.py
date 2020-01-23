@@ -30,6 +30,7 @@ class SEUT_OT_StructureConversion(Operator):
                 # For inactive scenes, the update doesn't trigger apparently, so I have to add the index to the scene names manually.
                 if index > 0:
                     scn.name = scn.name + ' (' + str(scn.seut.index) + ')'
+                    scn.seut.sceneType = 'subpart'
             
             # Create main SEUT collection for each scene
             seut = bpy.data.collections.new('SEUT' + ' (' + str(scn.seut.index) + ')')

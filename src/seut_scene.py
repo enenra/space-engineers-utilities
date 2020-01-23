@@ -35,6 +35,14 @@ class SEUT_Scene(PropertyGroup):
         default=-1,
         min=0
     )
+    sceneType: EnumProperty(
+        name='Type',
+        items=(
+            ('mainScene', 'Main', 'This scene is a main scene'),
+            ('subpart', 'Subpart', 'This scene is a subpart of a main scene')
+            ),
+        default='mainScene'
+    )
 
     # Grid Scale
     gridScale: EnumProperty(
