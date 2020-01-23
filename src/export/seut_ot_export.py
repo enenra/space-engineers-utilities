@@ -17,7 +17,7 @@ from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from ..seut_errors                  import errorExportGeneral
 
 class SEUT_OT_Export(Operator):
-    """Exports all enabled file types and collections"""
+    """Exports all scene collections and compresses them to MWM"""
     bl_idname = "object.export"
     bl_label = "Export"
     bl_options = {'REGISTER', 'UNDO'}

@@ -118,16 +118,17 @@ def export_XML(self, context, collection):
                     'am': None
                     }
 
-                for node in mat.node_tree.nodes:
-                    if node.type == 'TEX_IMAGE':
-                        if node.name == 'CM':
-                            images['cm'] = node.image
-                        if node.name == 'NG':
-                            images['ng'] = node.image
-                        if node.name == 'ADD':
-                            images['add'] = node.image
-                        if node.name == 'ALPHAMASK':
-                            images['am'] = node.image
+                if mat.node_tree.nodes is not None:
+                    for node in mat.node_tree.nodes:
+                        if node.type == 'TEX_IMAGE':
+                            if node.name == 'CM':
+                                images['cm'] = node.image
+                            if node.name == 'NG':
+                                images['ng'] = node.image
+                            if node.name == 'ADD':
+                                images['add'] = node.image
+                            if node.name == 'ALPHAMASK':
+                                images['am'] = node.image
 
                 # Used to create the relative paths for the textures.
                 offset = 0
