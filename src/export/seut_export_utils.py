@@ -295,7 +295,7 @@ def export_FBX(self, context, collection):
     bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
 
     for objMat in bpy.data.materials:
-        if objMat is not None:
+        if objMat is not None and objMat.node_tree is not None:
             removeExportDummiesFromMat(self, context, objMat)
 
     bpy.context.scene.collection.children.unlink(collection)
