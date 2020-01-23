@@ -27,6 +27,7 @@ bl_info = {
 
 import bpy
 
+from bpy.app.handlers import persistent
 from bpy.props import (StringProperty,
                        BoolProperty,
                        IntProperty,
@@ -113,6 +114,7 @@ def register():
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
     bpy.types.Material.seut = bpy.props.PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = bpy.props.PointerProperty(type=SEUT_Scene)
+    bpy.app.handlers.load_post.append(load_handler)
 
 
 def unregister():
@@ -136,6 +138,11 @@ def menu_draw(self, context):
     layout.separator()
     layout.label(text="Space Engineers Utilities")
     layout.menu('SEUT_MT_ContextMenu')
+
+
+@persistent
+def load_handler(dummy):
+    bpy.ops.object.gridscale()
 
 
 addon_keymaps = []

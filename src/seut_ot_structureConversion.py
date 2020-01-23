@@ -75,6 +75,4 @@ class SEUT_OT_StructureConversion(Operator):
                 
         # convert LOD distances? and other variables
 
-        # how to handle custom materials?
-
         return
