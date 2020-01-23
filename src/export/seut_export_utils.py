@@ -241,11 +241,13 @@ def export_XML(self, context, collection):
     # Create file with subtypename + collection name and write string to it
     xmlString = xml.dom.minidom.parseString(ET.tostring(model))
     xmlFormatted = xmlString.toprettyxml()
-
+    
+    fileType = collection.name[:collection.name.find(" (")]
+    
     if collection == collections['main']:
         filename = scene.seut.subtypeId
     else:
-        filename = scene.seut.subtypeId + '_' + collection.name
+        filename = scene.seut.subtypeId + '_' + fileType
 
     exportedXML = open(path + filename + ".xml", "w")
     exportedXML.write(xmlFormatted)
@@ -263,10 +265,12 @@ def export_FBX(self, context, collection):
     preferences = bpy.context.preferences.addons.get(addon).preferences
 
     # Determining the directory to export to.
+    fileType = collection.name[:collection.name.find(" (")]
+
     if collection == collections['main']:
         filename = scene.seut.subtypeId
     else:
-        filename = scene.seut.subtypeId + '_' + collection.name
+        filename = scene.seut.subtypeId + '_' + fileType
 
     path = ""
 
