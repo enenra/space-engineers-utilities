@@ -289,7 +289,7 @@ def export_FBX(self, context, collection):
     bpy.context.view_layer.active_layer_collection = layer_collection
 
     for objMat in bpy.data.materials:
-        if objMat is not None:
+        if objMat is not None and objMat.node_tree is not None:
             prepMatForExport(self, context, objMat)
 
     bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
@@ -313,14 +313,13 @@ def prepMatForExport(self, context, material):
     dummyImage = None
     materialOutput = None
 
-    if material.node_tree is not None:
-        for node in material.node_tree.nodes:
-            if node.type == 'BSDF_PRINCIPLED' and node.name == 'EXPORT_DUMMY':
-                dummyShaderNode = node
-            elif node.type == 'TEX_IMAGE' and node.name == 'DUMMY_IMAGE':
-                dummyImageNode = node
-            elif node.type == 'OUTPUT_MATERIAL':
-                materialOutput = node
+    for node in material.node_tree.nodes:
+        if node.type == 'BSDF_PRINCIPLED' and node.name == 'EXPORT_DUMMY':
+            dummyShaderNode = node
+        elif node.type == 'TEX_IMAGE' and node.name == 'DUMMY_IMAGE':
+            dummyImageNode = node
+        elif node.type == 'OUTPUT_MATERIAL':
+            materialOutput = node
 
     # Iterate through images to find the dummy image
     for img in bpy.data.images:
