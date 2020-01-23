@@ -20,10 +20,7 @@ class SEUT_OT_RecreateCollections(Operator):
         """Scans existing collections to find the SEUT ones"""
 
         scene = context.scene
-        sceneIndex = ""
-        for index in range(0, len(bpy.data.scenes)):
-            if scene == bpy.data.scenes[index]:
-                sceneIndex = ' (' + str(index) + ')'
+        sceneIndex = ' (' + str(scene.seut.index) + ')'
 
         collections = {
             'seut': None,
@@ -77,10 +74,12 @@ class SEUT_OT_RecreateCollections(Operator):
         """Recreates the collections SEUT requires"""
 
         scene = context.scene
-        sceneIndex = ""
-        for index in range(0, len(bpy.data.scenes)):
-            if scene == bpy.data.scenes[index]:
-                sceneIndex = ' (' + str(index) + ')'
+        if scene.seut.index == -1:
+            if len(bpy.data.scenes) > 1:
+                scene.seut.index = len(bpy.data.scenes) - 1
+            elif len(bpy.data.scenes) == 1:
+                scene.seut.index = 0
+        sceneIndex = ' (' + str(scene.seut.index) + ')'
 
         collections = SEUT_OT_RecreateCollections.get_Collections(context)
 
@@ -117,11 +116,11 @@ class SEUT_OT_RecreateCollections(Operator):
             collections['seut'].children.link(collections['lod2'])
 
         if collections['lod3'] == None:
-            collections['lod3'] = bpy.data.collections.new('LOD3 (' + str(index) + ')')
+            collections['lod3'] = bpy.data.collections.new('LOD3' + sceneIndex)
             collections['seut'].children.link(collections['lod3'])
 
         if collections['bs_lod'] == None:
-            collections['bs_lod'] = bpy.data.collections.new('BS_LOD (' + str(index) + ')')
+            collections['bs_lod'] = bpy.data.collections.new('BS_LOD' + sceneIndex)
             collections['seut'].children.link(collections['bs_lod'])
 
         return collections

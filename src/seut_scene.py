@@ -18,15 +18,23 @@ def update_BBox(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_SceneName(self, context):
-    sceneIndex = ""
-    for index in range(0, len(bpy.data.scenes)):
-        if context.scene == bpy.data.scenes[index]:
-            sceneIndex = ' (' + str(index) + ')'
-
-    context.scene.name = context.scene.seut.subtypeId + sceneIndex
+    scene = context.scene
+    if scene.seut.index == -1:
+        if len(bpy.data.scenes) > 1:
+            scene.seut.index = len(bpy.data.scenes) - 1
+        elif len(bpy.data.scenes) == 1:
+            scene.seut.index = 0
+    sceneIndex = ' (' + str(scene.seut.index) + ')'
+    scene.name = scene.seut.subtypeId + sceneIndex
 
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
+
+    index: IntProperty(
+        name='Index',
+        default=-1,
+        min=0
+    )
 
     # Grid Scale
     gridScale: EnumProperty(
@@ -72,6 +80,7 @@ class SEUT_Scene(PropertyGroup):
     subtypeId: StringProperty(
         name="SubtypeId",
         description="The SubtypeId for this model",
+        default="Scene",
         update=update_SceneName
     )
     export_deleteLooseFiles: BoolProperty(
