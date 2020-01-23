@@ -6,7 +6,8 @@ from bpy.props  import (EnumProperty,
                         FloatVectorProperty,
                         IntProperty,
                         StringProperty,
-                        BoolProperty
+                        BoolProperty,
+                        PointerProperty
                         )
 
 # These update_* functions need to be above the class... for some reason.
@@ -18,10 +19,36 @@ def update_BBox(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_SceneName(self, context):
-    context.scene.name = context.scene.seut.subtypeId
+    scene = context.scene
+    if scene.seut.index == -1:
+        if len(bpy.data.scenes) > 1:
+            scene.seut.index = len(bpy.data.scenes) - 1
+        elif len(bpy.data.scenes) == 1:
+            scene.seut.index = 0
+    sceneIndex = ' (' + str(scene.seut.index) + ')'
+    scene.name = scene.seut.subtypeId + sceneIndex
 
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
+
+    index: IntProperty(
+        name='Index',
+        default=-1,
+        min=0
+    )
+    sceneType: EnumProperty(
+        name='Type',
+        items=(
+            ('mainScene', 'Main', 'This scene is a main scene'),
+            ('subpart', 'Subpart', 'This scene is a subpart of a main scene')
+            ),
+        default='mainScene'
+    )
+    parent: PointerProperty(
+        name='Parent',
+        description="Which parent scene this subpart scene is linked to"
+        type=bpy.types.Scene
+    )
 
     # Grid Scale
     gridScale: EnumProperty(
@@ -67,6 +94,7 @@ class SEUT_Scene(PropertyGroup):
     subtypeId: StringProperty(
         name="SubtypeId",
         description="The SubtypeId for this model",
+        default="Scene",
         update=update_SceneName
     )
     export_deleteLooseFiles: BoolProperty(

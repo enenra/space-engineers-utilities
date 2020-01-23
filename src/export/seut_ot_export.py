@@ -24,7 +24,7 @@ class SEUT_OT_Export(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.get_Collections()
+        collections = SEUT_OT_RecreateCollections.get_Collections(context)
         return collections['main'] is not None
 
     def execute(self, context):

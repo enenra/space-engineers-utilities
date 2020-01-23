@@ -1,6 +1,6 @@
 import bpy
 
-from bpy.types import Operator
+from bpy.types          import Operator
 
 class SEUT_OT_GridScale(Operator):
     """Sets the grid scale"""
