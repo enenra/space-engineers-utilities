@@ -118,7 +118,7 @@ def export_XML(self, context, collection):
                     'am': None
                     }
 
-                if mat.node_tree.nodes is not None:
+                if mat.node_tree is not None:
                     for node in mat.node_tree.nodes:
                         if node.type == 'TEX_IMAGE':
                             if node.name == 'CM':
