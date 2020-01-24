@@ -12,6 +12,7 @@ from bpy_extras.io_utils            import axis_conversion, ExportHelper
 from .havok.seut_havok_fbx          import save_single
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 
+
 def export_XML(self, context, collection):
     """Exports the XML file for a defined collection"""
 

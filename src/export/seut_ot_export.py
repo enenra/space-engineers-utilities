@@ -30,8 +30,9 @@ class SEUT_OT_Export(Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections(context)
 
         # Re-scale collision objects via rescale factor before export.
-        for obj in collections['hkt'].objects:
-            obj.scale *= context.scene.seut.export_rescaleFactor
+        if collections['hkt'] is not None:
+            for obj in collections['hkt'].objects:
+                obj.scale *= context.scene.seut.export_rescaleFactor
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
@@ -44,8 +45,9 @@ class SEUT_OT_Export(Operator):
         SEUT_OT_ExportLOD.export_LOD(self, context, True)
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
-        if scene.seut.export_hkt:
-            SEUT_OT_ExportHKT.export_HKT(self, context, True)
+        if collections['hkt'] is not None:
+            if scene.seut.export_hkt:
+                SEUT_OT_ExportHKT.export_HKT(self, context, True)
 
         if scene.seut.export_sbc:
             SEUT_OT_ExportSBC.export_SBC(self, context)
@@ -56,7 +58,8 @@ class SEUT_OT_Export(Operator):
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export'")
 
         # Re-scale collision objects via rescale factor after export.
-        for obj in collections['hkt'].objects:
-           obj.scale /= context.scene.seut.export_rescaleFactor
+        if collections['hkt'] is not None:
+            for obj in collections['hkt'].objects:
+                obj.scale /= context.scene.seut.export_rescaleFactor
 
         return {'FINISHED'}

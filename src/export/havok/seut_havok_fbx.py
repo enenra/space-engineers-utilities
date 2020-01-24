@@ -2,7 +2,13 @@
 import bpy
 import threading
 
-from collections    import OrderedDict
+from collections            import OrderedDict
+
+PROP_GROUP = "space_engineers"  
+
+def getdata(obj):
+    # avoids AttributeError
+    return getattr(obj, PROP_GROUP, None)
 
 # STOLLIE: This clones the specification from Blenders source code for its FBX Exporter so we can add some custom properties.
 def _clone_fbx_module():
@@ -139,15 +145,14 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
     # ----------------------- CUSTOM PART BEGINS HERE ----------------------- #
 
     # TO-DO: Link up enenra's empty fields to this.
-    """ # This is the link from empties to files and/or highlights to meshes.
-    if obj_type == b"Null" and types.data(ob_obj.bdata):
-        se = types.data(ob_obj.bdata)
+    # This is the link from empties to files and/or highlights to meshes.
+    if obj_type == b"Null" and getdata(ob_obj.bdata):
+        se = getdata(ob_obj.bdata)
         if se.file:
             _fbx.elem_props_template_set(tmpl, props, "p_string", b"file", se.file)
         if se.highlight_objects:
             # HARAG: TODO SE supports mutliple highlight shapes via <objectSPECIFICATION1>;<objectSPECIFICATION2>;...
             _fbx.elem_props_template_set(tmpl, props, "p_string", b"highlight", se.highlight_objects)
-    """
 
     if obj_type == b"Mesh" and ob_obj.bdata.rigid_body:
         rbo = ob_obj.bdata.rigid_body
