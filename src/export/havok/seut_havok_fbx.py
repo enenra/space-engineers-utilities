@@ -138,6 +138,8 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
         
     # ----------------------- CUSTOM PART BEGINS HERE ----------------------- #
 
+    # TO-DO: Link up enenra's empty fields to this.
+    """ # This is the link from empties to files and/or highlights to meshes.
     if obj_type == b"Null" and types.data(ob_obj.bdata):
         se = types.data(ob_obj.bdata)
         if se.file:
@@ -145,6 +147,7 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
         if se.highlight_objects:
             # HARAG: TODO SE supports mutliple highlight shapes via <objectSPECIFICATION1>;<objectSPECIFICATION2>;...
             _fbx.elem_props_template_set(tmpl, props, "p_string", b"highlight", se.highlight_objects)
+    """
 
     if obj_type == b"Mesh" and ob_obj.bdata.rigid_body:
         rbo = ob_obj.bdata.rigid_body

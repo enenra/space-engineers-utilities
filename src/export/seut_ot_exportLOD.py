@@ -3,7 +3,7 @@ import os
 
 from bpy.types                      import Operator
 
-from .seut_export_utils             import isCollectionExcluded, export_XML, export_FBX
+from .seut_export_utils             import isCollectionExcluded, export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from ..seut_errors                  import errorExportGeneral
 
@@ -98,7 +98,7 @@ class SEUT_OT_ExportLOD(Operator):
                 export_XML(self, context, collections['lod1'])
             if scene.seut.export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD1'.")
-                export_FBX(self, context, collections['lod1'])
+                export_model_FBX(self, context, collections['lod1'])
         
         # Export LOD2, if present.
         if collections['lod2'] == None or len(collections['lod2'].objects) == 0 or isExcludedLOD2:
@@ -109,7 +109,7 @@ class SEUT_OT_ExportLOD(Operator):
                 export_XML(self, context, collections['lod2'])
             if scene.seut.export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD2'.")
-                export_FBX(self, context, collections['lod2'])
+                export_model_FBX(self, context, collections['lod2'])
 
         # Export LOD3, if present.
         if collections['lod3'] == None or len(collections['lod3'].objects) == 0 or isExcludedLOD3:
@@ -120,7 +120,7 @@ class SEUT_OT_ExportLOD(Operator):
                 export_XML(self, context, collections['lod3'])
             if scene.seut.export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD3'.")
-                export_FBX(self, context, collections['lod3'])
+                export_model_FBX(self, context, collections['lod3'])
 
         # Export BS_LOD, if present.
         if collections['bs_lod'] == None or len(collections['bs_lod'].objects) == 0 or isExcludedBS_LOD:
@@ -131,6 +131,6 @@ class SEUT_OT_ExportLOD(Operator):
                 export_XML(self, context, collections['bs_lod'])
             if scene.seut.export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS_LOD'.")
-                export_FBX(self, context, collections['bs_lod'])
+                export_model_FBX(self, context, collections['bs_lod'])
         
         return

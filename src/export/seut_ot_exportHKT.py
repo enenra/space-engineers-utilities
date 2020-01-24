@@ -5,8 +5,8 @@ from os.path        import join
 from bpy.types      import Operator
 
 from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
-from .havok.seut_havok_hkt          import export_hktfbx_for_fbximporter, process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
-from .seut_export_utils             import ExportSettings, isCollectionExcluded
+from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
+from .seut_export_utils             import ExportSettings, export_to_fbxfile, isCollectionExcluded
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from ..seut_errors                  import errorExportGeneral, errorCollection
 
@@ -96,7 +96,7 @@ class SEUT_OT_ExportHKT(Operator):
         fbxhktfile = join(path, scene.seut.subtypeId + ".hkt.fbx")
         hktfile = join(path, scene.seut.subtypeId + ".hkt")
         
-        export_hktfbx_for_fbximporter(settings, fbxhktfile, collections['hkt'].objects)
+        export_to_fbxfile(settings, fbxhktfile, collections['hkt'].objects, ishavokfbxfile=True)
 
         # Then create the HKT file.
         process_hktfbx_to_fbximporterhkt(settings, fbxhktfile, hktfile)

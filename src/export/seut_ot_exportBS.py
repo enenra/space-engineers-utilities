@@ -3,7 +3,7 @@ import os
 
 from bpy.types                      import Operator
 
-from .seut_export_utils             import isCollectionExcluded, export_XML, export_FBX
+from .seut_export_utils             import isCollectionExcluded, export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from ..seut_errors                  import errorExportGeneral
 
@@ -97,7 +97,7 @@ class SEUT_OT_ExportBS(Operator):
                 export_XML(self, context, collections['bs1'])
             if scene.seut.export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS1'.")
-                export_FBX(self, context, collections['bs1'])
+                export_model_FBX(self, context, collections['bs1'])
         
         # Export BS2, if present.
         if collections['bs2'] == None or len(collections['bs2'].objects) == 0 or isExcludedBS2:
@@ -108,7 +108,7 @@ class SEUT_OT_ExportBS(Operator):
                 export_XML(self, context, collections['bs2'])
             if scene.seut.export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS2'.")
-                export_FBX(self, context, collections['bs2'])
+                export_model_FBX(self, context, collections['bs2'])
 
         # Export BS3, if present.
         if collections['bs3'] == None or len(collections['bs3'].objects) == 0 or isExcludedBS3:
@@ -119,6 +119,6 @@ class SEUT_OT_ExportBS(Operator):
                 export_XML(self, context, collections['bs3'])
             if scene.seut.export_fbx:
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS3'.")
-                export_FBX(self, context, collections['bs3'])
+                export_model_FBX(self, context, collections['bs3'])
         
         return

@@ -3,7 +3,7 @@ import os
 
 from bpy.types                      import Operator
 
-from .seut_export_utils             import isCollectionExcluded, export_XML, export_FBX
+from .seut_export_utils             import isCollectionExcluded, export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from ..seut_errors                  import errorExportGeneral, errorCollection
 
@@ -56,7 +56,7 @@ class SEUT_OT_ExportMain(Operator):
         if scene.seut.export_fbx:
             self.report({'INFO'}, "SEUT: Exporting FBX for 'Main'.")
 
-            export_FBX(self, context, collections['main'])
+            export_model_FBX(self, context, collections['main'])
         else:
             print("SEUT Info: 'FBX' export disabled.")
         

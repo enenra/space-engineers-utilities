@@ -5,6 +5,11 @@ import subprocess
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
+from os.path                        import join
+from mathutils                      import Matrix	
+from bpy_extras.io_utils            import axis_conversion, ExportHelper
+
+from .havok.seut_havok_fbx          import save_single
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 
 def export_XML(self, context, collection):
@@ -25,7 +30,7 @@ def export_XML(self, context, collection):
 
     paramRescaleFactor = ET.SubElement(model, 'Parameter')
     paramRescaleFactor.set('Name', 'RescaleFactor')
-    paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor * 0.01)       # Blender exports are always 100 times the size in SE for some godforsaken reason
+    paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor * 0.01) # Blender FBX exports are 100 times the size in SE due to a scaling mismatch.
 
     paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
     paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
@@ -256,13 +261,15 @@ def export_XML(self, context, collection):
     return {'FINISHED'}
 
 
-def export_FBX(self, context, collection):
+def export_model_FBX(self, context, collection):
     """Exports the FBX file for a defined collection"""
 
     scene = context.scene
-    collections = SEUT_OT_RecreateCollections.get_Collections(context)
+    depsgraph = context.evaluated_depsgraph_get()
     addon = __package__[:__package__.find(".")]
     preferences = bpy.context.preferences.addons.get(addon).preferences
+    collections = SEUT_OT_RecreateCollections.get_Collections(context)
+    settings = ExportSettings(scene, depsgraph)
 
     # Determining the directory to export to.
     fileType = collection.name[:collection.name.find(" (")]
@@ -272,9 +279,9 @@ def export_FBX(self, context, collection):
     else:
         filename = scene.seut.subtypeId + '_' + fileType
 
+    # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
     path = ""
 
-    # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
     if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
         self.report({'ERROR'}, "SEUT: BLEND file must be saved before FBX can be exported to its directory. (008)")
         return
@@ -296,7 +303,11 @@ def export_FBX(self, context, collection):
         if objMat is not None and objMat.node_tree is not None:
             prepMatForExport(self, context, objMat)
 
-    bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
+    # This is the actual call to make an FBX file.
+    fbxfile = join(path, filename + ".fbx")
+    export_to_fbxfile(settings, fbxfile, collection.objects, ishavokfbxfile=False)
+    
+    # bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
 
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
@@ -524,3 +535,81 @@ class ExportSettings:
             return value
         except AttributeError:
             raise KeyError(key)
+
+# HARAG: FWD = 'Z'
+# HARAG: UP = 'Y'
+# HARAG: MATRIX_NORMAL = axis_conversion(to_forward=FWD, to_up=UP).to_4x4()
+# HARAG: MATRIX_SCALE_DOWN = Matrix.Scale(0.2, 4) * MATRIX_NORMAL
+def export_to_fbxfile(settings: ExportSettings, filepath, objects, ishavokfbxfile = False, kwargs = None):	
+    kwargs = {	
+        # HARAG: FBX operator defaults	
+        # HARAG: Some internals of the fbx exporter depend on them and will step out of line if they are not present	
+        'version': 'BIN7400', # This was removed in 2.8	
+        'use_mesh_edges': False,	
+        'use_custom_props': False, # HARAG: SE / Havok properties are hacked directly into the modified fbx importer in fbx.py	
+        # HARAG:  anim, BIN7400	
+        'bake_anim': False, # HARAG: no animation export to SE by default	
+        'bake_anim_use_all_bones': True,	
+        'bake_anim_use_nla_strips': True,	
+        'bake_anim_use_all_actions': True,	
+        'bake_anim_force_startend_keying': True,	
+        'bake_anim_step': 1.0,	
+        'bake_anim_simplify_factor': 1.0,	
+        # HARAG:  anim, ASCII6100	
+        'use_anim' : False, # HARAG: No animation export to SE by default	
+        'use_anim_action_all' : True, # Not a Blender property.	
+        'use_default_take' : True, # Not a Blender property.	
+        'use_anim_optimize' : True, # Not a Blender property.	
+        'anim_optimize_precision' : 6.0, # Not a Blender property.	
+        # HARAG: Referenced files stay on automatic, MwmBuilder only cares about what's written to its .xml file	
+        'path_mode': 'AUTO',	
+        'embed_textures': False,	
+        # HARAG: Batching isn't used because the export is driven by the node tree	
+        'batch_mode': 'OFF',	
+        'use_batch_own_dir': True,	
+        'use_metadata': True,	
+        # HARAG: Important settings for SE	
+        'object_types': {'MESH', 'EMPTY'},	
+        'axis_forward': 'Z', # STOLLIE: Normally a -Z in Blender source.	
+        'axis_up': 'Y',	
+        'bake_space_transform': True, # HARAG: The export to Havok needs this, it's off for the MwmFileNode	
+        'use_mesh_modifiers': True,	
+        'mesh_smooth_type': 'OFF', # STOLLIE: Normally 'FACE' in Blender source.	
+        'use_tspace': False, # BLENDER: Why? Unity is expected to support tspace import...	
+        # HARAG: For characters	
+        'global_scale': 1.0, 
+        'use_armature_deform_only': False,	
+        'add_leaf_bones': False,	
+        'armature_nodetype': 'NULL',	
+        'primary_bone_axis': 'X', # STOLLIE: Swapped for SE, Y in Blender source.	
+        'secondary_bone_axis': 'Y', # STOLLIE: Swapped for SE, X in Blender source. """	
+    }	
+
+    if kwargs:	
+        if isinstance(kwargs, bpy.types.PropertyGroup):	
+            kwargs = {prop : getattr(kwargs, prop) for prop in kwargs.rna_type.properties.keys()}	
+        kwargs.update(**kwargs)	
+
+    # these cannot be overriden and are always set here	
+    kwargs['use_selection'] = False # because of context_objects	
+    kwargs['context_objects'] = objects	
+
+    # Resizes Havok collision mesh in fbx.hkt
+    if ishavokfbxfile:
+        kwargs['global_scale'] = 0.1
+    
+    global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
+    scale = kwargs['global_scale']
+    
+    if abs(1.0-scale) >= 0.000001:
+        global_matrix = Matrix.Scale(scale, 4) @ global_matrix
+
+    kwargs['global_matrix'] = global_matrix
+
+    return save_single(	
+        settings.operator,	
+        settings.scene,	
+        settings.depsgraph,	
+        filepath=filepath,	
+        **kwargs # Stores any number of Keyword Arguments into a dictionary called 'fbxSettings'.	
+    )	
