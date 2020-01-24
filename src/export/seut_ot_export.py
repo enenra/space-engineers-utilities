@@ -32,6 +32,11 @@ class SEUT_OT_Export(Operator):
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export'")
         
         scene = context.scene
+        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+
+        # Re-scale collision objects via rescale factor before export.
+        for obj in collections['hkt'].objects:
+            obj.scale *= context.scene.seut.export_rescaleFactor
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
@@ -54,5 +59,9 @@ class SEUT_OT_Export(Operator):
         SEUT_OT_ExportMWM.export_MWM(self, context)
 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export'")
+
+        # Re-scale collision objects via rescale factor after export.
+        for obj in collections['hkt'].objects:
+           obj.scale /= context.scene.seut.export_rescaleFactor
 
         return {'FINISHED'}

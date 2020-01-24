@@ -101,5 +101,5 @@ class SEUT_OT_ExportHKT(Operator):
         # Then create the HKT file.
         process_hktfbx_to_fbximporterhkt(settings, fbxhktfile, hktfile)
         process_fbximporterhkt_to_final_hkt_for_mwm(self, scene, path, settings, hktfile, hktfile)
-
+           
         return
