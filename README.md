@@ -14,6 +14,10 @@ A Blender 2.8+ addon.
 * Exports collision model
 * Exports basic CubeBlocks entry
 * Exports directly to MWM
+* HKT is automatically rescaled with rescalefactor along with rest of model
+* Support for Blender files with multiple scenes
+* Structure conversion to convert BLEND files created with the old plugin to the new structure
+* Support for Build Stage LOD
 
 ## Installation
 1. Download the latest release of the addon from the releases section, enable it in Blender.
