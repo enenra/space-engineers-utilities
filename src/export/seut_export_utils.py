@@ -603,12 +603,9 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
     global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
     scale = kwargs['global_scale']
     
-    if bpy.app.version <= (2, 78, 0):
-        if abs(1.0-scale) >= 0.0001:
-            global_matrix = Matrix.Scale(scale, 4) @ global_matrix
-    else:
-        if abs(1.0-scale) >= 0.000001:
-            global_matrix = Matrix.Scale(scale, 4) @ global_matrix
+    if abs(1.0-scale) >= 0.000001:
+        global_matrix = Matrix.Scale(scale, 4) @ global_matrix
+
     kwargs['global_matrix'] = global_matrix
 
     return save_single(	
