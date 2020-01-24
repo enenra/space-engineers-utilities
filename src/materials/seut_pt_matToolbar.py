@@ -13,7 +13,7 @@ class SEUT_PT_Panel_Materials(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
 
-        if bpy.context.active_object.active_material != None:
+        if bpy.context.active_object is not None and bpy.context.active_object.active_material is not None:
 
             material = bpy.context.active_object.active_material
 
