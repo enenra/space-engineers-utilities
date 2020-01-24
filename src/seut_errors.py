@@ -39,7 +39,6 @@ def errorCollection(self, context, collection, partial):
     """Check if collection exists, is not excluded and is not empty"""
 
     allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
-    isExcluded = isCollectionExcluded(collection.name, allCurrentViewLayerCollections)
 
     if collection == None:
         if partial:
@@ -50,6 +49,8 @@ def errorCollection(self, context, collection, partial):
             self.report({'ERROR'}, "SEUT: Collection '%s' not found. Export not possible. (002)" % (collection.name))
             print("SEUT Error: Collection '" + collection.name + "' not found. Export not possible. (002)")
             return 'CANCELLED'
+            
+    isExcluded = isCollectionExcluded(collection.name, allCurrentViewLayerCollections)
 
     if isExcluded is True:
         if partial:
