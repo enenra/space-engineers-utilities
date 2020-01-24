@@ -30,7 +30,7 @@ def export_XML(self, context, collection):
 
     paramRescaleFactor = ET.SubElement(model, 'Parameter')
     paramRescaleFactor.set('Name', 'RescaleFactor')
-    paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor * 0.01) # Blender FBX exports are 100 times the size in SE due to a scaling mismatch.
+    paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor * 1.0) # Blender FBX exports are 100 times the size in SE due to a scaling mismatch.
 
     paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
     paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
@@ -305,7 +305,7 @@ def export_model_FBX(self, context, collection):
 
     # This is the actual call to make an FBX file.
     fbxfile = join(path, filename + ".fbx")
-    export_to_fbxfile(settings, fbxfile, collection.objects, ishavokfbxfile=False)
+    export_to_fbxfile(settings, scene, fbxfile, collection.objects, ishavokfbxfile=False)
     
     # bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
 
@@ -540,7 +540,7 @@ class ExportSettings:
 # HARAG: UP = 'Y'
 # HARAG: MATRIX_NORMAL = axis_conversion(to_forward=FWD, to_up=UP).to_4x4()
 # HARAG: MATRIX_SCALE_DOWN = Matrix.Scale(0.2, 4) * MATRIX_NORMAL
-def export_to_fbxfile(settings: ExportSettings, filepath, objects, ishavokfbxfile = False, kwargs = None):	
+def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavokfbxfile = False, kwargs = None):	
     kwargs = {	
         # HARAG: FBX operator defaults	
         # HARAG: Some internals of the fbx exporter depend on them and will step out of line if they are not present	
@@ -577,7 +577,7 @@ def export_to_fbxfile(settings: ExportSettings, filepath, objects, ishavokfbxfil
         'mesh_smooth_type': 'OFF', # STOLLIE: Normally 'FACE' in Blender source.	
         'use_tspace': False, # BLENDER: Why? Unity is expected to support tspace import...	
         # HARAG: For characters	
-        'global_scale': 1.0, 
+        'global_scale': 0.1, 
         'use_armature_deform_only': False,	
         'add_leaf_bones': False,	
         'armature_nodetype': 'NULL',	
@@ -594,16 +594,21 @@ def export_to_fbxfile(settings: ExportSettings, filepath, objects, ishavokfbxfil
     kwargs['use_selection'] = False # because of context_objects	
     kwargs['context_objects'] = objects	
 
+    """
     # Resizes Havok collision mesh in fbx.hkt
     if ishavokfbxfile:
-        kwargs['global_scale'] = 0.1
-    
+        kwargs['global_scale'] = 0.1 * scene.seut.export_rescaleFactor
+    """
+ 
     global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
     scale = kwargs['global_scale']
     
-    if abs(1.0-scale) >= 0.000001:
-        global_matrix = Matrix.Scale(scale, 4) @ global_matrix
-
+    if bpy.app.version <= (2, 78, 0):
+        if abs(1.0-scale) >= 0.0001:
+            global_matrix = Matrix.Scale(scale, 4) @ global_matrix
+    else:
+        if abs(1.0-scale) >= 0.000001:
+            global_matrix = Matrix.Scale(scale, 4) @ global_matrix
     kwargs['global_matrix'] = global_matrix
 
     return save_single(	

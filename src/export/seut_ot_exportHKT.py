@@ -96,7 +96,7 @@ class SEUT_OT_ExportHKT(Operator):
         fbxhktfile = join(path, scene.seut.subtypeId + ".hkt.fbx")
         hktfile = join(path, scene.seut.subtypeId + ".hkt")
         
-        export_to_fbxfile(settings, fbxhktfile, collections['hkt'].objects, ishavokfbxfile=True)
+        export_to_fbxfile(settings, scene, fbxhktfile, collections['hkt'].objects, ishavokfbxfile=True)
 
         # Then create the HKT file.
         process_hktfbx_to_fbximporterhkt(settings, fbxhktfile, hktfile)
