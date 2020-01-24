@@ -30,7 +30,7 @@ def export_XML(self, context, collection):
 
     paramRescaleFactor = ET.SubElement(model, 'Parameter')
     paramRescaleFactor.set('Name', 'RescaleFactor')
-    paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor * 1.0) # Blender FBX exports are 100 times the size in SE due to a scaling mismatch.
+    paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor)
 
     paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
     paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
