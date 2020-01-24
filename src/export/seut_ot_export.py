@@ -22,11 +22,6 @@ class SEUT_OT_Export(Operator):
     bl_label = "Export"
     bl_options = {'REGISTER', 'UNDO'}
 
-    @classmethod
-    def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
-        return collections['main'] is not None
-
     def execute(self, context):
 
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export'")
