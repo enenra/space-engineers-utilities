@@ -91,8 +91,8 @@ class SEUT_OT_ExportSBC(Operator):
 
         def_Size = ET.SubElement(def_definition, 'Size')
         def_Size.set('x', str(scene.seut.bBox_X))
-        def_Size.set('y', str(scene.seut.bBox_Y))
-        def_Size.set('z', str(scene.seut.bBox_Z))
+        def_Size.set('y', str(scene.seut.bBox_Z))   # This looks wrong but it's correct: Blender has different forward than SE.
+        def_Size.set('z', str(scene.seut.bBox_Y))
 
         def_ModelOffset = ET.SubElement(def_definition, 'ModelOffset')
         def_ModelOffset.set('x', '0')
