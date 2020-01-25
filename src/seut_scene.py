@@ -29,7 +29,7 @@ def update_SceneName(self, context):
     scene.name = scene.seut.subtypeId + sceneIndex
 
 def update_parent(self, context):
-    print("bla")
+    print("parent updated")
 
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
@@ -45,7 +45,7 @@ class SEUT_Scene(PropertyGroup):
             ('mainScene', 'Main', 'This scene is a main scene'),
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene')
             ),
-        default='mainScene'
+        default='subpart'
     )
     parent: PointerProperty(
         name='Parent',

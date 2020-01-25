@@ -27,10 +27,10 @@ class SEUT_OT_StructureConversion(Operator):
             if scn.seut.index == -1:
                 scn.seut.index = index
                 scn.seut.subtypeId = scn.name
+                scn.seut.sceneType = 'mainScene'
                 # For inactive scenes, the update doesn't trigger apparently, so I have to add the index to the scene names manually.
                 if index > 0:
                     scn.name = scn.name + ' (' + str(scn.seut.index) + ')'
-                    scn.seut.sceneType = 'subpart'
             
             # Create main SEUT collection for each scene
             seutExists = False
@@ -41,7 +41,6 @@ class SEUT_OT_StructureConversion(Operator):
             if not seutExists:
                 seut = bpy.data.collections.new('SEUT' + ' (' + str(scn.seut.index) + ')')
                 scn.collection.children.link(seut)
-
             
             # convert collections created from layers to corresponding SEUT collections
             for collection in scn.collection.children:
@@ -89,9 +88,15 @@ class SEUT_OT_StructureConversion(Operator):
                     if haragProp.get('highlight_objects') is not None:
                         customPropName = 'highlight'
                         targetObjectName = haragProp.get('highlight_objects')
+
                     elif haragProp.get('file') is not None:
                         customPropName = 'file'
-                        targetObjectName = haragProp.get('file')
+                        customPropValue = haragProp.get('file')
+
+                        if customPropValue.find('_Large') != -1:
+                            targetObjectName = customPropValue[:customPropValue.find('_Large')]
+                        if customPropValue.find('_Small') != -1:
+                            targetObjectName = customPropValue[:customPropValue.find('_Small')]
 
                     if targetObjectName is not None:
                         bpy.data.objects[obj.name][customPropName] = targetObjectName
@@ -107,6 +112,7 @@ class SEUT_OT_StructureConversion(Operator):
                     subpartScene = bpy.data.objects[obj.name]['file']
                     for i in range(0, len(bpy.data.scenes)):
                         if bpy.data.scenes[i].seut.subtypeId == subpartScene:
-                            bpy.data.scenes[i].seut.parent == scn
+                            bpy.data.scenes[i].seut.sceneType = 'subpart'
+                            bpy.data.scenes[i].seut.parent = scn
                             
         return
