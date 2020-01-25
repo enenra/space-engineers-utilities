@@ -595,11 +595,8 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
     kwargs['use_selection'] = False # because of context_objects	
     kwargs['context_objects'] = objects	
 
-    if scene.seut.sceneType == 'mainScene':
-        kwargs['axis_forward'] = "Z"
-        kwargs['axis_up'] = "Y"
-    elif scene.seut.sceneType == 'subpart':
-        kwargs['axis_forward'] = "Y"
+    if scene.seut.sceneType != 'mainScene':
+        kwargs['axis_forward'] = "-Y"
         kwargs['axis_up'] = "-Z"
 
     global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
