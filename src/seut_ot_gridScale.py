@@ -29,7 +29,5 @@ class SEUT_OT_GridScale(Operator):
                         if s.type == 'VIEW_3D':
                             s.overlay.grid_scale = scale
                             break
-
-        self.report({'INFO'}, "SEUT: Grid Scale adjusted to: %s" % (scene.seut.gridScale))
         
         return {'FINISHED'}

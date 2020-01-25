@@ -45,7 +45,7 @@ class SEUT_Scene(PropertyGroup):
             ('mainScene', 'Main', 'This scene is a main scene'),
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene')
             ),
-        default='subpart'
+        default='mainScene'
     )
     parent: PointerProperty(
         name='Parent',
