@@ -37,7 +37,7 @@ class SEUT_OT_StructureConversion(Operator):
             for collection in scn.collection.children:
                 if collection.name[:4] == 'SEUT':
                     seutExists = True
-                    
+
             if not seutExists:
                 seut = bpy.data.collections.new('SEUT' + ' (' + str(scn.seut.index) + ')')
                 scn.collection.children.link(seut)
@@ -85,6 +85,7 @@ class SEUT_OT_StructureConversion(Operator):
                 if obj.type == 'EMPTY' and 'space_engineers' in bpy.data.objects[obj.name] and bpy.data.objects[obj.name]['space_engineers'] is not None:
                     haragProp = bpy.data.objects[obj.name]['space_engineers']
 
+                    targetObjectName = None
                     if haragProp.get('highlight_objects') is not None:
                         customPropName = 'highlight'
                         targetObjectName = haragProp.get('highlight_objects')
