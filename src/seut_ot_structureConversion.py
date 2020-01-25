@@ -74,6 +74,18 @@ class SEUT_OT_StructureConversion(Operator):
                     scn.collection.children.unlink(collection)
                     bpy.data.collections['SEUT' + ' (' + str(scn.seut.index) + ')'].children.link(collection)
                 
-        # convert LOD distances? and other variables
+            # Convert custom properties of empties from harag's to the default blender method.
+            for obj in scn.objects:
+                if obj.type == 'EMPTY' and bpy.data.objects[obj.name]['space_engineers'] is not None:
+                    haragProp = bpy.data.objects[obj.name]['space_engineers']
 
+                    if haragProp.get('highlight_objects') is not None:
+                        customPropName = 'highlight'
+                        targetObjectName = haragProp.get('highlight_objects')
+                    elif haragProp.get('file') is not None:
+                        customPropName = 'file'
+                        targetObjectName = haragProp.get('file')
+
+                    bpy.data.objects[obj.name][customPropName] = targetObjectName
+                    del bpy.data.objects[obj.name]['space_engineers']
         return
