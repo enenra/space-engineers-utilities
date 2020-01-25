@@ -18,9 +18,9 @@ class SEUT_OT_StructureConversion(Operator):
     def convertToNewStructure(self, context):
         """Converts blend files created with the old plugin to the new structure"""
 
-        scene = context.scene
-
         # Set scene indexes and SubtypeIds
+        currentScene = bpy.context.window.scene
+        bpy.context.window.scene = bpy.data.scenes[0]
         for index in range(0, len(bpy.data.scenes)):
             scn = bpy.data.scenes[index]
 
@@ -103,6 +103,8 @@ class SEUT_OT_StructureConversion(Operator):
                         bpy.data.objects[obj.name][customPropName] = targetObjectName
                         del bpy.data.objects[obj.name]['space_engineers']
         
+        bpy.context.window.scene = currentScene
+
         # Set parent scenes from subparts
         # Needs to happen in second loop, because first loop needs to first run through all scenes to name them
         for index in range(0, len(bpy.data.scenes)):
