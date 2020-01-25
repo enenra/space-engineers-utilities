@@ -12,7 +12,6 @@ from bpy_extras.io_utils            import axis_conversion, ExportHelper
 from .havok.seut_havok_fbx          import save_single
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 
-
 def export_XML(self, context, collection):
     """Exports the XML file for a defined collection"""
 
@@ -300,9 +299,11 @@ def export_model_FBX(self, context, collection):
     layer_collection = bpy.context.view_layer.layer_collection.children[collection.name]
     bpy.context.view_layer.active_layer_collection = layer_collection
 
+    """
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
             prepMatForExport(self, context, objMat)
+    """
 
     # This is the actual call to make an FBX file.
     fbxfile = join(path, filename + ".fbx")
@@ -310,9 +311,11 @@ def export_model_FBX(self, context, collection):
     
     # bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
 
+    """
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
             removeExportDummiesFromMat(self, context, objMat)
+    """
 
     bpy.context.scene.collection.children.unlink(collection)
     self.report({'INFO'}, "SEUT: '%s.fbx' has been created." % (path + filename))
@@ -595,12 +598,13 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
     kwargs['use_selection'] = False # because of context_objects	
     kwargs['context_objects'] = objects	
 
-    """
-    # Resizes Havok collision mesh in fbx.hkt
-    if ishavokfbxfile:
-        kwargs['global_scale'] = 0.1 * scene.seut.export_rescaleFactor
-    """
- 
+    if scene.seut.sceneType == 'mainScene':
+        kwargs['axis_forward'] = "Z"
+        kwargs['axis_up'] = "Y"
+    elif scene.seut.sceneType == 'subpart':
+        kwargs['axis_forward'] = "Y"
+        kwargs['axis_up'] = "-Z"
+
     global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
     scale = kwargs['global_scale']
     
