@@ -20,7 +20,8 @@ class SEUT_OT_RecreateCollections(Operator):
         """Scans existing collections to find the SEUT ones"""
 
         scene = context.scene
-        sceneIndex = ' (' + str(scene.seut.index) + ')'
+        tag = ' (' + scene.seut.subtypeId + ')'
+        tagOld = ' (' + scene.seut.subtypeBefore + ')'
 
         collections = {
             'seut': None,
@@ -37,34 +38,44 @@ class SEUT_OT_RecreateCollections(Operator):
 
         if len(bpy.data.collections) > 0:
             for col in bpy.data.collections:
-                if col.name == 'SEUT' + sceneIndex:
+                if col.name == 'SEUT' + tag or col.name == 'SEUT' + tagOld:
+                    col.name = 'SEUT' + tag
                     collections['seut'] = col
 
-                if col.name == 'Main' + sceneIndex:
+                if col.name == 'Main' + tag or col.name == 'Main' + tagOld:
+                    col.name = 'Main' + tag
                     collections['main'] = col
 
-                if col.name == 'Collision' + sceneIndex:
+                if col.name == 'Collision' + tag or col.name == 'Collision' + tagOld:
+                    col.name = 'Collision' + tag
                     collections['hkt'] = col
 
-                elif col.name == 'LOD1' + sceneIndex:
+                elif col.name == 'LOD1' + tag or col.name == 'LOD1' + tagOld:
+                    col.name = 'LOD1' + tag
                     collections['lod1'] = col
 
-                elif col.name == 'LOD2' + sceneIndex:
+                elif col.name == 'LOD2' + tag or col.name == 'LOD2' + tagOld:
+                    col.name = 'LOD2' + tag
                     collections['lod2'] = col
 
-                elif col.name == 'LOD3' + sceneIndex:
+                elif col.name == 'LOD3' + tag or col.name == 'LOD3' + tagOld:
+                    col.name = 'LOD3' + tag
                     collections['lod3'] = col
 
-                elif col.name == 'BS1' + sceneIndex:
+                elif col.name == 'BS1' + tag or col.name == 'BS1' + tagOld:
+                    col.name = 'BS1' + tag
                     collections['bs1'] = col
 
-                elif col.name == 'BS2' + sceneIndex:
+                elif col.name == 'BS2' + tag or col.name == 'BS2' + tagOld:
+                    col.name = 'BS2' + tag
                     collections['bs2'] = col
                     
-                elif col.name == 'BS3' + sceneIndex:
+                elif col.name == 'BS3' + tag or col.name == 'BS3' + tagOld:
+                    col.name = 'BS3' + tag
                     collections['bs3'] = col
                     
-                elif col.name == 'BS_LOD' + sceneIndex:
+                elif col.name == 'BS_LOD' + tag or col.name == 'BS_LOD' + tagOld:
+                    col.name = 'BS_LOD' + tag
                     collections['bs_lod'] = col
         
         return collections
@@ -74,53 +85,48 @@ class SEUT_OT_RecreateCollections(Operator):
         """Recreates the collections SEUT requires"""
 
         scene = context.scene
-        if scene.seut.index == -1:
-            if len(bpy.data.scenes) > 1:
-                scene.seut.index = len(bpy.data.scenes) - 1
-            elif len(bpy.data.scenes) == 1:
-                scene.seut.index = 0
-        sceneIndex = ' (' + str(scene.seut.index) + ')'
+        tag = ' (' + scene.seut.subtypeId + ')'
 
         collections = SEUT_OT_RecreateCollections.get_Collections(context)
 
         if collections['seut'] == None:
-            collections['seut'] = bpy.data.collections.new('SEUT' + sceneIndex)
+            collections['seut'] = bpy.data.collections.new('SEUT' + tag)
             scene.collection.children.link(collections['seut'])
 
         if collections['main'] == None:
-            collections['main'] = bpy.data.collections.new('Main' + sceneIndex)
+            collections['main'] = bpy.data.collections.new('Main' + tag)
             collections['seut'].children.link(collections['main'])
 
         if collections['hkt'] == None:
-            collections['hkt'] = bpy.data.collections.new('Collision' + sceneIndex)
+            collections['hkt'] = bpy.data.collections.new('Collision' + tag)
             collections['seut'].children.link(collections['hkt'])
 
         if collections['bs1'] == None:
-            collections['bs1'] = bpy.data.collections.new('BS1' + sceneIndex)
+            collections['bs1'] = bpy.data.collections.new('BS1' + tag)
             collections['seut'].children.link(collections['bs1'])
 
         if collections['bs2'] == None:
-            collections['bs2'] = bpy.data.collections.new('BS2' + sceneIndex)
+            collections['bs2'] = bpy.data.collections.new('BS2' + tag)
             collections['seut'].children.link(collections['bs2'])
 
         if collections['bs3'] == None:
-            collections['bs3'] = bpy.data.collections.new('BS3' + sceneIndex)
+            collections['bs3'] = bpy.data.collections.new('BS3' + tag)
             collections['seut'].children.link(collections['bs3'])
 
         if collections['lod1'] == None:
-            collections['lod1'] = bpy.data.collections.new('LOD1' + sceneIndex)
+            collections['lod1'] = bpy.data.collections.new('LOD1' + tag)
             collections['seut'].children.link(collections['lod1'])
 
         if collections['lod2'] == None:
-            collections['lod2'] = bpy.data.collections.new('LOD2' + sceneIndex)
+            collections['lod2'] = bpy.data.collections.new('LOD2' + tag)
             collections['seut'].children.link(collections['lod2'])
 
         if collections['lod3'] == None:
-            collections['lod3'] = bpy.data.collections.new('LOD3' + sceneIndex)
+            collections['lod3'] = bpy.data.collections.new('LOD3' + tag)
             collections['seut'].children.link(collections['lod3'])
 
         if collections['bs_lod'] == None:
-            collections['bs_lod'] = bpy.data.collections.new('BS_LOD' + sceneIndex)
+            collections['bs_lod'] = bpy.data.collections.new('BS_LOD' + tag)
             collections['seut'].children.link(collections['bs_lod'])
 
         return collections
