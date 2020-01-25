@@ -299,11 +299,9 @@ def export_model_FBX(self, context, collection):
     layer_collection = bpy.context.view_layer.layer_collection.children[collection.name]
     bpy.context.view_layer.active_layer_collection = layer_collection
 
-    """
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
             prepMatForExport(self, context, objMat)
-    """
 
     # This is the actual call to make an FBX file.
     fbxfile = join(path, filename + ".fbx")
@@ -311,11 +309,9 @@ def export_model_FBX(self, context, collection):
     
     # bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
 
-    """
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
             removeExportDummiesFromMat(self, context, objMat)
-    """
 
     bpy.context.scene.collection.children.unlink(collection)
     self.report({'INFO'}, "SEUT: '%s.fbx' has been created." % (path + filename))
@@ -364,7 +360,8 @@ def prepMatForExport(self, context, material):
         material.seut.nodeLinkedToOutputName = ""
     # This allows the reestablishment of connections after the export is complete.
     else:
-        material.seut.nodeLinkedToOutputName = materialOutput.inputs[0].links[0].from_node.name
+        if materialOutput.inputs[0].links[0].from_node.name is not None:
+            material.seut.nodeLinkedToOutputName = materialOutput.inputs[0].links[0].from_node.name
 
     # link nodes, add image to node
     material.node_tree.links.new(dummyImageNode.outputs[0], dummyShaderNode.inputs[0])
