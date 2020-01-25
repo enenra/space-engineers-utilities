@@ -45,9 +45,8 @@ class SEUT_OT_Export(Operator):
         SEUT_OT_ExportLOD.export_LOD(self, context, True)
 
         # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
-        if collections['hkt'] is not None:
-            if scene.seut.export_hkt:
-                SEUT_OT_ExportHKT.export_HKT(self, context, True)
+        if scene.seut.export_hkt:
+            SEUT_OT_ExportHKT.export_HKT(self, context, True)
 
         if scene.seut.export_sbc:
             SEUT_OT_ExportSBC.export_SBC(self, context)
