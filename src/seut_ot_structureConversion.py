@@ -33,8 +33,14 @@ class SEUT_OT_StructureConversion(Operator):
                     scn.seut.sceneType = 'subpart'
             
             # Create main SEUT collection for each scene
-            seut = bpy.data.collections.new('SEUT' + ' (' + str(scn.seut.index) + ')')
-            scn.collection.children.link(seut)
+            seutExists = False
+            for collection in scn.collection.children:
+                if collection.name[:4] == 'SEUT':
+                    seutExists = True
+                    
+            if not seutExists:
+                seut = bpy.data.collections.new('SEUT' + ' (' + str(scn.seut.index) + ')')
+                scn.collection.children.link(seut)
 
             
             # convert collections created from layers to corresponding SEUT collections
@@ -76,7 +82,7 @@ class SEUT_OT_StructureConversion(Operator):
                 
             # Convert custom properties of empties from harag's to the default blender method.
             for obj in scn.objects:
-                if obj.type == 'EMPTY' and bpy.data.objects[obj.name]['space_engineers'] is not None:
+                if obj.type == 'EMPTY' and 'space_engineers' in bpy.data.objects[obj.name] and bpy.data.objects[obj.name]['space_engineers'] is not None:
                     haragProp = bpy.data.objects[obj.name]['space_engineers']
 
                     if haragProp.get('highlight_objects') is not None:
@@ -86,6 +92,20 @@ class SEUT_OT_StructureConversion(Operator):
                         customPropName = 'file'
                         targetObjectName = haragProp.get('file')
 
-                    bpy.data.objects[obj.name][customPropName] = targetObjectName
-                    del bpy.data.objects[obj.name]['space_engineers']
+                    if targetObjectName is not None:
+                        bpy.data.objects[obj.name][customPropName] = targetObjectName
+                        del bpy.data.objects[obj.name]['space_engineers']
+        
+        # Set parent scenes from subparts
+        # Needs to happen in second loop, because first loop needs to first run through all scenes to name them
+        for index in range(0, len(bpy.data.scenes)):
+            scn = bpy.data.scenes[index]
+
+            for obj in scn.objects:
+                if obj.type == 'EMPTY' and 'file' in bpy.data.objects[obj.name] and bpy.data.objects[obj.name]['file'] is not None:
+                    subpartScene = bpy.data.objects[obj.name]['file']
+                    for i in range(0, len(bpy.data.scenes)):
+                        if bpy.data.scenes[i].seut.subtypeId == subpartScene:
+                            bpy.data.scenes[i].seut.parent == scn
+                            
         return
