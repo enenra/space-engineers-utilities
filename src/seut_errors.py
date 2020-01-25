@@ -40,14 +40,14 @@ def errorCollection(self, context, collection, partial):
 
     allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
 
-    if collection == None:
+    if collection is None:
         if partial:
-            self.report({'WARNING'}, "SEUT: Collection '%s' not found. Export not possible. (002)" % (collection.name))
-            print("SEUT Warning: Collection '" + collection.name + "' not found. Export not possible. (002)")
+            self.report({'WARNING'}, "SEUT: Collection not found. Export not possible. (002)")
+            print("SEUT Warning: Collection not found. Export not possible. (002)")
             return 'FINISHED'
         else:
-            self.report({'ERROR'}, "SEUT: Collection '%s' not found. Export not possible. (002)" % (collection.name))
-            print("SEUT Error: Collection '" + collection.name + "' not found. Export not possible. (002)")
+            self.report({'ERROR'}, "SEUT: Collection not found. Export not possible. (002)")
+            print("SEUT Error: Collection not found. Export not possible. (002)")
             return 'CANCELLED'
             
     isExcluded = isCollectionExcluded(collection.name, allCurrentViewLayerCollections)
