@@ -42,34 +42,34 @@ def errorCollection(self, context, collection, partial):
 
     if collection is None:
         if partial:
-            self.report({'WARNING'}, "SEUT: Collection not found. Export not possible. (002)")
-            print("SEUT Warning: Collection not found. Export not possible. (002)")
+            self.report({'WARNING'}, "SEUT: Collection not found. Action not possible. (002)")
+            print("SEUT Warning: Collection not found. Action not possible. (002)")
             return 'FINISHED'
         else:
-            self.report({'ERROR'}, "SEUT: Collection not found. Export not possible. (002)")
-            print("SEUT Error: Collection not found. Export not possible. (002)")
+            self.report({'ERROR'}, "SEUT: Collection not found. Action not possible. (002)")
+            print("SEUT Error: Collection not found. Action not possible. (002)")
             return 'CANCELLED'
             
     isExcluded = isCollectionExcluded(collection.name, allCurrentViewLayerCollections)
 
     if isExcluded is True:
         if partial:
-            self.report({'WARNING'}, "SEUT: Collection '%s' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)" % (collection.name))
-            print("SEUT Warning: Collection '" + collection.name + "' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
+            self.report({'WARNING'}, "SEUT: Collection '%s' excluded from view layer. Action not possible. Re-enable in hierarchy. (019)" % (collection.name))
+            print("SEUT Warning: Collection '" + collection.name + "' excluded from view layer. Action not possible. Re-enable in hierarchy. (019)")
             return 'FINISHED'
         else:
-            self.report({'ERROR'}, "SEUT: Collection '%s' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)" % (collection.name))
-            print("SEUT Error: Collection '" + collection.name + "' excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
+            self.report({'ERROR'}, "SEUT: Collection '%s' excluded from view layer. Action not possible. Re-enable in hierarchy. (019)" % (collection.name))
+            print("SEUT Error: Collection '" + collection.name + "' excluded from view layer. Action not possible. Re-enable in hierarchy. (019)")
             return 'CANCELLED'
 
     if len(collection.objects) == 0:
         if partial:
-            self.report({'WARNING'}, "SEUT: Collection '%s' is empty. Export not possible. (005)" % (collection.name))
-            print("SEUT Warning: Collection '" + collection.name + "' is empty. Export not possible. (005)")
+            self.report({'WARNING'}, "SEUT: Collection '%s' is empty. Action not possible. (005)" % (collection.name))
+            print("SEUT Warning: Collection '" + collection.name + "' is empty. Action not possible. (005)")
             return 'FINISHED'
         else:
-            self.report({'ERROR'}, "SEUT: Collection '%s' is empty. Export not possible. (005)" % (collection.name))
-            print("SEUT Error: Collection '" + collection.name + "' is empty. Export not possible. (005)")
+            self.report({'ERROR'}, "SEUT: Collection '%s' is empty. Action not possible. (005)" % (collection.name))
+            print("SEUT Error: Collection '" + collection.name + "' is empty. Action not possible. (005)")
             return 'CANCELLED'
     
     return 'CONTINUE'
