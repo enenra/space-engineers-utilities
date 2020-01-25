@@ -29,7 +29,7 @@ def update_SceneName(self, context):
     scene.name = scene.seut.subtypeId + sceneIndex
 
 def update_parent(self, context):
-    print("bla")
+    print("parent updated")
 
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
