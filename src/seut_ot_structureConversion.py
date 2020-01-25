@@ -27,6 +27,7 @@ class SEUT_OT_StructureConversion(Operator):
             if scn.seut.index == -1:
                 scn.seut.index = index
                 scn.seut.subtypeId = scn.name
+                scn.seut.sceneType = 'mainScene'
                 # For inactive scenes, the update doesn't trigger apparently, so I have to add the index to the scene names manually.
                 if index > 0:
                     scn.name = scn.name + ' (' + str(scn.seut.index) + ')'
