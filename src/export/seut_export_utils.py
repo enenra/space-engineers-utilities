@@ -319,7 +319,7 @@ def export_model_FBX(self, context, collection):
     
     # Relink all subparts to empties
     for emptyObj in collection.objects:
-        if 'file' in emptyObj and emptyObj.seut.linkedScene is not "":
+        if 'file' in emptyObj and emptyObj.seut.linkedScene in bpy.data.scenes:
             linkSubpartScene(self, scene, emptyObj, emptyObj.seut.linkedScene)
 
     bpy.context.scene.collection.children.unlink(collection)
