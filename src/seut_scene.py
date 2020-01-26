@@ -29,9 +29,6 @@ def update_SceneName(self, context):
     scene.name = scene.seut.subtypeId
     scene.seut.subtypeBefore = scene.seut.subtypeId
 
-def update_parent(self, context):
-    print("parent updated")
-
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
 
@@ -42,12 +39,6 @@ class SEUT_Scene(PropertyGroup):
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene')
             ),
         default='mainScene'
-    )
-    parent: PointerProperty(
-        name='Parent',
-        description="Which parent scene this subpart scene is linked to",
-        type=bpy.types.Scene,
-        update=update_parent
     )
 
     # Grid Scale

@@ -84,6 +84,9 @@ class SEUT_OT_StructureConversion(Operator):
                         customPropName = 'highlight'
                         targetObjectName = haragProp.get('highlight_objects')
 
+                        if targetObjectName in bpy.data.objects:
+                            obj.seut.linkedObject = bpy.data.objects[targetObjectName]
+
                     elif haragProp.get('file') is not None:
                         customPropName = 'file'
                         customPropValue = haragProp.get('file')
@@ -98,6 +101,10 @@ class SEUT_OT_StructureConversion(Operator):
                     if targetObjectName is not None:
                         bpy.data.objects[obj.name][customPropName] = targetObjectName
                         del bpy.data.objects[obj.name]['space_engineers']
+                        
+                        if targetObjectName in bpy.data.scenes:
+                            obj.seut.linkedScene = bpy.data.scenes[targetObjectName]
+                            
         
         bpy.context.window.scene = currentScene
 
@@ -112,6 +119,5 @@ class SEUT_OT_StructureConversion(Operator):
                     for i in range(0, len(bpy.data.scenes)):
                         if bpy.data.scenes[i].seut.subtypeId == subpartScene:
                             bpy.data.scenes[i].seut.sceneType = 'subpart'
-                            bpy.data.scenes[i].seut.parent = scn
                             
         return
