@@ -2,7 +2,6 @@ import bpy
 
 from bpy.types  import Operator, Panel
 
-
 class SEUT_PT_EmptyLink(Panel):
     """Creates the Empty Properties menu"""
     bl_idname = "SEUT_PT_EmptyLink"
@@ -21,12 +20,12 @@ class SEUT_PT_EmptyLink(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        obj = context.view_layer.objects.active
+        empty = context.view_layer.objects.active
 
-        if 'file' in obj:
+        if 'file' in empty:
             layout.label(text="Subpart Scene:")
-            layout.prop(obj.seut, 'linkedScene', text="",)
+            layout.prop(empty.seut, 'linkedScene', text="",)
 
-        elif 'highlight' in obj:
+        elif 'highlight' in empty:
             layout.label(text="Highlight Object:")
-            layout.prop(obj.seut, 'linkedObject', text="",)
+            layout.prop(empty.seut, 'linkedObject', text="",)

@@ -10,15 +10,27 @@ from bpy.props  import (EnumProperty,
                         PointerProperty
                         )
 
-from .seut_ot_recreateCollections import SEUT_OT_RecreateCollections
+from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 
 
 def update_linkedScene(self, context):
     scene = context.scene
-
+    empty = context.view_layer.objects.active
+    if empty.seut.linkedScene is not None:
+        empty['file'] = empty.seut.linkedScene.name
 
 def update_linkedObject(self, context):
     scene = context.scene
+    empty = context.view_layer.objects.active
+    if empty.seut.linkedObject is not None:
+        empty['highlight'] = empty.seut.linkedObject.name
+
+# These prevent the selected scene from being the current scene and the selected object being the current object
+def poll_linkedScene(self, object):
+    return object != bpy.context.scene
+
+def poll_linkedObject(self, object):
+    return object != bpy.context.view_layer.objects.active
 
 
 class SEUT_Object(PropertyGroup):
@@ -28,6 +40,7 @@ class SEUT_Object(PropertyGroup):
         name='Subpart Scene',
         description="Which subpart scene this empty links to",
         type=bpy.types.Scene,
+        poll=poll_linkedScene,
         update=update_linkedScene
     )
     
@@ -35,5 +48,6 @@ class SEUT_Object(PropertyGroup):
         name='Highlight Object',
         description="Which object this empty links to",
         type=bpy.types.Object,
+        poll=poll_linkedObject,
         update=update_linkedObject
     )
