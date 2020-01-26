@@ -119,6 +119,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
             empty.name = emptyName
 
         bpy.data.objects[empty.name][customPropName] = targetObject.name
+        empty.seut.linkedObject = targetObject
         
         self.report({'INFO'}, "SEUT: Highlight '%s' created for object: '%s'" % (empty.name,targetObject.name))
         

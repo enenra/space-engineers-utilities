@@ -18,8 +18,6 @@ class SEUT_PT_Panel(bpy.types.Panel):
         box = layout.box()
         box.label(text=scene.name, icon_value=layout.icon(scene))
         box.prop(scene.seut, 'sceneType')
-        if scene.seut.sceneType == 'subpart':
-            box.prop(scene.seut, 'parent')
         
         box = layout.box()
         box.label(text="SubtypeId")
@@ -71,7 +69,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
         # Export
         row = layout.row()

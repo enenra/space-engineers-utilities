@@ -43,6 +43,7 @@ from bpy.types import (Panel,
                        )
 
 from .empties.seut_mt_contextMenu           import SEUT_MT_ContextMenu
+from .empties.seut_pt_emptyMenu             import SEUT_PT_EmptyLink
 from .empties.seut_ot_addHighlightEmpty     import SEUT_OT_AddHighlightEmpty
 from .empties.seut_ot_addDummy              import SEUT_OT_AddDummy
 from .empties.seut_ot_addPresetSubpart      import SEUT_OT_AddPresetSubpart
@@ -72,6 +73,7 @@ from .seut_ot_bBox                  import SEUT_OT_BBox
 from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_scene                    import SEUT_Scene
+from .seut_object                   import SEUT_Object
 
 
 classes = (
@@ -81,6 +83,7 @@ classes = (
     SEUT_PT_Panel_Export,
     SEUT_PT_Panel_Import,
     SEUT_PT_Panel_Materials,
+    SEUT_PT_EmptyLink,
     SEUT_MT_ContextMenu,
     SEUT_OT_AddHighlightEmpty,
     SEUT_OT_AddDummy,
@@ -104,6 +107,7 @@ classes = (
     SEUT_OT_MatCreate,
     SEUT_Materials,
     SEUT_Scene,
+    SEUT_Object,
 )
 
 
@@ -114,6 +118,7 @@ def register():
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
     bpy.types.Material.seut = bpy.props.PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = bpy.props.PointerProperty(type=SEUT_Scene)
+    bpy.types.Object.seut = bpy.props.PointerProperty(type=SEUT_Object)
     bpy.app.handlers.load_post.append(load_handler)
 
 
@@ -124,6 +129,7 @@ def unregister():
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
+    bpy.app.handlers.load_post.remove(load_handler)
 
 
 def menu_func(self, context):
