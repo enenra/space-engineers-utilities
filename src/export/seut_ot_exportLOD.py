@@ -3,9 +3,9 @@ import os
 
 from bpy.types                      import Operator
 
-from .seut_export_utils             import isCollectionExcluded, export_XML, export_model_FBX
+from .seut_export_utils             import export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral
+from ..seut_errors                  import errorExportGeneral, isCollectionExcluded
 
 class SEUT_OT_ExportLOD(Operator):
     """Exports all LODs"""
