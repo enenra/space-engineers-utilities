@@ -24,7 +24,7 @@ def update_SceneName(self, context):
     scene = context.scene
 
     if scene.seut.subtypeId != scene.seut.subtypeBefore:
-        SEUT_OT_RecreateCollections.get_Collections(context)
+        SEUT_OT_RecreateCollections.rename_Collections(context)
 
     scene.name = scene.seut.subtypeId
     scene.seut.subtypeBefore = scene.seut.subtypeId
