@@ -2,6 +2,8 @@ import bpy
 
 from bpy.types import Operator
 
+from .seut_utils    import linkSubpartScene
+
 class SEUT_OT_StructureConversion(Operator):
     """Ports blend files created with the old plugin to the new structure"""
     bl_idname = "object.structure_conversion"
@@ -106,9 +108,14 @@ class SEUT_OT_StructureConversion(Operator):
                             del bpy.data.objects[obj.name]['space_engineers']
                             
                             if targetObjectName in bpy.data.scenes:
-                                obj.seut.linkedScene = bpy.data.scenes[targetObjectName]             
+                                obj.seut.linkedScene = bpy.data.scenes[targetObjectName]
         
         bpy.context.window.scene = currentScene
+
+        for scn2 in bpy.data.scenes:
+            for emptyObj in scn2.objects:
+                if emptyObj.type == 'EMPTY' and 'file' in emptyObj and emptyObj['file'] in bpy.data.scenes:
+                    linkSubpartScene(self, scn2, emptyObj, emptyObj.seut.linkedScene)
 
         # Set parent scenes from subparts
         # Needs to happen in second loop, because first loop needs to first run through all scenes to name them

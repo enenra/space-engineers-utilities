@@ -17,19 +17,25 @@ def update_linkedScene(self, context):
     scene = context.scene
     empty = context.view_layer.objects.active
 
-    empty['file'] = None
-    unlinkSubpartScene(empty)
+    if empty is not None:
+        if 'file' in empty:
+            empty['file'] = ""
+        unlinkSubpartScene(empty)
 
-    if empty.seut.linkedScene is not None:
-        empty['file'] = empty.seut.linkedScene.name
-        linkSubpartScene(self, context, empty, empty.seut.linkedScene)
+        if empty.seut.linkedScene is not None:
+            empty['file'] = empty.seut.linkedScene.name
+            linkSubpartScene(self, scene, empty, empty.seut.linkedScene)
 
 def update_linkedObject(self, context):
     scene = context.scene
     empty = context.view_layer.objects.active
-    empty['highlight'] = None
-    if empty.seut.linkedObject is not None:
-        empty['highlight'] = empty.seut.linkedObject.name
+
+    if empty is not None:
+        if 'highlight' in empty:
+            empty['highlight'] = None
+
+        if empty.seut.linkedObject is not None:
+            empty['highlight'] = empty.seut.linkedObject.name
 
 # These prevent the selected scene from being the current scene and the selected object being the current object
 def poll_linkedScene(self, object):
