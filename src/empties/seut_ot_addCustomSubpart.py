@@ -23,6 +23,7 @@ class SEUT_OT_AddCustomSubpart(Operator):
         # Spawn empty
         bpy.ops.object.add(type='EMPTY')
         empty = bpy.context.view_layer.objects.active
+        empty.name = 'subpart_' + empty.name
 
         empty.empty_display_type = "CUBE"
 
