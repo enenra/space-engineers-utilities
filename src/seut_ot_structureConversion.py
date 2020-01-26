@@ -128,5 +128,7 @@ class SEUT_OT_StructureConversion(Operator):
                     for i in range(0, len(bpy.data.scenes)):
                         if bpy.data.scenes[i].seut.subtypeId == subpartScene:
                             bpy.data.scenes[i].seut.sceneType = 'subpart'
-                            
+        
+        self.report({'INFO'}, "SEUT: Structure conversion successfully completed.")
+
         return
