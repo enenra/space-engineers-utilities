@@ -11,6 +11,7 @@ from bpy_extras.io_utils            import axis_conversion, ExportHelper
 
 from .havok.seut_havok_fbx          import save_single
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_utils                   import linkSubpartScene, unlinkSubpartScene
 
 def export_XML(self, context, collection):
     """Exports the XML file for a defined collection"""
@@ -298,6 +299,11 @@ def export_model_FBX(self, context, collection):
     bpy.context.scene.collection.children.link(collection)
     layer_collection = bpy.context.view_layer.layer_collection.children[collection.name]
     bpy.context.view_layer.active_layer_collection = layer_collection
+    
+    # Unlink all subparts parented to an empty
+    for emptyObj in collection.objects:
+        if 'file' in emptyObj:
+            unlinkSubpartScene(emptyObj)
 
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
@@ -306,12 +312,15 @@ def export_model_FBX(self, context, collection):
     # This is the actual call to make an FBX file.
     fbxfile = join(path, filename + ".fbx")
     export_to_fbxfile(settings, scene, fbxfile, collection.objects, ishavokfbxfile=False)
-    
-    # bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
 
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
             removeExportDummiesFromMat(self, context, objMat)
+    
+    # Relink all subparts to empties
+    for emptyObj in collection.objects:
+        if 'file' in emptyObj and emptyObj.seut.linkedScene is not "":
+            linkSubpartScene(self, context, emptyObj, emptyObj.seut.linkedScene)
 
     bpy.context.scene.collection.children.unlink(collection)
     self.report({'INFO'}, "SEUT: '%s.fbx' has been created." % (path + filename))
