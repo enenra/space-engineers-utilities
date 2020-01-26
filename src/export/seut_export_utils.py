@@ -537,76 +537,71 @@ class ExportSettings:
         except AttributeError:
             raise KeyError(key)
 
-# HARAG: FWD = 'Z'
 # HARAG: UP = 'Y'
+# HARAG: FWD = 'Z'
 # HARAG: MATRIX_NORMAL = axis_conversion(to_forward=FWD, to_up=UP).to_4x4()
 # HARAG: MATRIX_SCALE_DOWN = Matrix.Scale(0.2, 4) * MATRIX_NORMAL
 def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavokfbxfile = False, kwargs = None):	
     kwargs = {	
-        # HARAG: FBX operator defaults	
-        # HARAG: Some internals of the fbx exporter depend on them and will step out of line if they are not present	
-        'version': 'BIN7400', # This was removed in 2.8	
-        'use_mesh_edges': False,	
-        'use_custom_props': False, # HARAG: SE / Havok properties are hacked directly into the modified fbx importer in fbx.py	
-        # HARAG:  anim, BIN7400	
-        'bake_anim': False, # HARAG: no animation export to SE by default	
+        'global_matrix': Matrix(),
+        'apply_unit_scale': True,
+        'global_scale': 0.1, # STOLLIE: Is 1.0 in Blender Source
+        'apply_scale_options': 'FBX_SCALE_NONE',
+        'axis_up': 'Y',	 # STOLLIE: Normally a Z in Blender source.	Y aligns correctly in SE.
+        'axis_forward': 'Z', # STOLLIE: Normally a Y in Blender source. Z is correct forward for mountpoints but mis-aligns subparts.
+        'context_objects': objects, #STOLLIE: Is None in Blender Source.
+        'object_types': {'MESH', 'EMPTY'}, # STOLLIE: Is None in Blender source.
+        'use_mesh_modifiers': True,
+        'use_mesh_modifiers_render': True,
+        'mesh_smooth_type': 'OFF', # STOLLIE: Normally 'FACE' in Blender source.
+        'use_subsurf': False,
+        'use_armature_deform_only': False,	
+        'bake_anim': False, # HARAG: no animation export to SE by default - STOLLIE: True in Blender source.
         'bake_anim_use_all_bones': True,	
         'bake_anim_use_nla_strips': True,	
-        'bake_anim_use_all_actions': True,	
-        'bake_anim_force_startend_keying': True,	
-        'bake_anim_step': 1.0,	
-        'bake_anim_simplify_factor': 1.0,	
-        # HARAG:  anim, ASCII6100	
-        'use_anim' : False, # HARAG: No animation export to SE by default	
+        'bake_anim_use_all_actions': True,
+        'bake_anim_step': 1.0,
+        'bake_anim_simplify_factor': 1.0,
+        'bake_anim_force_startend_keying': True,
+        'add_leaf_bones': False,
+        'primary_bone_axis': 'X', # STOLLIE: Swapped for SE, Y in Blender source.	
+        'secondary_bone_axis': 'Y', # STOLLIE: Swapped for SE, X in Blender source. """	
+        'use_metadata': True,
+        'path_mode': 'AUTO',
+        'use_mesh_edges': False, # STOLLIE: True in Blender source.
+        'use_tspace': False, # BLENDER: Why? Unity is expected to support tspace import...	
+        'embed_textures': False,	
+        'use_custom_props': False, # HARAG: SE / Havok properties are hacked directly into the modified fbx importer in fbx.py
+        # HARAG: The export to Havok needs this, it's off for the MwmFileNode
+        # STOLLIE: This is False on Blender source. If set to True on MWM exports it breaks subpart orientations.
+        'bake_space_transform': False, 
+        'armature_nodetype': 'NULL',	
+        'use_selection' : False,
+        'use_anim' : False, # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.
         'use_anim_action_all' : True, # Not a Blender property.	
         'use_default_take' : True, # Not a Blender property.	
         'use_anim_optimize' : True, # Not a Blender property.	
         'anim_optimize_precision' : 6.0, # Not a Blender property.	
-        # HARAG: Referenced files stay on automatic, MwmBuilder only cares about what's written to its .xml file	
-        'path_mode': 'AUTO',	
-        'embed_textures': False,	
-        # HARAG: Batching isn't used because the export is driven by the node tree	
-        'batch_mode': 'OFF',	
-        'use_batch_own_dir': True,	
-        'use_metadata': True,	
-        # HARAG: Important settings for SE	
-        'object_types': {'MESH', 'EMPTY'},	
-        'axis_forward': 'Z', # STOLLIE: Normally a -Z in Blender source.	
-        'axis_up': 'Y',	
-        'bake_space_transform': True, # HARAG: The export to Havok needs this, it's off for the MwmFileNode	
-        'use_mesh_modifiers': True,	
-        'mesh_smooth_type': 'OFF', # STOLLIE: Normally 'FACE' in Blender source.	
-        'use_tspace': False, # BLENDER: Why? Unity is expected to support tspace import...	
-        # HARAG: For characters	
-        'global_scale': 0.1, 
-        'use_armature_deform_only': False,	
-        'add_leaf_bones': False,	
-        'armature_nodetype': 'NULL',	
-        'primary_bone_axis': 'X', # STOLLIE: Swapped for SE, Y in Blender source.	
-        'secondary_bone_axis': 'Y', # STOLLIE: Swapped for SE, X in Blender source. """	
+        'batch_mode': 'OFF', # STOLLIE: Part of Save method not save single in Blender source, default = OFF.	
+        'use_batch_own_dir': True,	# STOLLIE: Part of Save method not save single in Blender source, default = False.	
     }	
 
     if kwargs:	
         if isinstance(kwargs, bpy.types.PropertyGroup):	
             kwargs = {prop : getattr(kwargs, prop) for prop in kwargs.rna_type.properties.keys()}	
         kwargs.update(**kwargs)	
-
-    # these cannot be overriden and are always set here	
-    kwargs['use_selection'] = False # because of context_objects	
-    kwargs['context_objects'] = objects	
-
-    if scene.seut.sceneType != 'mainScene':
-        kwargs['axis_forward'] = "-Y"
-        kwargs['axis_up'] = "-Z"
-
+    
     global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
     scale = kwargs['global_scale']
+
+    if ishavokfbxfile:
+        kwargs['bake_space_transform'] = True
     
     if abs(1.0-scale) >= 0.000001:
         global_matrix = Matrix.Scale(scale, 4) @ global_matrix
 
     kwargs['global_matrix'] = global_matrix
-
+    
     return save_single(	
         settings.operator,	
         settings.scene,	
