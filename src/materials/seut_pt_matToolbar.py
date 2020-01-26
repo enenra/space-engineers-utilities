@@ -20,10 +20,11 @@ class SEUT_PT_Panel_Materials(bpy.types.Panel):
             box = layout.box()
             box.label(text=material.name, icon_value=layout.icon(material))
 
-            for node in material.node_tree.nodes:
-                if node.name == "SEUT_MAT":
-                    box.label(text="Preset: " + node.node_tree.name)
-                    break
+            if material.node_tree is not None and material.node_tree.nodes is not None:
+                for node in material.node_tree.nodes:
+                    if node.name == "SEUT_MAT":
+                        box.label(text="Preset: " + node.node_tree.name)
+                        break
 
             box.prop(material.seut, 'overrideMatLib')
             box.prop(material.seut, 'technique')
