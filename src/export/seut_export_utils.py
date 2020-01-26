@@ -596,11 +596,9 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         global_matrix = Matrix.Scale(scale, 4) @ global_matrix
 
     kwargs['global_matrix'] = global_matrix
-
-    """
+    
     kwargs['axis_up'] = scene.seut.axis_up
     kwargs['axis_forward'] = scene.seut.axis_forward
-    """
     
     return save_single(	
         settings.operator,	
