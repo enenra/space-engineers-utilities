@@ -27,7 +27,7 @@ class SEUT_OT_Export(Operator):
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export'")
         
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
         # Re-scale collision objects via rescale factor before export.
         if collections['hkt'] is not None:

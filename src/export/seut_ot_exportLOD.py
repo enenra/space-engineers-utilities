@@ -15,7 +15,7 @@ class SEUT_OT_ExportLOD(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(context.scene)
         return collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None or collections['bs_lod'] is not None
 
 
@@ -41,7 +41,7 @@ class SEUT_OT_ExportLOD(Operator):
         scene = context.scene
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
         isExcludedLOD1 = isCollectionExcluded("LOD1", allCurrentViewLayerCollections)

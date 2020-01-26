@@ -15,7 +15,7 @@ class SEUT_OT_ExportMain(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(context.scene)
         return collections['main'] is not None
         
     def execute(self, context):
@@ -38,7 +38,7 @@ class SEUT_OT_ExportMain(Operator):
         """Exports the 'Main' collection"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
         # Checks whether collection exists, is excluded or is empty
         result = errorCollection(self, context, collections['main'], partial)
