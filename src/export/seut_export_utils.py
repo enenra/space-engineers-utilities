@@ -543,6 +543,8 @@ class ExportSettings:
 # HARAG: MATRIX_SCALE_DOWN = Matrix.Scale(0.2, 4) * MATRIX_NORMAL
 def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavokfbxfile = False, kwargs = None):	
     kwargs = {	
+        'version': 'BIN7400',
+        'ui_tab': 'SKIP_SAVE',
         'global_matrix': Matrix(),
         'apply_unit_scale': True,
         'global_scale': 0.1, # STOLLIE: Is 1.0 in Blender Source
@@ -601,6 +603,9 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         global_matrix = Matrix.Scale(scale, 4) @ global_matrix
 
     kwargs['global_matrix'] = global_matrix
+
+    kwargs['axis_up'] = scene.seut.axis_up
+    kwargs['axis_forward'] = scene.seut.axis_forward
     
     return save_single(	
         settings.operator,	

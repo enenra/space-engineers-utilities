@@ -173,7 +173,7 @@ class SEUT_Scene(PropertyGroup):
             ('-Y', '-Y', ''),
             ('-Z', '-Z', '')
             ),
-        default='X'
+        default='Y'
     )
     axis_forward: EnumProperty(
         name='Forward',
@@ -186,7 +186,7 @@ class SEUT_Scene(PropertyGroup):
             ('-Y', '-Y', ''),
             ('-Z', '-Z', '')
             ),
-        default='X'
+        default='Z'
     )
     
     # Materials
