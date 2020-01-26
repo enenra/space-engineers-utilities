@@ -319,7 +319,7 @@ def export_model_FBX(self, context, collection):
     
     # Relink all subparts to empties
     for emptyObj in collection.objects:
-        if 'file' in emptyObj and emptyObj.seut.linkedScene is not "":
+        if 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
             linkSubpartScene(self, context, emptyObj, emptyObj.seut.linkedScene)
 
     bpy.context.scene.collection.children.unlink(collection)
@@ -404,22 +404,6 @@ def removeExportDummiesFromMat(self, context, material):
         material.node_tree.links.new(nodeLinkedToOutput.outputs[0], materialOutput.inputs[0])
 
     return
-
-
-def isCollectionExcluded(collectionName, allCurrentViewLayerCollections):
-        for topLevelCollection in allCurrentViewLayerCollections:
-            if topLevelCollection.name == collectionName:
-                if topLevelCollection.exclude:
-                    return True
-                else:
-                    return False
-            if collectionName in topLevelCollection.children.keys():
-                for collection in topLevelCollection.children:
-                    if collection.name == collectionName:
-                        if collection.exclude:
-                            return True
-                        else:
-                            return False
 
 
 # STOLLIE: Standard output error operator class for catching error return codes.

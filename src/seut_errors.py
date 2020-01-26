@@ -1,7 +1,6 @@
 import bpy
 import os
 
-from .export.seut_export_utils  import isCollectionExcluded
 
 def errorExportGeneral(self, context):
     """Basic check for export path and SubtypeId existing"""
@@ -73,3 +72,19 @@ def errorCollection(self, context, collection, partial):
             return 'CANCELLED'
     
     return 'CONTINUE'
+
+
+def isCollectionExcluded(collectionName, allCurrentViewLayerCollections):
+    for topLevelCollection in allCurrentViewLayerCollections:
+        if topLevelCollection.name == collectionName:
+            if topLevelCollection.exclude:
+                return True
+            else:
+                return False
+        if collectionName in topLevelCollection.children.keys():
+            for collection in topLevelCollection.children:
+                if collection.name == collectionName:
+                    if collection.exclude:
+                        return True
+                    else:
+                        return False

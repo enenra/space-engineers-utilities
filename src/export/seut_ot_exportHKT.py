@@ -6,9 +6,10 @@ from bpy.types      import Operator
 
 from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
-from .seut_export_utils             import ExportSettings, export_to_fbxfile, isCollectionExcluded
+from .seut_export_utils             import ExportSettings, export_to_fbxfile
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection
+from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded
+
 
 class SEUT_OT_ExportHKT(Operator):
     """Exports the HKT"""

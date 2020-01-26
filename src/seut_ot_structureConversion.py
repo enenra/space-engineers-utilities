@@ -76,35 +76,37 @@ class SEUT_OT_StructureConversion(Operator):
                 
             # Convert custom properties of empties from harag's to the default blender method.
             for obj in scn.objects:
-                if obj.type == 'EMPTY' and 'space_engineers' in bpy.data.objects[obj.name] and bpy.data.objects[obj.name]['space_engineers'] is not None:
-                    haragProp = bpy.data.objects[obj.name]['space_engineers']
+                if obj.type == 'EMPTY':
+                    obj.empty_display_type = "CUBE"
 
-                    targetObjectName = None
-                    if haragProp.get('highlight_objects') is not None:
-                        customPropName = 'highlight'
-                        targetObjectName = haragProp.get('highlight_objects')
+                    if 'space_engineers' in bpy.data.objects[obj.name] and bpy.data.objects[obj.name]['space_engineers'] is not None:
+                        haragProp = bpy.data.objects[obj.name]['space_engineers']
 
-                        if targetObjectName in bpy.data.objects:
-                            obj.seut.linkedObject = bpy.data.objects[targetObjectName]
+                        targetObjectName = None
+                        if haragProp.get('highlight_objects') is not None:
+                            customPropName = 'highlight'
+                            targetObjectName = haragProp.get('highlight_objects')
 
-                    elif haragProp.get('file') is not None:
-                        customPropName = 'file'
-                        customPropValue = haragProp.get('file')
+                            if targetObjectName in bpy.data.objects:
+                                obj.seut.linkedObject = bpy.data.objects[targetObjectName]
 
-                        if customPropValue.find('_Large') != -1:
-                            targetObjectName = customPropValue[:customPropValue.find('_Large')]
-                        if customPropValue.find('_Small') != -1:
-                            targetObjectName = customPropValue[:customPropValue.find('_Small')]
-                        else:
-                            targetObjectName = customPropValue
+                        elif haragProp.get('file') is not None:
+                            customPropName = 'file'
+                            customPropValue = haragProp.get('file')
 
-                    if targetObjectName is not None:
-                        bpy.data.objects[obj.name][customPropName] = targetObjectName
-                        del bpy.data.objects[obj.name]['space_engineers']
-                        
-                        if targetObjectName in bpy.data.scenes:
-                            obj.seut.linkedScene = bpy.data.scenes[targetObjectName]
+                            if customPropValue.find('_Large') != -1:
+                                targetObjectName = customPropValue[:customPropValue.find('_Large')]
+                            if customPropValue.find('_Small') != -1:
+                                targetObjectName = customPropValue[:customPropValue.find('_Small')]
+                            else:
+                                targetObjectName = customPropValue
+
+                        if targetObjectName is not None:
+                            bpy.data.objects[obj.name][customPropName] = targetObjectName
+                            del bpy.data.objects[obj.name]['space_engineers']
                             
+                            if targetObjectName in bpy.data.scenes:
+                                obj.seut.linkedScene = bpy.data.scenes[targetObjectName]             
         
         bpy.context.window.scene = currentScene
 

@@ -17,7 +17,7 @@ def update_linkedScene(self, context):
     scene = context.scene
     empty = context.view_layer.objects.active
 
-    empty['file'] = ""
+    empty['file'] = None
     unlinkSubpartScene(empty)
 
     if empty.seut.linkedScene is not None:
@@ -27,7 +27,7 @@ def update_linkedScene(self, context):
 def update_linkedObject(self, context):
     scene = context.scene
     empty = context.view_layer.objects.active
-    empty['highlight'] = ""
+    empty['highlight'] = None
     if empty.seut.linkedObject is not None:
         empty['highlight'] = empty.seut.linkedObject.name
 
