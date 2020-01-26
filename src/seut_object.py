@@ -11,17 +11,23 @@ from bpy.props  import (EnumProperty,
                         )
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-
+from .seut_utils                    import linkSubpartScene, unlinkSubpartScene
 
 def update_linkedScene(self, context):
     scene = context.scene
     empty = context.view_layer.objects.active
+
+    empty['file'] = ""
+    unlinkSubpartScene(empty)
+
     if empty.seut.linkedScene is not None:
         empty['file'] = empty.seut.linkedScene.name
+        linkSubpartScene(self, context, empty, empty.seut.linkedScene)
 
 def update_linkedObject(self, context):
     scene = context.scene
     empty = context.view_layer.objects.active
+    empty['highlight'] = ""
     if empty.seut.linkedObject is not None:
         empty['highlight'] = empty.seut.linkedObject.name
 
