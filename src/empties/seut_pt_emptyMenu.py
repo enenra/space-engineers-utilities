@@ -20,5 +20,13 @@ class SEUT_PT_EmptyLink(Panel):
 
     def draw(self, context):
         layout = self.layout
+        scene = context.scene
+        obj = context.view_layer.objects.active
 
-        layout.label(text="bla")
+        if 'file' in obj:
+            layout.label(text="Subpart Scene:")
+            layout.prop(obj.seut, 'linkedScene', text="",)
+
+        elif 'highlight' in obj:
+            layout.label(text="Highlight Object:")
+            layout.prop(obj.seut, 'linkedObject', text="",)

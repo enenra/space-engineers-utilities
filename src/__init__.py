@@ -73,6 +73,7 @@ from .seut_ot_bBox                  import SEUT_OT_BBox
 from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_scene                    import SEUT_Scene
+from .seut_object                   import SEUT_Object
 
 
 classes = (
@@ -106,6 +107,7 @@ classes = (
     SEUT_OT_MatCreate,
     SEUT_Materials,
     SEUT_Scene,
+    SEUT_Object,
 )
 
 
@@ -116,6 +118,7 @@ def register():
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
     bpy.types.Material.seut = bpy.props.PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = bpy.props.PointerProperty(type=SEUT_Scene)
+    bpy.types.Object.seut = bpy.props.PointerProperty(type=SEUT_Object)
     bpy.app.handlers.load_post.append(load_handler)
 
 
