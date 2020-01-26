@@ -3,9 +3,9 @@ import bpy
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_errors                   import errorCollection
 
-def linkSubpartScene(self, context, empty, subpartScene):
-
-    parentCollections = SEUT_OT_RecreateCollections.get_Collections(context.scene)
+def linkSubpartScene(self, scene, empty, subpartScene):
+    context = bpy.context
+    parentCollections = SEUT_OT_RecreateCollections.get_Collections(scene)
     
     # Switch to subpartScene to get collections
     currentScene = bpy.context.window.scene

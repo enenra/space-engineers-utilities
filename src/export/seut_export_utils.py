@@ -319,8 +319,8 @@ def export_model_FBX(self, context, collection):
     
     # Relink all subparts to empties
     for emptyObj in collection.objects:
-        if 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
-            linkSubpartScene(self, context, emptyObj, emptyObj.seut.linkedScene)
+        if 'file' in emptyObj and emptyObj.seut.linkedScene is not "":
+            linkSubpartScene(self, scene, emptyObj, emptyObj.seut.linkedScene)
 
     bpy.context.scene.collection.children.unlink(collection)
     self.report({'INFO'}, "SEUT: '%s.fbx' has been created." % (path + filename))
@@ -369,7 +369,7 @@ def prepMatForExport(self, context, material):
         material.seut.nodeLinkedToOutputName = ""
     # This allows the reestablishment of connections after the export is complete.
     else:
-        if materialOutput.inputs[0].links[0].from_node.name is not None:
+        if materialOutput.inputs[0] is not None and materialOutput.inputs[0].links[0] is not None and materialOutput.inputs[0].links[0].from_node.name is not None:
             material.seut.nodeLinkedToOutputName = materialOutput.inputs[0].links[0].from_node.name
 
     # link nodes, add image to node
