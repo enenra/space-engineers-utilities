@@ -369,7 +369,7 @@ def prepMatForExport(self, context, material):
         material.seut.nodeLinkedToOutputName = ""
     # This allows the reestablishment of connections after the export is complete.
     else:
-        if materialOutput.inputs[0].links[0].from_node.name is not None:
+        if materialOutput.inputs[0] is not None and materialOutput.inputs[0].links[0] is not None and materialOutput.inputs[0].links[0].from_node.name is not None:
             material.seut.nodeLinkedToOutputName = materialOutput.inputs[0].links[0].from_node.name
 
     # link nodes, add image to node
