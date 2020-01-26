@@ -43,6 +43,7 @@ from bpy.types import (Panel,
                        )
 
 from .empties.seut_mt_contextMenu           import SEUT_MT_ContextMenu
+from .empties.seut_pt_emptyMenu             import SEUT_PT_EmptyLink
 from .empties.seut_ot_addHighlightEmpty     import SEUT_OT_AddHighlightEmpty
 from .empties.seut_ot_addDummy              import SEUT_OT_AddDummy
 from .empties.seut_ot_addPresetSubpart      import SEUT_OT_AddPresetSubpart
@@ -81,6 +82,7 @@ classes = (
     SEUT_PT_Panel_Export,
     SEUT_PT_Panel_Import,
     SEUT_PT_Panel_Materials,
+    SEUT_PT_EmptyLink,
     SEUT_MT_ContextMenu,
     SEUT_OT_AddHighlightEmpty,
     SEUT_OT_AddDummy,
@@ -124,6 +126,7 @@ def unregister():
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
+    bpy.app.handlers.load_post.remove(load_handler)
 
 
 def menu_func(self, context):
