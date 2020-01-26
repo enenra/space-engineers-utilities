@@ -543,7 +543,7 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         'global_scale': 0.1, # STOLLIE: Is 1.0 in Blender Source
         'apply_scale_options': 'FBX_SCALE_NONE',
         'axis_up': 'Y',	 # STOLLIE: Normally a Z in Blender source.	Y aligns correctly in SE.
-        'axis_forward': '-Z', # STOLLIE: Normally a Y in Blender source. -Z is correct forward.
+        'axis_forward': 'Z', # STOLLIE: Normally a Y in Blender source. -Z is correct forward.
         'context_objects': objects, #STOLLIE: Is None in Blender Source.
         'object_types': {'MESH', 'EMPTY'}, # STOLLIE: Is None in Blender source.
         'use_mesh_modifiers': True,
@@ -597,8 +597,10 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
 
     kwargs['global_matrix'] = global_matrix
 
+    """
     kwargs['axis_up'] = scene.seut.axis_up
     kwargs['axis_forward'] = scene.seut.axis_forward
+    """
     
     return save_single(	
         settings.operator,	
