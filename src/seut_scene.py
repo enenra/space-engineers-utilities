@@ -10,6 +10,8 @@ from bpy.props  import (EnumProperty,
                         PointerProperty
                         )
 
+from .seut_ot_recreateCollections import SEUT_OT_RecreateCollections
+
 # These update_* functions need to be above the class... for some reason.
 def update_GridScale(self, context):
     bpy.ops.object.gridscale()
@@ -20,13 +22,12 @@ def update_BBox(self, context):
 
 def update_SceneName(self, context):
     scene = context.scene
-    if scene.seut.index == -1:
-        if len(bpy.data.scenes) > 1:
-            scene.seut.index = len(bpy.data.scenes) - 1
-        elif len(bpy.data.scenes) == 1:
-            scene.seut.index = 0
-    sceneIndex = ' (' + str(scene.seut.index) + ')'
-    scene.name = scene.seut.subtypeId + sceneIndex
+
+    if scene.seut.subtypeId != scene.seut.subtypeBefore:
+        SEUT_OT_RecreateCollections.get_Collections(context)
+
+    scene.name = scene.seut.subtypeId
+    scene.seut.subtypeBefore = scene.seut.subtypeId
 
 def update_parent(self, context):
     print("parent updated")
@@ -34,18 +35,13 @@ def update_parent(self, context):
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
 
-    index: IntProperty(
-        name='Index',
-        default=-1,
-        min=0
-    )
     sceneType: EnumProperty(
         name='Type',
         items=(
             ('mainScene', 'Main', 'This scene is a main scene'),
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene')
             ),
-        default='subpart'
+        default='mainScene'
     )
     parent: PointerProperty(
         name='Parent',
@@ -100,6 +96,9 @@ class SEUT_Scene(PropertyGroup):
         description="The SubtypeId for this model",
         default="Scene",
         update=update_SceneName
+    )
+    subtypeBefore: StringProperty(
+        default="Scene"
     )
     export_deleteLooseFiles: BoolProperty(
         name="Delete Loose Files",
