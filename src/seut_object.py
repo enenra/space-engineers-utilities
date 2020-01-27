@@ -13,6 +13,7 @@ from bpy.props  import (EnumProperty,
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene
 
+
 def update_linkedScene(self, context):
     scene = context.scene
     empty = context.view_layer.objects.active
@@ -27,6 +28,7 @@ def update_linkedScene(self, context):
             if scene.seut.linkSubpartInstances:
                 linkSubpartScene(self, scene, empty, empty.seut.linkedScene)
 
+
 def update_linkedObject(self, context):
     scene = context.scene
     empty = context.view_layer.objects.active
@@ -38,9 +40,11 @@ def update_linkedObject(self, context):
         if empty.seut.linkedObject is not None:
             empty['highlight'] = empty.seut.linkedObject.name
 
+
 # These prevent the selected scene from being the current scene and the selected object being the current object
 def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'subpart'
+
 
 def poll_linkedObject(self, object):
     return object != bpy.context.view_layer.objects.active
