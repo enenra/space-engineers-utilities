@@ -4,6 +4,8 @@ from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_errors                   import errorCollection
 
 def linkSubpartScene(self, scene, empty, subpartScene):
+    """Link instances of subpart scene objects as children to empty"""
+
     context = bpy.context
     parentCollections = SEUT_OT_RecreateCollections.get_Collections(scene)
     
@@ -16,6 +18,15 @@ def linkSubpartScene(self, scene, empty, subpartScene):
     result = errorCollection(self, context, subpartCollections['main'], False)
     if not result == 'CONTINUE':
         return {result}
+    
+    # This prevents instancing loops.
+    for o in subpartCollections['main'].objects:
+        if o is not None and o.type == 'EMPTY' and o.seut.linkedScene == scene:
+            print("SEUT Error: Linking to scene '" + subpartScene.name + "' from '" + currentScene.name + "' would create a subpart instancing loop.")
+            empty.seut.linkedScene = None
+            empty['file'] = None
+            context.window.scene = currentScene
+            return 'CANCEL'
 
     objectsToIterate = set(subpartCollections['main'].objects)
 
@@ -56,6 +67,7 @@ def linkSubpartScene(self, scene, empty, subpartScene):
     return 'CONTINUE'
 
 def unlinkSubpartScene(empty):
+    """Unlinks all subpart instances from an empty"""
 
     for obj in empty.children:
         bpy.data.objects.remove(obj, do_unlink=True)

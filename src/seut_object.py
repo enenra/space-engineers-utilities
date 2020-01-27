@@ -22,9 +22,10 @@ def update_linkedScene(self, context):
             empty['file'] = ""
         unlinkSubpartScene(empty)
 
-        if empty.seut.linkedScene is not None and scene.seut.linkSubpartInstances:
+        if empty.seut.linkedScene is not None:
             empty['file'] = empty.seut.linkedScene.name
-            linkSubpartScene(self, scene, empty, empty.seut.linkedScene)
+            if scene.seut.linkSubpartInstances:
+                linkSubpartScene(self, scene, empty, empty.seut.linkedScene)
 
 def update_linkedObject(self, context):
     scene = context.scene
