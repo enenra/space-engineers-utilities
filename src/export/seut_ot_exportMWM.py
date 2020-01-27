@@ -70,7 +70,7 @@ class SEUT_OT_ExportMWM(Operator):
 
         mwmfile = join(mwmpath, scene.seut.subtypeId + ".mwm")
         materialspath = bpy.path.abspath(preferences.materialsPath)
-
+        
         try:
             mwmbuilder(self, context, path, settings, mwmfile, materialspath)
         finally:

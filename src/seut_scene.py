@@ -160,6 +160,34 @@ class SEUT_Scene(PropertyGroup):
         default=50,
         min=0
     )
+
+    # Axis Conversion
+    axis_up: EnumProperty(
+        name='Up',
+        description='Axis Up',
+        items=(
+            ('X', 'X', ''),
+            ('Y', 'Y', ''),
+            ('Z', 'Z', ''),
+            ('-X', '-X', ''),
+            ('-Y', '-Y', ''),
+            ('-Z', '-Z', '')
+            ),
+        default='X'
+    )
+    axis_forward: EnumProperty(
+        name='Forward',
+        description='Axis Forward',
+        items=(
+            ('X', 'X', ''),
+            ('Y', 'Y', ''),
+            ('Z', 'Z', ''),
+            ('-X', '-X', ''),
+            ('-Y', '-Y', ''),
+            ('-Z', '-Z', '')
+            ),
+        default='X'
+    )
     
     # Materials
     matPreset: EnumProperty(
