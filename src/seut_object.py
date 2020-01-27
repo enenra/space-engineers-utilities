@@ -22,7 +22,7 @@ def update_linkedScene(self, context):
             empty['file'] = ""
         unlinkSubpartScene(empty)
 
-        if empty.seut.linkedScene is not None:
+        if empty.seut.linkedScene is not None and scene.seut.linkSubpartInstances:
             empty['file'] = empty.seut.linkedScene.name
             linkSubpartScene(self, scene, empty, empty.seut.linkedScene)
 
@@ -39,7 +39,7 @@ def update_linkedObject(self, context):
 
 # These prevent the selected scene from being the current scene and the selected object being the current object
 def poll_linkedScene(self, object):
-    return object != bpy.context.scene
+    return object != bpy.context.scene and object.seut.sceneType == 'subpart'
 
 def poll_linkedObject(self, object):
     return object != bpy.context.view_layer.objects.active
@@ -50,7 +50,7 @@ class SEUT_Object(PropertyGroup):
     
     linkedScene: PointerProperty(
         name='Subpart Scene',
-        description="Which subpart scene this empty links to",
+        description="Which subpart scene this empty links to. Scene must be of type 'Subpart'",
         type=bpy.types.Scene,
         poll=poll_linkedScene,
         update=update_linkedScene

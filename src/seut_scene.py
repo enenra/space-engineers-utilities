@@ -10,7 +10,8 @@ from bpy.props  import (EnumProperty,
                         PointerProperty
                         )
 
-from .seut_ot_recreateCollections import SEUT_OT_RecreateCollections
+from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_utils                    import linkSubpartScene, unlinkSubpartScene
 
 # These update_* functions need to be above the class... for some reason.
 def update_GridScale(self, context):
@@ -20,7 +21,7 @@ def update_GridScale(self, context):
 def update_BBox(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
-def update_SceneName(self, context):
+def update_subtypeId(self, context):
     scene = context.scene
 
     if scene.seut.subtypeId != scene.seut.subtypeBefore:
@@ -28,6 +29,19 @@ def update_SceneName(self, context):
 
     scene.name = scene.seut.subtypeId
     scene.seut.subtypeBefore = scene.seut.subtypeId
+
+def update_linkSubpartInstances(self, context):
+    scene = context.scene
+
+    for empty in scene.objects:
+        if empty is not None:
+            # The check for the empty name prevents this from being run on empties that are linked to this scene.
+            if empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and 'file' in empty and empty.seut.linkedScene.name in bpy.data.scenes:
+                if scene.seut.linkSubpartInstances:
+                    linkSubpartScene(self, scene, empty, empty.seut.linkedScene)
+                else:
+                    unlinkSubpartScene(empty)
+
 
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
@@ -39,6 +53,12 @@ class SEUT_Scene(PropertyGroup):
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene')
             ),
         default='mainScene'
+    )
+    linkSubpartInstances: BoolProperty(
+        name="Link Subpart Instances",
+        description="Whether to link instances of subparts to their empties",
+        default=True,
+        update=update_linkSubpartInstances
     )
 
     # Grid Scale
@@ -86,7 +106,7 @@ class SEUT_Scene(PropertyGroup):
         name="SubtypeId",
         description="The SubtypeId for this model",
         default="Scene",
-        update=update_SceneName
+        update=update_subtypeId
     )
     subtypeBefore: StringProperty(
         default="Scene"
