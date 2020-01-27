@@ -104,6 +104,9 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
         col.prop(scene.seut, "export_xml")
         col.prop(scene.seut, "export_hkt")
         """
+        row = box.row()
+        row.prop(scene.seut, "axis_up")
+        row.prop(scene.seut, "axis_forward")
         box.prop(scene.seut, "export_deleteLooseFiles")
         box.prop(scene.seut, "export_rescaleFactor")
         

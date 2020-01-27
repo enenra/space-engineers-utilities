@@ -319,7 +319,7 @@ def export_model_FBX(self, context, collection):
     
     # Relink all subparts to empties
     for emptyObj in collection.objects:
-        if 'file' in emptyObj and emptyObj.seut.linkedScene in bpy.data.scenes:
+        if 'file' in emptyObj and emptyObj.seut.linkedScene.name in bpy.data.scenes:
             linkSubpartScene(self, scene, emptyObj, emptyObj.seut.linkedScene)
 
     bpy.context.scene.collection.children.unlink(collection)
@@ -536,12 +536,14 @@ class ExportSettings:
 # HARAG: MATRIX_SCALE_DOWN = Matrix.Scale(0.2, 4) * MATRIX_NORMAL
 def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavokfbxfile = False, kwargs = None):	
     kwargs = {	
+        'version': 'BIN7400',
+        'ui_tab': 'SKIP_SAVE',
         'global_matrix': Matrix(),
         'apply_unit_scale': True,
         'global_scale': 0.1, # STOLLIE: Is 1.0 in Blender Source
         'apply_scale_options': 'FBX_SCALE_NONE',
-        'axis_up': 'Y',	 # STOLLIE: Normally a Z in Blender source.	Y aligns correctly in SE.
-        'axis_forward': '-Z', # STOLLIE: Normally a Y in Blender source. -Z is correct forward.
+        'axis_up': 'X',	 # STOLLIE: Normally a Z in Blender source.	Y aligns correctly in SE.
+        'axis_forward': 'Z', # STOLLIE: Normally a Y in Blender source. -Z is correct forward.
         'context_objects': objects, #STOLLIE: Is None in Blender Source.
         'object_types': {'MESH', 'EMPTY'}, # STOLLIE: Is None in Blender source.
         'use_mesh_modifiers': True,
@@ -594,6 +596,9 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         global_matrix = Matrix.Scale(scale, 4) @ global_matrix
 
     kwargs['global_matrix'] = global_matrix
+    
+    kwargs['axis_up'] = scene.seut.axis_up
+    kwargs['axis_forward'] = scene.seut.axis_forward
     
     return save_single(	
         settings.operator,	
