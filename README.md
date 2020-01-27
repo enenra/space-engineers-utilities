@@ -40,7 +40,7 @@ SEUT\convert_textures.bat
 8. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
 
 ## Support
-Feel free to support the development of this addon by becoming one of Stollie's patreons! Without him, the development of the addon would never have gotten this far.
+Please consider supporting the development of this addon by becoming one of Stollie's patreons! Without him, the development of the addon would never have gotten this far.
 
 [![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Patreon_logo_with_wordmark.svg/512px-Patreon_logo_with_wordmark.svg.png)](https://www.patreon.com/Stollie)
 
