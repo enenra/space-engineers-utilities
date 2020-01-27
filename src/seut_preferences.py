@@ -23,7 +23,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         subtype='FILE_PATH',
     )
     havokPath: StringProperty(
-        name="Havok Standalone Filter Tool",
+        name="Havok Standalone Filter Manager",
         subtype='FILE_PATH',
     )
     mwmbPath: StringProperty(
