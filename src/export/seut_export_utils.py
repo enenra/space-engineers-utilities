@@ -581,7 +581,6 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         'use_batch_own_dir': True,	# STOLLIE: Part of Save method not save single in Blender source, default = False.	
     }	
 
-    
     if kwargs:	
         if isinstance(kwargs, bpy.types.PropertyGroup):	
             kwargs = {prop : getattr(kwargs, prop) for prop in kwargs.rna_type.properties.keys()}	
