@@ -1,5 +1,6 @@
 import bpy
 import os
+import shutil
 
 from os.path        import join
 from bpy.types      import Operator

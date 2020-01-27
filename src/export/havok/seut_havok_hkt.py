@@ -31,5 +31,19 @@ def process_fbximporterhkt_to_final_hkt_for_mwm(self, scene, path, settings: Exp
             logfile=dstfile+'.filter.log',	
             successfulExitCodes=[0,1])	
     finally:	
-        os.remove(hko.name)	
+        os.remove(hko.name)
+        hktBSfile1 = join(path, scene.seut.subtypeId + "_BS1.hkt")
+        hktBSfile2 = join(path, scene.seut.subtypeId + "_BS2.hkt")
+        hktBSfile3 = join(path, scene.seut.subtypeId + "_BS3.hkt")
+
+        def copy(srcfile: str, dstfile: str):
+            if srcfile is not None and dstfile != srcfile:
+                shutil.copy2(srcfile, dstfile)
+
+        if os.path.exists(srcfile):
+            copy(srcfile, hktBSfile1)
+            copy(srcfile, hktBSfile2)
+            copy(srcfile, hktBSfile3)
+            print("No Havok")
+        
         self.report({'INFO'}, "SEUT: Collision files have been created.") 
