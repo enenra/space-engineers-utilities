@@ -21,10 +21,12 @@ class SEUT_Materials(PropertyGroup):
         description="The technique with which the material is rendered ingame",
         items=(
             ('MESH', 'MESH', 'The standard technique'),
-            ('DECAL', 'DECAL', ''),
-            ('DECAL_CUTOUT', 'DECAL_CUTOUT', ''),
+            ('DECAL', 'DECAL', "Makes the material look like it's part of the model behind it"),
+            ('DECAL_NOPREMULT', 'DECAL_NOPREMULT', "Higher accuracy of transparency than 'DECAL', but same visual style"),
+            ('DECAL_CUTOUT', 'DECAL_CUTOUT', "Makes the material look like it cuts into the model behind it"),
             ('GLASS', 'GLASS', 'Transparent material - requires additional values to be set'),
             ('ALPHA_MASKED', 'ALPHA_MASKED', 'Has an alphamask texture'),
+            ('SHIELD', 'SHIELD', 'Animated material used on SafeZone shield - currently limited to default one'),
             ('HOLO', 'HOLO', 'Transparent LCD screen texture')
             ),
         default='MESH'
