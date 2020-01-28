@@ -114,8 +114,10 @@ class SEUT_OT_ExportSBC(Operator):
             elif preferences.looseFilesExportFolder == '1':
                 path = bpy.path.abspath(scene.seut.export_exportPath)
         
+        offset = path.find("Models\\")
+
         def_Model = ET.SubElement(def_definition, 'Model')
-        def_Model.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '.mwm'
+        def_Model.text = path[offset:] + scene.seut.subtypeId + '.mwm'
         
         """
         def_Mountpoints = ET.SubElement(def_definition, 'Mountpoints')
@@ -155,7 +157,7 @@ class SEUT_OT_ExportSBC(Operator):
                     else:
                         def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage)[:4])
 
-                    def_BS_Model.set('File', path[path.find("Models\\"):] + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
+                    def_BS_Model.set('File', path[offset:] + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
 
 
         # Write to file, place in export folder
