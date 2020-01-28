@@ -100,19 +100,10 @@ class SEUT_OT_ExportSBC(Operator):
         def_ModelOffset.set('z', '0')
 
         # Setting up the link to the MWM file.
-        path = ""
-
-        # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
-        if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
-            self.report({'ERROR'}, "SEUT: BLEND file must be saved before SBC can be exported to its directory. (008)")
-            print("SEUT Error: BLEND file must be saved before SBC can be exported to its directory. (008)")
-            return {'CANCELLED'}
-        else:
-            if preferences.looseFilesExportFolder == '0':
-                path = os.path.dirname(bpy.data.filepath) + "\\"
-
-            elif preferences.looseFilesExportFolder == '1':
-                path = bpy.path.abspath(scene.seut.export_exportPath)
+        if preferences.looseFilesExportFolder == '0':
+            path = os.path.dirname(bpy.data.filepath) + "\\"
+        elif preferences.looseFilesExportFolder == '1':
+            path = bpy.path.abspath(scene.seut.export_exportPath)
         
         offset = path.find("Models\\")
 

@@ -13,6 +13,12 @@ def errorExportGeneral(self, context):
     preferences = bpy.context.preferences.addons.get(addon).preferences
     exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
 
+    # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
+    if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
+        self.report({'ERROR'}, "SEUT: BLEND file must be saved before export. (008)")
+        print("SEUT Error: BLEND file must be saved before export. (008)")
+        return 'CANCELLED'
+
     if os.path.exists(exportPath) == False:
         self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
         print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
@@ -41,7 +47,6 @@ def errorCollection(self, context, collection, partial):
 
     if collection is None:
         if partial:
-            self.report({'WARNING'}, "SEUT: Collection not found. Action not possible. (002)")
             print("SEUT Warning: Collection not found. Action not possible. (002)")
             return 'FINISHED'
         else:
@@ -53,7 +58,6 @@ def errorCollection(self, context, collection, partial):
 
     if isExcluded is True:
         if partial:
-            self.report({'WARNING'}, "SEUT: Collection '%s' excluded from view layer. Action not possible. Re-enable in hierarchy. (019)" % (collection.name))
             print("SEUT Warning: Collection '" + collection.name + "' excluded from view layer. Action not possible. Re-enable in hierarchy. (019)")
             return 'FINISHED'
         else:
@@ -63,7 +67,6 @@ def errorCollection(self, context, collection, partial):
 
     if len(collection.objects) == 0:
         if partial:
-            self.report({'WARNING'}, "SEUT: Collection '%s' is empty. Action not possible. (005)" % (collection.name))
             print("SEUT Warning: Collection '" + collection.name + "' is empty. Action not possible. (005)")
             return 'FINISHED'
         else:

@@ -54,20 +54,12 @@ class SEUT_OT_ExportMWM(Operator):
             print("SEUT Info: Path to Materials Folder '" + materialsPath + "' not valid. (017)")
             return {'CANCELLED'}
 
-        # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
-        if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
-            self.report({'ERROR'}, "SEUT: BLEND file must be saved before HKT can be exported to its directory. (008)")
-            print("SEUT Info: BLEND file must be saved before HKT can be exported to its directory. (008)")
-            return {'CANCELLED'}
-        else:
-            if preferences.looseFilesExportFolder == '0':
-                path = os.path.dirname(bpy.data.filepath) + "\\"
-
-            elif preferences.looseFilesExportFolder == '1':
-                path = bpy.path.abspath(scene.seut.export_exportPath)
+        if preferences.looseFilesExportFolder == '0':
+            path = os.path.dirname(bpy.data.filepath) + "\\"
+        elif preferences.looseFilesExportFolder == '1':
+            path = bpy.path.abspath(scene.seut.export_exportPath)
             
-            mwmpath = bpy.path.abspath(scene.seut.export_exportPath)
-
+        mwmpath = bpy.path.abspath(scene.seut.export_exportPath)
         mwmfile = join(mwmpath, scene.seut.subtypeId + ".mwm")
         materialspath = bpy.path.abspath(preferences.materialsPath)
 

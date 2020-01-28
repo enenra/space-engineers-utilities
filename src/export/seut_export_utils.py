@@ -37,18 +37,10 @@ def export_XML(self, context, collection):
     paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
     paramRescaleToLengthInMeters.text = 'false'
     
-    path = ""
-
-    if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
-        self.report({'ERROR'}, "SEUT: BLEND file must be saved before Models can be exported. (021)")
-        print("SEUT Error: BLEND file must be saved before Models can be exported. (021)")
-        return {'CANCELLED'}
-    else:
-        if preferences.looseFilesExportFolder == '0':
-            path = os.path.dirname(bpy.data.filepath) + "\\"
-
-        elif preferences.looseFilesExportFolder == '1':
-            path = bpy.path.abspath(scene.seut.export_exportPath)
+    if preferences.looseFilesExportFolder == '0':
+        path = os.path.dirname(bpy.data.filepath) + "\\"
+    elif preferences.looseFilesExportFolder == '1':
+        path = bpy.path.abspath(scene.seut.export_exportPath)
 
     # Currently no support for the other material parameters - are those even needed anymore?
 
@@ -280,18 +272,10 @@ def export_model_FBX(self, context, collection):
     else:
         filename = scene.seut.subtypeId + '_' + fileType
 
-    # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
-    path = ""
-
-    if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
-        self.report({'ERROR'}, "SEUT: BLEND file must be saved before FBX can be exported to its directory. (008)")
-        return
-    else:
-        if preferences.looseFilesExportFolder == '0':
-            path = os.path.dirname(bpy.data.filepath) + "\\"
-
-        elif preferences.looseFilesExportFolder == '1':
-            path = bpy.path.abspath(scene.seut.export_exportPath)
+    if preferences.looseFilesExportFolder == '0':
+        path = os.path.dirname(bpy.data.filepath) + "\\"
+    elif preferences.looseFilesExportFolder == '1':
+        path = bpy.path.abspath(scene.seut.export_exportPath)
     
     # Exporting the collection.
     # I can only export the currently active collection, so I need to set the target collection to active (for which I have to link it for some reason),

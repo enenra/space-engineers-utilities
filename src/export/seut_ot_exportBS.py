@@ -5,7 +5,7 @@ from bpy.types                      import Operator
 
 from .seut_export_utils             import export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, isCollectionExcluded
+from ..seut_errors                  import errorExportGeneral, isCollectionExcluded, errorCollection
 
 class SEUT_OT_ExportBS(Operator):
     """Exports Build Stages"""
@@ -43,44 +43,23 @@ class SEUT_OT_ExportBS(Operator):
         preferences = bpy.context.preferences.addons.get(addon).preferences
         collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
-        allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
-        isExcludedBS1 = isCollectionExcluded("BS1", allCurrentViewLayerCollections)
-        isExcludedBS2 = isCollectionExcluded("BS2", allCurrentViewLayerCollections)
-        isExcludedBS3 = isCollectionExcluded("BS3", allCurrentViewLayerCollections)
+        colBS1Good = False
+        result = errorCollection(self, context, collections['bs1'], partial)
+        if result == 'CONTINUE':
+            colBS1Good = True
 
-        if isExcludedBS1 and isExcludedBS2 and isExcludedBS3:
-            if partial:
-                self.report({'WARNING'}, "SEUT: All 'BS'-type collections excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
-                print("SEUT Warning: All 'BS'-type collections excluded from view layer. Re-enable in hierarchy. (019)")
-                return {'FINISHED'}
-            else:
-                self.report({'ERROR'}, "SEUT: All 'BS'-type collections excluded from view layer. Export not possible. Re-enable in hierarchy. (019)")
-                print("SEUT Error: All 'BS'-type collections excluded from view layer. Re-enable in hierarchy. (019)")
-                return {'CANCELLED'}
+        colBS2Good = False
+        result = errorCollection(self, context, collections['bs2'], partial)
+        if result == 'CONTINUE':
+            colBS2Good = True
 
-        if collections['bs1'] == None and collections['bs2'] == None and collections['bs3'] == None:
-            if partial:
-                self.report({'WARNING'}, "SEUT: No 'BS'-type collections found. Export not possible. (002)")
-                print("SEUT Warning: No 'BS'-type collections found. Export not possible. (002)")
-                return {'FINISHED'}
-            else:
-                self.report({'ERROR'}, "SEUT: No 'BS'-type collections found. Export not possible. (002)")
-                print("SEUT Error: No 'BS'-type collections found. Export not possible. (002)")
-                return {'CANCELLED'}
+        colBS3Good = False
+        result = errorCollection(self, context, collections['bs3'], partial)
+        if result == 'CONTINUE':
+            colBS3Good = True
 
-        if len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) == 0:
+        if (not colBS1Good and colBS2Good) or (not colBS2Good and colBS3Good):
             if partial:
-                self.report({'WARNING'}, "SEUT: All 'BS'-type collections are empty. Export not possible. (005)")
-                print("SEUT Warning: All 'BS'-type collections are empty. Export not possible. (005)")
-                return {'FINISHED'}
-            else:
-                self.report({'ERROR'}, "SEUT: All 'BS'-type collections are empty. Export not possible. (005)")
-                print("SEUT Error: All 'BS'-type collections are empty. Export not possible. (005)")
-                return {'CANCELLED'}
-
-        if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
-            if partial:
-                self.report({'WARNING'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
                 print("SEUT Warning: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
                 return {'FINISHED'}
             else:
@@ -89,9 +68,7 @@ class SEUT_OT_ExportBS(Operator):
                 return {'CANCELLED'}
 
         # Export BS1, if present.
-        if collections['bs1'] == None or len(collections['bs1'].objects) == 0 or isExcludedBS1:
-            self.report({'WARNING'}, "SEUT: Collection 'BS1' not found or empty. Export not possible.")
-        else:
+        if colBS1Good:
             if scene.seut.export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'BS1'.")
                 export_XML(self, context, collections['bs1'])
@@ -100,9 +77,7 @@ class SEUT_OT_ExportBS(Operator):
                 export_model_FBX(self, context, collections['bs1'])
         
         # Export BS2, if present.
-        if collections['bs2'] == None or len(collections['bs2'].objects) == 0 or isExcludedBS2:
-            self.report({'WARNING'}, "SEUT: Collection 'BS2' not found or empty. Export not possible.")
-        else:
+        if colBS2Good:
             if scene.seut.export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'BS2'.")
                 export_XML(self, context, collections['bs2'])
@@ -111,9 +86,7 @@ class SEUT_OT_ExportBS(Operator):
                 export_model_FBX(self, context, collections['bs2'])
 
         # Export BS3, if present.
-        if collections['bs3'] == None or len(collections['bs3'].objects) == 0 or isExcludedBS3:
-            self.report({'WARNING'}, "SEUT: Collection 'BS3' not found or empty. Export not possible.")
-        else:
+        if colBS3Good:
             if scene.seut.export_xml:
                 self.report({'INFO'}, "SEUT: Exporting XML for 'BS3'.")
                 export_XML(self, context, collections['bs3'])
