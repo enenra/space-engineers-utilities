@@ -353,8 +353,10 @@ def prepMatForExport(self, context, material):
         material.seut.nodeLinkedToOutputName = ""
     # This allows the reestablishment of connections after the export is complete.
     else:
-        if materialOutput.inputs[0] is not None and materialOutput.inputs[0].links[0] is not None and materialOutput.inputs[0].links[0].from_node.name is not None:
+        try:
             material.seut.nodeLinkedToOutputName = materialOutput.inputs[0].links[0].from_node.name
+        except IndexError:
+            print("SEUT Info: IndexError at material '" + material.name + "'.")
 
     # link nodes, add image to node
     material.node_tree.links.new(dummyImageNode.outputs[0], dummyShaderNode.inputs[0])
@@ -385,7 +387,10 @@ def removeExportDummiesFromMat(self, context, material):
     
     # link the node group back to output
     if nodeLinkedToOutput is not None:
-        material.node_tree.links.new(nodeLinkedToOutput.outputs[0], materialOutput.inputs[0])
+        try:
+            material.node_tree.links.new(nodeLinkedToOutput.outputs[0], materialOutput.inputs[0])
+        except IndexError:
+            print("SEUT Info: IndexError at material '" + material.name + "'.")
 
     return
 
