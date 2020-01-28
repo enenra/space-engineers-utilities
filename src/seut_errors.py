@@ -13,16 +13,16 @@ def errorExportGeneral(self, context):
     preferences = bpy.context.preferences.addons.get(addon).preferences
     exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
 
-    if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath == "":
-        self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
-        print("SEUT Error: No export folder defined. (003)")
-        return 'CANCELLED'
-    elif preferences.looseFilesExportFolder == '1' and os.path.exists(exportPath) == False:
+    if os.path.exists(exportPath) == False:
         self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
         print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
         return 'CANCELLED'
+    elif scene.seut.export_exportPath == "":
+        self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
+        print("SEUT Error: No export folder defined. (003)")
+        return 'CANCELLED'
 
-    if preferences.looseFilesExportFolder == '1' and scene.seut.export_exportPath.find("Models\\") == -1:
+    if scene.seut.export_exportPath.find("Models\\") == -1:
         self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
         print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
         return 'CANCELLED'
