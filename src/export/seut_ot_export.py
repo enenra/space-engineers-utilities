@@ -29,10 +29,10 @@ class SEUT_OT_Export(Operator):
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
-        # Re-scale collision objects via rescale factor before export.
-        if collections['hkt'] is not None:
-            for obj in collections['hkt'].objects:
-                obj.scale *= context.scene.seut.export_rescaleFactor
+        # If mode is not object mode, export fails horribly.
+        if bpy.context.object.mode is not 'OBJECT':
+            currentMode = bpy.context.object.mode
+            bpy.ops.object.mode_set(mode='OBJECT')
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
@@ -53,12 +53,10 @@ class SEUT_OT_Export(Operator):
         
         # Finally, compile everything to MWM
         SEUT_OT_ExportMWM.export_MWM(self, context)
+        
+        # Reset interaction mode
+        bpy.ops.object.mode_set(mode=currentMode)
 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export'")
-
-        # Re-scale collision objects via rescale factor after export.
-        if collections['hkt'] is not None:
-            for obj in collections['hkt'].objects:
-                obj.scale /= context.scene.seut.export_rescaleFactor
 
         return {'FINISHED'}
