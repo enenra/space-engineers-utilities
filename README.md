@@ -18,6 +18,9 @@ A Blender 2.8+ addon.
 * Support for Blender files with multiple scenes
 * Structure conversion to convert BLEND files created with the old plugin to the new structure
 * Support for Build Stage LOD
+* Empty target objects can be set in dedicated panel
+* Subpart scenes within the same file can be instanced into their parent scenes
+* Full multi-scene support
 
 ## Installation
 1. Download the latest release of the addon from the releases section, enable it in Blender.
