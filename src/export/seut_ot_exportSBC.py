@@ -16,7 +16,7 @@ class SEUT_OT_ExportSBC(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(context.scene)
         return collections['main'] is not None
 
     def execute(self, context):
@@ -39,7 +39,7 @@ class SEUT_OT_ExportSBC(Operator):
         """Exports the SBC file for a defined collection"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
 
@@ -100,22 +100,15 @@ class SEUT_OT_ExportSBC(Operator):
         def_ModelOffset.set('z', '0')
 
         # Setting up the link to the MWM file.
-        path = ""
-
-        # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
-        if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
-            self.report({'ERROR'}, "SEUT: BLEND file must be saved before SBC can be exported to its directory. (008)")
-            print("SEUT Error: BLEND file must be saved before SBC can be exported to its directory. (008)")
-            return {'CANCELLED'}
-        else:
-            if preferences.looseFilesExportFolder == '0':
-                path = os.path.dirname(bpy.data.filepath) + "\\"
-
-            elif preferences.looseFilesExportFolder == '1':
-                path = bpy.path.abspath(scene.seut.export_exportPath)
+        if preferences.looseFilesExportFolder == '0':
+            path = os.path.dirname(bpy.data.filepath) + "\\"
+        elif preferences.looseFilesExportFolder == '1':
+            path = bpy.path.abspath(scene.seut.export_exportPath)
         
+        offset = path.find("Models\\")
+
         def_Model = ET.SubElement(def_definition, 'Model')
-        def_Model.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '.mwm'
+        def_Model.text = path[offset:] + scene.seut.subtypeId + '.mwm'
         
         """
         def_Mountpoints = ET.SubElement(def_definition, 'Mountpoints')
@@ -155,7 +148,7 @@ class SEUT_OT_ExportSBC(Operator):
                     else:
                         def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage)[:4])
 
-                    def_BS_Model.set('File', path[path.find("Models\\"):] + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
+                    def_BS_Model.set('File', path[offset:] + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
 
 
         # Write to file, place in export folder

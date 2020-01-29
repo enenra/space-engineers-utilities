@@ -11,12 +11,13 @@ from bpy_extras.io_utils            import axis_conversion, ExportHelper
 
 from .havok.seut_havok_fbx          import save_single
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_utils                   import linkSubpartScene, unlinkSubpartScene
 
 def export_XML(self, context, collection):
     """Exports the XML file for a defined collection"""
 
     scene = context.scene
-    collections = SEUT_OT_RecreateCollections.get_Collections(context)
+    collections = SEUT_OT_RecreateCollections.get_Collections(scene)
     addon = __package__[:__package__.find(".")]
     preferences = bpy.context.preferences.addons.get(addon).preferences
 
@@ -36,18 +37,10 @@ def export_XML(self, context, collection):
     paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
     paramRescaleToLengthInMeters.text = 'false'
     
-    path = ""
-
-    if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
-        self.report({'ERROR'}, "SEUT: BLEND file must be saved before Models can be exported. (021)")
-        print("SEUT Error: BLEND file must be saved before Models can be exported. (021)")
-        return {'CANCELLED'}
-    else:
-        if preferences.looseFilesExportFolder == '0':
-            path = os.path.dirname(bpy.data.filepath) + "\\"
-
-        elif preferences.looseFilesExportFolder == '1':
-            path = bpy.path.abspath(scene.seut.export_exportPath)
+    if preferences.looseFilesExportFolder == '0':
+        path = os.path.dirname(bpy.data.filepath) + "\\"
+    elif preferences.looseFilesExportFolder == '1':
+        path = bpy.path.abspath(scene.seut.export_exportPath)
 
     # Currently no support for the other material parameters - are those even needed anymore?
 
@@ -268,7 +261,7 @@ def export_model_FBX(self, context, collection):
     depsgraph = context.evaluated_depsgraph_get()
     addon = __package__[:__package__.find(".")]
     preferences = bpy.context.preferences.addons.get(addon).preferences
-    collections = SEUT_OT_RecreateCollections.get_Collections(context)
+    collections = SEUT_OT_RecreateCollections.get_Collections(scene)
     settings = ExportSettings(scene, depsgraph)
 
     # Determining the directory to export to.
@@ -279,18 +272,10 @@ def export_model_FBX(self, context, collection):
     else:
         filename = scene.seut.subtypeId + '_' + fileType
 
-    # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
-    path = ""
-
-    if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
-        self.report({'ERROR'}, "SEUT: BLEND file must be saved before FBX can be exported to its directory. (008)")
-        return
-    else:
-        if preferences.looseFilesExportFolder == '0':
-            path = os.path.dirname(bpy.data.filepath) + "\\"
-
-        elif preferences.looseFilesExportFolder == '1':
-            path = bpy.path.abspath(scene.seut.export_exportPath)
+    if preferences.looseFilesExportFolder == '0':
+        path = os.path.dirname(bpy.data.filepath) + "\\"
+    elif preferences.looseFilesExportFolder == '1':
+        path = bpy.path.abspath(scene.seut.export_exportPath)
     
     # Exporting the collection.
     # I can only export the currently active collection, so I need to set the target collection to active (for which I have to link it for some reason),
@@ -298,6 +283,11 @@ def export_model_FBX(self, context, collection):
     bpy.context.scene.collection.children.link(collection)
     layer_collection = bpy.context.view_layer.layer_collection.children[collection.name]
     bpy.context.view_layer.active_layer_collection = layer_collection
+    
+    # Unlink all subparts parented to an empty
+    for emptyObj in collection.objects:
+        if 'file' in emptyObj:
+            unlinkSubpartScene(emptyObj)
 
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
@@ -306,12 +296,15 @@ def export_model_FBX(self, context, collection):
     # This is the actual call to make an FBX file.
     fbxfile = join(path, filename + ".fbx")
     export_to_fbxfile(settings, scene, fbxfile, collection.objects, ishavokfbxfile=False)
-    
-    # bpy.ops.export_scene.fbx(filepath=path + filename + ".fbx", use_active_collection=True)
 
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
             removeExportDummiesFromMat(self, context, objMat)
+    
+    # Relink all subparts to empties
+    for emptyObj in collection.objects:
+        if 'file' in emptyObj and emptyObj.seut.linkedScene.name in bpy.data.scenes:
+            linkSubpartScene(self, scene, emptyObj, emptyObj.seut.linkedScene)
 
     bpy.context.scene.collection.children.unlink(collection)
     self.report({'INFO'}, "SEUT: '%s.fbx' has been created." % (path + filename))
@@ -360,8 +353,10 @@ def prepMatForExport(self, context, material):
         material.seut.nodeLinkedToOutputName = ""
     # This allows the reestablishment of connections after the export is complete.
     else:
-        if materialOutput.inputs[0].links[0].from_node.name is not None:
+        try:
             material.seut.nodeLinkedToOutputName = materialOutput.inputs[0].links[0].from_node.name
+        except IndexError:
+            print("SEUT Info: IndexError at material '" + material.name + "'.")
 
     # link nodes, add image to node
     material.node_tree.links.new(dummyImageNode.outputs[0], dummyShaderNode.inputs[0])
@@ -392,25 +387,12 @@ def removeExportDummiesFromMat(self, context, material):
     
     # link the node group back to output
     if nodeLinkedToOutput is not None:
-        material.node_tree.links.new(nodeLinkedToOutput.outputs[0], materialOutput.inputs[0])
+        try:
+            material.node_tree.links.new(nodeLinkedToOutput.outputs[0], materialOutput.inputs[0])
+        except IndexError:
+            print("SEUT Info: IndexError at material '" + material.name + "'.")
 
     return
-
-
-def isCollectionExcluded(collectionName, allCurrentViewLayerCollections):
-        for topLevelCollection in allCurrentViewLayerCollections:
-            if topLevelCollection.name == collectionName:
-                if topLevelCollection.exclude:
-                    return True
-                else:
-                    return False
-            if collectionName in topLevelCollection.children.keys():
-                for collection in topLevelCollection.children:
-                    if collection.name == collectionName:
-                        if collection.exclude:
-                            return True
-                        else:
-                            return False
 
 
 # STOLLIE: Standard output error operator class for catching error return codes.
@@ -543,12 +525,14 @@ class ExportSettings:
 # HARAG: MATRIX_SCALE_DOWN = Matrix.Scale(0.2, 4) * MATRIX_NORMAL
 def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavokfbxfile = False, kwargs = None):	
     kwargs = {	
+        'version': 'BIN7400',
+        'ui_tab': 'SKIP_SAVE',
         'global_matrix': Matrix(),
         'apply_unit_scale': True,
         'global_scale': 0.1, # STOLLIE: Is 1.0 in Blender Source
         'apply_scale_options': 'FBX_SCALE_NONE',
         'axis_up': 'Y',	 # STOLLIE: Normally a Z in Blender source.	Y aligns correctly in SE.
-        'axis_forward': '-Z', # STOLLIE: Normally a Y in Blender source. -Z is correct forward.
+        'axis_forward': 'Z', # STOLLIE: Normally a Y in Blender source. -Z is correct forward.
         'context_objects': objects, #STOLLIE: Is None in Blender Source.
         'object_types': {'MESH', 'EMPTY'}, # STOLLIE: Is None in Blender source.
         'use_mesh_modifiers': True,
@@ -590,13 +574,16 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         if isinstance(kwargs, bpy.types.PropertyGroup):	
             kwargs = {prop : getattr(kwargs, prop) for prop in kwargs.rna_type.properties.keys()}	
         kwargs.update(**kwargs)	
+
+    if ishavokfbxfile:
+        kwargs['bake_space_transform'] = True        
     
+    if scene.seut.sceneType == 'subpart':
+        kwargs['axis_forward'] = '-Z'
+
     global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
     scale = kwargs['global_scale']
 
-    if ishavokfbxfile:
-        kwargs['bake_space_transform'] = True
-    
     if abs(1.0-scale) >= 0.000001:
         global_matrix = Matrix.Scale(scale, 4) @ global_matrix
 

@@ -61,6 +61,13 @@ class SEUT_OT_Import(Operator):
 
         # Convert empties to display type 'cube'
         bpy.ops.object.emptytocubetype()
+
+        # Sync highlight and subpart targets, if available
+        for obj in importedObjects:
+            if obj.type == 'EMPTY' and 'file' in obj and obj['file'] in bpy.data.scenes:
+                obj.seut.linkedScene = bpy.data.scenes[obj['file']]
+            if obj.type == 'EMPTY' and 'highlight' in obj and obj['highlight'] in bpy.data.objects:
+                obj.seut.linkedObject = bpy.data.objects[obj['highlight']]
         
         # Then run material remap
         bpy.ops.object.remapmaterials()

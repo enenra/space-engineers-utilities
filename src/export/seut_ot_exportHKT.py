@@ -7,9 +7,10 @@ from bpy.types      import Operator
 
 from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
-from .seut_export_utils             import ExportSettings, export_to_fbxfile, isCollectionExcluded
+from .seut_export_utils             import ExportSettings, export_to_fbxfile
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection
+from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded
+
 
 class SEUT_OT_ExportHKT(Operator):
     """Exports the HKT"""
@@ -19,7 +20,7 @@ class SEUT_OT_ExportHKT(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(context.scene)
         return collections['hkt'] is not None
 
 
@@ -44,7 +45,7 @@ class SEUT_OT_ExportHKT(Operator):
 
         scene = context.scene
         depsgraph = None
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
         settings = ExportSettings(scene, depsgraph)
@@ -54,7 +55,6 @@ class SEUT_OT_ExportHKT(Operator):
 
         if preferences.fbxImporterPath == "" or os.path.exists(fbxImporterPath) == False:
             if partial:
-                self.report({'WARNING'}, "SEUT: Path to Custom FBX Importer '%s' not valid. (012)" % (fbxImporterPath))
                 print("SEUT Warning: Path to Custom FBX Importer '" + fbxImporterPath + "' not valid. (012)")
                 return {'FINISHED'}
             else:
@@ -64,7 +64,6 @@ class SEUT_OT_ExportHKT(Operator):
 
         if preferences.havokPath == "" or os.path.exists(havokPath) == False:
             if partial:
-                self.report({'ERROR'}, "SEUT: Path to Havok Standalone Filter Tool '%s' not valid. (013)" % (havokPath))
                 print("SEUT Error: Path to Havok Standalone Filter Tool '" + havokPath + "' not valid. (013)")
                 return {'FINISHED'}
             else:
@@ -81,17 +80,10 @@ class SEUT_OT_ExportHKT(Operator):
             context.view_layer.objects.active = obj
             bpy.ops.rigidbody.object_add(type='ACTIVE')
 
-        # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
-        if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
-            self.report({'ERROR'}, "SEUT: BLEND file must be saved before HKT can be exported to its directory. (008)")
-            print("SEUT Error: BLEND file must be saved before HKT can be exported to its directory. (008)")
-            return {'CANCELLED'}
-        else:
-            if preferences.looseFilesExportFolder == '0':
-                path = os.path.dirname(bpy.data.filepath) + "\\"
-
-            elif preferences.looseFilesExportFolder == '1':
-                path = bpy.path.abspath(scene.seut.export_exportPath)
+        if preferences.looseFilesExportFolder == '0':
+            path = os.path.dirname(bpy.data.filepath) + "\\"
+        elif preferences.looseFilesExportFolder == '1':
+            path = bpy.path.abspath(scene.seut.export_exportPath)
 
         # FBX export via Custom FBX Importer
         fbxhktfile = join(path, scene.seut.subtypeId + ".hkt.fbx")

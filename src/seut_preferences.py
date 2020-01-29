@@ -23,7 +23,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         subtype='FILE_PATH',
     )
     havokPath: StringProperty(
-        name="Havok Standalone Filter Tool",
+        name="Havok Standalone Filter Manager",
         subtype='FILE_PATH',
     )
     mwmbPath: StringProperty(
@@ -37,11 +37,12 @@ class SEUT_AddonPreferences(AddonPreferences):
 
     def draw(self, context):
         layout = self.layout
+
         layout.prop(self, "looseFilesExportFolder")
-        layout.prop(self, "mwmbPath", expand=True)
         layout.prop(self, "materialsPath", expand=True)
         box = layout.box()
-        box.label(text="Havok")
+        box.label(text="External Tools")
+        box.prop(self, "mwmbPath", expand=True)
         box.prop(self, "fbxImporterPath", expand=True)
         box.prop(self, "havokPath", expand=True)
 

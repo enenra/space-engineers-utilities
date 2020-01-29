@@ -4,16 +4,12 @@ from bpy.types  import Operator
 from bpy.props  import (EnumProperty,
                         IntProperty)
 
+
 class SEUT_OT_AddPresetSubpart(Operator):
     """Adds a preset subpart"""
     bl_idname = "object.add_preset_subpart"
     bl_label = "Add Preset Subpart"
     bl_options = {'REGISTER', 'UNDO'}
-
-    # Greys the button out if there is no active object.
-    @classmethod
-    def poll(cls, context):
-        return len(context.selected_objects) != 0
 
     # pistons probably missing, hangar doors too
     detectorType: EnumProperty(
@@ -48,16 +44,6 @@ class SEUT_OT_AddPresetSubpart(Operator):
     )
 
     def execute(self, context):
-        
-        targetObjects = bpy.context.view_layer.objects.selected
-        
-        if len(targetObjects) > 1:
-            self.report({'ERROR'}, "SEUT: Cannot create empties for more than one object at a time. (009)")
-            return {'CANCELLED'}
-        
-        # I need to figure out how I can get the first in the list but so far idk, this works
-        for obj in targetObjects:
-            targetObject = obj
 
         # Determine name strings.
         emptyName = ""
@@ -131,22 +117,9 @@ class SEUT_OT_AddPresetSubpart(Operator):
         if self.detectorType == 'HangarDoor':
             emptyName = "subpart_HangarDoor_door"
             usesIndex = True
-        
-        # Spawn empty
-        location = bpy.data.objects[targetObject.name].location
-        rotation = bpy.data.objects[targetObject.name].rotation_euler
 
-        xD = bpy.data.objects[targetObject.name].dimensions.x
-        yD = bpy.data.objects[targetObject.name].dimensions.y
-        zD = bpy.data.objects[targetObject.name].dimensions.z
-
-        bpy.ops.object.add(type='EMPTY', location=location, rotation=rotation)
-        bpy.ops.transform.resize(value=(xD - 1, yD - 1, zD - 1))
+        bpy.ops.object.add(type='EMPTY')
         empty = bpy.context.view_layer.objects.active
-        empty.scale = targetObject.scale
-
-        empty.parent = targetObject.parent
-
         empty.empty_display_type = "CUBE"
 
         if usesIndex:
@@ -154,8 +127,8 @@ class SEUT_OT_AddPresetSubpart(Operator):
         else:
             empty.name = emptyName
 
-        bpy.data.objects[empty.name][customPropName] = targetObject.name
+        bpy.data.objects[empty.name][customPropName] = ""
         
-        self.report({'INFO'}, "SEUT: Subpart '%s' created for file: '%s'" % (empty.name,targetObject.name))
+        self.report({'INFO'}, "SEUT: Subpart '%s' created for file: '%s'" % (empty.name,""))
         
         return {'FINISHED'}

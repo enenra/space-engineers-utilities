@@ -2,6 +2,8 @@ import bpy
 
 from bpy.types import Operator
 
+from .seut_utils    import linkSubpartScene
+
 class SEUT_OT_StructureConversion(Operator):
     """Ports blend files created with the old plugin to the new structure"""
     bl_idname = "object.structure_conversion"
@@ -76,30 +78,44 @@ class SEUT_OT_StructureConversion(Operator):
                 
             # Convert custom properties of empties from harag's to the default blender method.
             for obj in scn.objects:
-                if obj.type == 'EMPTY' and 'space_engineers' in bpy.data.objects[obj.name] and bpy.data.objects[obj.name]['space_engineers'] is not None:
-                    haragProp = bpy.data.objects[obj.name]['space_engineers']
+                if obj.type == 'EMPTY':
+                    obj.empty_display_type = "CUBE"
 
-                    targetObjectName = None
-                    if haragProp.get('highlight_objects') is not None:
-                        customPropName = 'highlight'
-                        targetObjectName = haragProp.get('highlight_objects')
+                    if 'space_engineers' in bpy.data.objects[obj.name] and bpy.data.objects[obj.name]['space_engineers'] is not None:
+                        haragProp = bpy.data.objects[obj.name]['space_engineers']
 
-                    elif haragProp.get('file') is not None:
-                        customPropName = 'file'
-                        customPropValue = haragProp.get('file')
+                        targetObjectName = None
+                        if haragProp.get('highlight_objects') is not None:
+                            customPropName = 'highlight'
+                            targetObjectName = haragProp.get('highlight_objects')
 
-                        if customPropValue.find('_Large') != -1:
-                            targetObjectName = customPropValue[:customPropValue.find('_Large')]
-                        if customPropValue.find('_Small') != -1:
-                            targetObjectName = customPropValue[:customPropValue.find('_Small')]
-                        else:
-                            targetObjectName = customPropValue
+                            if targetObjectName in bpy.data.objects:
+                                obj.seut.linkedObject = bpy.data.objects[targetObjectName]
 
-                    if targetObjectName is not None:
-                        bpy.data.objects[obj.name][customPropName] = targetObjectName
-                        del bpy.data.objects[obj.name]['space_engineers']
+                        elif haragProp.get('file') is not None:
+                            customPropName = 'file'
+                            customPropValue = haragProp.get('file')
+
+                            if customPropValue.find('_Large') != -1:
+                                targetObjectName = customPropValue[:customPropValue.find('_Large')]
+                            if customPropValue.find('_Small') != -1:
+                                targetObjectName = customPropValue[:customPropValue.find('_Small')]
+                            else:
+                                targetObjectName = customPropValue
+
+                        if targetObjectName is not None:
+                            bpy.data.objects[obj.name][customPropName] = targetObjectName
+                            del bpy.data.objects[obj.name]['space_engineers']
+                            
+                            if targetObjectName in bpy.data.scenes:
+                                obj.seut.linkedScene = bpy.data.scenes[targetObjectName]
         
         bpy.context.window.scene = currentScene
+
+        for scn2 in bpy.data.scenes:
+            for emptyObj in scn2.objects:
+                if emptyObj.type == 'EMPTY' and 'file' in emptyObj and emptyObj['file'] in bpy.data.scenes:
+                    linkSubpartScene(self, scn2, emptyObj, emptyObj.seut.linkedScene)
 
         # Set parent scenes from subparts
         # Needs to happen in second loop, because first loop needs to first run through all scenes to name them
@@ -112,6 +128,7 @@ class SEUT_OT_StructureConversion(Operator):
                     for i in range(0, len(bpy.data.scenes)):
                         if bpy.data.scenes[i].seut.subtypeId == subpartScene:
                             bpy.data.scenes[i].seut.sceneType = 'subpart'
-                            bpy.data.scenes[i].seut.parent = scn
-                            
+        
+        self.report({'INFO'}, "SEUT: Structure conversion successfully completed.")
+
         return

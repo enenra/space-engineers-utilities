@@ -3,9 +3,9 @@ import os
 
 from bpy.types                      import Operator
 
-from .seut_export_utils             import isCollectionExcluded, export_XML, export_model_FBX
+from .seut_export_utils             import export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection
+from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded
 
 class SEUT_OT_ExportMain(Operator):
     """Exports the main model"""
@@ -15,7 +15,7 @@ class SEUT_OT_ExportMain(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(context.scene)
         return collections['main'] is not None
         
     def execute(self, context):
@@ -38,7 +38,7 @@ class SEUT_OT_ExportMain(Operator):
         """Exports the 'Main' collection"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
         # Checks whether collection exists, is excluded or is empty
         result = errorCollection(self, context, collections['main'], partial)

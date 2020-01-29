@@ -5,7 +5,7 @@ from bpy.props  import (EnumProperty,
                         IntProperty)
 
 class SEUT_OT_AddDummy(Operator):
-    """Add dummy to selected object"""
+    """Adds a Space Engineers dummy"""
     bl_idname = "object.add_dummy"
     bl_label = "Add Dummy"
     bl_options = {'REGISTER', 'UNDO'}

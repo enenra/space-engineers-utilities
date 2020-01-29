@@ -16,10 +16,9 @@ class SEUT_OT_RecreateCollections(Operator):
         return {'FINISHED'}
 
 
-    def get_Collections(context):
+    def get_Collections(scene):
         """Scans existing collections to find the SEUT ones"""
 
-        scene = context.scene
         tag = ' (' + scene.seut.subtypeId + ')'
 
         collections = {
@@ -70,10 +69,9 @@ class SEUT_OT_RecreateCollections(Operator):
         return collections
 
 
-    def rename_Collections(context):
+    def rename_Collections(scene):
         """Scans existing collections to find the SEUT ones and renames them if the tag has changed"""
 
-        scene = context.scene
         tag = ' (' + scene.seut.subtypeId + ')'
         tagOld = ' (' + scene.seut.subtypeBefore + ')'
 
@@ -131,7 +129,7 @@ class SEUT_OT_RecreateCollections(Operator):
         scene = context.scene
         tag = ' (' + scene.seut.subtypeId + ')'
 
-        collections = SEUT_OT_RecreateCollections.get_Collections(context)
+        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
         if collections['seut'] == None:
             collections['seut'] = bpy.data.collections.new('SEUT' + tag)
