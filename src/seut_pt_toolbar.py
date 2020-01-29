@@ -1,8 +1,10 @@
 import bpy
 
+from bpy.types  import Panel
+
 from .seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 
-class SEUT_PT_Panel(bpy.types.Panel):
+class SEUT_PT_Panel(Panel):
     """Creates the topmost panel for SEUT"""
     bl_idname = "SEUT_PT_Panel"
     bl_label = "Space Engineers Utilities"
@@ -32,7 +34,7 @@ class SEUT_PT_Panel(bpy.types.Panel):
         layout.operator('object.recreate_collections', text="Recreate Collections")
 
 
-class SEUT_PT_Panel_BoundingBox(bpy.types.Panel):
+class SEUT_PT_Panel_BoundingBox(Panel):
     """Creates the bounding box panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_BoundingBox"
     bl_label = "Bounding Box"
@@ -58,7 +60,7 @@ class SEUT_PT_Panel_BoundingBox(bpy.types.Panel):
         row = box.row()
         row.operator('object.bbox_auto', text="Automatic")
 
-class SEUT_PT_Panel_Export(bpy.types.Panel):
+class SEUT_PT_Panel_Export(Panel):
     """Creates the export panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_Export"
     bl_label = "Export"
@@ -129,7 +131,7 @@ class SEUT_PT_Panel_Export(bpy.types.Panel):
                 box.prop(scene.seut, "export_bs_lodDistance")
 
 
-class SEUT_PT_Panel_Import(bpy.types.Panel):
+class SEUT_PT_Panel_Import(Panel):
     """Creates the import panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_Import"
     bl_label = "Import"

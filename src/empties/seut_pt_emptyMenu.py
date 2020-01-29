@@ -1,6 +1,6 @@
 import bpy
 
-from bpy.types  import Operator, Panel
+from bpy.types  import Panel
 
 class SEUT_PT_EmptyLink(Panel):
     """Creates the Empty Properties menu"""

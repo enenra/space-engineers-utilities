@@ -1,7 +1,9 @@
 import bpy
 
+from bpy.types      import Panel
 
-class SEUT_PT_Panel_Materials(bpy.types.Panel):
+
+class SEUT_PT_Panel_Materials(Panel):
     """Creates the materials panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_Materials"
     bl_label = "Space Engineers Utilities"
