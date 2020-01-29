@@ -15,7 +15,7 @@ def mwmbuilder(self, context, path, mwmpath, settings: ExportSettings, mwmfile: 
                 os.remove(fileName)
 
         except EnvironmentError:
-            self.report({'ERROR'}, "SEUT: Loose files file deletion failed. (020)")
-            print("SEUT Error: File Deletion failed. (020)")
+            self.report({'ERROR'}, "SEUT: Deletion of loose files failed. (020)")
+            print("SEUT Error: Deletion of loose files failed. (020)")
         
-        self.report({'INFO'}, "SEUT: MWM file(s) have been created.")        
+        self.report({'INFO'}, "SEUT: MWM file(s) for SubtypeId '%s' have been created." % (context.scene.seut.subtypeId))
