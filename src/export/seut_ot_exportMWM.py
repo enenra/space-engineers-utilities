@@ -62,9 +62,9 @@ class SEUT_OT_ExportMWM(Operator):
         mwmpath = bpy.path.abspath(scene.seut.export_exportPath)
         mwmfile = join(mwmpath, scene.seut.subtypeId + ".mwm")
         materialspath = bpy.path.abspath(preferences.materialsPath)
-
+        
         try:
-            mwmbuilder(self, context, path, settings, mwmfile, materialspath)
+            mwmbuilder(self, context, path, mwmpath, settings, mwmfile, materialspath)
         finally:
             if scene.seut.export_deleteLooseFiles:
                 delete_loose_files(path)

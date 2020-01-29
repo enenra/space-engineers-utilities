@@ -31,5 +31,21 @@ def process_fbximporterhkt_to_final_hkt_for_mwm(self, scene, path, settings: Exp
             logfile=dstfile+'.filter.log',	
             successfulExitCodes=[0,1])	
     finally:	
-        os.remove(hko.name)	
+        os.remove(hko.name)
+
+        def copy(srcfile: str, dstfile: str):
+            if srcfile is not None and dstfile != srcfile:
+                shutil.copy2(srcfile, dstfile)
+
+        # Create a copy of the main models HKT file for all the build stages to go through MWMB with their models.
+        # This could be modified at a later date if unique collisions are implemented per build stage to not process based on their existence.
+        if os.path.exists(srcfile):
+            for collection in scene.collection.children:
+                for childcollection in collection.children:
+                    if "BS" in str(childcollection.name) and "LOD" not in str(childcollection.name) and len(childcollection.objects) > 0:
+                        print(childcollection.name)
+                        hktBSfile = join(path, scene.seut.subtypeId + '_' + str(childcollection.name)[:3] + ".hkt")
+                        copy(srcfile, hktBSfile)
+                        
+        
         self.report({'INFO'}, "SEUT: Collision files have been created.") 
