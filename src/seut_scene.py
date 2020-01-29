@@ -24,11 +24,17 @@ def update_BBox(self, context):
 def update_subtypeId(self, context):
     scene = context.scene
 
+    # If the subtypeId already exists for a scene in the file, prevent it from being set
+    for scn in bpy.data.scenes:
+        if scn is not scene and scn.seut.subtypeId == scene.seut.subtypeId:
+            scene.seut.subtypeId = scene.seut.subtypeBefore
+            print("SEUT Error: Cannot set SubtypeId to a SubtypeId that already exists in the file for another scene. (021)")
+            return
+
     if scene.seut.subtypeId != scene.seut.subtypeBefore:
         SEUT_OT_RecreateCollections.rename_Collections(scene)
-
-    scene.name = scene.seut.subtypeId
-    scene.seut.subtypeBefore = scene.seut.subtypeId
+        scene.name = scene.seut.subtypeId
+        scene.seut.subtypeBefore = scene.seut.subtypeId
 
 def update_linkSubpartInstances(self, context):
     scene = context.scene
