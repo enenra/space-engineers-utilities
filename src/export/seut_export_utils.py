@@ -37,10 +37,7 @@ def export_XML(self, context, collection):
     paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
     paramRescaleToLengthInMeters.text = 'false'
     
-    if preferences.looseFilesExportFolder == '0':
-        path = os.path.dirname(bpy.data.filepath) + "\\"
-    elif preferences.looseFilesExportFolder == '1':
-        path = bpy.path.abspath(scene.seut.export_exportPath)
+    path = bpy.path.abspath(scene.seut.export_exportPath)
 
     # Currently no support for the other material parameters - are those even needed anymore?
 
@@ -272,10 +269,7 @@ def export_model_FBX(self, context, collection):
     else:
         filename = scene.seut.subtypeId + '_' + fileType
 
-    if preferences.looseFilesExportFolder == '0':
-        path = os.path.dirname(bpy.data.filepath) + "\\"
-    elif preferences.looseFilesExportFolder == '1':
-        path = bpy.path.abspath(scene.seut.export_exportPath)
+    path = bpy.path.abspath(scene.seut.export_exportPath)
     
     # Exporting the collection.
     # I can only export the currently active collection, so I need to set the target collection to active (for which I have to link it for some reason),
@@ -473,8 +467,6 @@ class ExportSettings:
         self._havokfilter = None
         self._mwmbuilder = None
 
-        if scene.seut.export_deleteLooseFiles:
-            self.isLogToolOutput = False
         
     @property
     def fbximporter(self):

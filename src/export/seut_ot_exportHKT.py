@@ -80,10 +80,7 @@ class SEUT_OT_ExportHKT(Operator):
             context.view_layer.objects.active = obj
             bpy.ops.rigidbody.object_add(type='ACTIVE')
 
-        if preferences.looseFilesExportFolder == '0':
-            path = os.path.dirname(bpy.data.filepath) + "\\"
-        elif preferences.looseFilesExportFolder == '1':
-            path = bpy.path.abspath(scene.seut.export_exportPath)
+        path = bpy.path.abspath(scene.seut.export_exportPath)
 
         # Re-scale collision objects via rescale factor before export.
         for obj in collections['hkt'].objects:

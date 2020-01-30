@@ -14,7 +14,7 @@ def errorExportGeneral(self, context):
     exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
 
     # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
-    if not bpy.data.is_saved and preferences.looseFilesExportFolder == '0':
+    if not bpy.data.is_saved:
         self.report({'ERROR'}, "SEUT: BLEND file must be saved before export. (008)")
         print("SEUT Error: BLEND file must be saved before export. (008)")
         return 'CANCELLED'

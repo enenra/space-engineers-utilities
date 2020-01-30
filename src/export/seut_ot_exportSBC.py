@@ -100,10 +100,7 @@ class SEUT_OT_ExportSBC(Operator):
         def_ModelOffset.set('z', '0')
 
         # Setting up the link to the MWM file.
-        if preferences.looseFilesExportFolder == '0':
-            path = os.path.dirname(bpy.data.filepath) + "\\"
-        elif preferences.looseFilesExportFolder == '1':
-            path = bpy.path.abspath(scene.seut.export_exportPath)
+        path = bpy.path.abspath(scene.seut.export_exportPath)
         
         offset = path.find("Models\\")
 
