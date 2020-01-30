@@ -40,6 +40,7 @@ SEUT\convert_textures.bat
 ```
 SEUT\Materials\
 SEUT\Textures\
+SEUT\tools\
 SEUT\convert_textures.bat
 ```
 10. In Blender, use File --> Link and navigate to the MatLib_*.blend files within the `SEUT\Materials\`-folder. Select `MatLib_Materials.blend` and link all its contained materials. Do the same for `MatLib_Armors.blend` and `MatLib_Items.blend`. You likely won't usually need the remaining ones.
