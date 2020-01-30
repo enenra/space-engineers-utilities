@@ -15,7 +15,7 @@ bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie, Kamikaze",
-    "version": (0, 7, 0),
+    "version": (0, 6, 6),
     "blender": (2, 81, 0),
     "location": "View3D > Tools ",
     "warning": "",
@@ -116,9 +116,11 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
-    bpy.types.Material.seut = bpy.props.PointerProperty(type=SEUT_Materials)
-    bpy.types.Scene.seut = bpy.props.PointerProperty(type=SEUT_Scene)
-    bpy.types.Object.seut = bpy.props.PointerProperty(type=SEUT_Object)
+
+    bpy.types.Material.seut = PointerProperty(type=SEUT_Materials)
+    bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
+    bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
+
     bpy.app.handlers.load_post.append(load_handler)
 
 
@@ -127,8 +129,11 @@ def unregister():
         bpy.utils.unregister_class(cls)
         
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
+
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
+    del bpy.types.Object.seut
+
     bpy.app.handlers.load_post.remove(load_handler)
 
 
