@@ -25,22 +25,26 @@ A Blender 2.8+ addon.
 ## Installation
 1. Download the latest release of the addon from the releases section, enable it in Blender.
 2. Download the supplementary ZIP (SEUT.zip) containing additional required files.
-3. Ensure you have downloaded the Space Engineers Mod SDK.
-4. Unpack the supplementary ZIP file onto a drive with ~15GB available disk space.
+3. Ensure you have downloaded the Space Engineers Mod SDK. (Library --> Enable tool display --> Space Engineers Mod SDK in your available games list)
+4. Unpack the supplementary ZIP file onto a drive with ~15GB available disk space. (for the unpacked textures)
 5. Within the resulting directory you should have the following structure:
 ```
 SEUT\Materials\
 SEUT\convert_textures.bat
 ```
-5. Run the BAT file. Point it at the correct folder for your SE installation and SE Mod SDK's `texconv.exe`
-6. Once the textures are unpacked, you should have the following structure:
+5. Download [Eikester's MWM Builder](https://forum.keenswh.com/threads/mwmbuilder-fixes.7391806/) and place it into `SEUT\tools\MWMB\`.
+6. Download Harag's [Custom FBX Importer](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1) and place it into `SEUT\tools\`.
+7. Download the Havok Content Tools ([64bit](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i)/[32bit](https://drive.google.com/open?id=1DL3-evI3LSIstVTjYvjw01rtpI3iAhDh)) and install them to `SEUT\tools\Havok\`.
+8. Run the BAT file. Point it at the correct folder for your SE installation and SE Mod SDK's `texconv.exe`
+9. Once the textures are unpacked, you should have the following structure:
 ```
 SEUT\Materials\
 SEUT\Textures\
 SEUT\convert_textures.bat
 ```
-7. In Blender, use File --> Link and navigate to the MatLib_*.blend files within the `SEUT\Materials\`-folder. Select `MatLib_Materials.blend` and link all its contained materials. Do the same for `MatLib_Armors.blend` and `MatLib_Items.blend`. You likely won't usually need the remaining ones.
-8. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
+10. In Blender, use File --> Link and navigate to the MatLib_*.blend files within the `SEUT\Materials\`-folder. Select `MatLib_Materials.blend` and link all its contained materials. Do the same for `MatLib_Armors.blend` and `MatLib_Items.blend`. You likely won't usually need the remaining ones.
+11. Go to Edit --> Preferences --> Add-ons --> Scene: Space Engineers Utilities and set the paths to the respective folders and files within `SEUT\`.
+12. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
 
 ## Support
 Please consider supporting the development of this addon by becoming one of Stollie's patreons! Without him, the development of the addon would never have gotten this far.
