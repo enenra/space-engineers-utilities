@@ -280,7 +280,7 @@ def export_model_FBX(self, context, collection):
     
     # Unlink all subparts parented to an empty
     for emptyObj in collection.objects:
-        if 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
+        if 'file' in emptyObj and emptyObj.seut.linkedScene is not None and emptyObj.seut.linkedScene is not None:
             unlinkSubpartScene(emptyObj)
 
     for objMat in bpy.data.materials:
