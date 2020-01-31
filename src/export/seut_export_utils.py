@@ -280,8 +280,17 @@ def export_model_FBX(self, context, collection):
     
     # Unlink all subparts parented to an empty
     for emptyObj in collection.objects:
-        if 'file' in emptyObj and emptyObj.seut.linkedScene is not None and emptyObj.seut.linkedScene is not None:
-            unlinkSubpartScene(emptyObj)
+        if emptyObj is not None and emptyObj.type == 'EMPTY':
+            if emptyObj.parent is None:
+                print("SEUT Warning: Empty '" + emptyObj.name + "' has no parent object. This may prevent it from working properly ingame.")
+            elif emptyObj.parent.parent is not None:
+                print("SEUT Warning: Parent of empty '" + emptyObj.name + "' ('" + emptyObj.parent.name + "') has a parent object. This may prevent the empty from working properly ingame.")
+
+            if 'highlight' in emptyObj and emptyObj.seut.linkedObject is not None:
+                if emptyObj.parent is not None and emptyObj.seut.linkedObject.parent is not None and emptyObj.parent != emptyObj.seut.linkedObject.parent:
+                    print("SEUT Warning: Highlight empty '" + emptyObj.name + "' and its linked object '" + emptyObj.seut.linkedObject.name + "' have different parent objects. This may prevent it from working properly ingame.")
+            if 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
+                unlinkSubpartScene(emptyObj)
 
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
