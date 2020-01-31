@@ -41,7 +41,7 @@ class SEUT_OT_ExportMain(Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
         # Checks whether collection exists, is excluded or is empty
-        result = errorCollection(self, context, collections['main'], partial)
+        result = errorCollection(self, context, collections['main'], False)
         if not result == 'CONTINUE':
             return {result}
 
