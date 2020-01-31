@@ -4,6 +4,10 @@ from bpy.types  import Operator
 from bpy.props  import (EnumProperty,
                         IntProperty)
 
+
+from ..seut_utils   import getParentCollection
+
+
 class SEUT_OT_AddHighlightEmpty(Operator):
     """Add highlight empty to selected object"""
     bl_idname = "object.add_highlight_empty"
@@ -108,7 +112,12 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         bpy.ops.object.add(type='EMPTY', location=location, rotation=rotation)
         bpy.ops.transform.resize(value=(xD - 1, yD - 1, zD - 1))
         empty = bpy.context.view_layer.objects.active
-        empty.parent = targetObject.parent
+
+        # Place empty in same place as targetObject
+        parentCollection = getParentCollection(context, targetObject)
+        if parentCollection is not None:
+            empty.parent = targetObject.parent
+            parentCollection.objects.link(empty)
 
         empty.empty_display_type = "CUBE"
 

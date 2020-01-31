@@ -73,3 +73,16 @@ def unlinkSubpartScene(empty):
         bpy.data.objects.remove(obj, do_unlink=True)
 
     return 'CONTINUE'
+
+def getParentCollection(context, childObject):
+    scene = context.scene
+
+    collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+    
+    for key, value in collections.items():
+        if value is not None:
+            for obj in value.objects:
+                if obj is not None and obj == childObject:
+                    return value
+    
+    return None
