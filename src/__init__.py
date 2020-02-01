@@ -35,6 +35,7 @@ from bpy.props import (StringProperty,
                        FloatVectorProperty,
                        EnumProperty,
                        PointerProperty,
+                       CollectionProperty,
                        )
 from bpy.types import (Panel,
                        Operator,
@@ -59,7 +60,11 @@ from .export.seut_ot_export                 import SEUT_OT_Export
 from .materials.seut_materials              import SEUT_Materials
 from .materials.seut_pt_matToolbar          import SEUT_PT_Panel_Materials
 from .materials.seut_ot_remapMaterials      import SEUT_OT_RemapMaterials
+from .materials.seut_ot_refreshMatLibs      import SEUT_OT_RefreshMatLibs
 from .materials.seut_ot_matCreate           import SEUT_OT_MatCreate
+from .materials.seut_pt_matLibPanel         import SEUT_PT_Panel_MatLib
+from .materials.seut_matLib                 import SEUT_MatLibProps
+from .materials.seut_matLib                 import SEUT_UL_MatLib
 
 from .seut_preferences              import SEUT_AddonPreferences
 from .seut_pt_toolbar               import SEUT_PT_Panel
@@ -83,6 +88,7 @@ classes = (
     SEUT_PT_Panel_Export,
     SEUT_PT_Panel_Import,
     SEUT_PT_Panel_Materials,
+    SEUT_PT_Panel_MatLib,
     SEUT_PT_EmptyLink,
     SEUT_MT_ContextMenu,
     SEUT_OT_AddHighlightEmpty,
@@ -105,9 +111,12 @@ classes = (
     SEUT_OT_BBoxAuto,
     SEUT_OT_RecreateCollections,
     SEUT_OT_MatCreate,
+    SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
     SEUT_Scene,
     SEUT_Object,
+    SEUT_MatLibProps,
+    SEUT_UL_MatLib,
 )
 
 
@@ -121,6 +130,9 @@ def register():
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
 
+    bpy.types.WindowManager.matlibs = CollectionProperty(type=SEUT_MatLibProps)
+    bpy.types.WindowManager.matlib_index = IntProperty(name="Enable or Disable MatLibs in the Materials folder", default=0)
+
     bpy.app.handlers.load_post.append(load_handler)
 
 
@@ -133,6 +145,9 @@ def unregister():
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
     del bpy.types.Object.seut
+
+    del bpy.types.WindowManager.matlibs
+    del bpy.types.WindowManager.matlib_index
 
     bpy.app.handlers.load_post.remove(load_handler)
 
@@ -154,6 +169,7 @@ def menu_draw(self, context):
 @persistent
 def load_handler(dummy):
     bpy.ops.object.gridscale()
+    bpy.ops.scene.refresh_matlibs()
 
 
 addon_keymaps = []
