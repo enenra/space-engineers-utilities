@@ -127,6 +127,10 @@ class SEUT_OT_RecreateCollections(Operator):
         """Recreates the collections SEUT requires"""
 
         scene = context.scene
+
+        if scene.seut.subtypeId == "":
+            scene.seut.subtypeId = scene.name
+            
         tag = ' (' + scene.seut.subtypeId + ')'
 
         collections = SEUT_OT_RecreateCollections.get_Collections(scene)

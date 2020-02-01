@@ -46,6 +46,10 @@ class SEUT_OT_ExportSBC(Operator):
         if not scene.seut.export_sbc:
             print("SEUT Info: 'SBC' is toggled off. SBC export skipped.")
             return {'FINISHED'}
+        
+        if context.scene.seut.sceneType == 'subpart':
+            print("SEUT Info: Scene '" + scene.name + "' is of type 'Subpart'. SBC export skipped.")
+            return {'FINISHED'}
 
         if collections['bs1'] is not None and collections['bs2'] is not None:
             if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):

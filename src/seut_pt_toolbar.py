@@ -23,7 +23,10 @@ class SEUT_PT_Panel(Panel):
         box.prop(scene.seut,'linkSubpartInstances')
         
         box = layout.box()
-        box.label(text="SubtypeId")
+        if scene.seut.sceneType == 'mainScene':
+            box.label(text="SubtypeId (File Name)")
+        elif scene.seut.sceneType == 'subpart':
+            box.label(text="File Name")
         box.prop(scene.seut, "subtypeId", text="", expand=True)
 
         box = layout.box()

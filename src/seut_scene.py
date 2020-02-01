@@ -66,6 +66,14 @@ class SEUT_Scene(PropertyGroup):
         default=True,
         update=update_linkSubpartInstances
     )
+    subtypeId: StringProperty(
+        name="SubtypeId",
+        description="The SubtypeId for this model",
+        update=update_subtypeId
+    )
+    subtypeBefore: StringProperty(
+        name="Previous SubtypeId"
+    )
 
     # Grid Scale
     gridScale: EnumProperty(
@@ -108,15 +116,6 @@ class SEUT_Scene(PropertyGroup):
     )
 
     # Export
-    subtypeId: StringProperty(
-        name="SubtypeId",
-        description="The SubtypeId for this model",
-        default="Scene",
-        update=update_subtypeId
-    )
-    subtypeBefore: StringProperty(
-        default="Scene"
-    )
     export_deleteLooseFiles: BoolProperty(
         name="Delete Loose Files",
         description="Whether the intermediary files should be deleted after the MWM has been created",
