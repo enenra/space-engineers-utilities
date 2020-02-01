@@ -44,3 +44,24 @@ class SEUT_PT_Panel_Materials(Panel):
         box.label(text="Create new SEUT Material")
         box.prop(scene.seut, 'matPreset', text="Preset")
         box.operator('object.mat_create')
+
+class SEUT_PT_Panel_MatLib(Panel):
+    """Creates the MatLib linking panel for SEUT"""
+    bl_idname = "SEUT_PT_Panel_MatLib"
+    bl_label = "Material Libraries"
+    bl_category = "SEUT"
+    bl_space_type = "NODE_EDITOR"
+    bl_region_type = "UI"
+
+    def draw(self, context):
+        layout = self.layout
+        wm = context.window_manager
+        scene = context.scene
+        
+        rows = 2
+        row = layout.row()
+        row.template_list('SEUT_UL_MatLib', "", wm , 'matlibs', wm , 'matlib_index', rows=rows)
+        layout.operator('scene.refresh_matlibs', icon='FILE_REFRESH')
+        
+        layout.separator()
+        layout.operator('scene.export_materials')

@@ -57,12 +57,13 @@ from .export.seut_ot_exportHKT              import SEUT_OT_ExportHKT
 from .export.seut_ot_exportSBC              import SEUT_OT_ExportSBC
 from .export.seut_ot_exportMWM              import SEUT_OT_ExportMWM
 from .export.seut_ot_export                 import SEUT_OT_Export
+from .export.seut_ot_exportMaterials        import SEUT_OT_ExportMaterials
 from .materials.seut_materials              import SEUT_Materials
 from .materials.seut_pt_matToolbar          import SEUT_PT_Panel_Materials
+from .materials.seut_pt_matToolbar          import SEUT_PT_Panel_MatLib
 from .materials.seut_ot_remapMaterials      import SEUT_OT_RemapMaterials
 from .materials.seut_ot_refreshMatLibs      import SEUT_OT_RefreshMatLibs
 from .materials.seut_ot_matCreate           import SEUT_OT_MatCreate
-from .materials.seut_pt_matLibPanel         import SEUT_PT_Panel_MatLib
 from .materials.seut_matLib                 import SEUT_MatLibProps
 from .materials.seut_matLib                 import SEUT_UL_MatLib
 
@@ -90,6 +91,7 @@ classes = (
     SEUT_PT_Panel_Materials,
     SEUT_PT_Panel_MatLib,
     SEUT_PT_EmptyLink,
+    SEUT_OT_ExportMaterials,
     SEUT_MT_ContextMenu,
     SEUT_OT_AddHighlightEmpty,
     SEUT_OT_AddDummy,
