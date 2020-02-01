@@ -56,13 +56,13 @@ def errorCollection(self, context, collection, partial):
             
     isExcluded = isCollectionExcluded(collection.name, allCurrentViewLayerCollections)
 
-    if isExcluded is True:
+    if isExcluded or isExcluded is None:
         if partial:
-            print("SEUT Warning: Collection '" + collection.name + "' excluded from view layer. Action not possible. Re-enable in hierarchy. (019)")
+            print("SEUT Warning: Collection '" + collection.name + "' excluded from view layer or cannot be found. Action not possible. (019)")
             return 'FINISHED'
         else:
-            self.report({'ERROR'}, "SEUT: Collection '%s' excluded from view layer. Action not possible. Re-enable in hierarchy. (019)" % (collection.name))
-            print("SEUT Error: Collection '" + collection.name + "' excluded from view layer. Action not possible. Re-enable in hierarchy. (019)")
+            self.report({'ERROR'}, "SEUT: Collection '%s' excluded from view layer or cannot be found. Action not possible. (019)" % (collection.name))
+            print("SEUT Error: Collection '" + collection.name + "' excluded from view layer or cannot be found. Action not possible. (019)")
             return 'CANCELLED'
 
     if len(collection.objects) == 0:
