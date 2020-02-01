@@ -8,7 +8,7 @@ from bpy.types  import Operator
 class SEUT_OT_ExportMaterials(Operator):
     """Export local materials to Materials.xml file"""
     bl_idname = "scene.export_materials"
-    bl_label = "Export Materials to XML"
+    bl_label = "Export Materials to Library"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
