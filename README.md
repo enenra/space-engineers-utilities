@@ -21,6 +21,9 @@ A Blender 2.8+ addon.
 * Empty target objects can be set in dedicated panel
 * Subpart scenes within the same file can be instanced into their parent scenes
 * Full multi-scene support
+* Export material library to XML
+* Link MatLibs directly from the UI
+* Warning when empties are set up in a way that won't work ingame
 
 ## Installation
 1. Download the latest release of the addon from the releases section, enable it in Blender.
@@ -44,6 +47,6 @@ SEUT\Textures\
 SEUT\Tools\
 SEUT\convert_textures.bat
 ```
-10. In Blender, use File --> Link and navigate to the MatLib_*.blend files within the `SEUT\Materials\`-folder. Select `MatLib_Materials.blend` and link all its contained materials. Do the same for `MatLib_Armors.blend` and `MatLib_Items.blend`. You likely won't usually need the remaining ones.
-11. Go to Edit --> Preferences --> Add-ons --> Scene: Space Engineers Utilities and set the paths to the respective folders and files within `SEUT\`.
-12. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
+10. Go to Edit --> Preferences --> Add-ons --> Scene: Space Engineers Utilities and set the paths to the respective folders and files within `SEUT\`.
+11. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
+12. In the `N`-toolbar within the Node Editor / Shader Editor, enable `MatLib_Presets.blend`. Also enable any of the other `MatLib_*`-files to link their materials into the current file.

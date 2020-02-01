@@ -25,8 +25,8 @@ class SEUT_OT_RefreshMatLibs(Operator):
         materialsPath = os.path.normpath(bpy.path.abspath(preferences.materialsPath))
 
         if preferences.materialsPath == "" or os.path.exists(materialsPath) == False:
-            self.report({'ERROR'}, "SEUT: Path to Materials Folder '%s' not valid. (017)" % (materialsPath))
-            print("SEUT Info: Path to Materials Folder '" + materialsPath + "' not valid. (017)")
+            self.report({'ERROR'}, "SEUT: Path to Materials Folder not valid. (017)")
+            print("SEUT Info: Path to Materials Folder not valid. (017)")
             return {'CANCELLED'}
 
         # Find all MatLibs in directory, save to set, then add to matlibs list
