@@ -31,36 +31,43 @@ def linkSubpartScene(self, scene, empty, subpartScene):
     objectsToIterate = set(subpartCollections['main'].objects)
 
     for obj in objectsToIterate:
+
+        # The following is done only on a first-level subpart as
+        # further-nested subparts already have empties as parents.
+        if obj.parent is None or obj.parent.type != 'EMPTY':
+
+            existingObjects = set(subpartCollections['main'].objects)
+            
+            # Create instance of object
+            context.window.view_layer.objects.active = obj
+            obj.select_set(state=True, view_layer=context.window.view_layer)
+
+            # Without overriding, it runs in the main scene
+            override = {'scene': subpartScene}
+            bpy.ops.object.duplicate(override, linked=True)
         
-        existingObjects = set(subpartCollections['main'].objects)
+            newObjects = set(subpartCollections['main'].objects)
+            createdObjects = newObjects.copy()
+
+            for obj1 in newObjects:
+                for obj2 in existingObjects:
+                    if obj1 == obj2:
+                        createdObjects.remove(obj1)
+            
+            # Rename instance
+            linkedObject = None
+            for createdObj in createdObjects:
+                createdObj.name = obj.name + " (L)"
+                linkedObject = createdObj
+
+            # Link instance to empty
+            parentCollections['main'].objects.link(linkedObject)
+            subpartCollections['main'].objects.unlink(linkedObject)
+            linkedObject.parent = empty
+
+            if linkedObject.type == 'EMPTY':
+                linkSubpartScene(self, currentScene, linkedObject, linkedObject.seut.linkedScene)
         
-        # Create instance of object
-        context.window.view_layer.objects.active = obj
-        obj.select_set(state=True, view_layer=context.window.view_layer)
-
-        # Without overriding, it runs in the main scene
-        override = {'scene': subpartScene}
-        bpy.ops.object.duplicate(override, linked=True)
-    
-        newObjects = set(subpartCollections['main'].objects)
-        createdObjects = newObjects.copy()
-
-        for obj1 in newObjects:
-            for obj2 in existingObjects:
-                if obj1 == obj2:
-                    createdObjects.remove(obj1)
-        
-        # Rename instance
-        linkedObject = None
-        for createdObj in createdObjects:
-            createdObj.name = obj.name + " (L)"
-            linkedObject = createdObj
-
-        # Link instance to empty
-        parentCollections['main'].objects.link(linkedObject)
-        subpartCollections['main'].objects.unlink(linkedObject)
-        linkedObject.parent = empty
-
     # Switch back to previous scene
     context.window.scene = currentScene
     
