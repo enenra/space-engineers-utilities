@@ -50,3 +50,13 @@ SEUT\convert_textures.bat
 10. Go to Edit --> Preferences --> Add-ons --> Scene: Space Engineers Utilities and set the paths to the respective folders and files within `SEUT\`.
 11. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
 12. In the `N`-toolbar within the Node Editor / Shader Editor, enable `MatLib_Presets.blend`. Also enable any of the other `MatLib_*`-files to link their materials into the current file.
+
+## Support	
+Please consider supporting the development of this addon by becoming one of Stollie's patreons! Without him, the development of the addon would never have gotten this far.	
+
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Patreon_logo_with_wordmark.svg/512px-Patreon_logo_with_wordmark.svg.png)](https://www.patreon.com/Stollie)	
+
+## Credits	
+* **Stollie** - So much general help but also writing everything havok-related, which I wouldn't have been able to do at all.	
+* **Harag** - Writing the original Blender SE plugin. A lot of code in this addon is based on his.	
+* **Kamikaze (Blender Discord)** - Writing the `remapMaterials()`-function and generally helping out constantly by answering a lot of questions.
