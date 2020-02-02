@@ -73,13 +73,24 @@ def linkSubpartScene(self, scene, empty, subpartScene):
     
     return 'CONTINUE'
 
+
 def unlinkSubpartScene(empty):
     """Unlinks all subpart instances from an empty"""
 
     for obj in empty.children:
-        bpy.data.objects.remove(obj, do_unlink=True)
+        unlinkObjectsInHierarchy(obj)
 
     return 'CONTINUE'
+
+
+def unlinkObjectsInHierarchy(obj):
+    """Unlinks all objects in hierarchy of an object"""
+
+    for child in obj.children:
+        unlinkObjectsInHierarchy(child)
+        
+    bpy.data.objects.remove(obj, do_unlink=True)
+
 
 def getParentCollection(context, childObject):
     scene = context.scene
