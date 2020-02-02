@@ -5,7 +5,7 @@ from bpy.types                      import Operator
 
 from .seut_export_utils             import export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded
+from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded, errorToolPath
 
 class SEUT_OT_ExportMain(Operator):
     """Exports the main model"""
@@ -39,11 +39,18 @@ class SEUT_OT_ExportMain(Operator):
 
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+        addon = __package__[:__package__.find(".")]
+        preferences = bpy.context.preferences.addons.get(addon).preferences
+        fbxImporterPath = os.path.normpath(bpy.path.abspath(preferences.fbxImporterPath))
 
         # Checks whether collection exists, is excluded or is empty
         result = errorCollection(self, context, collections['main'], False)
         if not result == 'CONTINUE':
             return {result}
+
+        result = errorToolPath(self, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
+        if not result == {'CONTINUE'}:
+            return result
 
         # Export XML if boolean is set.
         if scene.seut.export_xml:

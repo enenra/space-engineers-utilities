@@ -76,6 +76,22 @@ def errorCollection(self, context, collection, partial):
     
     return 'CONTINUE'
 
+def errorToolPath(self, toolPath, toolName, toolFileName):
+    """Checks if external tool is correctly linked"""
+
+    if toolPath == "" or toolPath == "." or os.path.exists(toolPath) is False:
+        self.report({'ERROR'}, "SEUT: Path to %s '%s' not valid. (012)" % (toolName, toolPath))
+        print("SEUT Error: Path to " + toolName + " '" + toolPath + "' not valid. (012)")
+        return {'CANCELLED'}
+
+    fileName = os.path.basename(toolPath)
+    if toolFileName != fileName:
+        self.report({'ERROR'}, "SEUT: Path to %s not valid - wrong target file: Expected '%s' but is set to '%s'. (013)" % (toolName, toolFileName, fileName))
+        print("SEUT Error: Path to " + toolName + " not valid - wrong target file: Expected '" + toolFileName + "' but is set to '" + fileName + "'. (013)")
+        return {'CANCELLED'}
+    
+    return {'CONTINUE'}
+
 
 def isCollectionExcluded(collectionName, allCurrentViewLayerCollections):
     for topLevelCollection in allCurrentViewLayerCollections:

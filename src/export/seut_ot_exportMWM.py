@@ -7,7 +7,7 @@ from bpy.types  import Operator
 from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, delete_loose_files
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral
+from ..seut_errors                  import errorExportGeneral, errorToolPath
 
 class SEUT_OT_ExportMWM(Operator):
     """Compiles the MWM from the previously exported loose files"""
@@ -44,10 +44,9 @@ class SEUT_OT_ExportMWM(Operator):
         materialsPath = os.path.normpath(bpy.path.abspath(preferences.materialsPath))
         collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
-        if preferences.mwmbPath == "" or os.path.exists(mwmbPath) == False:
-            self.report({'ERROR'}, "SEUT: Path to MWM Builder '%s' not valid. (018)" % (mwmbPath))
-            print("SEUT Info: Path to MWM Builder '" + mwmbPath + "' not valid. (018)")
-            return {'CANCELLED'}
+        result = errorToolPath(self, mwmbPath, "MWM Builder", "MwmBuilder.exe")
+        if not result == {'CONTINUE'}:
+            return result
 
         if preferences.materialsPath == "" or os.path.exists(materialsPath) == False:
             self.report({'ERROR'}, "SEUT: Path to Materials Folder '%s' not valid. (017)" % (materialsPath))

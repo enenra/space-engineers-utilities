@@ -9,7 +9,7 @@ from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
 from .seut_export_utils             import ExportSettings, export_to_fbxfile
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded
+from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded, errorToolPath
 
 
 class SEUT_OT_ExportHKT(Operator):
@@ -53,28 +53,18 @@ class SEUT_OT_ExportHKT(Operator):
         fbxImporterPath = os.path.normpath(bpy.path.abspath(preferences.fbxImporterPath))
         havokPath = os.path.normpath(bpy.path.abspath(preferences.havokPath))
 
-        if preferences.fbxImporterPath == "" or os.path.exists(fbxImporterPath) == False:
-            if partial:
-                print("SEUT Warning: Path to Custom FBX Importer '" + fbxImporterPath + "' not valid. (012)")
-                return {'FINISHED'}
-            else:
-                self.report({'ERROR'}, "SEUT: Path to Custom FBX Importer '%s' not valid. (012)" % (fbxImporterPath))
-                print("SEUT Error: Path to Custom FBX Importer '" + fbxImporterPath + "' not valid. (012)")
-                return {'CANCELLED'}
-
-        if preferences.havokPath == "" or os.path.exists(havokPath) == False:
-            if partial:
-                print("SEUT Error: Path to Havok Standalone Filter Tool '" + havokPath + "' not valid. (013)")
-                return {'FINISHED'}
-            else:
-                self.report({'ERROR'}, "SEUT: Path to Havok Standalone Filter Tool '%s' not valid. (013)" % (havokPath))
-                print("SEUT Error: Path to Havok Standalone Filter Tool '" + havokPath + "' not valid. (013)")
-                return {'CANCELLED'}
-
         # Checks whether collection exists, is excluded or is empty
         result = errorCollection(self, context, collections['hkt'], partial)
         if not result == 'CONTINUE':
             return {result}
+
+        result = errorToolPath(self, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
+        if not result == {'CONTINUE'}:
+            return result
+
+        result = errorToolPath(self, havokPath, "Havok Standalone Filter Manager", "hctStandAloneFilterManager.exe")
+        if not result == {'CONTINUE'}:
+            return result
 
         for obj in collections['hkt'].objects:
             context.view_layer.objects.active = obj
