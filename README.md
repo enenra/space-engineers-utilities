@@ -36,7 +36,7 @@ SEUT\Materials\
 SEUT\Tools\
 SEUT\convert_textures.bat
 ```
-5. Download [Eikester's MWM Builder](https://forum.keenswh.com/threads/mwmbuilder-fixes.7391806/) and place it into `SEUT\Tools\MWMB\`.
+5. Download [Eikester's MWM Builder](https://forum.keenswh.com/threads/mwmbuilder-fixes.7391806/) and unzip it into `SEUT\Tools\MWMB\`.
 6. Download Harag's [Custom FBX Importer](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1) and place it into `SEUT\Tools\`.
 7. Download the Havok Content Tools ([64bit](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i)/[32bit](https://drive.google.com/open?id=1DL3-evI3LSIstVTjYvjw01rtpI3iAhDh)) and install them to `SEUT\Tools\Havok\`.
 8. Run the BAT file. Point it at the correct folder for your SE installation and SE Mod SDK's `texconv.exe`
