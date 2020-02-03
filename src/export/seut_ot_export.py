@@ -17,14 +17,14 @@ from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from ..seut_errors                  import errorExportGeneral
 
 class SEUT_OT_Export(Operator):
-    """Exports all scene collections and compresses them to MWM"""
-    bl_idname = "object.export"
-    bl_label = "Export"
+    """Exports all collections in the current scene and compresses them to MWM"""
+    bl_idname = "scene.export"
+    bl_label = "Export Current Scene"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
 
-        print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export'")
+        print("SEUT Info: Running operator: ------------------------------------------------------------------ 'scene.export'")
         
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.get_Collections(scene)
@@ -58,6 +58,6 @@ class SEUT_OT_Export(Operator):
         if bpy.context.object is not None:
             bpy.ops.object.mode_set(mode=currentMode)
 
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export'")
+        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'scene.export'")
 
         return {'FINISHED'}

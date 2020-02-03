@@ -80,7 +80,8 @@ class SEUT_PT_Panel_Export(Panel):
         # Export
         row = layout.row()
         row.scale_y = 2.0
-        row.operator('object.export', text="Export")
+        row.operator('scene.export_all_scenes')
+        layout.operator('scene.export')
         
         """
         # Partial

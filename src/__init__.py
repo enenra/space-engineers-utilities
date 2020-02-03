@@ -15,7 +15,7 @@ bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie, Kamikaze",
-    "version": (0, 7, 0),
+    "version": (0, 7, 1),
     "blender": (2, 81, 0),
     "location": "View3D > Tools ",
     "warning": "",
@@ -57,6 +57,7 @@ from .export.seut_ot_exportHKT              import SEUT_OT_ExportHKT
 from .export.seut_ot_exportSBC              import SEUT_OT_ExportSBC
 from .export.seut_ot_exportMWM              import SEUT_OT_ExportMWM
 from .export.seut_ot_export                 import SEUT_OT_Export
+from .export.seut_ot_exportAllScenes        import SEUT_OT_ExportAllScenes
 from .export.seut_ot_exportMaterials        import SEUT_OT_ExportMaterials
 from .materials.seut_materials              import SEUT_Materials
 from .materials.seut_pt_matToolbar          import SEUT_PT_Panel_Materials
@@ -98,6 +99,7 @@ classes = (
     SEUT_OT_AddPresetSubpart,
     SEUT_OT_AddCustomSubpart,
     SEUT_OT_Export,
+    SEUT_OT_ExportAllScenes,
     SEUT_OT_ExportMain,
     SEUT_OT_ExportBS,
     SEUT_OT_ExportLOD,
