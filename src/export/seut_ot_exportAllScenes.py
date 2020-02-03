@@ -36,7 +36,7 @@ class SEUT_OT_ExportAllScenes(Operator):
         context.window.scene = originalScene
 
         # Reset interaction mode
-        if bpy.context.object is not None:
+        if bpy.context.object is not None and currentMode is not None:
             bpy.ops.object.mode_set(mode=currentMode)
 
         return {'FINISHED'}
