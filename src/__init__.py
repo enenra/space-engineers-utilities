@@ -177,7 +177,10 @@ def menu_draw(self, context):
 @persistent
 def load_handler(dummy):
     bpy.ops.object.gridscale()
-    bpy.ops.scene.refresh_matlibs()
+    try:
+        bpy.ops.scene.refresh_matlibs()
+    except RuntimeError:
+        return
 
 
 addon_keymaps = []
