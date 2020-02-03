@@ -71,6 +71,7 @@ from .materials.seut_matLib                 import SEUT_UL_MatLib
 from .seut_preferences              import SEUT_AddonPreferences
 from .seut_pt_toolbar               import SEUT_PT_Panel
 from .seut_pt_toolbar               import SEUT_PT_Panel_BoundingBox
+from .seut_pt_toolbar               import SEUT_PT_Panel_Mirroring
 from .seut_pt_toolbar               import SEUT_PT_Panel_Export
 from .seut_pt_toolbar               import SEUT_PT_Panel_Import
 from .seut_ot_import                import SEUT_OT_Import
@@ -88,6 +89,7 @@ classes = (
     SEUT_AddonPreferences,
     SEUT_PT_Panel,
     SEUT_PT_Panel_BoundingBox,
+    SEUT_PT_Panel_Mirroring,
     SEUT_PT_Panel_Export,
     SEUT_PT_Panel_Import,
     SEUT_PT_Panel_Materials,

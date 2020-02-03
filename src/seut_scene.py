@@ -18,6 +18,9 @@ def update_GridScale(self, context):
     bpy.ops.object.gridscale()
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
+def update_Mirroring(self, context):
+    scene = context.scene
+
 def update_subtypeId(self, context):
     scene = context.scene
 
@@ -101,6 +104,17 @@ class SEUT_Scene(PropertyGroup):
         description="",
         default=1,
         min=1
+    )
+
+    # Mirroing
+    mirroringToggle: EnumProperty(
+        name='Mirroring',
+        items=(
+            ('on', 'On', ''),
+            ('off', 'Off', '')
+            ),
+        default='off',
+        update=update_Mirroring
     )
 
     # Export
