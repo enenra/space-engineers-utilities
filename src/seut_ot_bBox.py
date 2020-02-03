@@ -1,6 +1,7 @@
 import bpy
 import gpu
 
+from bgl                import *
 from gpu_extras.batch   import batch_for_shader
 from bpy.types          import Operator
 
@@ -118,8 +119,10 @@ class SEUT_OT_BBox(Operator):
         wm = context.window_manager
         
         try:
+            glEnable(GL_BLEND)
             self.shader.bind()
             self.shader.uniform_float("color", (wm.seut.bboxColor[0], wm.seut.bboxColor[1], wm.seut.bboxColor[2], wm.seut.bboxTransparency))
             self.batch.draw(self.shader)
+            glDisable(GL_BLEND)
         except:
             return
