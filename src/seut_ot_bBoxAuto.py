@@ -5,7 +5,7 @@ from bpy.types                      import Operator
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 
 class SEUT_OT_BBoxAuto(Operator):
-    """Sets the bounding box automatically"""
+    """Sets the bounding box automatically (not very accurate)"""
     bl_idname = "object.bbox_auto"
     bl_label = "Bounding Box Automatic"
     bl_options = {'REGISTER', 'UNDO'}
@@ -39,13 +39,13 @@ class SEUT_OT_BBoxAuto(Operator):
         zD = 0
 
         # this currently does not take the object's children's dimensions into account 
-        for obj in collections['main'].objects:
-            if obj.dimensions.x > xD:
-                xD = obj.dimensions.x
-            if obj.dimensions.y > yD:
-                yD = obj.dimensions.y
-            if obj.dimensions.z > zD:
-                zD = obj.dimensions.z
+        for obj in collections['main'].all_objects:
+            if obj.location.x + obj.dimensions.x > xD:
+                xD = obj.location.x + obj.dimensions.x
+            if obj.location.y + obj.dimensions.y > yD:
+                yD = obj.location.y + obj.dimensions.y
+            if obj.location.z + obj.dimensions.z > zD:
+                zD = obj.location.z + obj.dimensions.z
         
         factor = 1
 
