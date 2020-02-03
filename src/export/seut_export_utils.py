@@ -306,8 +306,9 @@ def export_model_FBX(self, context, collection):
     
     # Relink all subparts to empties
     for emptyObj in collection.objects:
-        if 'file' in emptyObj and emptyObj.seut.linkedScene is not None and emptyObj.seut.linkedScene.name in bpy.data.scenes:
-            linkSubpartScene(self, scene, emptyObj)
+        if scene.seut.linkSubpartInstances:
+            if 'file' in emptyObj and emptyObj.seut.linkedScene is not None and emptyObj.seut.linkedScene.name in bpy.data.scenes:
+                linkSubpartScene(self, scene, emptyObj)
 
     bpy.context.scene.collection.children.unlink(collection)
     self.report({'INFO'}, "SEUT: '%s.fbx' has been created." % (path + filename))
