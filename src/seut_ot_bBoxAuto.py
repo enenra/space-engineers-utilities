@@ -14,16 +14,17 @@ class SEUT_OT_BBoxAuto(Operator):
     # Button is unavailable when bounding box is turned off.
     @classmethod
     def poll(cls, context):
-        return context.scene.seut.bBoxToggle == 'on'
+        return context.window_manager.seut.bBoxToggle == 'on'
 
     
     # This is what is executed if "Automatic" is pressed.
     def execute(self, context):
 
         scene = context.scene
+        wm = context.window_manager
         collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
-        if scene.seut.bBoxToggle == 'off':
+        if wm.seut.bBoxToggle == 'off':
             self.report({'INFO'}, "SEUT: Triggered auto BBox even though BBox is turned off. This should never happen.")
             
             return {'CANCELLED'}

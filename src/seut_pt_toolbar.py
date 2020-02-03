@@ -48,9 +48,10 @@ class SEUT_PT_Panel_BoundingBox(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+        wm = context.window_manager
 
         # Toggle
-        layout.prop(scene.seut,'bBoxToggle', expand=True)
+        layout.prop(wm.seut,'bBoxToggle', expand=True)
 
         # Size
         box = layout.box()
@@ -59,6 +60,10 @@ class SEUT_PT_Panel_BoundingBox(Panel):
         row.prop(scene.seut, "bBox_X")
         row.prop(scene.seut, "bBox_Y")
         row.prop(scene.seut, "bBox_Z")
+
+        row = box.row()
+        row.prop(wm.seut, 'bboxColor', text="")
+        row.prop(wm.seut, 'bboxTransparency', text="")
         
         row = box.row()
         row.operator('object.bbox_auto', text="Automatic")

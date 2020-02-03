@@ -19,10 +19,11 @@ class SEUT_OT_BBox(Operator):
     def invoke(self, context, event):
 
         scene = context.scene
+        wm = context.window_manager
 
         # If the toggle is off, don't do anything.
-        if scene.seut.bBoxToggle == 'off':
-            return {'CANCELLED'}
+        if wm.seut.bBoxToggle == 'off':
+            return {'FINISHED'}
 
         factor = 1
 
@@ -74,14 +75,15 @@ class SEUT_OT_BBox(Operator):
 
     def modal(self, context, event):
         scene = context.scene
+        wm = context.window_manager
 
         if context.area:
             context.area.tag_redraw()
 
         # Escape condition for when the user turns off the bounding box.
-        if scene.seut.bBoxToggle == 'off':
+        if wm.seut.bBoxToggle == 'off':
             self.unregister_handlers(context)
-            return {'CANCELLED'}
+            return {'FINISHED'}
 
         factor = 1
 
@@ -113,10 +115,11 @@ class SEUT_OT_BBox(Operator):
         self.batch = batch_for_shader(self.shader, 'LINES', {"pos": self.coords}, indices=self.indices)
 
     def draw_callback_3d(self, op, context):
-
+        wm = context.window_manager
+        
         try:
             self.shader.bind()
-            self.shader.uniform_float("color", (0.42, 0.827, 1, 1))
+            self.shader.uniform_float("color", (wm.seut.bboxColor[0], wm.seut.bboxColor[1], wm.seut.bboxColor[2], wm.seut.bboxTransparency))
             self.batch.draw(self.shader)
         except:
             return

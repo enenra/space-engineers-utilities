@@ -81,6 +81,7 @@ from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_scene                    import SEUT_Scene
 from .seut_object                   import SEUT_Object
+from .seut_windowManager            import SEUT_WindowManager
 
 
 classes = (
@@ -119,6 +120,7 @@ classes = (
     SEUT_Materials,
     SEUT_Scene,
     SEUT_Object,
+    SEUT_WindowManager,
     SEUT_MatLibProps,
     SEUT_UL_MatLib,
 )
@@ -133,6 +135,7 @@ def register():
     bpy.types.Material.seut = PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
+    bpy.types.WindowManager.seut = PointerProperty(type=SEUT_WindowManager)
 
     bpy.types.WindowManager.matlibs = CollectionProperty(type=SEUT_MatLibProps)
     bpy.types.WindowManager.matlib_index = IntProperty(name="Enable or Disable MatLibs in the Materials folder", default=0)
@@ -149,6 +152,7 @@ def unregister():
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
     del bpy.types.Object.seut
+    del bpy.types.WindowManager.seut
 
     del bpy.types.WindowManager.matlibs
     del bpy.types.WindowManager.matlib_index
