@@ -25,12 +25,16 @@ class SEUT_OT_ExportAllScenes(Operator):
 
         originalScene = context.window.scene
 
+        sceneCounter = 0
+        notExportedCounter = 0
         for scn in bpy.data.scenes:
+            sceneCounter += 1
             context.window.scene = scn
             print("SEUT Info: Exporting scene '" + scn.name + "'.")
             try:
                 bpy.ops.scene.export()
             except RuntimeError:
+                notExportedCounter += 1
                 print("SEUT Info: Scene '" + scn.name + "' could not be exported.")
 
         context.window.scene = originalScene
@@ -38,5 +42,7 @@ class SEUT_OT_ExportAllScenes(Operator):
         # Reset interaction mode
         if bpy.context.object is not None and currentMode is not None:
             bpy.ops.object.mode_set(mode=currentMode)
+        
+        self.report({'INFO'}, "SEUT: %i of %i scenes successfully exported." % (sceneCounter - notExportedCounter, sceneCounter))
 
         return {'FINISHED'}
