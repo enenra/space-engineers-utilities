@@ -180,7 +180,7 @@ def load_handler(dummy):
     try:
         bpy.ops.scene.refresh_matlibs()
     except RuntimeError:
-        return
+        print("SEUT Error: Available MatLibs could not be refreshed. (021)")
 
 
 addon_keymaps = []

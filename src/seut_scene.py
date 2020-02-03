@@ -25,7 +25,7 @@ def update_subtypeId(self, context):
     for scn in bpy.data.scenes:
         if scn is not scene and scn.seut.subtypeId == scene.seut.subtypeId:
             scene.seut.subtypeId = scene.seut.subtypeBefore
-            print("SEUT Error: Cannot set SubtypeId to a SubtypeId that already exists in the file for another scene. (021)")
+            print("SEUT Error: Cannot set SubtypeId to a SubtypeId that already exists in the file for another scene. (018)")
             return
 
     if scene.seut.subtypeId != scene.seut.subtypeBefore:
