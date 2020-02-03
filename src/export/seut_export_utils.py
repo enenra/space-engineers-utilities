@@ -274,7 +274,10 @@ def export_model_FBX(self, context, collection):
     # Exporting the collection.
     # I can only export the currently active collection, so I need to set the target collection to active (for which I have to link it for some reason),
     # then export, then unlink. User won't see it and it shouldn't make a difference.
-    bpy.context.scene.collection.children.link(collection)
+    try:
+        bpy.context.scene.collection.children.link(collection)
+    except:
+        pass
     layer_collection = bpy.context.view_layer.layer_collection.children[collection.name]
     bpy.context.view_layer.active_layer_collection = layer_collection
     
