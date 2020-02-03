@@ -68,7 +68,7 @@ class SEUT_OT_ExportHKT(Operator):
 
         for obj in collections['hkt'].objects:
             context.view_layer.objects.active = obj
-            bpy.ops.object.transform_apply(location = True, scale = True, rotation = True)
+            # bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) # This runs on all objects instead of just the active one for some reason. Breaks when there's instanced subparts.
             bpy.ops.rigidbody.object_add(type='ACTIVE')
 
         path = bpy.path.abspath(scene.seut.export_exportPath)
