@@ -43,6 +43,6 @@ class SEUT_OT_ExportAllScenes(Operator):
         if bpy.context.object is not None and currentMode is not None:
             bpy.ops.object.mode_set(mode=currentMode)
         
-        self.report({'INFO'}, "SEUT: %i of %i scenes successfully exported." % (sceneCounter - notExportedCounter, sceneCounter))
+        self.report({'INFO'}, "SEUT: %i of %i scenes successfully exported. Refer to Blender System Console for details." % (sceneCounter - notExportedCounter, sceneCounter))
 
         return {'FINISHED'}
