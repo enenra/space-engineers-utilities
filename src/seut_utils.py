@@ -65,7 +65,7 @@ def linkSubpartScene(self, scene, empty, subpartScene):
             subpartCollections['main'].objects.unlink(linkedObject)
             linkedObject.parent = empty
 
-            if linkedObject.type == 'EMPTY':
+            if linkedObject.type == 'EMPTY' and linkedObject.seut.linkedScene is not None and linkedObject.seut.linkedScene.name in bpy.data.scenes:
                 linkSubpartScene(self, currentScene, linkedObject, linkedObject.seut.linkedScene)
         
     # Switch back to previous scene
@@ -88,7 +88,7 @@ def unlinkObjectsInHierarchy(obj):
 
     for child in obj.children:
         unlinkObjectsInHierarchy(child)
-        
+
     bpy.data.objects.remove(obj, do_unlink=True)
 
 
