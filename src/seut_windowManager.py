@@ -37,8 +37,9 @@ class SEUT_WindowManager(PropertyGroup):
     bboxTransparency: FloatProperty(
         name="Transparency",
         description="The transparency of the Bounding Box",
-        default=0.5,
+        default=0.3,
         max=1,
         min=0,
+        step=10.0,
         update=update_BBox
     )

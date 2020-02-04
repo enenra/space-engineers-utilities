@@ -119,9 +119,10 @@ class SEUT_OT_BBox(Operator):
         wm = context.window_manager
         
         try:
+            transparency = round((wm.seut.bboxTransparency / 10), 2)
             glEnable(GL_BLEND)
             self.shader.bind()
-            self.shader.uniform_float("color", (wm.seut.bboxColor[0], wm.seut.bboxColor[1], wm.seut.bboxColor[2], wm.seut.bboxTransparency))
+            self.shader.uniform_float("color", (wm.seut.bboxColor[0], wm.seut.bboxColor[1], wm.seut.bboxColor[2], transparency))
             self.batch.draw(self.shader)
             glDisable(GL_BLEND)
         except:
