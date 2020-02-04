@@ -63,7 +63,7 @@ class SEUT_PT_Panel_BoundingBox(Panel):
 
         row = box.row()
         # row.prop(wm.seut, 'bboxColor', text="")
-        row.prop(wm.seut, 'bboxTransparency', text="")
+        # row.prop(wm.seut, 'bboxTransparency', text="")
         
         row = box.row()
         row.operator('object.bbox_auto', text="Automatic")
