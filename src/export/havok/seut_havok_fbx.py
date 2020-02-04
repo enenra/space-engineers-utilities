@@ -156,7 +156,7 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
         se_custom_property_highlight = ob_obj.bdata.get('highlight', None)
 
         if se_custom_property_file is not None:
-            _fbx.elem_props_template_set(tmpl, props, "p_string", b"file", se_custom_property_file)
+            _fbx.elem_props_template_set(tmpl, props, "p_string", b"file", str(se_custom_property_file))
         
         if se_custom_property_highlight is not None:
             # HARAG: TODO SE supports mutliple highlight shapes via <objectSPECIFICATION1>;<objectSPECIFICATION2>;...
