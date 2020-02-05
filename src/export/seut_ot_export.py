@@ -30,6 +30,7 @@ class SEUT_OT_Export(Operator):
         collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
         # If mode is not object mode, export fails horribly.
+        currentMode = None
         if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
             currentMode = bpy.context.object.mode
             bpy.ops.object.mode_set(mode='OBJECT')
@@ -55,7 +56,7 @@ class SEUT_OT_Export(Operator):
         SEUT_OT_ExportMWM.export_MWM(self, context)
         
         # Reset interaction mode
-        if bpy.context.object is not None:
+        if bpy.context.object is not None and bpy.context.object.mode is not None:
             bpy.ops.object.mode_set(mode=currentMode)
 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'scene.export'")
