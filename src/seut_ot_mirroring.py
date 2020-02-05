@@ -24,7 +24,7 @@ class SEUT_OT_Mirroring(Operator):
 
         # Create collection if it doesn't exist already
 
-        # Create empties
+        # Create empties (using property rotation info) in distance from origin that is relative
 
         # Instance main collection or mirroringScene main collection under empties
 
@@ -36,12 +36,21 @@ class SEUT_OT_Mirroring(Operator):
 
         scene = context.scene
 
+        # Save empty rotation values to properties
+        SEUT_OT_Mirroring.saveRotationToProps(self, context, empty)
+
         # Purge empty children
 
         # Delete empties
 
         # Delete collection
 
+        return
+    
+    def saveRotationToProps(self, context, empty):
+        """Saves the current rotation values of an empty to the scene properties"""
+
+        scene = context.scene
 
         return
 
