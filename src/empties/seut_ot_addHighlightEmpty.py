@@ -5,7 +5,8 @@ from bpy.props  import (EnumProperty,
                         IntProperty)
 
 
-from ..seut_utils   import getParentCollection
+from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_utils                   import getParentCollection
 
 
 class SEUT_OT_AddHighlightEmpty(Operator):
@@ -43,6 +44,12 @@ class SEUT_OT_AddHighlightEmpty(Operator):
     )
 
     def execute(self, context):
+        scene = context.scene
+        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+
+        if collections['main'] is None:
+            self.report({'ERROR'}, "SEUT: Cannot create empty without 'Main' collection existing. (024)")
+            return {'CANCELLED'}
         
         targetObjects = bpy.context.view_layer.objects.selected
         
@@ -53,6 +60,12 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         # I need to figure out how I can get the first in the list but so far idk, this works
         for obj in targetObjects:
             targetObject = obj
+        
+        parentCollection = getParentCollection(context, targetObject)
+        if parentCollection != collections['main']:
+            self.report({'ERROR'}, "SEUT: Cannot create highlight empty for object outside of 'Main' collection. (025)")
+            return {'CANCELLED'}
+
 
         # Determine name strings.
         emptyName = ""
@@ -113,14 +126,12 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         bpy.ops.transform.resize(value=(xD - 1, yD - 1, zD - 1))
         empty = bpy.context.view_layer.objects.active
 
-        # Place empty in same place as targetObject
-        parentCollection = getParentCollection(context, targetObject)
-        if parentCollection is not None:
-            empty.parent = targetObject.parent
-            try:
-                parentCollection.objects.link(empty)
-            except RuntimeError:
-                pass
+        empty.parent = targetObject.parent
+        # If the empty is already part of the main collection, this yields a RuntimeError
+        try:
+            collections['main'].objects.link(empty)
+        except RuntimeError:
+            pass
 
         empty.empty_display_type = "CUBE"
 

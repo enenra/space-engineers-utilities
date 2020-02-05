@@ -4,6 +4,8 @@ from bpy.types  import Operator
 from bpy.props  import (EnumProperty,
                         IntProperty)
 
+from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+
 
 class SEUT_OT_AddPresetSubpart(Operator):
     """Adds a preset subpart"""
@@ -44,6 +46,12 @@ class SEUT_OT_AddPresetSubpart(Operator):
     )
 
     def execute(self, context):
+        scene = context.scene
+        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+
+        if collections['main'] is None:
+            self.report({'ERROR'}, "SEUT: Cannot create empty without 'Main' collection existing. (024)")
+            return {'CANCELLED'}
 
         # Determine name strings.
         emptyName = ""
@@ -126,6 +134,12 @@ class SEUT_OT_AddPresetSubpart(Operator):
             empty.name = emptyName + str(self.index)
         else:
             empty.name = emptyName
+        
+        # If the empty is already part of the main collection, this yields a RuntimeError
+        try:
+            collections['main'].objects.link(empty)
+        except RuntimeError:
+            pass
 
         bpy.data.objects[empty.name][customPropName] = ""
         
