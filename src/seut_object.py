@@ -11,25 +11,32 @@ from bpy.props  import (EnumProperty,
                         )
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_utils                    import linkSubpartScene, unlinkSubpartScene
+from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, getParentCollection
 
 
 def update_linkedScene(self, context):
     scene = context.scene
     empty = context.view_layer.objects.active
+    collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+
+    if collections['main'] is None:
+        return
 
     if empty is not None:
-        if 'file' in empty:
-            empty['file'] = ""
-        unlinkSubpartScene(empty)
+        
+        parentCollection = getParentCollection(context, empty)
+        if parentCollection == collections['main']:
+            if 'file' in empty:
+                empty['file'] = ""
+            unlinkSubpartScene(empty)
 
-        if empty.seut.linkedScene is not None:
-            empty['file'] = empty.seut.linkedScene.name
-            if scene.seut.linkSubpartInstances:
-                try:
-                    linkSubpartScene(self, scene, empty)
-                except AttributeError:
-                    print("SEUT Error: Collection not found, excluded or empty. Action not possible. (022)")
+            if empty.seut.linkedScene is not None:
+                empty['file'] = empty.seut.linkedScene.name
+                if scene.seut.linkSubpartInstances:
+                    try:
+                        linkSubpartScene(self, scene, empty)
+                    except AttributeError:
+                        print("SEUT Error: Collection not found, excluded or empty. Action not possible. (022)")
 
 
 def update_linkedObject(self, context):

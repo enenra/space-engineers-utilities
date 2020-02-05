@@ -35,8 +35,12 @@ def update_subtypeId(self, context):
 
 def update_linkSubpartInstances(self, context):
     scene = context.scene
+    collections = SEUT_OT_RecreateCollections.get_Collections(scene)
 
-    for empty in scene.objects:
+    if collections['main'] is None:
+        return
+
+    for empty in collections['main'].objects:
         if empty is not None:
             # The check for the empty name prevents this from being run on empties that are linked to this scene.
             if empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
