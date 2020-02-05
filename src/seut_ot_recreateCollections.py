@@ -25,7 +25,6 @@ class SEUT_OT_RecreateCollections(Operator):
             'seut': None,
             'main': None,
             'hkt': None,
-            'mirror': None,
             'lod1': None,
             'lod2': None,
             'lod3': None,
@@ -45,9 +44,6 @@ class SEUT_OT_RecreateCollections(Operator):
 
                 if col.name == 'Collision' + tag:
                     collections['hkt'] = col
-
-                if col.name == 'Mirroring' + tag:
-                    collections['mirror'] = col
 
                 elif col.name == 'LOD1' + tag:
                     collections['lod1'] = col
@@ -89,9 +85,6 @@ class SEUT_OT_RecreateCollections(Operator):
 
                 if col.name == 'Collision' + tag or col.name == 'Collision' + tagOld:
                     col.name = 'Collision' + tag
-
-                if col.name == 'Mirroring' + tag or col.name == 'Mirroring' + tagOld:
-                    col.name = 'Mirroring' + tag
 
                 elif col.name == 'LOD1' + tag or col.name == 'LOD1' + tagOld:
                     col.name = 'LOD1' + tag
@@ -140,10 +133,6 @@ class SEUT_OT_RecreateCollections(Operator):
         if collections['hkt'] == None:
             collections['hkt'] = bpy.data.collections.new('Collision' + tag)
             collections['seut'].children.link(collections['hkt'])
-
-        if collections['mirror'] == None:
-            collections['mirror'] = bpy.data.collections.new('Mirroring' + tag)
-            collections['seut'].children.link(collections['mirror'])
 
         if collections['bs1'] == None:
             collections['bs1'] = bpy.data.collections.new('BS1' + tag)
