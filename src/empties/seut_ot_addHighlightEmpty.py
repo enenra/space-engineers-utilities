@@ -117,7 +117,10 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         parentCollection = getParentCollection(context, targetObject)
         if parentCollection is not None:
             empty.parent = targetObject.parent
-            parentCollection.objects.link(empty)
+            try:
+                parentCollection.objects.link(empty)
+            except RuntimeError:
+                pass
 
         empty.empty_display_type = "CUBE"
 
