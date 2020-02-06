@@ -6,6 +6,8 @@ from .seut_errors                   import errorCollection
 def linkSubpartScene(self, originScene, empty):
     """Link instances of subpart scene objects as children to empty"""
 
+    print("-------------------------------------------")
+
     context = bpy.context
     parentCollections = SEUT_OT_RecreateCollections.get_Collections(originScene)
     
@@ -30,6 +32,9 @@ def linkSubpartScene(self, originScene, empty):
             return 'CANCEL'
 
     objectsToIterate = set(subpartCollections['main'].objects)
+    print("empty: " + empty.name + " subpart collection: " + subpartCollections['main'].name)
+    print("Objects to iterate:")
+    print(objectsToIterate)
 
     for obj in objectsToIterate:
 
@@ -37,6 +42,7 @@ def linkSubpartScene(self, originScene, empty):
         # further-nested subparts already have empties as parents.
         # Needs to account for empties being parents that aren't subpart empties.
         if (obj.parent is None or obj.parent.type != 'EMPTY' or not 'file' in obj.parent) and obj.name.find("(L)") == -1:
+            print("current object: " + obj.name + " " + obj.type)
 
             existingObjects = set(subpartCollections['main'].objects)
             
@@ -44,23 +50,30 @@ def linkSubpartScene(self, originScene, empty):
             context.window.view_layer.objects.active = obj
             obj.select_set(state=True, view_layer=context.window.view_layer)
 
-            # Without overriding, it runs in the main scene
-            override = {'scene': subpartScene}
-            bpy.ops.object.duplicate(override, linked=True)
+            bpy.ops.object.duplicate(linked=True)
         
             newObjects = set(subpartCollections['main'].objects)
             createdObjects = newObjects.copy()
+            deleteObjects = set()
 
             for obj1 in newObjects:
                 for obj2 in existingObjects:
                     if obj1 == obj2:
                         createdObjects.remove(obj1)
+                if obj1 in createdObjects and obj1.name.find("(L)") != -1:
+                    createdObjects.remove(obj1)
+                    deleteObjects.add(obj1)
+            
+            for delObj in deleteObjects:
+                bpy.data.objects.remove(delObj, do_unlink=True)
             
             # Rename instance
             linkedObject = None
             for createdObj in createdObjects:
+                print(">         copy: " + createdObj.name + " " + createdObj.type)
                 createdObj.name = obj.name + " (L)"
                 linkedObject = createdObj
+                print(">   new object: " + linkedObject.name + " " + linkedObject.type)
 
             # Link instance to empty
             parentCollections['main'].objects.link(linkedObject)
