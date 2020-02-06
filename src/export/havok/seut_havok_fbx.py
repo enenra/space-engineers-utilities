@@ -160,7 +160,7 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
         
         if se_custom_property_highlight is not None:
             # HARAG: TODO SE supports mutliple highlight shapes via <objectSPECIFICATION1>;<objectSPECIFICATION2>;...
-            _fbx.elem_props_template_set(tmpl, props, "p_string", b"highlight", se_custom_property_highlight)
+            _fbx.elem_props_template_set(tmpl, props, "p_string", b"highlight", str(se_custom_property_highlight))
 
     if obj_type == b"Mesh" and ob_obj.bdata.rigid_body:
         rbo = ob_obj.bdata.rigid_body
