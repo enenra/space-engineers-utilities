@@ -36,7 +36,7 @@ def linkSubpartScene(self, originScene, empty):
         # The following is done only on a first-level subpart as
         # further-nested subparts already have empties as parents.
         # Needs to account for empties being parents that aren't subpart empties.
-        if obj.parent is None or obj.parent.type != 'EMPTY' or not 'file' in obj.parent:
+        if (obj.parent is None or obj.parent.type != 'EMPTY' or not 'file' in obj.parent) and obj.name.find("(L)") == -1:
 
             existingObjects = set(subpartCollections['main'].objects)
             

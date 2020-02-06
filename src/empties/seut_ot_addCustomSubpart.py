@@ -4,6 +4,7 @@ from bpy.types  import Operator
 from bpy.props  import StringProperty
 
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_utils                   import getParentCollection
 
 
 class SEUT_OT_AddCustomSubpart(Operator):
@@ -34,11 +35,16 @@ class SEUT_OT_AddCustomSubpart(Operator):
         empty = bpy.context.view_layer.objects.active
         empty.name = 'subpart_' + empty.name
 
-        # If the empty is already part of the main collection, this yields a RuntimeError
-        try:
+        parentCollection = getParentCollection(context, empty)
+
+        if parentCollection != collections['main']:
             collections['main'].objects.link(empty)
-        except RuntimeError:
-            pass
+
+            if parentCollection is None:
+                scene.collection.objects.unlink(empty)
+            else:
+                parentCollection.objects.unlink(empty)
+
 
         empty.empty_display_type = "CUBE"
 

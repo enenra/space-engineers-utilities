@@ -127,11 +127,16 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         empty = bpy.context.view_layer.objects.active
 
         empty.parent = targetObject.parent
-        # If the empty is already part of the main collection, this yields a RuntimeError
-        try:
+
+        parentCollection = getParentCollection(context, empty)
+
+        if parentCollection != collections['main']:
             collections['main'].objects.link(empty)
-        except RuntimeError:
-            pass
+
+            if parentCollection is None:
+                scene.collection.objects.unlink(empty)
+            else:
+                parentCollection.objects.unlink(empty)
 
         empty.empty_display_type = "CUBE"
 

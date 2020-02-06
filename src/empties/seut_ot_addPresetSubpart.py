@@ -5,6 +5,7 @@ from bpy.props  import (EnumProperty,
                         IntProperty)
 
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_utils                   import getParentCollection
 
 
 class SEUT_OT_AddPresetSubpart(Operator):
@@ -134,12 +135,16 @@ class SEUT_OT_AddPresetSubpart(Operator):
             empty.name = emptyName + str(self.index)
         else:
             empty.name = emptyName
-        
-        # If the empty is already part of the main collection, this yields a RuntimeError
-        try:
+
+        parentCollection = getParentCollection(context, empty)
+
+        if parentCollection != collections['main']:
             collections['main'].objects.link(empty)
-        except RuntimeError:
-            pass
+
+            if parentCollection is None:
+                scene.collection.objects.unlink(empty)
+            else:
+                parentCollection.objects.unlink(empty)
 
         bpy.data.objects[empty.name][customPropName] = ""
         
