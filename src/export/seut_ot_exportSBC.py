@@ -71,7 +71,7 @@ class SEUT_OT_ExportSBC(Operator):
         
         def_Id = ET.SubElement(def_definition, 'Id')
         def_TypeId = ET.SubElement(def_Id, 'TypeId')
-        def_TypeId.text = 'PLACEHOLDER'
+        def_TypeId.text = 'CubeBlock'
         def_SubtypeId = ET.SubElement(def_Id, 'SubtypeId')
         def_SubtypeId.text = scene.seut.subtypeId
 
@@ -81,7 +81,7 @@ class SEUT_OT_ExportSBC(Operator):
         def_Description.text = 'Description_' + scene.seut.subtypeId
         
         def_Icon = ET.SubElement(def_definition, 'Icon')
-        def_Icon.text = 'PLACEHOLDER'
+        def_Icon.text = 'Textures\GUI\Icons\AstronautBackpack.dds'
         
         def_CubeSize = ET.SubElement(def_definition, 'CubeSize')
 
