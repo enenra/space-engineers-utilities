@@ -115,7 +115,7 @@ class SEUT_OT_StructureConversion(Operator):
         for scn2 in bpy.data.scenes:
             for emptyObj in scn2.objects:
                 if emptyObj.type == 'EMPTY' and 'file' in emptyObj and emptyObj['file'] in bpy.data.scenes:
-                    linkSubpartScene(self, scn2, emptyObj)
+                    linkSubpartScene(self, scn2, emptyObj, None)
 
         # Set parent scenes from subparts
         # Needs to happen in second loop, because first loop needs to first run through all scenes to name them
