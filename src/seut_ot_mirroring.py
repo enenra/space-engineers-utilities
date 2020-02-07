@@ -148,7 +148,6 @@ class SEUT_OT_Mirroring(Operator):
                 parentCollection.objects.unlink(emptyZ)
 
         # Instance main collection or mirroringScene main collection under empties
-        """
         sourceScene = scene
         if scene.seut.mirroringScene is not None:
             sourceScene = scene
@@ -159,7 +158,6 @@ class SEUT_OT_Mirroring(Operator):
         linkSubpartScene(self, scene, emptyY, collection)
         emptyZ.seut.linkedScene = sourceScene
         linkSubpartScene(self, scene, emptyZ, collection)
-        """
 
         return {'FINISHED'}
     
@@ -175,7 +173,7 @@ class SEUT_OT_Mirroring(Operator):
 
         # Save empty rotation values to properties, delete children instances, remove empty
         for empty in scene.objects:
-            if empty.type == 'EMPTY' and (empty.name == 'Mirroring X' or empty.name == 'Mirroring Y' or empty.name == 'Mirroring Z'):
+            if empty is not None and empty.type == 'EMPTY' and (empty.name == 'Mirroring X' or empty.name == 'Mirroring Y' or empty.name == 'Mirroring Z'):
                 SEUT_OT_Mirroring.saveRotationToProps(self, context, empty)
                 if len(empty.children) > 0:
                     unlinkSubpartScene(empty)

@@ -41,6 +41,10 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
             existingObjects = set(subpartCollections['main'].objects)
             
             # Create instance of object
+            try:
+                context.window.view_layer.objects.active.select_set(state=False, view_layer=context.window.view_layer)
+            except AttributeError:
+                pass
             context.window.view_layer.objects.active = obj
             obj.select_set(state=True, view_layer=context.window.view_layer)
 
