@@ -153,11 +153,11 @@ class SEUT_OT_Mirroring(Operator):
             sourceScene = scene
         
         emptyX.seut.linkedScene = sourceScene
-        linkSubpartScene(self, scene, emptyX)
+        linkSubpartScene(self, scene, emptyX, collection)
         emptyY.seut.linkedScene = sourceScene
-        linkSubpartScene(self, scene, emptyY)
+        linkSubpartScene(self, scene, emptyY, collection)
         emptyZ.seut.linkedScene = sourceScene
-        linkSubpartScene(self, scene, emptyZ)
+        linkSubpartScene(self, scene, emptyZ, collection)
 
 
         return {'FINISHED'}
