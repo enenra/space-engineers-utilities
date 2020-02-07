@@ -31,5 +31,12 @@ class SEUT_OT_MatCreate(Operator):
         newMat.name = "SEUT Material"
 
         context.active_object.active_material = newMat
+        activeMat = context.active_object.active_material
+
+        activeMat.node_tree.make_local()
+        
+        for node in activeMat.node_tree.nodes:
+            if node is not None and node.name == "SEUT_MAT" and node.node_tree is not None:
+                node.node_tree.make_local()
 
         return {'FINISHED'}

@@ -25,16 +25,16 @@ def update_enabled(self, context):
     for lib in wm.matlibs:
         with bpy.data.libraries.load(materialsPath + "\\" + lib.name, link=True) as (data_from, data_to):
 
-            # If the lib is disabled, unlink its materials from the current file.
+            # If the lib is disabled, unlink its materials from the current file. (unless it's local)
             if not lib.enabled:
                 for mat in data_from.materials:
-                    if mat in bpy.data.materials:
+                    if mat in bpy.data.materials and bpy.data.materials[mat].library is not None:
                         bpy.data.materials.remove(bpy.data.materials[mat], do_unlink=True)
                 for img in data_from.images:
-                    if img in bpy.data.images:
+                    if img in bpy.data.images and bpy.data.images[img].library is not None:
                         bpy.data.images.remove(bpy.data.images[img], do_unlink=True)
                 for ngroup in data_from.node_groups:
-                    if ngroup in bpy.data.node_groups:
+                    if ngroup in bpy.data.node_groups and bpy.data.node_groups[ngroup].library is not None:
                         bpy.data.node_groups.remove(bpy.data.node_groups[ngroup], do_unlink=True)
 
     # Read MatLib materials.
