@@ -40,8 +40,11 @@ class SEUT_OT_ExportAllScenes(Operator):
         context.window.scene = originalScene
 
         # Reset interaction mode
-        if bpy.context.object is not None and currentMode is not None:
-            bpy.ops.object.mode_set(mode=currentMode)
+        try:
+            if bpy.context.object is not None and currentMode is not None:
+                bpy.ops.object.mode_set(mode=currentMode)
+        except TypeError:
+            pass
         
         self.report({'INFO'}, "SEUT: %i of %i scenes successfully exported. Refer to Blender System Console for details." % (sceneCounter - notExportedCounter, sceneCounter))
 
