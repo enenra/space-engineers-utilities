@@ -86,11 +86,12 @@ class SEUT_PT_Panel_Mirroring(Panel):
         layout.prop(scene.seut, 'mirroringToggle', expand=True)
 
         layout.prop(scene.seut, 'mirroringScene', text="Model")
-
+        """
         box = layout.box()
         box.label(text="Mirroring X: " + scene.seut.mirroring_X)
         box.label(text="Mirroring Y: " + scene.seut.mirroring_Y)
         box.label(text="Mirroring Z: " + scene.seut.mirroring_Z)
+        """
         
 
 class SEUT_PT_Panel_Export(Panel):

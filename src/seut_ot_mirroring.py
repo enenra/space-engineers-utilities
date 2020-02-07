@@ -148,6 +148,7 @@ class SEUT_OT_Mirroring(Operator):
                 parentCollection.objects.unlink(emptyZ)
 
         # Instance main collection or mirroringScene main collection under empties
+        """
         sourceScene = scene
         if scene.seut.mirroringScene is not None:
             sourceScene = scene
@@ -158,7 +159,7 @@ class SEUT_OT_Mirroring(Operator):
         linkSubpartScene(self, scene, emptyY, collection)
         emptyZ.seut.linkedScene = sourceScene
         linkSubpartScene(self, scene, emptyZ, collection)
-
+        """
 
         return {'FINISHED'}
     

@@ -5,6 +5,7 @@ import xml.dom.minidom
 
 from bpy.types      import Operator
 
+from ..seut_ot_mirroring            import SEUT_OT_Mirroring
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from ..seut_errors                  import errorExportGeneral
 
@@ -151,6 +152,20 @@ class SEUT_OT_ExportSBC(Operator):
 
                     def_BS_Model.set('File', path[offset:] + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
 
+        # Mirroring
+        for empty in scene.objects:
+            if empty.type == 'EMPTY' and (empty.name == 'Mirroring X' or empty.name == 'Mirroring Y' or empty.name == 'Mirroring Z'):
+                SEUT_OT_Mirroring.saveRotationToProps(self, context, empty)
+
+        if scene.seut.mirroring_X != 'None':
+            def_MirroringX = ET.SubElement(def_definition, 'MirroringX')
+            def_MirroringX.text = scene.seut.mirroring_X
+        if scene.seut.mirroring_Y != 'None':
+            def_MirroringY = ET.SubElement(def_definition, 'MirroringY')
+            def_MirroringY.text = scene.seut.mirroring_Y
+        if scene.seut.mirroring_Z != 'None':
+            def_MirroringZ = ET.SubElement(def_definition, 'MirroringZ')
+            def_MirroringZ.text = scene.seut.mirroring_Z
 
         # Write to file, place in export folder
         xmlString = xml.dom.minidom.parseString(ET.tostring(definitions))
