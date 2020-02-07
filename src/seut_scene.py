@@ -10,8 +10,10 @@ from bpy.props  import (EnumProperty,
                         PointerProperty
                         )
 
+from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene
+
 
 # These update_* functions need to be above the class... for some reason.
 def update_GridScale(self, context):
@@ -19,13 +21,11 @@ def update_GridScale(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_MirroringToggle(self, context):
-    scene = context.scene
-
-def update_Mirroring(self, context):
-    scene = context.scene
+    # Calling the operator and doing the check for off / on there means we can use report()
+    bpy.ops.scene.mirroring()
 
 def update_mirroringScene(self, context):
-    scene = context.scene
+    bpy.ops.scene.mirroring()
 
 def update_subtypeId(self, context):
     scene = context.scene
@@ -155,8 +155,7 @@ class SEUT_Scene(PropertyGroup):
             ('UnsupportedXZ3', 'UnsupportedXZ3', ''),
             ('UnsupportedXZ4', 'UnsupportedXZ4', '')
             ),
-        default='None',
-        update=update_Mirroring
+        default='None'
     )
     mirroring_Y: EnumProperty(
         name='Mirroring Y',
@@ -186,8 +185,7 @@ class SEUT_Scene(PropertyGroup):
             ('UnsupportedXZ3', 'UnsupportedXZ3', ''),
             ('UnsupportedXZ4', 'UnsupportedXZ4', '')
             ),
-        default='None',
-        update=update_Mirroring
+        default='None'
     )
     mirroring_Z: EnumProperty(
         name='Mirroring Z',
@@ -217,11 +215,10 @@ class SEUT_Scene(PropertyGroup):
             ('UnsupportedXZ3', 'UnsupportedXZ3', ''),
             ('UnsupportedXZ4', 'UnsupportedXZ4', '')
             ),
-        default='None',
-        update=update_Mirroring
+        default='None'
     )
     mirroringScene: PointerProperty(
-        name='Mirroring Scene',
+        name='Mirror Model',
         description="The scene which contains the (optional) mirror model",
         type=bpy.types.Scene,
         poll=poll_linkedScene,

@@ -23,7 +23,7 @@ class SEUT_PT_Panel(Panel):
         box.prop(scene.seut,'linkSubpartInstances')
         
         box = layout.box()
-        if scene.seut.sceneType == 'mainScene':
+        if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'mirror':
             box.label(text="SubtypeId (File Name)")
         elif scene.seut.sceneType == 'subpart':
             box.label(text="File Name")
@@ -84,6 +84,13 @@ class SEUT_PT_Panel_Mirroring(Panel):
         wm = context.window_manager
         
         layout.prop(scene.seut, 'mirroringToggle', expand=True)
+
+        layout.prop(scene.seut, 'mirroringScene', text="Model")
+
+        box = layout.box()
+        box.label(text="Mirroring X: " + scene.seut.mirroring_X)
+        box.label(text="Mirroring Y: " + scene.seut.mirroring_Y)
+        box.label(text="Mirroring Z: " + scene.seut.mirroring_Z)
         
 
 class SEUT_PT_Panel_Export(Panel):

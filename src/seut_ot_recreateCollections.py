@@ -86,6 +86,9 @@ class SEUT_OT_RecreateCollections(Operator):
                 if col.name == 'Collision' + tag or col.name == 'Collision' + tagOld:
                     col.name = 'Collision' + tag
 
+                if col.name == 'Mirroring' + tag or col.name == 'Mirroring' + tagOld:
+                    col.name = 'Mirroring' + tag
+
                 elif col.name == 'LOD1' + tag or col.name == 'LOD1' + tagOld:
                     col.name = 'LOD1' + tag
 
