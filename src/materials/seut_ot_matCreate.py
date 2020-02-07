@@ -24,11 +24,12 @@ class SEUT_OT_MatCreate(Operator):
                 presetMat = mat
         
         if presetMat == None:
-            self.report({'ERROR'}, "SEUT: Cannot find preset '%s' source material. Node Tree cannot be created. Re-link MatLib SMAT_* presets! (016)" % (presetName))
+            self.report({'ERROR'}, "SEUT: Cannot find preset '%s' source material. Node Tree cannot be created. Re-link 'MatLib_Presets.blend'! (016)" % (presetName))
             return {'CANCELLED'}
             
         newMat = presetMat.copy()
-        newMat.name = "Material"
-        bpy.context.active_object.active_material = newMat
+        newMat.name = "SEUT Material"
+
+        context.active_object.active_material = newMat
 
         return {'FINISHED'}
