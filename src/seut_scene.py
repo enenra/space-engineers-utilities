@@ -22,7 +22,7 @@ def update_GridScale(self, context):
 
 def update_MirroringToggle(self, context):
     # Calling the operator and doing the check for off / on there means we can use report()
-    bpy.ops.scene.mirroring()
+    bpy.ops.object.mirroring()
 
 def update_mirroringScene(self, context):
     bpy.ops.scene.mirroring()
