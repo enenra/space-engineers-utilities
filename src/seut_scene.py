@@ -10,13 +10,22 @@ from bpy.props  import (EnumProperty,
                         PointerProperty
                         )
 
+from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene
+
 
 # These update_* functions need to be above the class... for some reason.
 def update_GridScale(self, context):
     bpy.ops.object.gridscale()
     bpy.ops.object.bbox('INVOKE_DEFAULT')
+
+def update_MirroringToggle(self, context):
+    # Calling the operator and doing the check for off / on there means we can use report()
+    bpy.ops.object.mirroring()
+
+def update_mirroringScene(self, context):
+    bpy.ops.scene.mirroring()
 
 def update_subtypeId(self, context):
     scene = context.scene
@@ -50,6 +59,10 @@ def update_linkSubpartInstances(self, context):
                     unlinkSubpartScene(empty)
 
 
+def poll_linkedScene(self, object):
+    return object != bpy.context.scene and object.seut.sceneType == 'mirror'
+
+
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
 
@@ -57,7 +70,8 @@ class SEUT_Scene(PropertyGroup):
         name='Type',
         items=(
             ('mainScene', 'Main', 'This scene is a main scene'),
-            ('subpart', 'Subpart', 'This scene is a subpart of a main scene')
+            ('subpart', 'Subpart', 'This scene is a subpart of a main scene'),
+            ('mirror', 'Mirroring', 'This scene contains the mirror model of another scene')
             ),
         default='mainScene'
     )
@@ -105,6 +119,114 @@ class SEUT_Scene(PropertyGroup):
         description="",
         default=1,
         min=1
+    )
+
+    # Mirroing
+    mirroringToggle: EnumProperty(
+        name='Mirroring',
+        items=(
+            ('on', 'On', ''),
+            ('off', 'Off', '')
+            ),
+        default='off',
+        update=update_MirroringToggle
+    )
+    mirroring_X: EnumProperty(
+        name='Mirroring X',
+        items=(
+            ('None', 'None', ''),
+            ('X', 'X', ''),
+            ('Y', 'Y', ''),
+            ('Z', 'Z', ''),
+            ('HalfX', 'HalfX', ''),
+            ('HalfY', 'HalfY', ''),
+            ('HalfZ', 'HalfZ', ''),
+            ('MinusHalfX', 'MinusHalfX', ''),
+            ('MinusHalfY', 'MinusHalfY', ''),
+            ('MinusHalfZ', 'MinusHalfZ', ''),
+            ('XHalfY', 'XHalfY', ''),
+            ('XHalfZ', 'XHalfZ', ''),
+            ('YHalfX', 'YHalfX', ''),
+            ('YHalfZ', 'YHalfZ', ''),
+            ('ZHalfX', 'ZHalfX', ''),
+            ('ZHalfY', 'ZHalfY', ''),
+            ('UnsupportedXY1', 'UnsupportedXY1', ''),
+            ('UnsupportedXY2', 'UnsupportedXY2', ''),
+            ('UnsupportedXY3', 'UnsupportedXY3', ''),
+            ('UnsupportedXY4', 'UnsupportedXY4', ''),
+            ('UnsupportedXZ1', 'UnsupportedXZ1', ''),
+            ('UnsupportedXZ2', 'UnsupportedXZ2', ''),
+            ('UnsupportedXZ3', 'UnsupportedXZ3', ''),
+            ('UnsupportedXZ4', 'UnsupportedXZ4', '')
+            ),
+        default='None'
+    )
+    mirroring_Y: EnumProperty(
+        name='Mirroring Y',
+        items=(
+            ('None', 'None', ''),
+            ('X', 'X', ''),
+            ('Y', 'Y', ''),
+            ('Z', 'Z', ''),
+            ('HalfX', 'HalfX', ''),
+            ('HalfY', 'HalfY', ''),
+            ('HalfZ', 'HalfZ', ''),
+            ('MinusHalfX', 'MinusHalfX', ''),
+            ('MinusHalfY', 'MinusHalfY', ''),
+            ('MinusHalfZ', 'MinusHalfZ', ''),
+            ('XHalfY', 'XHalfY', ''),
+            ('XHalfZ', 'XHalfZ', ''),
+            ('YHalfX', 'YHalfX', ''),
+            ('YHalfZ', 'YHalfZ', ''),
+            ('ZHalfX', 'ZHalfX', ''),
+            ('ZHalfY', 'ZHalfY', ''),
+            ('UnsupportedXY1', 'UnsupportedXY1', ''),
+            ('UnsupportedXY2', 'UnsupportedXY2', ''),
+            ('UnsupportedXY3', 'UnsupportedXY3', ''),
+            ('UnsupportedXY4', 'UnsupportedXY4', ''),
+            ('UnsupportedXZ1', 'UnsupportedXZ1', ''),
+            ('UnsupportedXZ2', 'UnsupportedXZ2', ''),
+            ('UnsupportedXZ3', 'UnsupportedXZ3', ''),
+            ('UnsupportedXZ4', 'UnsupportedXZ4', '')
+            ),
+        default='None'
+    )
+    mirroring_Z: EnumProperty(
+        name='Mirroring Z',
+        items=(
+            ('None', 'None', ''),
+            ('X', 'X', ''),
+            ('Y', 'Y', ''),
+            ('Z', 'Z', ''),
+            ('HalfX', 'HalfX', ''),
+            ('HalfY', 'HalfY', ''),
+            ('HalfZ', 'HalfZ', ''),
+            ('MinusHalfX', 'MinusHalfX', ''),
+            ('MinusHalfY', 'MinusHalfY', ''),
+            ('MinusHalfZ', 'MinusHalfZ', ''),
+            ('XHalfY', 'XHalfY', ''),
+            ('XHalfZ', 'XHalfZ', ''),
+            ('YHalfX', 'YHalfX', ''),
+            ('YHalfZ', 'YHalfZ', ''),
+            ('ZHalfX', 'ZHalfX', ''),
+            ('ZHalfY', 'ZHalfY', ''),
+            ('UnsupportedXY1', 'UnsupportedXY1', ''),
+            ('UnsupportedXY2', 'UnsupportedXY2', ''),
+            ('UnsupportedXY3', 'UnsupportedXY3', ''),
+            ('UnsupportedXY4', 'UnsupportedXY4', ''),
+            ('UnsupportedXZ1', 'UnsupportedXZ1', ''),
+            ('UnsupportedXZ2', 'UnsupportedXZ2', ''),
+            ('UnsupportedXZ3', 'UnsupportedXZ3', ''),
+            ('UnsupportedXZ4', 'UnsupportedXZ4', '')
+            ),
+        default='None'
+    )
+    mirroringScene: PointerProperty(
+        name='Mirror Model',
+        description="The scene which contains the (optional) mirror model",
+        type=bpy.types.Scene,
+        poll=poll_linkedScene,
+        update=update_mirroringScene
     )
 
     # Export

@@ -71,6 +71,7 @@ from .materials.seut_matLib                 import SEUT_UL_MatLib
 from .seut_preferences              import SEUT_AddonPreferences
 from .seut_pt_toolbar               import SEUT_PT_Panel
 from .seut_pt_toolbar               import SEUT_PT_Panel_BoundingBox
+from .seut_pt_toolbar               import SEUT_PT_Panel_Mirroring
 from .seut_pt_toolbar               import SEUT_PT_Panel_Export
 from .seut_pt_toolbar               import SEUT_PT_Panel_Import
 from .seut_ot_import                import SEUT_OT_Import
@@ -78,6 +79,7 @@ from .seut_ot_structureConversion   import SEUT_OT_StructureConversion
 from .seut_ot_gridScale             import SEUT_OT_GridScale
 from .seut_ot_bBox                  import SEUT_OT_BBox
 from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
+from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_scene                    import SEUT_Scene
 from .seut_object                   import SEUT_Object
@@ -88,6 +90,7 @@ classes = (
     SEUT_AddonPreferences,
     SEUT_PT_Panel,
     SEUT_PT_Panel_BoundingBox,
+    SEUT_PT_Panel_Mirroring,
     SEUT_PT_Panel_Export,
     SEUT_PT_Panel_Import,
     SEUT_PT_Panel_Materials,
@@ -114,6 +117,7 @@ classes = (
     SEUT_OT_GridScale,
     SEUT_OT_BBox,
     SEUT_OT_BBoxAuto,
+    SEUT_OT_Mirroring,
     SEUT_OT_RecreateCollections,
     SEUT_OT_MatCreate,
     SEUT_OT_RefreshMatLibs,

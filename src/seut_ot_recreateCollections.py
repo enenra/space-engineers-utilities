@@ -75,19 +75,6 @@ class SEUT_OT_RecreateCollections(Operator):
         tag = ' (' + scene.seut.subtypeId + ')'
         tagOld = ' (' + scene.seut.subtypeBefore + ')'
 
-        collections = {
-            'seut': None,
-            'main': None,
-            'hkt': None,
-            'lod1': None,
-            'lod2': None,
-            'lod3': None,
-            'bs1': None,
-            'bs2': None,
-            'bs3': None,
-            'bs_lod': None,
-            }
-
         if len(bpy.data.collections) > 0:
             for col in bpy.data.collections:
                 if col.name == 'SEUT' + tag or col.name == 'SEUT' + tagOld:
@@ -98,6 +85,9 @@ class SEUT_OT_RecreateCollections(Operator):
 
                 if col.name == 'Collision' + tag or col.name == 'Collision' + tagOld:
                     col.name = 'Collision' + tag
+
+                if col.name == 'Mirroring' + tag or col.name == 'Mirroring' + tagOld:
+                    col.name = 'Mirroring' + tag
 
                 elif col.name == 'LOD1' + tag or col.name == 'LOD1' + tagOld:
                     col.name = 'LOD1' + tag
@@ -119,8 +109,8 @@ class SEUT_OT_RecreateCollections(Operator):
                     
                 elif col.name == 'BS_LOD' + tag or col.name == 'BS_LOD' + tagOld:
                     col.name = 'BS_LOD' + tag
-        
-        return collections
+
+        return
 
 
     def create_Collections(context):

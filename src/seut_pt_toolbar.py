@@ -23,7 +23,7 @@ class SEUT_PT_Panel(Panel):
         box.prop(scene.seut,'linkSubpartInstances')
         
         box = layout.box()
-        if scene.seut.sceneType == 'mainScene':
+        if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'mirror':
             box.label(text="SubtypeId (File Name)")
         elif scene.seut.sceneType == 'subpart':
             box.label(text="File Name")
@@ -67,6 +67,31 @@ class SEUT_PT_Panel_BoundingBox(Panel):
         
         row = box.row()
         row.operator('object.bbox_auto', text="Automatic")
+
+
+class SEUT_PT_Panel_Mirroring(Panel):
+    """Creates the mirroring panel for SEUT"""
+    bl_idname = "SEUT_PT_Panel_Mirroring"
+    bl_label = "Mirroring"
+    bl_category = "SEUT"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        wm = context.window_manager
+        
+        layout.prop(scene.seut, 'mirroringToggle', expand=True)
+
+        layout.prop(scene.seut, 'mirroringScene', text="Model")
+
+        box = layout.box()
+        box.label(text="Mirroring X: " + scene.seut.mirroring_X)
+        box.label(text="Mirroring Y: " + scene.seut.mirroring_Y)
+        box.label(text="Mirroring Z: " + scene.seut.mirroring_Z)
+        
 
 class SEUT_PT_Panel_Export(Panel):
     """Creates the export panel for SEUT"""
