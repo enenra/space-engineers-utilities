@@ -6,7 +6,7 @@ from collections    import OrderedDict
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_errors                   import errorCollection, isCollectionExcluded
-from .seut_utils                    import getParentCollection
+from .seut_utils                    import getParentCollection, linkSubpartScene, unlinkSubpartScene
 
 mirroringPresets = OrderedDict([
     ('None', (0.0, 0.0, 0.0)),
@@ -116,19 +116,19 @@ class SEUT_OT_Mirroring(Operator):
         # Create empties (using property rotation info) with certain distance from bounding box
         bpy.ops.object.add(type='EMPTY', location=(offset, 0.0, 0.0), rotation=emptyXRotation)
         emptyX = bpy.context.view_layer.objects.active
-        emptyX.name = 'Mirroring X' + tag
+        emptyX.name = 'Mirroring X'
         emptyX.empty_display_type = 'ARROWS'
         emptyX.empty_display_size = emptySize
 
         bpy.ops.object.add(type='EMPTY', location=(0.0, offset, 0.0), rotation=emptyYRotation)
         emptyY = bpy.context.view_layer.objects.active
-        emptyY.name = 'Mirroring Y' + tag
+        emptyY.name = 'Mirroring Y'
         emptyY.empty_display_type = 'ARROWS'
         emptyY.empty_display_size = emptySize
 
         bpy.ops.object.add(type='EMPTY', location=(0.0, 0.0, offset), rotation=emptyZRotation)
         emptyZ = bpy.context.view_layer.objects.active
-        emptyZ.name = 'Mirroring Z' + tag
+        emptyZ.name = 'Mirroring Z'
         emptyZ.empty_display_type = 'ARROWS'
         emptyZ.empty_display_size = emptySize
 
@@ -148,6 +148,17 @@ class SEUT_OT_Mirroring(Operator):
                 parentCollection.objects.unlink(emptyZ)
 
         # Instance main collection or mirroringScene main collection under empties
+        sourceScene = scene
+        if scene.seut.mirroringScene is not None:
+            sourceScene = scene
+        
+        emptyX.seut.linkedScene = sourceScene
+        linkSubpartScene(self, scene, emptyX)
+        emptyY.seut.linkedScene = sourceScene
+        linkSubpartScene(self, scene, emptyY)
+        emptyZ.seut.linkedScene = sourceScene
+        linkSubpartScene(self, scene, emptyZ)
+
 
         return {'FINISHED'}
     
@@ -163,7 +174,7 @@ class SEUT_OT_Mirroring(Operator):
 
         # Save empty rotation values to properties, delete children instances, remove empty
         for empty in scene.objects:
-            if empty.type == 'EMPTY' and (empty.name == 'Mirroring X' + tag or empty.name == 'Mirroring Y' + tag or empty.name == 'Mirroring Z' + tag):
+            if empty.type == 'EMPTY' and (empty.name == 'Mirroring X' or empty.name == 'Mirroring Y' or empty.name == 'Mirroring Z'):
                 SEUT_OT_Mirroring.saveRotationToProps(self, context, empty)
                 if len(empty.children) > 0:
                     unlinkSubpartScene(empty)

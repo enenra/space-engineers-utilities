@@ -109,14 +109,6 @@ class SEUT_OT_RecreateCollections(Operator):
                     
                 elif col.name == 'BS_LOD' + tag or col.name == 'BS_LOD' + tagOld:
                     col.name = 'BS_LOD' + tag
-        
-        for obj in scene.objects:
-            if obj.name == "Mirroring X" + tag or obj.name == "Mirroring X" + tagOld:
-                obj.name == "Mirroring X" + tag
-            if obj.name == "Mirroring Y" + tag or obj.name == "Mirroring Y" + tagOld:
-                obj.name == "Mirroring Y" + tag
-            if obj.name == "Mirroring Z" + tag or obj.name == "Mirroring Z" + tagOld:
-                obj.name == "Mirroring Z" + tag
 
         return
 
