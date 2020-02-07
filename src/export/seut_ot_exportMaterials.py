@@ -150,6 +150,10 @@ class SEUT_OT_ExportMaterials(Operator):
         
         offset = bpy.path.basename(bpy.context.blend_data.filepath).find(".blend")
         filename = bpy.path.basename(bpy.context.blend_data.filepath)[:offset]
+
+        # This culls the MatLb_ from the filename
+        if filename.find("MatLib_") != -1:
+            filename = filename[7:]
         
         exportedXML = open(bpy.path.abspath('//') + filename + ".xml", "w")
         exportedXML.write(xmlFormatted)
