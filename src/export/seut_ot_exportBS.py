@@ -15,7 +15,7 @@ class SEUT_OT_ExportBS(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.get_Collections(context.scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(context.scene)
         return collections['bs1'] is not None or collections['bs2'] is not None or collections['bs3'] is not None
 
 
@@ -42,7 +42,7 @@ class SEUT_OT_ExportBS(Operator):
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
         fbxImporterPath = os.path.normpath(bpy.path.abspath(preferences.fbxImporterPath))
-        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
         result = errorToolPath(self, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:

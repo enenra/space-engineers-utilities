@@ -106,7 +106,7 @@ class SEUT_PT_Panel_Export(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
         # Export
         row = layout.row()

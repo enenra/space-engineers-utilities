@@ -7,14 +7,14 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
     """Link instances of subpart scene objects as children to empty"""
 
     context = bpy.context
-    parentCollections = SEUT_OT_RecreateCollections.get_Collections(originScene)
+    parentCollections = SEUT_OT_RecreateCollections.getCollections(originScene)
     
     # Switch to subpartScene to get collections
     currentScene = bpy.context.window.scene
     subpartScene = empty.seut.linkedScene
     context.window.scene = subpartScene
 
-    subpartCollections = SEUT_OT_RecreateCollections.get_Collections(subpartScene)
+    subpartCollections = SEUT_OT_RecreateCollections.getCollections(subpartScene)
     # Checks whether collection exists, is excluded or is empty
     result = errorCollection(self, context, subpartCollections['main'], False)
     if not result == {'CONTINUE'}:
@@ -112,7 +112,7 @@ def unlinkObjectsInHierarchy(obj):
 def getParentCollection(context, childObject):
     scene = context.scene
 
-    collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+    collections = SEUT_OT_RecreateCollections.getCollections(scene)
     
     for key, value in collections.items():
         if value is not None:

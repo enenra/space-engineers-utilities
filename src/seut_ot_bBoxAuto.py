@@ -22,7 +22,7 @@ class SEUT_OT_BBoxAuto(Operator):
 
         scene = context.scene
         wm = context.window_manager
-        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
         if wm.seut.bBoxToggle == 'off':
             self.report({'INFO'}, "SEUT: Triggered auto BBox even though BBox is turned off. This should never happen.")

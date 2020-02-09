@@ -17,7 +17,7 @@ from .seut_utils                    import linkSubpartScene, unlinkSubpartScene,
 def update_linkedScene(self, context):
     scene = context.scene
     empty = context.view_layer.objects.active
-    collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+    collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
     if collections['main'] is None:
         return

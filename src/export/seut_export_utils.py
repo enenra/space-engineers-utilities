@@ -17,7 +17,7 @@ def export_XML(self, context, collection):
     """Exports the XML file for a defined collection"""
 
     scene = context.scene
-    collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+    collections = SEUT_OT_RecreateCollections.getCollections(scene)
     addon = __package__[:__package__.find(".")]
     preferences = bpy.context.preferences.addons.get(addon).preferences
 
@@ -258,7 +258,7 @@ def export_model_FBX(self, context, collection):
     depsgraph = context.evaluated_depsgraph_get()
     addon = __package__[:__package__.find(".")]
     preferences = bpy.context.preferences.addons.get(addon).preferences
-    collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+    collections = SEUT_OT_RecreateCollections.getCollections(scene)
     settings = ExportSettings(scene, depsgraph)
 
     # Determining the directory to export to.

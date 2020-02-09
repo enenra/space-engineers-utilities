@@ -27,7 +27,7 @@ class SEUT_OT_Export(Operator):
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'scene.export'")
         
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
         # If mode is not object mode, export fails horribly.
         currentMode = None

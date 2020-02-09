@@ -15,7 +15,7 @@ class SEUT_OT_ExportMain(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.get_Collections(context.scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(context.scene)
         return collections['main'] is not None
         
     def execute(self, context):
@@ -38,7 +38,7 @@ class SEUT_OT_ExportMain(Operator):
         """Exports the 'Main' collection"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
         fbxImporterPath = os.path.normpath(bpy.path.abspath(preferences.fbxImporterPath))

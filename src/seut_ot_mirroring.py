@@ -59,7 +59,7 @@ class SEUT_OT_Mirroring(Operator):
         """Sets up mirroring utilities"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
 
         if collections['seut'] is None:
@@ -166,7 +166,7 @@ class SEUT_OT_Mirroring(Operator):
         """Cleans up mirroring utilities"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
         tag = ' (' + scene.seut.subtypeId + ')'

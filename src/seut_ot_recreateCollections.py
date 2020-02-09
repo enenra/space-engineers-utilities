@@ -16,7 +16,7 @@ class SEUT_OT_RecreateCollections(Operator):
         return {'FINISHED'}
 
 
-    def get_Collections(scene):
+    def getCollections(scene):
         """Scans existing collections to find the SEUT ones"""
 
         tag = ' (' + scene.seut.subtypeId + ')'
@@ -123,7 +123,7 @@ class SEUT_OT_RecreateCollections(Operator):
             
         tag = ' (' + scene.seut.subtypeId + ')'
 
-        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
         if collections['seut'] == None:
             collections['seut'] = bpy.data.collections.new('SEUT' + tag)

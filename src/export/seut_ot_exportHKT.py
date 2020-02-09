@@ -20,7 +20,7 @@ class SEUT_OT_ExportHKT(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.get_Collections(context.scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(context.scene)
         return collections['hkt'] is not None
 
 
@@ -45,7 +45,7 @@ class SEUT_OT_ExportHKT(Operator):
 
         scene = context.scene
         depsgraph = None
-        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
         settings = ExportSettings(scene, depsgraph)

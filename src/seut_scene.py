@@ -44,7 +44,7 @@ def update_subtypeId(self, context):
 
 def update_linkSubpartInstances(self, context):
     scene = context.scene
-    collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+    collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
     if collections['main'] is None:
         return

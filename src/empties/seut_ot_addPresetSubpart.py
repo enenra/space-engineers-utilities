@@ -48,7 +48,7 @@ class SEUT_OT_AddPresetSubpart(Operator):
 
     def execute(self, context):
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.get_Collections(scene)
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
         if collections['main'] is None:
             self.report({'ERROR'}, "SEUT: Cannot create empty without 'Main' collection existing. (024)")
