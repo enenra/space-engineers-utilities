@@ -166,6 +166,18 @@ class SEUT_OT_ExportSBC(Operator):
         if scene.seut.mirroring_Z != 'None':
             def_MirroringZ = ET.SubElement(def_definition, 'MirroringZ')
             def_MirroringZ.text = scene.seut.mirroring_Z
+        
+        # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
+        if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
+            def_MirroringBlock = ET.SubElement(def_definition, 'MirroringBlock')
+            def_MirroringBlock.text = scene.seut.mirroringScene.seut.subtypeId
+
+        elif scene.seut.sceneType == 'mirror':
+            for scn in bpy.data.scenes:
+                if scn.seut.mirroringScene == scene:
+                    def_MirroringBlock = ET.SubElement(def_definition, 'MirroringBlock')
+                    def_MirroringBlock.text = scn.seut.subtypeId
+
 
         # Write to file, place in export folder
         xmlString = xml.dom.minidom.parseString(ET.tostring(definitions))
