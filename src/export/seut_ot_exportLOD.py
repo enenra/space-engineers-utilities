@@ -26,14 +26,14 @@ class SEUT_OT_ExportLOD(Operator):
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
-        if not result == 'CONTINUE':
-            return {result}
+        if not result == {'CONTINUE'}:
+            return result
         
-        SEUT_OT_ExportLOD.export_LOD(self, context, False)
+        result = SEUT_OT_ExportLOD.export_LOD(self, context, False)
 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_lod'")
 
-        return {'FINISHED'}
+        return result
     
     def export_LOD(self, context, partial):
         """Exports the 'LOD' collections"""
@@ -50,22 +50,22 @@ class SEUT_OT_ExportLOD(Operator):
 
         colLOD1Good = False
         result = errorCollection(self, context, collections['lod1'], partial)
-        if result == 'CONTINUE':
+        if result == {'CONTINUE'}:
             colLOD1Good = True
 
         colLOD2Good = False
         result = errorCollection(self, context, collections['lod2'], partial)
-        if result == 'CONTINUE':
+        if result == {'CONTINUE'}:
             colLOD2Good = True
 
         colLOD3Good = False
         result = errorCollection(self, context, collections['lod3'], partial)
-        if result == 'CONTINUE':
+        if result == {'CONTINUE'}:
             colLOD3Good = True
 
         colBSLODGood = False
         result = errorCollection(self, context, collections['bs_lod'], partial)
-        if result == 'CONTINUE':
+        if result == {'CONTINUE'}:
             colBSLODGood = True
 
         if (not colLOD1Good and colLOD2Good) or (not colLOD2Good and colLOD3Good):
@@ -122,4 +122,4 @@ class SEUT_OT_ExportLOD(Operator):
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS_LOD'.")
                 export_model_FBX(self, context, collections['bs_lod'])
         
-        return
+        return {'FINISHED'}

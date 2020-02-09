@@ -25,14 +25,14 @@ class SEUT_OT_ExportMain(Operator):
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
-        if not result == 'CONTINUE':
-            return {result}
+        if not result == {'CONTINUE'}:
+            return result
 
-        SEUT_OT_ExportMain.export_Main(self, context, False)
+        result = SEUT_OT_ExportMain.export_Main(self, context, False)
 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_main'")
 
-        return {'FINISHED'}
+        return result
     
     def export_Main(self, context, partial):
         """Exports the 'Main' collection"""
@@ -45,8 +45,8 @@ class SEUT_OT_ExportMain(Operator):
 
         # Checks whether collection exists, is excluded or is empty
         result = errorCollection(self, context, collections['main'], False)
-        if not result == 'CONTINUE':
-            return {result}
+        if not result == {'CONTINUE'}:
+            return result
 
         result = errorToolPath(self, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:
@@ -67,4 +67,4 @@ class SEUT_OT_ExportMain(Operator):
         else:
             print("SEUT Info: 'FBX' export disabled.")
         
-        return
+        return {'FINISHED'}

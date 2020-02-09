@@ -27,14 +27,14 @@ class SEUT_OT_ExportSBC(Operator):
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
-        if not result == 'CONTINUE':
-            return {result}
+        if not result == {'CONTINUE'}:
+            return result
         
-        SEUT_OT_ExportSBC.export_SBC(self, context)
+        result = SEUT_OT_ExportSBC.export_SBC(self, context)
         
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_sbc'")
 
-        return {'FINISHED'}
+        return result
     
     def export_SBC(self, context):
         """Exports the SBC file for a defined collection"""
@@ -177,4 +177,4 @@ class SEUT_OT_ExportSBC(Operator):
         exportedXML.write(xmlFormatted)
         self.report({'INFO'}, "SEUT: '%s.sbc' has been created." % (path + filename))
 
-        return
+        return {'FINISHED'}

@@ -17,8 +17,8 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
     subpartCollections = SEUT_OT_RecreateCollections.get_Collections(subpartScene)
     # Checks whether collection exists, is excluded or is empty
     result = errorCollection(self, context, subpartCollections['main'], False)
-    if not result == 'CONTINUE':
-        return {result}
+    if not result == {'CONTINUE'}:
+        return result
     
     # This prevents instancing loops.
     for o in subpartCollections['main'].objects:
@@ -27,7 +27,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
             empty.seut.linkedScene = None
             empty['file'] = None
             context.window.scene = currentScene
-            return 'CANCEL'
+            return {'CANCEL'}
 
     objectsToIterate = set(subpartCollections['main'].objects)
 
@@ -88,7 +88,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
     # Switch back to previous scene
     context.window.scene = currentScene
     
-    return 'CONTINUE'
+    return {'CONTINUE'}
 
 
 def unlinkSubpartScene(empty):
@@ -97,7 +97,7 @@ def unlinkSubpartScene(empty):
     for obj in empty.children:
         unlinkObjectsInHierarchy(obj)
 
-    return 'CONTINUE'
+    return {'CONTINUE'}
 
 
 def unlinkObjectsInHierarchy(obj):

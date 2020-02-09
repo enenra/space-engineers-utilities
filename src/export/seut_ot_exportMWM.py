@@ -23,14 +23,14 @@ class SEUT_OT_ExportMWM(Operator):
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
-        if not result == 'CONTINUE':
-            return {result}
+        if not result == {'CONTINUE'}:
+            return result
 
-        SEUT_OT_ExportMWM.export_MWM(self, context)
+        result = SEUT_OT_ExportMWM.export_MWM(self, context)
                 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_mwm'")
 
-        return {'FINISHED'}
+        return result
 
     def export_MWM(self, context):
         """Compiles all loose files into a MWM"""

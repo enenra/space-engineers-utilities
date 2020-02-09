@@ -26,14 +26,14 @@ class SEUT_OT_ExportBS(Operator):
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
-        if not result == 'CONTINUE':
-            return {result}
+        if not result == {'CONTINUE'}:
+            return result
 
-        SEUT_OT_ExportBS.export_BS(self, context, False)
+        result = SEUT_OT_ExportBS.export_BS(self, context, False)
 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_buildstages'")
 
-        return {'FINISHED'}
+        return result
     
     def export_BS(self, context, partial):
         """Exports the 'Build Stages' collections"""
@@ -50,17 +50,17 @@ class SEUT_OT_ExportBS(Operator):
 
         colBS1Good = False
         result = errorCollection(self, context, collections['bs1'], partial)
-        if result == 'CONTINUE':
+        if result == {'CONTINUE'}:
             colBS1Good = True
 
         colBS2Good = False
         result = errorCollection(self, context, collections['bs2'], partial)
-        if result == 'CONTINUE':
+        if result == {'CONTINUE'}:
             colBS2Good = True
 
         colBS3Good = False
         result = errorCollection(self, context, collections['bs3'], partial)
-        if result == 'CONTINUE':
+        if result == {'CONTINUE'}:
             colBS3Good = True
 
         if (not colBS1Good and colBS2Good) or (not colBS2Good and colBS3Good):
@@ -99,4 +99,4 @@ class SEUT_OT_ExportBS(Operator):
                 self.report({'INFO'}, "SEUT: Exporting FBX for 'BS3'.")
                 export_model_FBX(self, context, collections['bs3'])
         
-        return
+        return {'FINISHED'}

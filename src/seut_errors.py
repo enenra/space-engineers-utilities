@@ -17,28 +17,28 @@ def errorExportGeneral(self, context):
     if not bpy.data.is_saved:
         self.report({'ERROR'}, "SEUT: BLEND file must be saved before export. (008)")
         print("SEUT Error: BLEND file must be saved before export. (008)")
-        return 'CANCELLED'
+        return {'CANCELLED'}
 
     if os.path.exists(exportPath) == False:
         self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
         print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
-        return 'CANCELLED'
+        return {'CANCELLED'}
     elif scene.seut.export_exportPath == "":
         self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
         print("SEUT Error: No export folder defined. (003)")
-        return 'CANCELLED'
+        return {'CANCELLED'}
 
     if scene.seut.export_exportPath.find("Models\\") == -1:
         self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
         print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
-        return 'CANCELLED'
+        return {'CANCELLED'}
 
     if scene.seut.subtypeId == "":
         self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
         print("SEUT Error: No SubtypeId set. (004)")
-        return 'CANCELLED'
+        return {'CANCELLED'}
 
-    return 'CONTINUE'
+    return {'CONTINUE'}
 
 def errorCollection(self, context, collection, partial):
     """Check if collection exists, is not excluded and is not empty"""
@@ -48,33 +48,33 @@ def errorCollection(self, context, collection, partial):
     if collection is None:
         if partial:
             print("SEUT Warning: Collection not found. Action not possible. (002)")
-            return 'FINISHED'
+            return {'FINISHED'}
         else:
             self.report({'ERROR'}, "SEUT: Collection not found. Action not possible. (002)")
             print("SEUT Error: Collection not found. Action not possible. (002)")
-            return 'CANCELLED'
+            return {'CANCELLED'}
             
     isExcluded = isCollectionExcluded(collection.name, allCurrentViewLayerCollections)
 
     if isExcluded or isExcluded is None:
         if partial:
             print("SEUT Warning: Collection '" + collection.name + "' excluded from view layer or cannot be found. Action not possible. (019)")
-            return 'FINISHED'
+            return {'FINISHED'}
         else:
             self.report({'ERROR'}, "SEUT: Collection '%s' excluded from view layer or cannot be found. Action not possible. (019)" % (collection.name))
             print("SEUT Error: Collection '" + collection.name + "' excluded from view layer or cannot be found. Action not possible. (019)")
-            return 'CANCELLED'
+            return {'CANCELLED'}
 
     if len(collection.objects) == 0:
         if partial:
             print("SEUT Warning: Collection '" + collection.name + "' is empty. Action not possible. (005)")
-            return 'FINISHED'
+            return {'FINISHED'}
         else:
             self.report({'ERROR'}, "SEUT: Collection '%s' is empty. Action not possible. (005)" % (collection.name))
             print("SEUT Error: Collection '" + collection.name + "' is empty. Action not possible. (005)")
-            return 'CANCELLED'
+            return {'CANCELLED'}
     
-    return 'CONTINUE'
+    return {'CONTINUE'}
 
 def errorToolPath(self, toolPath, toolName, toolFileName):
     """Checks if external tool is correctly linked"""

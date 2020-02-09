@@ -31,14 +31,14 @@ class SEUT_OT_ExportHKT(Operator):
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
-        if not result == 'CONTINUE':
-            return {result}
+        if not result == {'CONTINUE'}:
+            return result
         
-        SEUT_OT_ExportHKT.export_HKT(self, context, False)
+        result = SEUT_OT_ExportHKT.export_HKT(self, context, False)
 
         print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_hkt'")
 
-        return {'FINISHED'}
+        return result
     
     def export_HKT(self, context, partial):
         """Exports collision to HKT"""
@@ -55,8 +55,8 @@ class SEUT_OT_ExportHKT(Operator):
 
         # Checks whether collection exists, is excluded or is empty
         result = errorCollection(self, context, collections['hkt'], partial)
-        if not result == 'CONTINUE':
-            return {result}
+        if not result == {'CONTINUE'}:
+            return result
 
         result = errorToolPath(self, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:
@@ -91,4 +91,4 @@ class SEUT_OT_ExportHKT(Operator):
         for obj in collections['hkt'].objects:
             obj.scale /= context.scene.seut.export_rescaleFactor
            
-        return
+        return {'FINISHED'}

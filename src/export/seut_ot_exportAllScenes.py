@@ -20,8 +20,8 @@ class SEUT_OT_ExportAllScenes(Operator):
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
-        if not result == 'CONTINUE':
-            return {result}
+        if not result == {'CONTINUE'}:
+            return result
 
         originalScene = context.window.scene
 
