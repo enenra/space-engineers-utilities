@@ -504,11 +504,11 @@ class ExportSettings:
             out = subprocess.check_output(cmdline, cwd=cwd, stderr=subprocess.STDOUT, shell=True)
             if self.isLogToolOutput and logfile:
                 write_to_log(logfile, out, cmdline=cmdline, cwd=cwd, loglines=loglines)
-                print("SEUT Error: There was an error during MWM conversion. Please refer to the MWM log in your BLEND file's folder for details. (023)")
             if logtextInspector is not None:
                 logtextInspector(out)
 
         except subprocess.CalledProcessError as e:
+            print("SEUT Error: There was an error during exportation caused by Havok or MWMBuilder. Please refer to the logs in your export folder for details. (023)")
             if self.isLogToolOutput and logfile:
                 write_to_log(logfile, e.output, cmdline=cmdline, cwd=cwd, loglines=loglines)
             if e.returncode not in successfulExitCodes:
