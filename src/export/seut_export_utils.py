@@ -29,13 +29,23 @@ def export_XML(self, context, collection):
     paramCentered.set('Name', 'Centered')
     paramCentered.text = 'false'
 
-    paramRescaleFactor = ET.SubElement(model, 'Parameter')
-    paramRescaleFactor.set('Name', 'RescaleFactor')
-    paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor)
-
+    if scene.seut.sceneType != 'character':
+        paramRescaleFactor = ET.SubElement(model, 'Parameter')
+        paramRescaleFactor.set('Name', 'RescaleFactor')
+        paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor)
+    elif scene.seut.sceneType == 'character':
+        paramRescaleFactor = ET.SubElement(model, 'Parameter')
+        paramRescaleFactor.set('Name', 'RescaleFactor')
+        paramRescaleFactor.text = '0.01'
+    
     paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
     paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
     paramRescaleToLengthInMeters.text = 'false'
+
+    if scene.seut.sceneType == 'character':
+        paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
+        paramRescaleToLengthInMeters.set('Name', 'RotationY')
+        paramRescaleToLengthInMeters.text = '180'
     
     path = bpy.path.abspath(scene.seut.export_exportPath)
 
@@ -538,8 +548,6 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         'batch_mode': 'OFF', # STOLLIE: Part of Save method not save single in Blender source, default = OFF.	
 
         # Include settings.
-        'use_selection' : False,
-        'context_objects': objects, #STOLLIE: Is None in Blender Source.
         'object_types': {'MESH', 'EMPTY'}, # STOLLIE: Is None in Blender source.
         'use_custom_props': False, # HARAG: SE / Havok properties are hacked directly into the modified fbx importer in fbx.py
 
@@ -548,7 +556,7 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         'apply_scale_options': 'FBX_SCALE_NONE',        
         'axis_forward': 'Z', # STOLLIE: Normally a Y in Blender source. -Z is correct forward.
         'axis_up': 'Y',	 # STOLLIE: Normally a Z in Blender source.	Y aligns correctly in SE.
-        'apply_unit_scale': True,
+        
         # HARAG: The export to Havok needs this, it's off for the MwmFileNode (bake_space_transform).
         # STOLLIE: This is False on Blender source. If set to True on MWM exports it breaks subpart orientations (bake_space_transform).
         'bake_space_transform': False,
@@ -562,7 +570,7 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         'use_mesh_modifiers_render': True,
 
          # For amature.
-        'primary_bone_axis': '-X', # STOLLIE: Swapped for SE, Y in Blender source.	
+        'primary_bone_axis': 'X', # STOLLIE: Swapped for SE, Y in Blender source.	
         'secondary_bone_axis': 'Y', # STOLLIE: Swapped for SE, X in Blender source.
         'armature_nodetype': 'NULL',
         'use_armature_deform_only': False,
@@ -593,7 +601,11 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
     if kwargs:	
         if isinstance(kwargs, bpy.types.PropertyGroup):	
             kwargs = {prop : getattr(kwargs, prop) for prop in kwargs.rna_type.properties.keys()}	
-        kwargs.update(**kwargs)	
+        kwargs.update(**kwargs)
+
+    # These cannot be overriden and are always set here
+    kwargs['use_selection'] = False # because of context_objects
+    kwargs['context_objects'] = objects	# STOLLIE: Is None in Blender Source.
 
     if ishavokfbxfile:
         kwargs['bake_space_transform'] = True        
@@ -602,11 +614,13 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         kwargs['axis_forward'] = '-Z'
 
     if scene.seut.sceneType == 'character':
+        kwargs['axis_forward'] = '-Z'
         kwargs['object_types'] = {'EMPTY', 'ARMATURE'} # STOLLIE: Is None in Blender source.
         kwargs['use_armature_deform_only'] = True
         kwargs['bake_anim'] = True # HARAG: no animation export to SE by default - STOLLIE: True in Blender source.
         kwargs['bake_anim_simplify_factor'] = 0.0
         kwargs['use_anim'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.
+        kwargs['apply_unit_scale'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.        
 
     global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
     scale = kwargs['global_scale']
