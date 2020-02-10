@@ -24,6 +24,7 @@ A Blender 2.8+ addon.
 * Export material library to XML
 * Link MatLibs directly from the UI
 * Warning when empties are set up in a way that won't work ingame
+* Rotate empties in mirroring-mode to output mirror information to the SBC
 
 ## Installation
 1. Download the latest release of the addon from the releases section, enable it in Blender.
