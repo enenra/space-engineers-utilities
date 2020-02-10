@@ -108,8 +108,7 @@ class SEUT_PT_Panel_Mountpoints(Panel):
         scene = context.scene
         wm = context.window_manager
         
-        layout.label(text="Dis")
-        # layout.label(text=scene.seut.mountpoints[0].side)
+        layout.prop(scene.seut, 'mountpointToggle', expand=True)
 
 
 class SEUT_PT_Panel_Export(Panel):

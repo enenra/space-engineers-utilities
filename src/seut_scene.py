@@ -22,8 +22,10 @@ def update_GridScale(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_MirroringToggle(self, context):
-    # Calling the operator and doing the check for off / on there means we can use report()
-    bpy.ops.object.mirroring()
+    bpy.ops.scene.mirroring()
+
+def update_MountpointToggle(self, context):
+    bpy.ops.scene.mountpoints()
 
 def update_mirroringScene(self, context):
     bpy.ops.scene.mirroring()
@@ -284,6 +286,15 @@ class SEUT_Scene(PropertyGroup):
     )
 
     # Mountpoints
+    mountpointToggle: EnumProperty(
+        name='Mountpoints',
+        items=(
+            ('on', 'On', ''),
+            ('off', 'Off', '')
+            ),
+        default='off',
+        update=update_MountpointToggle
+    )
     mountpoints: CollectionProperty(
         type=SEUT_Mountpoints
     )
