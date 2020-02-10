@@ -49,6 +49,8 @@ class SEUT_OT_Mountpoints(Operator):
 
         scene = context.scene
 
+        # stop the loop
+
         # delete planes
 
         # delete empties
