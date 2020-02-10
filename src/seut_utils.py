@@ -82,7 +82,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
             subpartCollections['main'].objects.unlink(linkedObject)
             linkedObject.parent = empty
 
-            if linkedObject.type == 'EMPTY' and linkedObject.seut.linkedScene is not None and linkedObject.seut.linkedScene.name in bpy.data.scenes:
+            if linkedObject.type == 'EMPTY' and linkedObject.seut.linkedScene is not None and linkedObject.seut.linkedScene.name in bpy.data.scenes and originScene.seut.linkSubpartInstances:
                 linkSubpartScene(self, originScene, linkedObject, targetCollection)
         
     # Switch back to previous scene

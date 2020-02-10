@@ -77,6 +77,26 @@ class SEUT_OT_Mirroring(Operator):
         if not result == {'CONTINUE'}:
             scene.seut.mirroringToggle = 'off'
             return
+
+        presetMat = None
+        matXfound = False
+        matYfound = False
+        matZfound = False
+        for mat in bpy.data.materials:
+            if mat.name == 'SMAT_Mirror_X':
+                matX = mat
+                matXfound = True
+            elif mat.name == 'SMAT_Mirror_Y':
+                matY = mat
+                matYfound = True
+            elif mat.name == 'SMAT_Mirror_Z':
+                matZ = mat
+                matZfound = True
+        
+        if not matXfound or not matYfound or not matZfound:
+            print("SEUT: Cannot find mirror axis materials. Re-link 'MatLib_Presets.blend'! (026)")
+            scene.seut.mirroringToggle = 'off'
+            return {'CANCELLED'}
             
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
@@ -124,6 +144,7 @@ class SEUT_OT_Mirroring(Operator):
         bpy.ops.mesh.primitive_plane_add(size=emptySize * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(offset / 2, 0.0, 0.0), rotation=(0.0, ninetyDeg, 0.0))
         planeX = bpy.context.view_layer.objects.active
         planeX.name = 'X Axis Mirror Plane'
+        planeX.active_material = matX
 
         bpy.ops.object.add(type='EMPTY', location=(0.0, offset, 0.0), rotation=emptyYRotation)
         emptyY = bpy.context.view_layer.objects.active
@@ -133,6 +154,7 @@ class SEUT_OT_Mirroring(Operator):
         bpy.ops.mesh.primitive_plane_add(size=emptySize * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(0.0, offset / 2, 0.0), rotation=(ninetyDeg, 0.0, 0.0))
         planeY = bpy.context.view_layer.objects.active
         planeY.name = 'Y Axis Mirror Plane'
+        planeY.active_material = matY
 
         bpy.ops.object.add(type='EMPTY', location=(0.0, 0.0, offset), rotation=emptyZRotation)
         emptyZ = bpy.context.view_layer.objects.active
@@ -142,6 +164,7 @@ class SEUT_OT_Mirroring(Operator):
         bpy.ops.mesh.primitive_plane_add(size=emptySize * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(0.0, 0.0, offset / 2), rotation=(0.0, 0.0, ninetyDeg))
         planeZ = bpy.context.view_layer.objects.active
         planeZ.name = 'Z Axis Mirror Plane'
+        planeZ.active_material = matZ
 
         parentCollection = getParentCollection(context, emptyX)
         if parentCollection != collection:
