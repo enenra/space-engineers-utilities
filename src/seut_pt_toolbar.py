@@ -92,7 +92,25 @@ class SEUT_PT_Panel_Mirroring(Panel):
         box.label(text="Mirroring Y: " + scene.seut.mirroring_Y)
         box.label(text="Mirroring Z: " + scene.seut.mirroring_Z)
         """
+
+
+class SEUT_PT_Panel_Mountpoints(Panel):
+    """Creates the mountpoints panel for SEUT"""
+    bl_idname = "SEUT_PT_Panel_Mountpoints"
+    bl_label = "Mountpoints"
+    bl_category = "SEUT"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        wm = context.window_manager
         
+        layout.label(text="Dis")
+        # layout.label(text=scene.seut.mountpoints[0].side)
+
 
 class SEUT_PT_Panel_Export(Panel):
     """Creates the export panel for SEUT"""
