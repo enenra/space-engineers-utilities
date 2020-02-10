@@ -71,7 +71,8 @@ class SEUT_Scene(PropertyGroup):
         items=(
             ('mainScene', 'Main', 'This scene is a main scene'),
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene'),
-            ('mirror', 'Mirroring', 'This scene contains the mirror model of another scene')
+            ('mirror', 'Mirroring', 'This scene contains the mirror model of another scene'),
+            ('character', 'Character', 'This scene contains a character model')
             ),
         default='mainScene'
     )
