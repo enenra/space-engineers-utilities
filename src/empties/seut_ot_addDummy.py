@@ -22,7 +22,7 @@ class SEUT_OT_AddDummy(Operator):
             ('conveyorline_small', 'Conveyorline Small', 'Small conveyor connection point without direct access'),
             ('Connector', 'Connector', 'Adds connector functionality'),
             ('merge', 'Merge Block', 'Adds merge block functionality'),
-            ('thruster_flame', 'Thruster Flame', 'Determines the point where the thruster flame will appear'),
+            ('thruster_flame', 'Thruster Flame', 'Determines the point where the thruster flame will appear. Empty size defines flame size'),
             ('muzzle_missile', 'Muzzle Missile', 'The point of origin for missiles shot by the block'),
             ('muzzle_projectile', 'Muzzle Projectile', 'The point of origin for projectiles shot by the block'),
             ('respawn', 'Respawn Point', 'The location in which players will respawn'),
@@ -36,7 +36,8 @@ class SEUT_OT_AddDummy(Operator):
             ('character', 'Character', 'The location in which the character model will be placed'),
             ('particles1', 'Particles 1', 'Point of origin for particles (used in grinder and welder)'),
             ('particles2', 'Particles 2', 'Point of origin for particles (used in grinder)'),
-            ('TopBlock', 'Piston Top', 'The top part of a piston')
+            ('TopBlock', 'Piston Top', 'The top part of a piston'),
+            ('center', 'Center', 'Defines the center of a block')
             ),
         default='conveyorline'
     )
@@ -58,6 +59,7 @@ class SEUT_OT_AddDummy(Operator):
         # Determine name strings.
         emptyName = ""
         usesIndex = False
+        displayType = 'CUBE'
 
         if self.detectorType == 'conveyorline':
             emptyName = "dummy_detector_conveyorline_"
@@ -82,10 +84,12 @@ class SEUT_OT_AddDummy(Operator):
         if self.detectorType == 'muzzle_missile':
             emptyName = "muzzle_missile_"
             usesIndex = True
+            displayType = 'SINGLE_ARROW'
 
         if self.detectorType == 'muzzle_projectile':
             emptyName = "muzzle_projectile_"
             usesIndex = True
+            displayType = 'SINGLE_ARROW'
 
         if self.detectorType == 'respawn':
             emptyName = "dummy_detector_respawn"
@@ -98,6 +102,7 @@ class SEUT_OT_AddDummy(Operator):
         if self.detectorType == 'camera':
             emptyName = "dummy_camera"
             usesIndex = False
+            displayType = 'SINGLE_ARROW'
 
         if self.detectorType == 'upgrade':
             emptyName = "detector_upgrade_"
@@ -134,12 +139,16 @@ class SEUT_OT_AddDummy(Operator):
         if self.detectorType == 'TopBlock':
             emptyName = "dummy_TopBlock"
             usesIndex = False
+
+        if self.detectorType == 'center':
+            emptyName = "Center"
+            usesIndex = False
         
         # Spawn empty
         bpy.ops.object.add(type='EMPTY')
         empty = bpy.context.view_layer.objects.active
 
-        empty.empty_display_type = "CUBE"
+        empty.empty_display_type = displayType
 
         if usesIndex:
             empty.name = emptyName + str(self.index)
