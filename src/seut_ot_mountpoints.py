@@ -198,40 +198,39 @@ class SEUT_OT_Mountpoints(Operator):
 
         scene = context.scene
 
-        # Create matrix with bounding box dimensions that are passed to function
-        matrix = [[False] * y for r in range(x)]
-
         print("---------------------------------------------")
         print(sideObject.side + " old: " + str(len(sideObject.blocks)))
         
         # Register existing blocks and remove blocks that are out of bounds
         existingBlocks = set(sideObject.blocks)
 
+        print("removing...")
         for b in existingBlocks:
-            if b is not None:
-                print("----------- x: " + str(b.x) + " y: " + str(b.y))
-                if b.x < x and b.y < y:
-                    matrix[b.x][b.y] = True
-                    print("^ correct")
-                else:
-                    print("^ removed")
-                    sideObject.blocks.remove(sideObject.blocks.find(b.name))
-                    """
-                    for idx in range(len(sideObject.blocks)):
-                        if b == sideObject.blocks[idx]:
-                            sideObject.blocks.remove(idx)
-                    """
-        print(matrix)
-        # Recreate missing blocks
-        for col in range(y):
-            for row in range(x):
-                if matrix[row][col] == False:
-                    matrix[row][col] = True
+            temp = " x: " + str(b.x) + " y: " + str(b.y)
+            found = False
+            for xIdx in range(x):
+                for yIdx in range(y):
+                    if b.x == xIdx and b.y == yIdx:
+                        found = True
+                        print(temp + " existing")
+            if not found:
+                print(temp + " removed")
+                sideObject.blocks.remove(sideObject.blocks.find(b.name))
+
+        print("adding...")
+        for xIdx in range(x):
+            for yIdx in range(y):
+                temp = " x: " + str(xIdx) + " y: " + str(yIdx)
+                found = False
+                for b in sideObject.blocks:
+                    if b.x == xIdx and b.y == yIdx:
+                        found = True
+                        print(temp + " existing")
+                if not found:
+                    print(temp + " added")
                     item = sideObject.blocks.add()
-                    item.x = row
-                    item.y = col
-                    print("added x: " + str(item.x) + " y: " + str(item.y))
-        print(matrix)
+                    item.x = xIdx
+                    item.y = yIdx
 
         print(sideObject.side + " new: " + str(len(sideObject.blocks)))
     
