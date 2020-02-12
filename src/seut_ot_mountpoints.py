@@ -66,6 +66,8 @@ class SEUT_OT_Mountpoints(Operator):
         SEUT_OT_Mountpoints.recreateBlocks(context, top, scene.seut.bBox_X, scene.seut.bBox_Y)
         SEUT_OT_Mountpoints.recreateBlocks(context, bottom, scene.seut.bBox_X, scene.seut.bBox_Y)
 
+        print("================================================================")
+
         """
         # Check if entries for squares exist. If not, add them.
         for mp in scene.seut.mountpoints:
@@ -197,29 +199,39 @@ class SEUT_OT_Mountpoints(Operator):
         scene = context.scene
 
         # Create matrix with bounding box dimensions that are passed to function
-        matrix = [[False] * x for r in range(y)]
+        matrix = [[False] * y for r in range(x)]
 
         print("---------------------------------------------")
-        print(sideObject.side + " " + str(len(sideObject.blocks)))
-        print(sideObject.blocks)
-
+        print(sideObject.side + " old: " + str(len(sideObject.blocks)))
+        
         # Register existing blocks and remove blocks that are out of bounds
-        for b in sideObject.blocks:
+        existingBlocks = set(sideObject.blocks)
+
+        for b in existingBlocks:
             if b is not None:
-                if b.x <= x - 1 and b.y <= y - 1:
+                if b.x < x and b.y < y:
                     matrix[b.x][b.y] = True
                 else:
-                    sideObject.blocks.remove(sideObject.index(b))
+                    print("removed x: " + str(b.x) + " y: " + str(b.y))
+                    sideObject.blocks.remove(sideObject.blocks.find(b.name))
+                    """
+                    for idx in range(len(sideObject.blocks)):
+                        if b == sideObject.blocks[idx]:
+                            sideObject.blocks.remove(idx)
+                    """
         print(matrix)
         # Recreate missing blocks
-        for row in range(y):
-            for col in range(x):
+        for col in range(y):
+            for row in range(x):
                 if matrix[row][col] == False:
                     matrix[row][col] = True
                     item = sideObject.blocks.add()
                     item.x = row
                     item.y = col
+                    print("added x: " + str(item.x) + " y: " + str(item.y))
         print(matrix)
+
+        print(sideObject.side + " new: " + str(len(sideObject.blocks)))
     
 
     def recreateSquares(context, block, squaresPerAxis):
@@ -231,13 +243,12 @@ class SEUT_OT_Mountpoints(Operator):
         matrix = [[False] * squaresPerAxis for r in range(squaresPerAxis)]
 
         # Register existing square entries and remove squares out of bounds
-        for idx in range(len(block.squares)):
-            s = block.squares[idx - 1]
+        for s in block.squares:
             if s is not None:
                 if s.x <= squaresPerAxis - 1 and s.y <= squaresPerAxis - 1:
                     matrix[s.x][s.y] = True
                 else:
-                    block.squares.remove(idx)
+                    block.squares.remove(block.squares.find(s.name))
 
         # Recreate missing squares
         for row in range(squaresPerAxis):
