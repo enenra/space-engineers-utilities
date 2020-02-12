@@ -209,10 +209,12 @@ class SEUT_OT_Mountpoints(Operator):
 
         for b in existingBlocks:
             if b is not None:
+                print("----------- x: " + str(b.x) + " y: " + str(b.y))
                 if b.x < x and b.y < y:
                     matrix[b.x][b.y] = True
+                    print("^ correct")
                 else:
-                    print("removed x: " + str(b.x) + " y: " + str(b.y))
+                    print("^ removed")
                     sideObject.blocks.remove(sideObject.blocks.find(b.name))
                     """
                     for idx in range(len(sideObject.blocks)):
