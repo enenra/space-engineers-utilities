@@ -25,27 +25,28 @@ def export_XML(self, context, collection):
     model = ET.Element('Model')
     model.set('Name', 'Default')
 
-    paramCentered = ET.SubElement(model, 'Parameter')
-    paramCentered.set('Name', 'Centered')
-    paramCentered.text = 'false'
-
-    if scene.seut.sceneType != 'character':
+    if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
         paramRescaleFactor = ET.SubElement(model, 'Parameter')
         paramRescaleFactor.set('Name', 'RescaleFactor')
         paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor)
-    elif scene.seut.sceneType == 'character':
+        
+        paramCentered = ET.SubElement(model, 'Parameter')
+        paramCentered.set('Name', 'Centered')
+        paramCentered.text = 'false'
+
+        paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
+        paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
+        paramRescaleToLengthInMeters.text = 'false'
+    
+    elif scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
         paramRescaleFactor = ET.SubElement(model, 'Parameter')
         paramRescaleFactor.set('Name', 'RescaleFactor')
         paramRescaleFactor.text = '0.01'
-    
-    paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
-    paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
-    paramRescaleToLengthInMeters.text = 'false'
 
-    if scene.seut.sceneType == 'character':
-        paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
-        paramRescaleToLengthInMeters.set('Name', 'RotationY')
-        paramRescaleToLengthInMeters.text = '180'
+    if scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
+        paramRotationY = ET.SubElement(model, 'Parameter')
+        paramRotationY.set('Name', 'RotationY')
+        paramRotationY.text = '180'
     
     path = bpy.path.abspath(scene.seut.export_exportPath)
 
@@ -614,14 +615,22 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         kwargs['axis_forward'] = '-Z'
 
     if scene.seut.sceneType == 'character':
+        kwargs['global_scale'] = 1.00
+        kwargs['axis_forward'] = '-Z'
+        kwargs['object_types'] = {'MESH', 'EMPTY', 'ARMATURE'} # STOLLIE: Is None in Blender source.
+        kwargs['add_leaf_bones'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.     
+        kwargs['apply_unit_scale'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.    
+
+    if scene.seut.sceneType == 'character_animation':
         kwargs['axis_forward'] = '-Z'
         kwargs['object_types'] = {'EMPTY', 'ARMATURE'} # STOLLIE: Is None in Blender source.
         kwargs['use_armature_deform_only'] = True
         kwargs['bake_anim'] = True # HARAG: no animation export to SE by default - STOLLIE: True in Blender source.
         kwargs['bake_anim_simplify_factor'] = 0.0
         kwargs['use_anim'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.
-        kwargs['apply_unit_scale'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.        
+        kwargs['apply_unit_scale'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.    
 
+    # if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
     global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
     scale = kwargs['global_scale']
 
