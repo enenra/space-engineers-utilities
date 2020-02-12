@@ -137,6 +137,7 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
+    bpy.types.VIEW3D_MT_add.append(menu_draw)
 
     bpy.types.Material.seut = PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
@@ -154,6 +155,7 @@ def unregister():
         bpy.utils.unregister_class(cls)
         
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
+    bpy.types.VIEW3D_MT_add.remove(menu_draw)
 
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
