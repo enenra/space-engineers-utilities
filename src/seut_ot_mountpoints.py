@@ -2,6 +2,10 @@ import bpy
 
 from bpy.types import Operator
 
+from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_errors                   import errorCollection, isCollectionExcluded
+from .seut_utils                    import getParentCollection
+
 class SEUT_OT_Mountpoints(Operator):
     """Handles everything related to mountpoint functionality"""
     bl_idname = "scene.mountpoints"
@@ -25,8 +29,26 @@ class SEUT_OT_Mountpoints(Operator):
     
 
     def mountpointSetup(self, context):
+        """Sets up mountpoint utilities"""
 
         scene = context.scene
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
+
+        if collections['seut'] is None:
+            print("SEUT Warning: Collection 'SEUT " + scene.name + "' not found. Action not possible. (002)")
+            scene.seut.mountpointToggle = 'off'
+            return {'CANCELLED'}
+
+        isExcluded = isCollectionExcluded(collections['seut'].name, allCurrentViewLayerCollections)
+        if isExcluded or isExcluded is None:
+            print("SEUT Warning: Collection 'SEUT " + scene.name + "' excluded from view layer. Action not possible. (019)")
+            scene.seut.mountpointToggle = 'off'
+            return {'CANCELLED'}
+            
+        if scene.seut.subtypeId == "":
+            scene.seut.subtypeId = scene.name
+        tag = ' (' + scene.seut.subtypeId + ')'
 
         # Check if entries for sides exist. If not, add them.
         front = SEUT_OT_Mountpoints.recreateSide(context, 'front')
@@ -44,33 +66,102 @@ class SEUT_OT_Mountpoints(Operator):
         SEUT_OT_Mountpoints.recreateBlocks(context, top, scene.seut.bBox_X, scene.seut.bBox_Y)
         SEUT_OT_Mountpoints.recreateBlocks(context, bottom, scene.seut.bBox_X, scene.seut.bBox_Y)
 
+        """
         # Check if entries for squares exist. If not, add them.
         for mp in scene.seut.mountpoints:
             for block in mp.blocks:
-                SEUT_OT_Mountpoints.recreateSquares(context, block, 5)
+                SEUT_OT_Mountpoints.recreateSquares(context, block, 5)      # Defining the amount of squares like so allows me to later implement inversely scaling the amount of squares with bbox size
+        """
 
-        # Create collection
+        # Create collection if it doesn't exist already
+        if not 'Mountpoints' + tag in bpy.data.collections:
+            collection = bpy.data.collections.new('Mountpoints' + tag)
+            collections['seut'].children.link(collection)
+        else:
+            collection = bpy.data.collections['Mountpoints' + tag]
+            try:
+                collections['seut'].children.link(collection)
+            except:
+                pass
 
-        # Create empty tree for sides and blocks
+        # Create empty tree for sides
+        bpy.ops.object.add(type='EMPTY')
+        emptyFront = bpy.context.view_layer.objects.active
+        emptyFront.name = 'Mountpoints Front'
+        bpy.ops.object.add(type='EMPTY')
+        emptyBack = bpy.context.view_layer.objects.active
+        emptyBack.name = 'Mountpoints Back'
+        bpy.ops.object.add(type='EMPTY')
+        emptyLeft = bpy.context.view_layer.objects.active
+        emptyLeft.name = 'Mountpoints Left'
+        bpy.ops.object.add(type='EMPTY')
+        emptyRight = bpy.context.view_layer.objects.active
+        emptyRight.name = 'Mountpoints Right'
+        bpy.ops.object.add(type='EMPTY')
+        emptyTop = bpy.context.view_layer.objects.active
+        emptyTop.name = 'Mountpoints Top'
+        bpy.ops.object.add(type='EMPTY')
+        emptyBottom = bpy.context.view_layer.objects.active
+        emptyBottom.name = 'Mountpoints Bottom'
+
+
+        parentCollection = getParentCollection(context, emptyFront)
+        if parentCollection != collection:
+            collection.objects.link(emptyFront)
+            collection.objects.link(emptyBack)
+            collection.objects.link(emptyLeft)
+            collection.objects.link(emptyRight)
+            collection.objects.link(emptyTop)
+            collection.objects.link(emptyBottom)
+
+            if parentCollection is None:
+                scene.collection.objects.unlink(emptyFront)
+                scene.collection.objects.unlink(emptyBack)
+                scene.collection.objects.unlink(emptyLeft)
+                scene.collection.objects.unlink(emptyRight)
+                scene.collection.objects.unlink(emptyTop)
+                scene.collection.objects.unlink(emptyBottom)
+            else:
+                parentCollection.objects.unlink(emptyFront)
+                parentCollection.objects.unlink(emptyBack)
+                parentCollection.objects.unlink(emptyLeft)
+                parentCollection.objects.unlink(emptyRight)
+                parentCollection.objects.unlink(emptyTop)
+                parentCollection.objects.unlink(emptyBottom)
 
         # Add the planes to the empties
 
         # Start the loop to check for selection
 
         return {'FINISHED'}
+        """Cleans up mountpoint utilities"""
     
 
     def cleanMountpointSetup(self, context):
 
         scene = context.scene
+        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        if scene.seut.subtypeId == "":
+            scene.seut.subtypeId = scene.name
+        tag = ' (' + scene.seut.subtypeId + ')'
 
         # stop the loop
 
+        # Save empty rotation values to properties, delete children instances, remove empty
+        for obj in scene.objects:
+            if obj is not None and obj.type == 'EMPTY':
+                if obj.name == 'Mountpoints Front' or obj.name == 'Mountpoints Back' or obj.name == 'Mountpoints Left' or obj.name == 'Mountpoints Right' or obj.name == 'Mountpoints Top' or obj.name == 'Mountpoints Bottom':
+                    for child in obj.children:
+                        child.select_set(state=False, view_layer=context.window.view_layer)
+                        bpy.data.objects.remove(child)
+                    obj.select_set(state=False, view_layer=context.window.view_layer)
+                    bpy.data.objects.remove(obj)
+
         # delete planes
-
-        # delete empties
-
-        # delete collection
+    
+        # Delete collection
+        if 'Mountpoints' + tag in bpy.data.collections:
+            bpy.data.collections.remove(bpy.data.collections['Mountpoints' + tag])
 
         return {'FINISHED'}
     
@@ -85,6 +176,7 @@ class SEUT_OT_Mountpoints(Operator):
 
         return {'FINISHED'}
     
+
     def recreateSide(context, sideName):
         """Searches scene for a mountpoint side. If it exists, return it, else create it and then return it"""
 
@@ -98,6 +190,7 @@ class SEUT_OT_Mountpoints(Operator):
         item.side = sideName
         return item
     
+
     def recreateBlocks(context, sideObject, x, y):
         """Iterates through blocks associated with a mountpoint side, removes ones that are not valid anymore and adds new ones in gaps"""
 
@@ -106,14 +199,18 @@ class SEUT_OT_Mountpoints(Operator):
         # Create matrix with bounding box dimensions that are passed to function
         matrix = [[False] * x for r in range(y)]
 
+        print("---------------------------------------------")
+        print(sideObject.side + " " + str(len(sideObject.blocks)))
+        print(sideObject.blocks)
+
         # Register existing blocks and remove blocks that are out of bounds
         for b in sideObject.blocks:
             if b is not None:
                 if b.x <= x - 1 and b.y <= y - 1:
                     matrix[b.x][b.y] = True
                 else:
-                    sideObject.blocks.remove(b)
-
+                    sideObject.blocks.remove(sideObject.index(b))
+        print(matrix)
         # Recreate missing blocks
         for row in range(y):
             for col in range(x):
@@ -122,7 +219,9 @@ class SEUT_OT_Mountpoints(Operator):
                     item = sideObject.blocks.add()
                     item.x = row
                     item.y = col
+        print(matrix)
     
+
     def recreateSquares(context, block, squaresPerAxis):
         """Iterates through squares of a mountpoint side's blocks and adds their entries if necessary"""
 
@@ -132,12 +231,13 @@ class SEUT_OT_Mountpoints(Operator):
         matrix = [[False] * squaresPerAxis for r in range(squaresPerAxis)]
 
         # Register existing square entries and remove squares out of bounds
-        for s in block.squares:
+        for idx in range(len(block.squares)):
+            s = block.squares[idx - 1]
             if s is not None:
-                if s.x <= x - 1 and s.y <= y - 1:
+                if s.x <= squaresPerAxis - 1 and s.y <= squaresPerAxis - 1:
                     matrix[s.x][s.y] = True
                 else:
-                    block.squares.remove(s)
+                    block.squares.remove(idx)
 
         # Recreate missing squares
         for row in range(squaresPerAxis):
