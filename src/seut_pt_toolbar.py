@@ -150,7 +150,11 @@ class SEUT_PT_Panel_Export(Panel):
         box.prop(scene.seut, "export_deleteLooseFiles")
         box.prop(scene.seut, "export_rescaleFactor")
         
-        box.prop(scene.seut, "export_exportPath", text="Folder", expand=True)
+        split = box.split(factor=0.85)
+        col = split.column()
+        col.prop(scene.seut, "export_exportPath", text="Folder", expand=True)
+        col = split.column()
+        col.operator('scene.copy_export_folder', text="", icon='PASTEDOWN')
         
         # LOD
         if collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None or collections['bs_lod'] is not None:

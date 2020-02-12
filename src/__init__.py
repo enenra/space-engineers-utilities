@@ -59,6 +59,7 @@ from .export.seut_ot_exportMWM              import SEUT_OT_ExportMWM
 from .export.seut_ot_export                 import SEUT_OT_Export
 from .export.seut_ot_exportAllScenes        import SEUT_OT_ExportAllScenes
 from .export.seut_ot_exportMaterials        import SEUT_OT_ExportMaterials
+from .export.seut_ot_copyExportFolder       import SEUT_OT_CopyExportFolder
 from .materials.seut_materials              import SEUT_Materials
 from .materials.seut_pt_matToolbar          import SEUT_PT_Panel_Materials
 from .materials.seut_pt_matToolbar          import SEUT_PT_Panel_MatLib
@@ -110,6 +111,7 @@ classes = (
     SEUT_OT_ExportHKT,
     SEUT_OT_ExportSBC,
     SEUT_OT_ExportMWM,
+    SEUT_OT_CopyExportFolder,
     SEUT_OT_Import,
     SEUT_OT_StructureConversion,
     SEUT_OT_RemapMaterials,
