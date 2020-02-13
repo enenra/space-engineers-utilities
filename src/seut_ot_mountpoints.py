@@ -66,7 +66,7 @@ class SEUT_OT_Mountpoints(Operator):
         SEUT_OT_Mountpoints.recreateBlocks(context, top, scene.seut.bBox_X, scene.seut.bBox_Y)
         SEUT_OT_Mountpoints.recreateBlocks(context, bottom, scene.seut.bBox_X, scene.seut.bBox_Y)
 
-        print("================================================================")
+        print("<<================================================================>>")
 
         """
         # Check if entries for squares exist. If not, add them.
@@ -197,15 +197,16 @@ class SEUT_OT_Mountpoints(Operator):
         """Iterates through blocks associated with a mountpoint side, removes ones that are not valid anymore and adds new ones in gaps"""
 
         scene = context.scene
-
+        
         print("---------------------------------------------")
-        print(sideObject.side + " old: " + str(len(sideObject.blocks)))
+        print(sideObject.side.upper() + " OLD: " + str(len(sideObject.blocks)))
         
         # Register existing blocks and remove blocks that are out of bounds
         existingBlocks = set(sideObject.blocks)
 
+        """
         print("removing...")
-        for b in existingBlocks:
+        for  b in existingBlocks:
             temp = " x: " + str(b.x) + " y: " + str(b.y)
             found = False
             for xIdx in range(x):
@@ -216,6 +217,9 @@ class SEUT_OT_Mountpoints(Operator):
             if not found:
                 print(temp + " removed")
                 sideObject.blocks.remove(sideObject.blocks.find(b.name))
+        """
+
+        sideObject.blocks.clear()
 
         print("adding...")
         for xIdx in range(x):
@@ -232,7 +236,7 @@ class SEUT_OT_Mountpoints(Operator):
                     item.x = xIdx
                     item.y = yIdx
 
-        print(sideObject.side + " new: " + str(len(sideObject.blocks)))
+        print(sideObject.side.upper() + " NEW: " + str(len(sideObject.blocks)))
     
 
     def recreateSquares(context, block, squaresPerAxis):

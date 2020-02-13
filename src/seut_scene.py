@@ -294,7 +294,7 @@ class SEUT_Scene(PropertyGroup):
             ),
         default='off',
         update=update_MountpointToggle
-    )
+    )    
     mountpoints: CollectionProperty(
         type=SEUT_Mountpoints
     )
