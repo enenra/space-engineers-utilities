@@ -101,7 +101,7 @@ class SEUT_OT_ExportMaterials(Operator):
                     else:
                         matCM = ET.SubElement(matEntry, 'Parameter')
                         matCM.set('Name', 'ColorMetalTexture')
-                        matCM.text = images['cm'].filepath[offset:]
+                        matCM.text = os.path.splitext(images['cm'].filepath[offset:])[0] + ".dds"
                 
                 # _ng NormalGloss texture
                 if images['ng'] == None:
@@ -113,7 +113,7 @@ class SEUT_OT_ExportMaterials(Operator):
                     else:
                         matNG = ET.SubElement(matEntry, 'Parameter')
                         matNG.set('Name', 'NormalGlossTexture')
-                        matNG.text = images['ng'].filepath[offset:]
+                        matNG.text = os.path.splitext(images['ng'].filepath[offset:])[0] + ".dds"
                 
                 # _add AddMaps texture
                 if images['add'] == None:
@@ -125,7 +125,7 @@ class SEUT_OT_ExportMaterials(Operator):
                     else:
                         matADD = ET.SubElement(matEntry, 'Parameter')
                         matADD.set('Name', 'AddMapsTexture')
-                        matADD.text = images['add'].filepath[offset:]
+                        matADD.text = os.path.splitext(images['add'].filepath[offset:])[0] + ".dds"
                 
                 # _alphamask Alphamask texture
                 if images['am'] == None:
@@ -137,7 +137,7 @@ class SEUT_OT_ExportMaterials(Operator):
                     else:
                         matAM = ET.SubElement(matEntry, 'Parameter')
                         matAM.set('Name', 'AlphamaskTexture')
-                        matAM.text = images['am'].filepath[offset:]
+                        matAM.text = os.path.splitext(images['am'].filepath[offset:])[0] + ".dds"
 
                 # If no textures are added to the material, remove the entry again.
                 if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
