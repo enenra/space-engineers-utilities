@@ -12,9 +12,10 @@ class SEUT_OT_MatCreate(Operator):
 
     def execute(self, context):
         
+        wm = context.window_manager
         scene = context.scene
 
-        presetName = scene.seut.matPreset
+        presetName = wm.seut.matPreset
         
         # Find SMAT to pull preset from.
         presetMat = None
