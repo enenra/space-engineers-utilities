@@ -43,31 +43,33 @@ from bpy.types import (Panel,
                        PropertyGroup,
                        )
 
-from .empties.seut_mt_contextMenu           import SEUT_MT_ContextMenu
-from .empties.seut_pt_emptyMenu             import SEUT_PT_EmptyLink
-from .empties.seut_ot_addHighlightEmpty     import SEUT_OT_AddHighlightEmpty
-from .empties.seut_ot_addDummy              import SEUT_OT_AddDummy
-from .empties.seut_ot_addPresetSubpart      import SEUT_OT_AddPresetSubpart
-from .empties.seut_ot_addCustomSubpart      import SEUT_OT_AddCustomSubpart
-from .empties.seut_ot_emptyToCubeType       import SEUT_OT_EmptiesToCubeType
-from .export.seut_ot_exportMain             import SEUT_OT_ExportMain
-from .export.seut_ot_exportBS               import SEUT_OT_ExportBS
-from .export.seut_ot_exportLOD              import SEUT_OT_ExportLOD
-from .export.seut_ot_exportHKT              import SEUT_OT_ExportHKT
-from .export.seut_ot_exportSBC              import SEUT_OT_ExportSBC
-from .export.seut_ot_exportMWM              import SEUT_OT_ExportMWM
-from .export.seut_ot_export                 import SEUT_OT_Export
-from .export.seut_ot_exportAllScenes        import SEUT_OT_ExportAllScenes
-from .export.seut_ot_exportMaterials        import SEUT_OT_ExportMaterials
-from .export.seut_ot_copyExportFolder       import SEUT_OT_CopyExportFolder
-from .materials.seut_materials              import SEUT_Materials
-from .materials.seut_pt_matToolbar          import SEUT_PT_Panel_Materials
-from .materials.seut_pt_matToolbar          import SEUT_PT_Panel_MatLib
-from .materials.seut_ot_remapMaterials      import SEUT_OT_RemapMaterials
-from .materials.seut_ot_refreshMatLibs      import SEUT_OT_RefreshMatLibs
-from .materials.seut_ot_matCreate           import SEUT_OT_MatCreate
-from .materials.seut_matLib                 import SEUT_MatLibProps
-from .materials.seut_matLib                 import SEUT_UL_MatLib
+from .empties.seut_mt_contextMenu               import SEUT_MT_ContextMenu
+from .empties.seut_pt_emptyMenu                 import SEUT_PT_EmptyLink
+from .empties.seut_ot_addHighlightEmpty         import SEUT_OT_AddHighlightEmpty
+from .empties.seut_ot_addDummy                  import SEUT_OT_AddDummy
+from .empties.seut_ot_addPresetSubpart          import SEUT_OT_AddPresetSubpart
+from .empties.seut_ot_addCustomSubpart          import SEUT_OT_AddCustomSubpart
+from .empties.seut_ot_emptyToCubeType           import SEUT_OT_EmptiesToCubeType
+from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
+from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
+from .export.seut_ot_exportMain                 import SEUT_OT_ExportMain
+from .export.seut_ot_exportBS                   import SEUT_OT_ExportBS
+from .export.seut_ot_exportLOD                  import SEUT_OT_ExportLOD
+from .export.seut_ot_exportHKT                  import SEUT_OT_ExportHKT
+from .export.seut_ot_exportSBC                  import SEUT_OT_ExportSBC
+from .export.seut_ot_exportMWM                  import SEUT_OT_ExportMWM
+from .export.seut_ot_export                     import SEUT_OT_Export
+from .export.seut_ot_exportAllScenes            import SEUT_OT_ExportAllScenes
+from .export.seut_ot_exportMaterials            import SEUT_OT_ExportMaterials
+from .export.seut_ot_copyExportFolder           import SEUT_OT_CopyExportFolder
+from .materials.seut_materials                  import SEUT_Materials
+from .materials.seut_pt_matToolbar              import SEUT_PT_Panel_Materials
+from .materials.seut_pt_matToolbar              import SEUT_PT_Panel_MatLib
+from .materials.seut_ot_remapMaterials          import SEUT_OT_RemapMaterials
+from .materials.seut_ot_refreshMatLibs          import SEUT_OT_RefreshMatLibs
+from .materials.seut_ot_matCreate               import SEUT_OT_MatCreate
+from .materials.seut_matLib                     import SEUT_MatLibProps
+from .materials.seut_matLib                     import SEUT_UL_MatLib
 
 from .seut_preferences              import SEUT_AddonPreferences
 from .seut_pt_toolbar               import SEUT_PT_Panel
@@ -116,6 +118,8 @@ classes = (
     SEUT_OT_StructureConversion,
     SEUT_OT_RemapMaterials,
     SEUT_OT_EmptiesToCubeType,
+    SEUT_OT_ConvertBonesToBlenderFormat,
+    SEUT_OT_ConvertBonesToSEFormat,
     SEUT_OT_GridScale,
     SEUT_OT_BBox,
     SEUT_OT_BBoxAuto,
