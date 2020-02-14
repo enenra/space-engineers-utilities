@@ -17,7 +17,7 @@ def update_enabled(self, context):
     preferences = bpy.context.preferences.addons.get(addon).preferences
     materialsPath = os.path.normpath(bpy.path.abspath(preferences.materialsPath))
 
-    if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.exists(materialsPath) == False:
+    if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
         print("SEUT Info: Path to Materials Folder (Addon Preferences) '" + materialsPath + "' not valid. (017)")
         return
 
