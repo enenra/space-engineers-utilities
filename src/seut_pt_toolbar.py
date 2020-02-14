@@ -192,3 +192,10 @@ class SEUT_PT_Panel_Import(Panel):
         box.operator('object.emptytocubetype', text="Display Empties as 'Cube'")
         box.operator('object.remapmaterials', text="Remap Materials")
         box.operator('object.structure_conversion', text="Convert to new structure")
+
+        # Bones
+        box = layout.box()
+        box.label(text="Bone Conversion")
+        box.operator('object.convertbonestoblenderformat', text="Make Blender compatible")
+        box.operator('object.convertbonestoseformat', text="Make SE compatible")
+        
