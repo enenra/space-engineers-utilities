@@ -182,14 +182,48 @@ class SEUT_OT_Mountpoints(Operator):
         return area
     
 
+    def saveMountpointData(context, collection):
+
+        scene = context.scene
+
+        areas = scene.seut.mountpointAreas
+        areas.clear()
+
+        for empty in collection.objects:
+
+            if empty is None:
+                continue
+
+            elif empty.type == 'EMPTY' and empty.name.find('Mountpoints ') != -1 and empty.children is not None:
+                side = empty.name[12:]
+
+                for child in empty.children:
+                    context.window.view_layer.objects.active = child
+                    bpy.ops.object.transform_apply(location=True, scale=True)
+                    
+                    item = areas.add()
+                    item.side = side
+                    item.x = child.location.x
+                    item.y = child.location.y
+                    item.xDim = child.dimensions.x
+                    item.yDim = child.dimensions.y
+        
+        print("areas ------------------------------------")
+        for area in areas:
+            print(area.side + " x: " + str(area.x) + " y: " + str(area.y) + " xDim: " + str(area.xDim) + " yDim: " + str(area.yDim))
+
+        return
+
     def cleanMountpointSetup(self, context):
         """Cleans up mountpoint utilities"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
         tag = ' (' + scene.seut.subtypeId + ')'
+
+        SEUT_OT_Mountpoints.saveMountpointData(context, bpy.data.collections['Mountpoints' + tag])
 
         # Save empty rotation values to properties, delete children instances, remove empty
         for obj in scene.objects:

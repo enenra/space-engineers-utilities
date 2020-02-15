@@ -84,6 +84,7 @@ from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_mountpoints           import SEUT_OT_Mountpoints
 from .seut_ot_addMountpointArea     import SEUT_OT_AddMountpointArea
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_scene                    import SEUT_MountpointAreas
 from .seut_scene                    import SEUT_Scene
 from .seut_object                   import SEUT_Object
 from .seut_windowManager            import SEUT_WindowManager
@@ -128,6 +129,7 @@ classes = (
     SEUT_OT_MatCreate,
     SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
+    SEUT_MountpointAreas,
     SEUT_Scene,
     SEUT_Object,
     SEUT_WindowManager,

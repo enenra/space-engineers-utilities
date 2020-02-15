@@ -65,6 +65,36 @@ def update_linkSubpartInstances(self, context):
 def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'mirror'
 
+class SEUT_MountpointAreas(PropertyGroup):
+    
+    side: EnumProperty(
+    name='Side',
+    items=(
+        ('front', 'Front', ''),
+        ('back', 'Back', ''),
+        ('left', 'Left', ''),
+        ('right', 'Right', ''),
+        ('top', 'Top', ''),
+        ('bottom', 'Bottom', '')
+        ),
+    default='front'        
+    )
+    x: IntProperty(
+        name="Location X",
+        default=0
+    )
+    y: IntProperty(
+        name="Location Y",
+        default=0
+    )
+    xDim: IntProperty(
+        name="Dimension X",
+        default=0
+    )
+    yDim: IntProperty(
+        name="Dimension Y",
+        default=0
+    )
 
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
@@ -242,6 +272,10 @@ class SEUT_Scene(PropertyGroup):
         default='off',
         update=update_MountpointToggle
     )
+    mountpointAreas: CollectionProperty(
+        type=SEUT_MountpointAreas
+    )
+    
 
     # Export
     export_deleteLooseFiles: BoolProperty(
