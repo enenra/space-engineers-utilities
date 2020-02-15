@@ -1,6 +1,7 @@
 import bpy
 
-from bpy.types import Operator
+from math           import pi
+from bpy.types      import Operator
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_errors                   import errorCollection, isCollectionExcluded
@@ -85,56 +86,113 @@ class SEUT_OT_Mountpoints(Operator):
                 pass
 
         # Create empty tree for sides
-        bpy.ops.object.add(type='EMPTY')
-        emptyFront = bpy.context.view_layer.objects.active
-        emptyFront.name = 'Mountpoints Front'
-        bpy.ops.object.add(type='EMPTY')
-        emptyBack = bpy.context.view_layer.objects.active
-        emptyBack.name = 'Mountpoints Back'
-        bpy.ops.object.add(type='EMPTY')
-        emptyLeft = bpy.context.view_layer.objects.active
-        emptyLeft.name = 'Mountpoints Left'
-        bpy.ops.object.add(type='EMPTY')
-        emptyRight = bpy.context.view_layer.objects.active
-        emptyRight.name = 'Mountpoints Right'
-        bpy.ops.object.add(type='EMPTY')
-        emptyTop = bpy.context.view_layer.objects.active
-        emptyTop.name = 'Mountpoints Top'
-        bpy.ops.object.add(type='EMPTY')
-        emptyBottom = bpy.context.view_layer.objects.active
-        emptyBottom.name = 'Mountpoints Bottom'
+        if scene.seut.gridScale == 'small':
+            scale = 0.5
+        else:
+            scale = 2.5
 
+        bboxX = scene.seut.bBox_X * scale
+        bboxY = scene.seut.bBox_Y * scale
+        bboxZ = scene.seut.bBox_Z * scale
 
-        parentCollection = getParentCollection(context, emptyFront)
-        if parentCollection != collection:
-            collection.objects.link(emptyFront)
-            collection.objects.link(emptyBack)
-            collection.objects.link(emptyLeft)
-            collection.objects.link(emptyRight)
-            collection.objects.link(emptyTop)
-            collection.objects.link(emptyBottom)
+        # Create and position side empties
+        emptyFront = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Front', collection, None)
+        emptyFront.empty_display_type = 'SINGLE_ARROW'
+        emptyFront.rotation_euler.x = pi * -90 / 180
+        emptyFront.rotation_euler.z = pi * -180 / 180
+        emptyFront.location.y = -(bboxY / 2 * 1.1)
+        emptyFront.location.x = -(scale / 2 * (scene.seut.bBox_X - 1))
+        emptyFront.location.z = -(scale / 2 * (scene.seut.bBox_Z - 1))
 
-            if parentCollection is None:
-                scene.collection.objects.unlink(emptyFront)
-                scene.collection.objects.unlink(emptyBack)
-                scene.collection.objects.unlink(emptyLeft)
-                scene.collection.objects.unlink(emptyRight)
-                scene.collection.objects.unlink(emptyTop)
-                scene.collection.objects.unlink(emptyBottom)
-            else:
-                parentCollection.objects.unlink(emptyFront)
-                parentCollection.objects.unlink(emptyBack)
-                parentCollection.objects.unlink(emptyLeft)
-                parentCollection.objects.unlink(emptyRight)
-                parentCollection.objects.unlink(emptyTop)
-                parentCollection.objects.unlink(emptyBottom)
+        emptyBack = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Back', collection, None)
+        emptyBack.empty_display_type = 'SINGLE_ARROW'
+        emptyBack.rotation_euler.x = pi * -90 / 180
+        emptyBack.location.y = bboxY / 2 * 1.1
+        emptyBack.location.x = (scale / 2 * (scene.seut.bBox_X - 1))
+        emptyBack.location.z = -(scale / 2 * (scene.seut.bBox_Z - 1))
+
+        emptyLeft = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Left', collection, None)
+        emptyLeft.empty_display_type = 'SINGLE_ARROW'
+        emptyLeft.rotation_euler.z = pi * -270 / 180
+        emptyLeft.rotation_euler.x = pi * -90 / 180
+        emptyLeft.location.x = -(bboxX / 2 * 1.1)
+        emptyLeft.location.y = (scale / 2 * (scene.seut.bBox_Y - 1))
+        emptyLeft.location.z = -(scale / 2 * (scene.seut.bBox_Z - 1))
+
+        emptyRight = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Right', collection, None)
+        emptyRight.empty_display_type = 'SINGLE_ARROW'
+        emptyRight.rotation_euler.z = pi * 270 / 180
+        emptyRight.rotation_euler.x = pi * -90 / 180
+        emptyRight.location.x = bboxX / 2 * 1.1
+        emptyRight.location.y = -(scale / 2 * (scene.seut.bBox_Y - 1))
+        emptyRight.location.z = -(scale / 2 * (scene.seut.bBox_Z - 1))
+
+        emptyTop = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Top', collection, None)
+        emptyTop.empty_display_type = 'SINGLE_ARROW'
+        emptyTop.location.z = bboxZ / 2 * 1.1
+        emptyTop.location.x = (scale / 2 * (scene.seut.bBox_X - 1))
+        emptyTop.location.y = (scale / 2 * (scene.seut.bBox_Y - 1))
+
+        emptyBottom = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Bottom', collection, None)
+        emptyBottom.empty_display_type = 'SINGLE_ARROW'
+        # emptyBottom.rotation_euler.x = pi * 180 / 180
+        # emptyBottom.rotation_euler.y = pi * 180 / 180
+        emptyBottom.location.z = -(bboxZ / 2 * 1.1)
+        emptyBottom.location.x = -(scale / 2 * (scene.seut.bBox_X - 1))
+        emptyBottom.location.y = -(scale / 2 * (scene.seut.bBox_Y - 1))
+
+        #   Create empties for blocks
+        for mp in scene.seut.mountpoints:
+            for block in mp.blocks:
+                if mp.side == 'front':
+                    blockEmpty = SEUT_OT_Mountpoints.createEmpty(context, mp.side + ' Block ' + block.name, collection, emptyFront)
+                elif mp.side == 'back':
+                    blockEmpty = SEUT_OT_Mountpoints.createEmpty(context, mp.side + ' Block ' + block.name, collection, emptyBack)
+                elif mp.side == 'left':
+                    blockEmpty = SEUT_OT_Mountpoints.createEmpty(context, mp.side + ' Block ' + block.name, collection, emptyLeft)
+                elif mp.side == 'right':
+                    blockEmpty = SEUT_OT_Mountpoints.createEmpty(context, mp.side + ' Block ' + block.name, collection, emptyRight)
+                elif mp.side == 'top':
+                    blockEmpty = SEUT_OT_Mountpoints.createEmpty(context, mp.side + ' Block ' + block.name, collection, emptyTop)
+                elif mp.side == 'bottom':
+                    blockEmpty = SEUT_OT_Mountpoints.createEmpty(context, mp.side + ' Block ' + block.name, collection, emptyBottom)
+                blockEmpty.location.x = -(block.x * scale)
+                blockEmpty.location.y = -(block.y * scale)
 
         # Add the planes to the empties
+
+        #   Determine offset from center per side
+
+        #   
 
         # Start the loop to check for selection
 
         return {'FINISHED'}
         """Cleans up mountpoint utilities"""
+    
+
+    def createEmpty(context, name, collection, parent):
+        """Creates empty with given name, links it to specified collection and assigns it to a parent, if available"""
+
+        scene = context.scene
+
+        bpy.ops.object.add(type='EMPTY')
+        empty = bpy.context.view_layer.objects.active
+        empty.name = name
+
+        parentCollection = getParentCollection(context, empty)
+        if parentCollection != collection:
+            collection.objects.link(empty)
+
+            if parentCollection is None:
+                scene.collection.objects.unlink(empty)
+            else:
+                parentCollection.objects.unlink(empty)
+        
+        if parent is not None:
+            empty.parent = parent
+
+        return empty
     
 
     def cleanMountpointSetup(self, context):
