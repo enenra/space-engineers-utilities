@@ -82,6 +82,7 @@ from .seut_ot_bBox                  import SEUT_OT_BBox
 from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_mountpoints           import SEUT_OT_Mountpoints
+from .seut_ot_addMountpointArea     import SEUT_OT_AddMountpointArea
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_scene                    import SEUT_Scene
 from .seut_object                   import SEUT_Object
@@ -122,6 +123,7 @@ classes = (
     SEUT_OT_BBoxAuto,
     SEUT_OT_Mirroring,
     SEUT_OT_Mountpoints,
+    SEUT_OT_AddMountpointArea,
     SEUT_OT_RecreateCollections,
     SEUT_OT_MatCreate,
     SEUT_OT_RefreshMatLibs,

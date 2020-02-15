@@ -83,49 +83,51 @@ class SEUT_OT_Mountpoints(Operator):
         bboxZ = scene.seut.bBox_Z * scale
 
         # Create and position side empties
-        emptyFront = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Front', collection, None)
+        emptyFront = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints front', collection, None)
         emptyFront.empty_display_type = 'SINGLE_ARROW'
         emptyFront.rotation_euler.x = pi * -90 / 180
         emptyFront.rotation_euler.z = pi * -180 / 180
         emptyFront.location.y = -(bboxY / 2 * 1.05)
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Front', scale, scene.seut.bBox_X, scene.seut.bBox_Z, collection, emptyFront)
+        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint front', scale, scene.seut.bBox_X, scene.seut.bBox_Z, collection, emptyFront)
         area.active_material = mpMat
 
-        emptyBack = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Back', collection, None)
+        emptyBack = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints back', collection, None)
         emptyBack.empty_display_type = 'SINGLE_ARROW'
         emptyBack.rotation_euler.x = pi * -90 / 180
         emptyBack.location.y = bboxY / 2 * 1.05
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Back', scale, scene.seut.bBox_X, scene.seut.bBox_Z, collection, emptyBack)
+        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint back', scale, scene.seut.bBox_X, scene.seut.bBox_Z, collection, emptyBack)
         area.active_material = mpMat
 
-        emptyLeft = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Left', collection, None)
+        emptyLeft = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints left', collection, None)
         emptyLeft.empty_display_type = 'SINGLE_ARROW'
         emptyLeft.rotation_euler.x = pi * -90 / 180
         emptyLeft.rotation_euler.z = pi * -270 / 180
         emptyLeft.location.x = -(bboxX / 2 * 1.05)
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Left', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, collection, emptyLeft)
+        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint left', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, collection, emptyLeft)
         area.active_material = mpMat
 
-        emptyRight = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Right', collection, None)
+        emptyRight = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints right', collection, None)
         emptyRight.empty_display_type = 'SINGLE_ARROW'
         emptyRight.rotation_euler.x = pi * -90 / 180
         emptyRight.rotation_euler.z = pi * 270 / 180
         emptyRight.location.x = bboxX / 2 * 1.05
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Right', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, collection, emptyRight)
+        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint right', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, collection, emptyRight)
         area.active_material = mpMat
 
-        emptyTop = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Top', collection, None)
+        emptyTop = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints top', collection, None)
         emptyTop.empty_display_type = 'SINGLE_ARROW'
         emptyTop.location.z = bboxZ / 2 * 1.05
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Top', scale, scene.seut.bBox_X, scene.seut.bBox_Y, collection, emptyTop)
+        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint top', scale, scene.seut.bBox_X, scene.seut.bBox_Y, collection, emptyTop)
         area.active_material = mpMat
 
-        emptyBottom = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Bottom', collection, None)
+        emptyBottom = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints bottom', collection, None)
         emptyBottom.empty_display_type = 'SINGLE_ARROW'
         emptyBottom.rotation_euler.x = pi * 180 / 180
         emptyBottom.location.z = -(bboxZ / 2 * 1.05)
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Bottom', scale, scene.seut.bBox_X, scene.seut.bBox_Y, collection, emptyBottom)
+        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint bottom', scale, scene.seut.bBox_X, scene.seut.bBox_Y, collection, emptyBottom)
         area.active_material = mpMat
+
+        area.select_set(state=False, view_layer=context.window.view_layer)
 
         return {'FINISHED'}
     
@@ -192,9 +194,8 @@ class SEUT_OT_Mountpoints(Operator):
         # Save empty rotation values to properties, delete children instances, remove empty
         for obj in scene.objects:
             if obj is not None and obj.type == 'EMPTY':
-                if obj.name == 'Mountpoints Front' or obj.name == 'Mountpoints Back' or obj.name == 'Mountpoints Left' or obj.name == 'Mountpoints Right' or obj.name == 'Mountpoints Top' or obj.name == 'Mountpoints Bottom':
+                if obj.name == 'Mountpoints front' or obj.name == 'Mountpoints back' or obj.name == 'Mountpoints left' or obj.name == 'Mountpoints right' or obj.name == 'Mountpoints top' or obj.name == 'Mountpoints bottom':
                     for child in obj.children:
-                        child.select_set(state=False, view_layer=context.window.view_layer)
                         bpy.data.objects.remove(child)
                     obj.select_set(state=False, view_layer=context.window.view_layer)
                     bpy.data.objects.remove(obj)
