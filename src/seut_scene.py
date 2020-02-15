@@ -79,19 +79,19 @@ class SEUT_MountpointAreas(PropertyGroup):
         ),
     default='front'        
     )
-    x: IntProperty(
+    x: FloatProperty(
         name="Location X",
         default=0
     )
-    y: IntProperty(
+    y: FloatProperty(
         name="Location Y",
         default=0
     )
-    xDim: IntProperty(
+    xDim: FloatProperty(
         name="Dimension X",
         default=0
     )
-    yDim: IntProperty(
+    yDim: FloatProperty(
         name="Dimension Y",
         default=0
     )
