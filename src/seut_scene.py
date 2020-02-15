@@ -66,65 +66,6 @@ def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'mirror'
 
 
-class SEUT_MountpointSquares(PropertyGroup):
-
-    name: StringProperty(
-        name="ID"
-    )
-    x: IntProperty(
-        name="Location X",
-        default=0,
-        min=0
-    )
-    y: IntProperty(
-        name="Location Y",
-        default=0,
-        min=0
-    )
-    valid: BoolProperty(
-        default=False
-    )
-
-
-class SEUT_MountpointBlocks(PropertyGroup):
-
-    name: StringProperty(
-        name="ID"
-    )
-    x: IntProperty(
-        name="Location X",
-        default=0,
-        min=0
-    )
-    y: IntProperty(
-        name="Location Y",
-        default=0,
-        min=0
-    )
-    squares: CollectionProperty(
-        type=SEUT_MountpointSquares
-    )
-
-
-class SEUT_Mountpoints(PropertyGroup):
-
-    side: EnumProperty(
-        name='Side',
-        items=(
-            ('front', 'Front', ''),
-            ('back', 'Back', ''),
-            ('left', 'Left', ''),
-            ('right', 'Right', ''),
-            ('top', 'Top', ''),
-            ('bottom', 'Bottom', '')
-            ),
-        default='front'        
-    )
-    blocks: CollectionProperty(
-        type=SEUT_MountpointBlocks
-    )
-
-
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
 
@@ -300,9 +241,6 @@ class SEUT_Scene(PropertyGroup):
             ),
         default='off',
         update=update_MountpointToggle
-    )    
-    mountpoints: CollectionProperty(
-        type=SEUT_Mountpoints
     )
 
     # Export

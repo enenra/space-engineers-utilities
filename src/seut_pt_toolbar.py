@@ -110,6 +110,10 @@ class SEUT_PT_Panel_Mountpoints(Panel):
         
         layout.prop(scene.seut, 'mountpointToggle', expand=True)
 
+        box = layout.box()
+        box.label(text="Add Area")
+        box.prop(wm.seut, 'mountpointSide', text="Side")
+
 
 class SEUT_PT_Panel_Export(Panel):
     """Creates the export panel for SEUT"""

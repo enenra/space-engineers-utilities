@@ -43,3 +43,15 @@ class SEUT_WindowManager(PropertyGroup):
         step=10.0,
         update=update_BBox
     )
+    mountpointSide: EnumProperty(
+    name='Side',
+    items=(
+        ('front', 'Front', ''),
+        ('back', 'Back', ''),
+        ('left', 'Left', ''),
+        ('right', 'Right', ''),
+        ('top', 'Top', ''),
+        ('bottom', 'Bottom', '')
+        ),
+    default='front'        
+    )
