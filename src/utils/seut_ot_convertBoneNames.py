@@ -37,25 +37,16 @@ class SEUT_OT_ConvertBonesToBlenderFormat(Operator):
         # Renaming patterns
         # Keen example: SE_RigLThigh
         # Blender example: Thigh_L
-        patterns = {
-            "source_to_blender": "SE_Rig([LR])(.*)", #	"source_to_blender": "ValveBiped\.Bip01_([LR])_(.*)",        
-        }
-        
-        # Check for bones with SE Maya naming convention
+        pattern = "^SE_Rig([LR])(.*)"
         bones = armature.data.bones
-        for bone in bones:
-            var = re.search(patterns['source_to_blender'], bone.name)
-            if var != None and bone.name not in exlcudedBoneNames:
-                pattern = 'source_to_blender'
-                break
         
         total = 0
         renamed = 0
         not_renamed = []
-        
+
         for bone in bones:
             total += 1
-            match = re.search(patterns[pattern], bone.name)
+            match = re.search(pattern, bone.name)
 
             if match != None and bone.name not in exlcudedBoneNames:
                 renamed += 1
@@ -102,30 +93,40 @@ class SEUT_OT_ConvertBonesToSEFormat(Operator):
                             "SE_RigSpine3", "SE_RigSpine4", "SE_RigRibcage",
                             "SE_RigNeck", "SE_RigRibcageBone001"]
 
-        os.system("cls")
         armature = bpy.context.object
-        if not armature:
+        
+        if armature == None or armature.type is None or not armature:
+            self.report({'ERROR'}, "SEUT: Object is not an Armature. (100)")
             print("No object selected.")
             return {'CANCELLED'}
         
-        if armature.type != 'ARMATURE':
+        if armature.type == None or armature.type is None or armature.type != 'ARMATURE':
+            self.report({'ERROR'}, "SEUT: No Armature selected. (101)")
             print("Object is not an armature.")
             return {'CANCELLED'}
+
+        patterns = {
+                "se_to_blender": "^SE_Rig([LR])(.*)",
+                "blender_to_se": "(.*)(_[LR])"
+        }
+        
+        pattern = patterns['blender_to_se']
+        
+        # Check for bones with SE naming convention
+        bones = armature.data.bones
+        for bone in bones:
+                if bone.name not in exlcudedBoneNames:
+                    se_named_bone = re.search(patterns['se_to_blender'], bone.name)
+                    if se_named_bone != None:
+                        self.report({'INFO'}, "SEUT: Bones already in SE format.")
+                        print("SEUT: Bones already in SE format.")
+                        return {'CANCELLED'}               
+                    
         
         # Renaming patterns
         # Keen example: SE_RigLThigh
         # Blender example: Thigh_L
-        patterns = {
-            "blender_to_source": "(.*)(_[LR])" #	"blender_to_source": "ValveBiped\.Bip01_(.*)_([LR])"
-        }
-        
-        # Check for bones with Valve naming convention
         bones = armature.data.bones
-        for bone in bones:
-            var = re.search(patterns['blender_to_source'], bone.name)
-            if var != None and bone.name not in exlcudedBoneNames:
-                pattern = 'blender_to_source'
-                break
         
         total = 0
         renamed = 0
@@ -133,7 +134,7 @@ class SEUT_OT_ConvertBonesToSEFormat(Operator):
         
         for bone in bones:
             total += 1
-            match = re.search(patterns[pattern], bone.name)
+            match = re.search(pattern, bone.name)
 
             if match != None and bone.name not in exlcudedBoneNames:
                 renamed += 1
