@@ -66,14 +66,12 @@ class SEUT_OT_Mountpoints(Operator):
         SEUT_OT_Mountpoints.recreateBlocks(context, top, scene.seut.bBox_X, scene.seut.bBox_Y)
         SEUT_OT_Mountpoints.recreateBlocks(context, bottom, scene.seut.bBox_X, scene.seut.bBox_Y)
 
-        print("<<================================================================>>")
+        # print("<<================================================================>>")
 
-        """
         # Check if entries for squares exist. If not, add them.
         for mp in scene.seut.mountpoints:
             for block in mp.blocks:
                 SEUT_OT_Mountpoints.recreateSquares(context, block, 5)      # Defining the amount of squares like so allows me to later implement inversely scaling the amount of squares with bbox size
-        """
 
         # Create collection if it doesn't exist already
         if not 'Mountpoints' + tag in bpy.data.collections:
@@ -198,45 +196,39 @@ class SEUT_OT_Mountpoints(Operator):
 
         scene = context.scene
         
-        print("---------------------------------------------")
-        print(sideObject.side.upper() + " OLD: " + str(len(sideObject.blocks)))
+        # print("---------------------------------------------")
+        # print(sideObject.side.upper() + " OLD: " + str(len(sideObject.blocks)))
         
-        # Register existing blocks and remove blocks that are out of bounds
-        existingBlocks = set(sideObject.blocks)
+        # Iterate through existing blocks and mark the ones out of scope for deletion
+        deleteBlocks = set()
 
-        """
-        print("removing...")
-        for  b in existingBlocks:
-            temp = " x: " + str(b.x) + " y: " + str(b.y)
+        for b in sideObject.blocks:
             found = False
             for xIdx in range(x):
                 for yIdx in range(y):
                     if b.x == xIdx and b.y == yIdx:
                         found = True
-                        print(temp + " existing")
             if not found:
-                print(temp + " removed")
-                sideObject.blocks.remove(sideObject.blocks.find(b.name))
-        """
+                deleteBlocks.add(b.name)
 
-        sideObject.blocks.clear()
+        # Delete the blocks that are out of scope
+        for b in deleteBlocks:
+            sideObject.blocks.remove(sideObject.blocks.find(b))
 
-        print("adding...")
+        # Fill in gaps with new blocks
         for xIdx in range(x):
             for yIdx in range(y):
-                temp = " x: " + str(xIdx) + " y: " + str(yIdx)
                 found = False
                 for b in sideObject.blocks:
                     if b.x == xIdx and b.y == yIdx:
                         found = True
-                        print(temp + " existing")
                 if not found:
-                    print(temp + " added")
                     item = sideObject.blocks.add()
+                    item.name = str(xIdx) + "_" + str(yIdx)
                     item.x = xIdx
                     item.y = yIdx
 
-        print(sideObject.side.upper() + " NEW: " + str(len(sideObject.blocks)))
+        # print(sideObject.side.upper() + " NEW: " + str(len(sideObject.blocks)))
     
 
     def recreateSquares(context, block, squaresPerAxis):
@@ -244,23 +236,31 @@ class SEUT_OT_Mountpoints(Operator):
 
         scene = context.scene
 
-        # Create matrix with given dimensions
-        matrix = [[False] * squaresPerAxis for r in range(squaresPerAxis)]
+        # Iterate through existing squares and mark the ones out of scope for deletion
+        deleteSquares = set()
 
-        # Register existing square entries and remove squares out of bounds
         for s in block.squares:
-            if s is not None:
-                if s.x <= squaresPerAxis - 1 and s.y <= squaresPerAxis - 1:
-                    matrix[s.x][s.y] = True
-                else:
-                    block.squares.remove(block.squares.find(s.name))
+            found = False
+            for xIdx in range(squaresPerAxis):
+                for yIdx in range(squaresPerAxis):
+                    if s.x == xIdx and s.y == yIdx:
+                        found = True
+            if not found:
+                deleteSquares.add(s.name)
 
-        # Recreate missing squares
-        for row in range(squaresPerAxis):
-            for col in range(squaresPerAxis):
-                if matrix[row][col] == False:
-                    matrix[row][col] = True
+        # Delete the squares that are out of scope
+        for s in deleteSquares:
+            block.squares.remove(block.squares.find(s))
+
+        # Fill in gaps with new squares
+        for xIdx in range(squaresPerAxis):
+            for yIdx in range(squaresPerAxis):
+                found = False
+                for s in block.squares:
+                    if s.x == xIdx and s.y == yIdx:
+                        found = True
+                if not found:
                     item = block.squares.add()
-                    item.x = row
-                    item.y = col
-                    item.valid = False
+                    item.name = str(xIdx) + "_" + str(yIdx)
+                    item.x = xIdx
+                    item.y = yIdx

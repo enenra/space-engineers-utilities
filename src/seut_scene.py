@@ -68,6 +68,9 @@ def poll_linkedScene(self, object):
 
 class SEUT_MountpointSquares(PropertyGroup):
 
+    name: StringProperty(
+        name="ID"
+    )
     x: IntProperty(
         name="Location X",
         default=0,
@@ -85,6 +88,9 @@ class SEUT_MountpointSquares(PropertyGroup):
 
 class SEUT_MountpointBlocks(PropertyGroup):
 
+    name: StringProperty(
+        name="ID"
+    )
     x: IntProperty(
         name="Location X",
         default=0,
