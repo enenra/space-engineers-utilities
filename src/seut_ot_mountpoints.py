@@ -115,6 +115,7 @@ class SEUT_OT_Mountpoints(Operator):
         emptyBottom.rotation_euler.x = pi * 180 / 180
         emptyBottom.location.z = -(bboxZ / 2 * 1.05)
 
+        # Create default mountpoint areas
         if len(scene.seut.mountpointAreas) == 0:
             plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area Front', scale, scene.seut.bBox_X, scene.seut.bBox_Z, None, None, collection, emptyFront)
             plane.active_material = mpMat
@@ -129,6 +130,7 @@ class SEUT_OT_Mountpoints(Operator):
             plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area Bottom', scale, scene.seut.bBox_X, scene.seut.bBox_Y, None, None, collection, emptyBottom)
             plane.active_material = mpMat
 
+        # If there are already mountpoint areas saved, recreate them
         else:
             for area in scene.seut.mountpointAreas:
                 plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area ' + area.side.capitalize(), scale, None, None, area.xDim, area.yDim, collection, bpy.data.objects['Mountpoints ' + area.side.capitalize()])
@@ -166,6 +168,7 @@ class SEUT_OT_Mountpoints(Operator):
     
 
     def createArea(context, name, size, x, y, xDim, yDim, collection, parent):
+        """Creates plane with given name, location, dimensions, links it to specified collection and assigns it to a parent, if available"""
 
         scene = context.scene
 
@@ -196,6 +199,7 @@ class SEUT_OT_Mountpoints(Operator):
     
 
     def saveMountpointData(context, collection):
+        """Saves mountpoint areas to an internal collection property"""
 
         scene = context.scene
 
@@ -217,6 +221,9 @@ class SEUT_OT_Mountpoints(Operator):
                     item.y = child.location.y
                     item.xDim = child.dimensions.x
                     item.yDim = child.dimensions.y
+
+        for area in areas:
+            print("SEUT Info: Mountpoint Area " + area.side.capitalized() + " saved. Location x: " + str(area.x) + " Location y: " + str(area.y) + " Dimension x: " + str(area.xDim) + " Dimension y: " + str(area.yDim))
 
         return
 
