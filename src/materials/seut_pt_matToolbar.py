@@ -13,6 +13,7 @@ class SEUT_PT_Panel_Materials(Panel):
 
     def draw(self, context):
         layout = self.layout
+        wm = context.window_manager
         scene = context.scene
 
         if bpy.context.active_object is not None and bpy.context.active_object.active_material is not None:
@@ -42,7 +43,7 @@ class SEUT_PT_Panel_Materials(Panel):
 
         box = layout.box()
         box.label(text="Create new SEUT Material")
-        box.prop(scene.seut, 'matPreset', text="Preset")
+        box.prop(wm.seut, 'matPreset', text="Preset")
         box.operator('object.mat_create')
 
 class SEUT_PT_Panel_MatLib(Panel):

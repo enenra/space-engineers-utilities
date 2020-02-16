@@ -104,7 +104,9 @@ class SEUT_Scene(PropertyGroup):
         items=(
             ('mainScene', 'Main', 'This scene is a main scene'),
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene'),
-            ('mirror', 'Mirroring', 'This scene contains the mirror model of another scene')
+            ('mirror', 'Mirroring', 'This scene contains the mirror model of another scene'),
+            ('character', 'Character ', 'This scene contains a character model'),
+            ('character_animation', 'Character Animation', 'This scene contains a character animation'),
             ),
         default='mainScene'
     )
@@ -365,19 +367,4 @@ class SEUT_Scene(PropertyGroup):
             ('-Z', '-Z', '')
             ),
         default='Z'
-    )
-    
-    # Materials
-    matPreset: EnumProperty(
-        name='SEUT Material Preset',
-        description="Select a nodetree preset for your material",
-        items=(
-            ('SMAT_Preset_Full', 'Full', '[X] Alpha\n[X] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_Full_NoEmissive', 'No Emissive', '[X] Alpha\n[_] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_Full_NoADD', 'Full, No ADD', '[X] Alpha\n[_] Emissive\n[_] ADD\n[X] NG'),
-            ('SMAT_Preset_NoAlpha', 'No Alpha', '[_] Alpha\n[X] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_NoAlpha_NoEmissive', 'No Alpha, No Emissive', '[_] Alpha\n[_] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_NoADD', 'No ADD', '[_] Alpha\n[_] Emissive\n[_] ADD\n[X] NG')
-            ),
-        default='SMAT_Preset_Full'
     )

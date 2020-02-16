@@ -89,8 +89,10 @@ class SEUT_OT_ExportSBC(Operator):
 
         if scene.seut.gridScale == 'large':
             def_CubeSize.text = 'Large'
+            gridSize = 2.5
         elif scene.seut.gridScale == 'small':
             def_CubeSize.text = 'Small'
+            gridSize = 0.5
         
         def_BlockTopology = ET.SubElement(def_definition, 'BlockTopology')
         def_BlockTopology.text = 'TriangleMesh'
@@ -99,6 +101,17 @@ class SEUT_OT_ExportSBC(Operator):
         def_Size.set('x', str(scene.seut.bBox_X))
         def_Size.set('y', str(scene.seut.bBox_Z))   # This looks wrong but it's correct: Blender has different forward than SE.
         def_Size.set('z', str(scene.seut.bBox_Y))
+
+        centerEmpty = None
+        for obj in collections['main'].objects:
+            if obj is not None and obj.type == 'EMPTY' and obj.name == 'Center':
+                centerEmpty = obj
+
+        if centerEmpty is not None:                
+            def_Center = ET.SubElement(def_definition, 'Center')
+            def_Center.set('x', str(round(centerEmpty.location.x / gridSize)))
+            def_Center.set('y', str(round(centerEmpty.location.z / gridSize)))   # This looks wrong but it's correct: Blender has different forward than SE.
+            def_Center.set('z', str(round(centerEmpty.location.y / gridSize)))
 
         def_ModelOffset = ET.SubElement(def_definition, 'ModelOffset')
         def_ModelOffset.set('x', '0')

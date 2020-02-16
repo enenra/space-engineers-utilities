@@ -173,7 +173,11 @@ class SEUT_PT_Panel_Export(Panel):
         box.prop(scene.seut, "export_deleteLooseFiles")
         box.prop(scene.seut, "export_rescaleFactor")
         
-        box.prop(scene.seut, "export_exportPath", text="Folder", expand=True)
+        split = box.split(factor=0.85)
+        col = split.column()
+        col.prop(scene.seut, "export_exportPath", text="Folder", expand=True)
+        col = split.column()
+        col.operator('scene.copy_export_folder', text="", icon='PASTEDOWN')
         
         # LOD
         if collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None or collections['bs_lod'] is not None:
@@ -211,3 +215,10 @@ class SEUT_PT_Panel_Import(Panel):
         box.operator('object.emptytocubetype', text="Display Empties as 'Cube'")
         box.operator('object.remapmaterials', text="Remap Materials")
         box.operator('object.structure_conversion', text="Convert to new structure")
+
+        # Bones
+        box = layout.box()
+        box.label(text="Bone Conversion")
+        box.operator('object.convertbonestoblenderformat', text="Make Blender compatible")
+        box.operator('object.convertbonestoseformat', text="Make SE compatible")
+        

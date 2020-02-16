@@ -43,6 +43,8 @@ class SEUT_WindowManager(PropertyGroup):
         step=10.0,
         update=update_BBox
     )
+      
+    # Mountpoints
     mountpointSide: EnumProperty(
     name='Side',
     items=(
@@ -54,4 +56,20 @@ class SEUT_WindowManager(PropertyGroup):
         ('bottom', 'Bottom', '')
         ),
     default='front'        
+    
+    # Materials
+    matPreset: EnumProperty(
+        name='SEUT Material Preset',
+        description="Select a nodetree preset for your material",
+        items=(
+            ('SMAT_Preset_Full', 'Full', '[X] CM\n[X] Emissive\n[X] ADD\n[X] NG\n[X] Alpha'),
+            ('SMAT_Preset_Full_NoEmissive', 'No Emissive', '[X] CM\n[_] Emissive\n[X] ADD\n[X] NG\n[X] Alpha'),
+            ('SMAT_Preset_Full_NoADD', 'Full, No ADD', '[X] CM\n[_] Emissive\n[_] ADD\n[X] NG\n[X] Alpha'),
+            ('SMAT_Preset_NoAlpha', 'No Alpha', '[X] CM\n[X] Emissive\n[X] ADD\n[X] NG\n[_] Alpha'),
+            ('SMAT_Preset_NoAlpha_NoEmissive', 'No Alpha, No Emissive', '[X] CM\n[_] Emissive\n[X] ADD\n[X] NG\n[_] Alpha'),
+            ('SMAT_Preset_NoADD', 'No ADD', '[X] CM\n[_] Emissive\n[_] ADD\n[X] NG\n[_] Alpha'),
+            ('SMAT_Preset_NoCM_NoADD', 'No CM, No ADD', '[_] CM\n[_] Emissive\n[_] ADD\n[X] NG\n[X] Alpha')
+            ),
+        default='SMAT_Preset_Full'
+
     )
