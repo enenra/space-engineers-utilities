@@ -53,7 +53,7 @@ class SEUT_OT_AddMountpointArea(Operator):
             x = scene.seut.bBox_X
             y = scene.seut.bBox_Y
 
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint ' + side, 1, x, y, None, None, collection, bpy.data.objects['Mountpoints ' + side])
+        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area ' + side.capitalize(), 1, scale, scale, None, None, collection, bpy.data.objects['Mountpoints ' + side.capitalize()])
         area.active_material = mpMat
 
         return {'FINISHED'}
