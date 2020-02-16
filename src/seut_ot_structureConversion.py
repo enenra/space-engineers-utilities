@@ -76,6 +76,8 @@ class SEUT_OT_StructureConversion(Operator):
                     scn.collection.children.unlink(collection)
                     bpy.data.collections['SEUT' + tag].children.link(collection)
                 
+                collection.hide_viewport = False
+                
             # Convert custom properties of empties from harag's to the default blender method.
             for obj in scn.objects:
                 if obj.type == 'EMPTY':

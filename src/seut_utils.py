@@ -36,7 +36,9 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
         # The following is done only on a first-level subpart as
         # further-nested subparts already have empties as parents.
         # Needs to account for empties being parents that aren't subpart empties.
-        if (obj.parent is None or obj.parent.type != 'EMPTY' or not 'file' in obj.parent) and obj.name.find("(L)") == -1:
+        if obj is not None and (obj.parent is None or obj.parent.type != 'EMPTY' or not 'file' in obj.parent) and obj.name.find("(L)") == -1:
+
+            obj.hide_viewport = False
 
             existingObjects = set(subpartCollections['main'].objects)
             
@@ -71,19 +73,20 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
                 createdObj.name = obj.name + " (L)"
                 linkedObject = createdObj
 
-            # Link instance to empty
-            try:
-                if targetCollection is None:
-                    parentCollections['main'].objects.link(linkedObject)
-                else:
-                    targetCollection.objects.link(linkedObject)
-            except RuntimeError:
-                pass
-            subpartCollections['main'].objects.unlink(linkedObject)
-            linkedObject.parent = empty
+            if linkedObject is not None:
+                # Link instance to empty
+                try:
+                    if targetCollection is None:
+                        parentCollections['main'].objects.link(linkedObject)
+                    else:
+                        targetCollection.objects.link(linkedObject)
+                except RuntimeError:
+                    pass
+                subpartCollections['main'].objects.unlink(linkedObject)
+                linkedObject.parent = empty
 
-            if linkedObject.type == 'EMPTY' and linkedObject.seut.linkedScene is not None and linkedObject.seut.linkedScene.name in bpy.data.scenes and originScene.seut.linkSubpartInstances:
-                linkSubpartScene(self, originScene, linkedObject, targetCollection)
+                if linkedObject.type == 'EMPTY' and linkedObject.seut.linkedScene is not None and linkedObject.seut.linkedScene.name in bpy.data.scenes and originScene.seut.linkSubpartInstances:
+                    linkSubpartScene(self, originScene, linkedObject, targetCollection)
         
     # Switch back to previous scene
     context.window.scene = currentScene
