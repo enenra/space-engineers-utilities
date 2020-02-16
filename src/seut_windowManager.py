@@ -55,7 +55,8 @@ class SEUT_WindowManager(PropertyGroup):
         ('top', 'Top', ''),
         ('bottom', 'Bottom', '')
         ),
-    default='front'        
+    default='front'
+    )
     
     # Materials
     matPreset: EnumProperty(
