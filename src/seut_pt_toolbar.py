@@ -53,20 +53,21 @@ class SEUT_PT_Panel_BoundingBox(Panel):
         # Toggle
         layout.prop(wm.seut,'bBoxToggle', expand=True)
 
-        # Size
-        box = layout.box()
-        box.label(text="Size")
-        row = box.row()
-        row.prop(scene.seut, "bBox_X")
-        row.prop(scene.seut, "bBox_Y")
-        row.prop(scene.seut, "bBox_Z")
+        if wm.seut.bBoxToggle == 'on':
+            # Size
+            box = layout.box()
+            box.label(text="Size")
+            row = box.row()
+            row.prop(scene.seut, "bBox_X")
+            row.prop(scene.seut, "bBox_Y")
+            row.prop(scene.seut, "bBox_Z")
 
-        row = box.row()
-        # row.prop(wm.seut, 'bboxColor', text="")
-        # row.prop(wm.seut, 'bboxTransparency', text="")
-        
-        row = box.row()
-        row.operator('object.bbox_auto', text="Automatic")
+            row = box.row()
+            # row.prop(wm.seut, 'bboxColor', text="")
+            # row.prop(wm.seut, 'bboxTransparency', text="")
+            
+            row = box.row()
+            row.operator('object.bbox_auto', text="Automatic")
 
 
 class SEUT_PT_Panel_Mirroring(Panel):
@@ -85,7 +86,8 @@ class SEUT_PT_Panel_Mirroring(Panel):
         
         layout.prop(scene.seut, 'mirroringToggle', expand=True)
 
-        layout.prop(scene.seut, 'mirroringScene', text="Model")
+        if scene.seut.mirroringToggle == 'on':
+            layout.prop(scene.seut, 'mirroringScene', text="Model")
         """
         box = layout.box()
         box.label(text="Mirroring X: " + scene.seut.mirroring_X)
