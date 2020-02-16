@@ -73,7 +73,7 @@ class SEUT_PT_Panel_BoundingBox(Panel):
 class SEUT_PT_Panel_Mirroring(Panel):
     """Creates the mirroring panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_Mirroring"
-    bl_label = "Mirroring"
+    bl_label = "Mirroring Mode"
     bl_category = "SEUT"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -99,7 +99,7 @@ class SEUT_PT_Panel_Mirroring(Panel):
 class SEUT_PT_Panel_Mountpoints(Panel):
     """Creates the mountpoints panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_Mountpoints"
-    bl_label = "Mountpoints"
+    bl_label = "Mountpoint Mode"
     bl_category = "SEUT"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"

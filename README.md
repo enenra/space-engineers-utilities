@@ -25,6 +25,9 @@ A Blender 2.8+ addon.
 * Link MatLibs directly from the UI
 * Warning when empties are set up in a way that won't work ingame
 * Rotate empties in mirroring-mode to output mirror information to the SBC
+* Create new character models
+* Chreate new character animations and poses
+* Define mountpoints by placing areas on the six sides of the bounding box in mountpoint-mode
 
 ## Installation
 1. Download the latest release of the addon from the releases section, enable it in Blender.
@@ -37,7 +40,7 @@ SEUT\Materials\
 SEUT\Tools\
 SEUT\convert_textures.bat
 ```
-5. Download [Eikester's MWM Builder](https://forum.keenswh.com/threads/mwmbuilder-fixes.7391806/) and unzip it into `SEUT\Tools\MWMB\`.
+5. Download [Stollie's MWM Builder](https://github.com/cstahlhut/MWMBuilder/releases) (StollieMWMBuilder.rar) and unzip it into `SEUT\Tools\MWMB\`.
 6. Download Harag's [Custom FBX Importer](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1) and place it into `SEUT\Tools\`.
 7. Download the Havok Content Tools ([64bit](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i)/[32bit](https://drive.google.com/open?id=1DL3-evI3LSIstVTjYvjw01rtpI3iAhDh)) and install them to `SEUT\Tools\Havok\`.
 8. Run the BAT file. Point it at the correct folder for your SE installation and SE Mod SDK's `texconv.exe`
@@ -58,6 +61,6 @@ Please consider supporting the development of this addon by becoming one of Stol
 [![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Patreon_logo_with_wordmark.svg/512px-Patreon_logo_with_wordmark.svg.png)](https://www.patreon.com/Stollie)	
 
 ## Credits	
-* **Stollie** - So much general help but also writing everything havok-related, which I wouldn't have been able to do at all.	
-* **Harag** - Writing the original Blender SE plugin. A lot of code in this addon is based on his.	
+* **Stollie** - So much general help but also writing everything character, export and MWM-related, which I wouldn't have been able to do at all.	
+* **Harag** - Writing the [original Blender SE plugin](https://github.com/harag-on-steam/se-blender). A lot of code in this addon is based on his.	
 * **Kamikaze (Blender Discord)** - Writing the `remapMaterials()`-function and generally helping out constantly by answering a lot of questions.
