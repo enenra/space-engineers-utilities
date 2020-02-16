@@ -116,22 +116,22 @@ class SEUT_OT_Mountpoints(Operator):
         emptyBottom.location.z = -(bboxZ / 2 * 1.05)
 
         if len(scene.seut.mountpointAreas) == 0:
-            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint front', scale, scene.seut.bBox_X, scene.seut.bBox_Z, None, None, collection, emptyFront)
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area front', scale, scene.seut.bBox_X, scene.seut.bBox_Z, None, None, collection, emptyFront)
             plane.active_material = mpMat
-            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint back', scale, scene.seut.bBox_X, scene.seut.bBox_Z, None, None, collection, emptyBack)
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area back', scale, scene.seut.bBox_X, scene.seut.bBox_Z, None, None, collection, emptyBack)
             plane.active_material = mpMat
-            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint left', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, None, None, collection, emptyLeft)
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area left', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, None, None, collection, emptyLeft)
             plane.active_material = mpMat
-            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint right', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, None, None, collection, emptyRight)
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area right', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, None, None, collection, emptyRight)
             plane.active_material = mpMat
-            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint top', scale, scene.seut.bBox_X, scene.seut.bBox_Y, None, None, collection, emptyTop)
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area top', scale, scene.seut.bBox_X, scene.seut.bBox_Y, None, None, collection, emptyTop)
             plane.active_material = mpMat
-            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint bottom', scale, scene.seut.bBox_X, scene.seut.bBox_Y, None, None, collection, emptyBottom)
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area bottom', scale, scene.seut.bBox_X, scene.seut.bBox_Y, None, None, collection, emptyBottom)
             plane.active_material = mpMat
 
         else:
             for area in scene.seut.mountpointAreas:
-                plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint ' + area.side, scale, None, None, area.xDim, area.yDim, collection, bpy.data.objects['Mountpoints ' + area.side])
+                plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area ' + area.side, scale, None, None, area.xDim, area.yDim, collection, bpy.data.objects['Mountpoints ' + area.side])
                 plane.active_material = mpMat
                 plane.location.x = area.x
                 plane.location.y = area.y
