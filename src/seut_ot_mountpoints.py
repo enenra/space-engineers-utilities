@@ -116,7 +116,6 @@ class SEUT_OT_Mountpoints(Operator):
         emptyBottom.location.z = -(bboxZ / 2 * 1.05)
 
         if len(scene.seut.mountpointAreas) == 0:
-            print("no areas found")
             plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint front', scale, scene.seut.bBox_X, scene.seut.bBox_Z, None, None, collection, emptyFront)
             plane.active_material = mpMat
             plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint back', scale, scene.seut.bBox_X, scene.seut.bBox_Z, None, None, collection, emptyBack)
@@ -131,7 +130,6 @@ class SEUT_OT_Mountpoints(Operator):
             plane.active_material = mpMat
 
         else:
-            print("areas found")
             for area in scene.seut.mountpointAreas:
                 plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint ' + area.side, scale, None, None, area.xDim, area.yDim, collection, bpy.data.objects['Mountpoints ' + area.side])
                 plane.active_material = mpMat
@@ -175,14 +173,12 @@ class SEUT_OT_Mountpoints(Operator):
         area = bpy.context.view_layer.objects.active
         area.name = name
 
-        print("before: scale(" + str(area.scale.x) + "/" + str(area.scale.y) + ") " + str(x) + " " + str(y))
-        if x is not None: area.scale.x = x
-        if y is not None: area.scale.y = y
-        print("after: scale(" + str(area.scale.x) + "/" + str(area.scale.y) + ")")
-        # print("before: dim(" + str(area.dimensions.x) + "/" + str(area.dimensions.y) + ") " + str(xDim) + " " + str(yDim))
-        if xDim is not None: area.dimensions.x = xDim
-        if yDim is not None: area.dimensions.y = yDim
-        # print("after: dim(" + str(area.dimensions.x) + "/" + str(area.dimensions.y) + ")")
+        if x is not None:
+            area.scale.x = x
+        if y is not None:
+            area.scale.y = y
+        if xDim is not None and yDim is not None:
+            area.dimensions = (xDim, yDim, 0)
 
         parentCollection = getParentCollection(context, area)
         if parentCollection != collection:
@@ -214,7 +210,6 @@ class SEUT_OT_Mountpoints(Operator):
             elif empty.type == 'EMPTY' and empty.name.find('Mountpoints ') != -1 and empty.children is not None:
                 side = empty.name[12:]
 
-                print("children ------------------------------------")
                 for child in empty.children:                    
                     item = areas.add()
                     item.side = side
@@ -222,7 +217,6 @@ class SEUT_OT_Mountpoints(Operator):
                     item.y = child.location.y
                     item.xDim = child.dimensions.x
                     item.yDim = child.dimensions.y
-                    print(child.name + " x: " + str(child.location.x) + " y: " + str(child.location.y) + " xDim: " + str(child.dimensions.x) + " yDim: " + str(child.dimensions.y))
         
         print("areas ------------------------------------")
         for area in areas:
