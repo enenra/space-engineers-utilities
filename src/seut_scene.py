@@ -106,7 +106,7 @@ class SEUT_Scene(PropertyGroup):
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene'),
             ('mirror', 'Mirroring', 'This scene contains the mirror model of another scene'),
             ('character', 'Character ', 'This scene contains a character model'),
-            ('character_animation', 'Character Animation', 'This scene contains a character animation'),
+            ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
             ),
         default='mainScene'
     )

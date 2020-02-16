@@ -64,6 +64,11 @@ class SEUT_OT_Mirroring(Operator):
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
 
+        # If mode is not object mode, export fails horribly.
+        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
+            currentMode = bpy.context.object.mode
+            bpy.ops.object.mode_set(mode='OBJECT')
+
         if collections['seut'] is None:
             print("SEUT Warning: Collection 'SEUT " + scene.name + "' not found. Action not possible. (002)")
             scene.seut.mirroringToggle = 'off'
@@ -203,6 +208,13 @@ class SEUT_OT_Mirroring(Operator):
         linkSubpartScene(self, scene, emptyY, collection)
         emptyZ.seut.linkedScene = sourceScene
         linkSubpartScene(self, scene, emptyZ, collection)
+            
+        # Reset interaction mode
+        try:
+            if bpy.context.object is not None and currentMode is not None:
+                bpy.ops.object.mode_set(mode=currentMode)
+        except:
+            pass
 
         return {'FINISHED'}
     
@@ -212,6 +224,12 @@ class SEUT_OT_Mirroring(Operator):
 
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
+
+        # If mode is not object mode, export fails horribly.
+        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
+            currentMode = bpy.context.object.mode
+            bpy.ops.object.mode_set(mode='OBJECT')
+
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
         tag = ' (' + scene.seut.subtypeId + ')'
@@ -231,6 +249,13 @@ class SEUT_OT_Mirroring(Operator):
         # Delete collection
         if 'Mirroring' + tag in bpy.data.collections:
             bpy.data.collections.remove(bpy.data.collections['Mirroring' + tag])
+            
+        # Reset interaction mode
+        try:
+            if bpy.context.object is not None and currentMode is not None:
+                bpy.ops.object.mode_set(mode=currentMode)
+        except:
+            pass
 
         return {'FINISHED'}
     

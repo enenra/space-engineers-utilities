@@ -36,6 +36,11 @@ class SEUT_OT_Mountpoints(Operator):
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
 
+        # If mode is not object mode, export fails horribly.
+        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
+            currentMode = bpy.context.object.mode
+            bpy.ops.object.mode_set(mode='OBJECT')
+
         if collections['seut'] is None:
             print("SEUT Warning: Collection 'SEUT (" + scene.name + ")' not found. Action not possible. (002)")
             scene.seut.mountpointToggle = 'off'
@@ -140,6 +145,13 @@ class SEUT_OT_Mountpoints(Operator):
 
         plane.select_set(state=False, view_layer=context.window.view_layer)
 
+        # Reset interaction mode
+        try:
+            if bpy.context.object is not None and currentMode is not None:
+                bpy.ops.object.mode_set(mode=currentMode)
+        except:
+            pass
+
         return {'FINISHED'}
     
 
@@ -223,7 +235,7 @@ class SEUT_OT_Mountpoints(Operator):
                     item.yDim = child.dimensions.y
 
         for area in areas:
-            print("SEUT Info: Mountpoint Area " + area.side.capitalized() + " saved. Location x: " + str(area.x) + " Location y: " + str(area.y) + " Dimension x: " + str(area.xDim) + " Dimension y: " + str(area.yDim))
+            print("SEUT Info: Mountpoint Area " + area.side + " saved. Location x: " + str(area.x) + " Location y: " + str(area.y) + " Dimension x: " + str(area.xDim) + " Dimension y: " + str(area.yDim))
 
         return
 
@@ -231,6 +243,11 @@ class SEUT_OT_Mountpoints(Operator):
         """Cleans up mountpoint utilities"""
 
         scene = context.scene
+
+        # If mode is not object mode, export fails horribly.
+        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
+            currentMode = bpy.context.object.mode
+            bpy.ops.object.mode_set(mode='OBJECT')
 
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
@@ -251,6 +268,13 @@ class SEUT_OT_Mountpoints(Operator):
         # Delete collection
         if 'Mountpoints' + tag in bpy.data.collections:
             bpy.data.collections.remove(bpy.data.collections['Mountpoints' + tag])
+            
+        # Reset interaction mode
+        try:
+            if bpy.context.object is not None and currentMode is not None:
+                bpy.ops.object.mode_set(mode=currentMode)
+        except:
+            pass
 
         return {'FINISHED'}
     
