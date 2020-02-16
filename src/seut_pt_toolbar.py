@@ -25,7 +25,7 @@ class SEUT_PT_Panel(Panel):
         box = layout.box()
         if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'mirror':
             box.label(text="SubtypeId (File Name)")
-        elif scene.seut.sceneType == 'subpart':
+        elif scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
             box.label(text="File Name")
         box.prop(scene.seut, "subtypeId", text="", expand=True)
 
@@ -204,6 +204,8 @@ class SEUT_PT_Panel_Import(Panel):
     bl_region_type = "UI"
 
     def draw(self, context):
+
+        scene = context.scene
         layout = self.layout
 
         # Import
@@ -218,9 +220,10 @@ class SEUT_PT_Panel_Import(Panel):
         box.operator('object.remapmaterials', text="Remap Materials")
         box.operator('object.structure_conversion', text="Convert to new structure")
 
-        # Bones
-        box = layout.box()
-        box.label(text="Bone Conversion")
-        box.operator('object.convertbonestoblenderformat', text="Make Blender compatible")
-        box.operator('object.convertbonestoseformat', text="Make SE compatible")
+        if scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
+            # Bones
+            box = layout.box()
+            box.label(text="Bone Conversion")
+            box.operator('object.convertbonestoblenderformat')
+            box.operator('object.convertbonestoseformat')
         
