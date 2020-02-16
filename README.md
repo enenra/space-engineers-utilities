@@ -26,7 +26,7 @@ A Blender 2.8+ addon.
 * Warning when empties are set up in a way that won't work ingame
 * Rotate empties in mirroring-mode to output mirror information to the SBC
 * Create new character models
-* Chreate new character animations and poses
+* Create new character animations and poses
 * Define mountpoints by placing areas on the six sides of the bounding box in mountpoint-mode
 
 ## Installation
