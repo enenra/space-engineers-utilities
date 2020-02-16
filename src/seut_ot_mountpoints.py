@@ -88,46 +88,57 @@ class SEUT_OT_Mountpoints(Operator):
         emptyFront.rotation_euler.x = pi * -90 / 180
         emptyFront.rotation_euler.z = pi * -180 / 180
         emptyFront.location.y = -(bboxY / 2 * 1.05)
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint front', scale, scene.seut.bBox_X, scene.seut.bBox_Z, collection, emptyFront)
-        area.active_material = mpMat
 
         emptyBack = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints back', collection, None)
         emptyBack.empty_display_type = 'SINGLE_ARROW'
         emptyBack.rotation_euler.x = pi * -90 / 180
         emptyBack.location.y = bboxY / 2 * 1.05
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint back', scale, scene.seut.bBox_X, scene.seut.bBox_Z, collection, emptyBack)
-        area.active_material = mpMat
 
         emptyLeft = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints left', collection, None)
         emptyLeft.empty_display_type = 'SINGLE_ARROW'
         emptyLeft.rotation_euler.x = pi * -90 / 180
         emptyLeft.rotation_euler.z = pi * -270 / 180
         emptyLeft.location.x = -(bboxX / 2 * 1.05)
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint left', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, collection, emptyLeft)
-        area.active_material = mpMat
 
         emptyRight = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints right', collection, None)
         emptyRight.empty_display_type = 'SINGLE_ARROW'
         emptyRight.rotation_euler.x = pi * -90 / 180
         emptyRight.rotation_euler.z = pi * 270 / 180
         emptyRight.location.x = bboxX / 2 * 1.05
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint right', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, collection, emptyRight)
-        area.active_material = mpMat
 
         emptyTop = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints top', collection, None)
         emptyTop.empty_display_type = 'SINGLE_ARROW'
         emptyTop.location.z = bboxZ / 2 * 1.05
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint top', scale, scene.seut.bBox_X, scene.seut.bBox_Y, collection, emptyTop)
-        area.active_material = mpMat
 
         emptyBottom = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints bottom', collection, None)
         emptyBottom.empty_display_type = 'SINGLE_ARROW'
         emptyBottom.rotation_euler.x = pi * 180 / 180
         emptyBottom.location.z = -(bboxZ / 2 * 1.05)
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint bottom', scale, scene.seut.bBox_X, scene.seut.bBox_Y, collection, emptyBottom)
-        area.active_material = mpMat
 
-        area.select_set(state=False, view_layer=context.window.view_layer)
+        if len(scene.seut.mountpointAreas) == 0:
+            print("no areas found")
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint front', scale, scene.seut.bBox_X, scene.seut.bBox_Z, None, None, collection, emptyFront)
+            plane.active_material = mpMat
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint back', scale, scene.seut.bBox_X, scene.seut.bBox_Z, None, None, collection, emptyBack)
+            plane.active_material = mpMat
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint left', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, None, None, collection, emptyLeft)
+            plane.active_material = mpMat
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint right', scale, scene.seut.bBox_Y, scene.seut.bBox_Z, None, None, collection, emptyRight)
+            plane.active_material = mpMat
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint top', scale, scene.seut.bBox_X, scene.seut.bBox_Y, None, None, collection, emptyTop)
+            plane.active_material = mpMat
+            plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint bottom', scale, scene.seut.bBox_X, scene.seut.bBox_Y, None, None, collection, emptyBottom)
+            plane.active_material = mpMat
+
+        else:
+            print("areas found")
+            for area in scene.seut.mountpointAreas:
+                plane = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint ' + area.side, scale, None, None, area.xDim, area.yDim, collection, bpy.data.objects['Mountpoints ' + area.side])
+                plane.active_material = mpMat
+                plane.location.x = area.x
+                plane.location.y = area.y
+
+        plane.select_set(state=False, view_layer=context.window.view_layer)
 
         return {'FINISHED'}
     
@@ -156,7 +167,7 @@ class SEUT_OT_Mountpoints(Operator):
         return empty
     
 
-    def createArea(context, name, size, x, y, collection, parent):
+    def createArea(context, name, size, x, y, xDim, yDim, collection, parent):
 
         scene = context.scene
 
@@ -164,8 +175,14 @@ class SEUT_OT_Mountpoints(Operator):
         area = bpy.context.view_layer.objects.active
         area.name = name
 
-        area.scale.x = x
-        area.scale.y = y
+        print("before: scale(" + str(area.scale.x) + "/" + str(area.scale.y) + ") " + str(x) + " " + str(y))
+        if x is not None: area.scale.x = x
+        if y is not None: area.scale.y = y
+        print("after: scale(" + str(area.scale.x) + "/" + str(area.scale.y) + ")")
+        # print("before: dim(" + str(area.dimensions.x) + "/" + str(area.dimensions.y) + ") " + str(xDim) + " " + str(yDim))
+        if xDim is not None: area.dimensions.x = xDim
+        if yDim is not None: area.dimensions.y = yDim
+        # print("after: dim(" + str(area.dimensions.x) + "/" + str(area.dimensions.y) + ")")
 
         parentCollection = getParentCollection(context, area)
         if parentCollection != collection:
@@ -197,16 +214,15 @@ class SEUT_OT_Mountpoints(Operator):
             elif empty.type == 'EMPTY' and empty.name.find('Mountpoints ') != -1 and empty.children is not None:
                 side = empty.name[12:]
 
-                for child in empty.children:
-                    context.window.view_layer.objects.active = child
-                    bpy.ops.object.transform_apply(location=True, scale=True)
-                    
+                print("children ------------------------------------")
+                for child in empty.children:                    
                     item = areas.add()
                     item.side = side
                     item.x = child.location.x
                     item.y = child.location.y
                     item.xDim = child.dimensions.x
                     item.yDim = child.dimensions.y
+                    print(child.name + " x: " + str(child.location.x) + " y: " + str(child.location.y) + " xDim: " + str(child.dimensions.x) + " yDim: " + str(child.dimensions.y))
         
         print("areas ------------------------------------")
         for area in areas:
