@@ -7,7 +7,8 @@ from bpy.props  import (EnumProperty,
                         IntProperty,
                         StringProperty,
                         BoolProperty,
-                        PointerProperty
+                        PointerProperty,
+                        CollectionProperty
                         )
 
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
@@ -21,8 +22,10 @@ def update_GridScale(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_MirroringToggle(self, context):
-    # Calling the operator and doing the check for off / on there means we can use report()
-    bpy.ops.object.mirroring()
+    bpy.ops.scene.mirroring()
+
+def update_MountpointToggle(self, context):
+    bpy.ops.scene.mountpoints()
 
 def update_mirroringScene(self, context):
     bpy.ops.scene.mirroring()
@@ -62,6 +65,36 @@ def update_linkSubpartInstances(self, context):
 def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'mirror'
 
+class SEUT_MountpointAreas(PropertyGroup):
+    
+    side: EnumProperty(
+    name='Side',
+    items=(
+        ('front', 'Front', ''),
+        ('back', 'Back', ''),
+        ('left', 'Left', ''),
+        ('right', 'Right', ''),
+        ('top', 'Top', ''),
+        ('bottom', 'Bottom', '')
+        ),
+    default='front'        
+    )
+    x: FloatProperty(
+        name="Location X",
+        default=0
+    )
+    y: FloatProperty(
+        name="Location Y",
+        default=0
+    )
+    xDim: FloatProperty(
+        name="Dimension X",
+        default=0
+    )
+    yDim: FloatProperty(
+        name="Dimension Y",
+        default=0
+    )
 
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
@@ -230,6 +263,21 @@ class SEUT_Scene(PropertyGroup):
         poll=poll_linkedScene,
         update=update_mirroringScene
     )
+
+    # Mountpoints
+    mountpointToggle: EnumProperty(
+        name='Mountpoints',
+        items=(
+            ('on', 'On', ''),
+            ('off', 'Off', '')
+            ),
+        default='off',
+        update=update_MountpointToggle
+    )
+    mountpointAreas: CollectionProperty(
+        type=SEUT_MountpointAreas
+    )
+    
 
     # Export
     export_deleteLooseFiles: BoolProperty(

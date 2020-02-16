@@ -6,6 +6,7 @@ import xml.dom.minidom
 from bpy.types      import Operator
 
 from ..seut_ot_mirroring            import SEUT_OT_Mirroring
+from ..seut_ot_mountpoints          import SEUT_OT_Mountpoints
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from ..seut_errors                  import errorExportGeneral
 
@@ -123,18 +124,59 @@ class SEUT_OT_ExportSBC(Operator):
         offset = path.find("Models\\")
 
         def_Model = ET.SubElement(def_definition, 'Model')
-        def_Model.text = path[offset:] + scene.seut.subtypeId + '.mwm'
+        def_Model.text=path[offset:] + scene.seut.subtypeId + '.mwm'
+
+        if scene.seut.subtypeId == "":
+            scene.seut.subtypeId = scene.name
+        tag = ' (' + scene.seut.subtypeId + ')'
+
+        if 'Mountpoints' + tag in bpy.data.collections:
+            SEUT_OT_Mountpoints.saveMountpointData(context, bpy.data.collections['Mountpoints' + tag])
         
-        """
-        def_Mountpoints = ET.SubElement(def_definition, 'Mountpoints')
-        def_Mountpoint = ET.SubElement(def_Mountpoints, 'Mountpoint')
-        def_Mountpoint.set('Side', 'PLACEHOLDER')
-        def_Mountpoint.set('StartX', 'PLACEHOLDER')
-        def_Mountpoint.set('StartY', 'PLACEHOLDER')
-        def_Mountpoint.set('EndX', 'PLACEHOLDER')
-        def_Mountpoint.set('EndY', 'PLACEHOLDER')
-        def_Mountpoint.set('Default', 'PLACEHOLDER')
-        """
+        if len(scene.seut.mountpointAreas) != 0:
+
+            if scene.seut.gridScale == 'small':
+                scale = 0.5
+            else:
+                scale = 2.5
+
+            bboxX = scene.seut.bBox_X * scale
+            bboxY = scene.seut.bBox_Y * scale
+            bboxZ = scene.seut.bBox_Z * scale
+
+            def_Mountpoints = ET.SubElement(def_definition, 'Mountpoints')
+
+            for area in scene.seut.mountpointAreas:
+                if area is not None:
+
+                    def_Mountpoint = ET.SubElement(def_Mountpoints, 'Mountpoint')
+
+                    sideName = area.side.capitalize()
+
+                    if area.side == 'front' or area.side == 'back':
+                        startX = 100 / bboxX * abs(area.x + (area.xDim / 2) - (bboxX / 2))
+                        startY = 100 / bboxZ * abs(area.y + (area.yDim / 2) - (bboxZ / 2))
+                        endX = 100 / bboxX * abs(area.x - (area.xDim / 2) - (bboxX / 2))
+                        endY = 100 / bboxZ * abs(area.y - (area.yDim / 2) - (bboxZ / 2))
+                    elif area.side == 'left' or area.side == 'right':
+                        startX = 100 / bboxY * abs(area.x + (area.xDim / 2) - (bboxY / 2))
+                        startY = 100 / bboxZ * abs(area.y + (area.yDim / 2) - (bboxZ / 2))
+                        endX = 100 / bboxY * abs(area.x - (area.xDim / 2) - (bboxY / 2))
+                        endY = 100 / bboxZ * abs(area.y - (area.yDim / 2) - (bboxZ / 2))
+                    elif area.side == 'top' or area.side == 'bottom':
+                        startX = 100 / bboxX * abs(area.x + (area.xDim / 2) - (bboxX / 2))
+                        startY = 100 / bboxY * abs(area.y + (area.yDim / 2) - (bboxY / 2))
+                        endX = 100 / bboxX * abs(area.x - (area.xDim / 2) - (bboxX / 2))
+                        endY = 100 / bboxY * abs(area.y - (area.yDim / 2) - (bboxY / 2))
+
+                    def_Mountpoint.set('Side', sideName)
+                    def_Mountpoint.set('StartX', str(round(startX, 2)))
+                    def_Mountpoint.set('StartY', str(round(startY, 2)))
+                    def_Mountpoint.set('EndX', str(round(endX, 2)))
+                    def_Mountpoint.set('EndY', str(round(endY, 2)))
+
+                    if area.side == 'bottom':
+                        def_Mountpoint.set('Default', 'true')
         
         # Creating Build Stage references.
         if collections['bs1'] is not None or collections['bs2'] is not None or collections['bs3'] is not None:

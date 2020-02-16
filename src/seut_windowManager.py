@@ -43,6 +43,19 @@ class SEUT_WindowManager(PropertyGroup):
         step=10.0,
         update=update_BBox
     )
+      
+    # Mountpoints
+    mountpointSide: EnumProperty(
+    name='Side',
+    items=(
+        ('front', 'Front', ''),
+        ('back', 'Back', ''),
+        ('left', 'Left', ''),
+        ('right', 'Right', ''),
+        ('top', 'Top', ''),
+        ('bottom', 'Bottom', '')
+        ),
+    default='front'        
     
     # Materials
     matPreset: EnumProperty(
@@ -58,4 +71,5 @@ class SEUT_WindowManager(PropertyGroup):
             ('SMAT_Preset_NoCM_NoADD', 'No CM, No ADD', '[_] CM\n[_] Emissive\n[_] ADD\n[X] NG\n[X] Alpha')
             ),
         default='SMAT_Preset_Full'
+
     )

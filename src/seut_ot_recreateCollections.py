@@ -89,6 +89,9 @@ class SEUT_OT_RecreateCollections(Operator):
                 if col.name == 'Mirroring' + tag or col.name == 'Mirroring' + tagOld:
                     col.name = 'Mirroring' + tag
 
+                if col.name == 'Mountpoints' + tag or col.name == 'Mountpoints' + tagOld:
+                    col.name = 'Mountpoints' + tag
+
                 elif col.name == 'LOD1' + tag or col.name == 'LOD1' + tagOld:
                     col.name = 'LOD1' + tag
 

@@ -37,7 +37,7 @@ mirroringPresets = OrderedDict([
 
 class SEUT_OT_Mirroring(Operator):
     """Handles setup of mirroring options"""
-    bl_idname = "object.mirroring"
+    bl_idname = "scene.mirroring"
     bl_label = "Mirroring"
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -47,6 +47,8 @@ class SEUT_OT_Mirroring(Operator):
         scene = context.scene
 
         if scene.seut.mirroringToggle == 'on':
+            if scene.seut.mountpointToggle == 'on':
+                scene.seut.mountpointToggle = 'off'
             SEUT_OT_Mirroring.mirroringSetup(self, context)
 
         elif scene.seut.mirroringToggle == 'off':
