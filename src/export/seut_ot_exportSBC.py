@@ -154,20 +154,51 @@ class SEUT_OT_ExportSBC(Operator):
                     sideName = area.side.capitalize()
 
                     if area.side == 'front' or area.side == 'back':
-                        startX = 100 / bboxX * abs(area.x + (area.xDim / 2) - (bboxX / 2))
-                        startY = 100 / bboxZ * abs(area.y + (area.yDim / 2) - (bboxZ / 2))
+                        if area.x + (area.xDim / 2) - (bboxX / 2) > 0:
+                            startX = 0.0
+                        else:
+                            startX = 100 / bboxX * abs(area.x + (area.xDim / 2) - (bboxX / 2))
+
+                        if area.y + (area.yDim / 2) - (bboxZ / 2) > 0:
+                            startY = 0.0
+                        else:
+                            startY = 100 / bboxZ * abs(area.y + (area.yDim / 2) - (bboxZ / 2))
+
                         endX = 100 / bboxX * abs(area.x - (area.xDim / 2) - (bboxX / 2))
                         endY = 100 / bboxZ * abs(area.y - (area.yDim / 2) - (bboxZ / 2))
+
                     elif area.side == 'left' or area.side == 'right':
-                        startX = 100 / bboxY * abs(area.x + (area.xDim / 2) - (bboxY / 2))
-                        startY = 100 / bboxZ * abs(area.y + (area.yDim / 2) - (bboxZ / 2))
+                        if area.x + (area.xDim / 2) - (bboxY / 2) > 0:
+                            startX = 0.0
+                        else:
+                            startX = 100 / bboxY * abs(area.x + (area.xDim / 2) - (bboxY / 2))
+
+                        if area.y + (area.yDim / 2) - (bboxZ / 2) > 0:
+                            startY = 0.0
+                        else:
+                            startY = 100 / bboxZ * abs(area.y + (area.yDim / 2) - (bboxZ / 2))
+                            
                         endX = 100 / bboxY * abs(area.x - (area.xDim / 2) - (bboxY / 2))
                         endY = 100 / bboxZ * abs(area.y - (area.yDim / 2) - (bboxZ / 2))
+
                     elif area.side == 'top' or area.side == 'bottom':
-                        startX = 100 / bboxX * abs(area.x + (area.xDim / 2) - (bboxX / 2))
-                        startY = 100 / bboxY * abs(area.y + (area.yDim / 2) - (bboxY / 2))
+                        if area.x + (area.xDim / 2) - (bboxX / 2) > 0:
+                            startX = 0.0
+                        else:
+                            startX = 100 / bboxX * abs(area.x + (area.xDim / 2) - (bboxX / 2))
+
+                        if area.y + (area.yDim / 2) - (bboxY / 2) > 0:
+                            startY = 0.0
+                        else:
+                            startY = 100 / bboxY * abs(area.y + (area.yDim / 2) - (bboxY / 2))
+
                         endX = 100 / bboxX * abs(area.x - (area.xDim / 2) - (bboxX / 2))
                         endY = 100 / bboxY * abs(area.y - (area.yDim / 2) - (bboxY / 2))
+                    
+                    if endX > 100:
+                        endX = 100.0
+                    if endY > 100:
+                        endY = 100.0
 
                     def_Mountpoint.set('Side', sideName)
                     def_Mountpoint.set('StartX', str(round(startX, 2)))
