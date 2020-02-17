@@ -8,7 +8,7 @@ from bpy.types      import Operator
 from ..seut_ot_mirroring            import SEUT_OT_Mirroring
 from ..seut_ot_mountpoints          import SEUT_OT_Mountpoints
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral
+from ..seut_errors                  import errorExportGeneral, errorCollection
 
 class SEUT_OT_ExportSBC(Operator):
     """Exports to SBC"""
@@ -52,6 +52,11 @@ class SEUT_OT_ExportSBC(Operator):
         if context.scene.seut.sceneType == 'subpart':
             print("SEUT Info: Scene '" + scene.name + "' is of type 'Subpart'. SBC export skipped.")
             return {'FINISHED'}
+
+        # Checks whether collection exists, is excluded or is empty
+        result = errorCollection(self, context, collections['main'], False)
+        if not result == {'CONTINUE'}:
+            return result
 
         if collections['bs1'] is not None and collections['bs2'] is not None:
             if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
