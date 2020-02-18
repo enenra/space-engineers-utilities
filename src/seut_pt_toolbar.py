@@ -15,6 +15,7 @@ class SEUT_PT_Panel(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+        wm = context.window_manager
 
         # SubtypeId
         box = layout.box()
@@ -35,6 +36,8 @@ class SEUT_PT_Panel(Panel):
         row.prop(scene.seut,'gridScale', expand=True)
         
         layout.operator('object.recreate_collections', icon='COLLECTION_NEW')
+        
+        layout.prop(wm.seut,'simpleNavigationToggle')
 
 
 class SEUT_PT_Panel_BoundingBox(Panel):

@@ -87,6 +87,7 @@ from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_mountpoints           import SEUT_OT_Mountpoints
 from .seut_ot_addMountpointArea     import SEUT_OT_AddMountpointArea
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_simpleNavigation      import SEUT_OT_SimpleNavigation
 from .seut_scene                    import SEUT_MountpointAreas
 from .seut_scene                    import SEUT_Scene
 from .seut_object                   import SEUT_Object
@@ -132,6 +133,7 @@ classes = (
     SEUT_OT_Mountpoints,
     SEUT_OT_AddMountpointArea,
     SEUT_OT_RecreateCollections,
+    SEUT_OT_SimpleNavigation,
     SEUT_OT_MatCreate,
     SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
@@ -192,7 +194,6 @@ def menu_draw(self, context):
     layout.separator()
     layout.label(text="Space Engineers Utilities")
     layout.menu('SEUT_MT_ContextMenu')
-
 
 @persistent
 def load_handler(dummy):
