@@ -30,7 +30,7 @@ class SEUT_PT_Panel_Materials(Panel):
                         break
 
             box.prop(material.seut, 'overrideMatLib')
-            box.prop(material.seut, 'technique')
+            box.prop(material.seut, 'technique', icon='IMGDISPLAY')
 
             if material.seut.technique == 'GLASS' or material.seut.technique == 'ALPHA_MASKED':
                 boxSpec = box.box()
@@ -42,9 +42,9 @@ class SEUT_PT_Panel_Materials(Panel):
                 boxDiff.prop(material.seut, 'diffuseColor', text="Diffuse Color")
 
         box = layout.box()
-        box.label(text="Create new SEUT Material")
-        box.prop(wm.seut, 'matPreset', text="Preset")
-        box.operator('object.mat_create')
+        box.label(text="Create new SEUT Material", icon='MATERIAL')
+        box.prop(wm.seut, 'matPreset', icon='PRESET')
+        box.operator('object.mat_create', icon='ADD')
 
 class SEUT_PT_Panel_MatLib(Panel):
     """Creates the MatLib linking panel for SEUT"""
@@ -65,4 +65,4 @@ class SEUT_PT_Panel_MatLib(Panel):
         layout.operator('scene.refresh_matlibs', icon='FILE_REFRESH')
         
         layout.separator()
-        layout.operator('scene.export_materials')
+        layout.operator('scene.export_materials', icon='EXPORT')

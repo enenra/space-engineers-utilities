@@ -10,6 +10,12 @@ class SEUT_OT_MatCreate(Operator):
     bl_label = "Create Material"
     bl_options = {'REGISTER', 'UNDO'}
 
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object is not None
+
+
     def execute(self, context):
         
         wm = context.window_manager

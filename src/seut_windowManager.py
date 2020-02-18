@@ -60,7 +60,7 @@ class SEUT_WindowManager(PropertyGroup):
     
     # Materials
     matPreset: EnumProperty(
-        name='SEUT Material Preset',
+        name='Preset',
         description="Select a nodetree preset for your material",
         items=(
             ('SMAT_Preset_Full', 'Full', '[X] CM\n[X] Emissive\n[X] ADD\n[X] NG\n[X] Alpha'),

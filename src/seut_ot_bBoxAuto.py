@@ -7,7 +7,7 @@ from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 class SEUT_OT_BBoxAuto(Operator):
     """Sets the bounding box automatically (not very accurate)"""
     bl_idname = "object.bbox_auto"
-    bl_label = "Bounding Box Automatic"
+    bl_label = "Automatic"
     bl_options = {'REGISTER', 'UNDO'}
 
     
