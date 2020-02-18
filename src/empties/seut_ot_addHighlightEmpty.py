@@ -23,15 +23,15 @@ class SEUT_OT_AddHighlightEmpty(Operator):
     detectorType: EnumProperty(
         name='Highlight Type',
         items=(
-            ('conveyor', 'Conveyor', 'Defines large conveyor access point'),
-            ('conveyor_small', 'Small Conveyor', 'Small Conveyor, Defines small conveyor access point'),
+            ('conveyor', 'Conveyor', 'Defines large conveyor access point.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
+            ('conveyor_small', 'Small Conveyor', 'Small Conveyor, Defines small conveyor access point.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('terminal', 'Terminal', 'Defines terminal access point'),
             ('button', 'Button', 'Defines access points for single buttons'),
             ('cockpit', 'Cockpit', 'Defines access point to block that can be entered'),
             ('door', 'Door', 'Defines door access point'),
             ('advanceddoor', 'Advanced Door', 'Defines advanced door access point'),
             ('block', 'Medical Station', 'Defines access point to part of medical station that allows for health / o2 / h2 / energy regeneration'),
-            ('wardrobe', 'Wardrobe', 'Defines access point to part of medical station that allows the switching of skins'),
+            ('wardrobe', 'Wardrobe', 'Defines access point to part of medical station that allows the switching of skins.\nNote: Moves player to within the empty and disables jetpack. May require geometry above and below so player does not fall due to gravity'),
             ('cryopod', 'Cryopod', 'Defines cryopod access point')
             ),
         default='conveyor'
