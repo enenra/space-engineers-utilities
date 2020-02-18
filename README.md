@@ -37,8 +37,8 @@ A Blender 2.8+ addon.
 5. Within the resulting directory you should have the following structure:
 ```
 SEUT\Materials\
+SEUT\Textures\
 SEUT\Tools\
-SEUT\convert_textures.bat
 ```
 5. Download [Stollie's MWM Builder](https://github.com/cstahlhut/MWMBuilder/releases) (StollieMWMBuilder.rar) and unzip it into `SEUT\Tools\MWMB\`.
 6. Download Harag's [Custom FBX Importer](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1) and place it into `SEUT\Tools\`.
