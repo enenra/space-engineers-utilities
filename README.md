@@ -43,17 +43,10 @@ SEUT\Tools\
 5. Download [Stollie's MWM Builder](https://github.com/cstahlhut/MWMBuilder/releases) (StollieMWMBuilder.rar) and unzip it into `SEUT\Tools\MWMB\`.
 6. Download Harag's [Custom FBX Importer](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1) and place it into `SEUT\Tools\`.
 7. Download the Havok Content Tools ([64bit](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i)/[32bit](https://drive.google.com/open?id=1DL3-evI3LSIstVTjYvjw01rtpI3iAhDh)) and install them to `SEUT\Tools\Havok\`.
-8. Run the BAT file. Point it at the correct folder for your SE installation and SE Mod SDK's `texconv.exe`
-9. Once the textures are unpacked, you should have the following structure:
-```
-SEUT\Materials\
-SEUT\Textures\
-SEUT\Tools\
-SEUT\convert_textures.bat
-```
-10. Go to Edit --> Preferences --> Add-ons --> Scene: Space Engineers Utilities and set the paths to the respective folders and files within `SEUT\`.
-11. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
-12. In the `N`-toolbar within the Node Editor / Shader Editor, enable `MatLib_Presets.blend`. Also enable any of the other `MatLib_*`-files to link their materials into the current file.
+8. Run `bulkTexConverter.exe`. Point it at the correct folders for your SE installation, SEUT Tools folder and SEUT Textures folder and load presets by using File --> Load Presets. Then run the conversion.
+9. In Blender, go to Edit --> Preferences --> Add-ons --> Scene: Space Engineers Utilities and set the paths to the respective folders and files within `SEUT\`.
+10. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
+11. In the `N`-toolbar within the Node Editor / Shader Editor, enable `MatLib_Presets.blend`. Also enable any of the other `MatLib_*`-files to link their materials into the current file.
 
 ## Support	
 Please consider supporting the development of this addon by becoming one of Stollie's patreons! Without him, the development of the addon would never have gotten this far.	
