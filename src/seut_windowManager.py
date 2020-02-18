@@ -15,14 +15,14 @@ def update_BBox(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_simpleNavigationToggle(self, context):
-    bpy.ops.scene.simple_navigation()
+    bpy.ops.scene.simple_navigation('INVOKE_DEFAULT')
     
 
 class SEUT_WindowManager(PropertyGroup):
     """Holder for the various properties saved to the BLEND file"""
 
     simpleNavigationToggle: BoolProperty(
-        name="Activate Simple Navigation",
+        name="Simple Navigation",
         description="Automatically sets all non-active collections to hidden",
         default=False,
         update=update_simpleNavigationToggle

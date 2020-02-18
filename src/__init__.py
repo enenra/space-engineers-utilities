@@ -81,6 +81,7 @@ from .seut_ot_bBox                  import SEUT_OT_BBox
 from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_simpleNavigation      import SEUT_OT_SimpleNavigation
 from .seut_scene                    import SEUT_Scene
 from .seut_object                   import SEUT_Object
 from .seut_windowManager            import SEUT_WindowManager
@@ -119,6 +120,7 @@ classes = (
     SEUT_OT_BBoxAuto,
     SEUT_OT_Mirroring,
     SEUT_OT_RecreateCollections,
+    SEUT_OT_SimpleNavigation,
     SEUT_OT_MatCreate,
     SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
@@ -176,7 +178,6 @@ def menu_draw(self, context):
     layout.separator()
     layout.label(text="Space Engineers Utilities")
     layout.menu('SEUT_MT_ContextMenu')
-
 
 @persistent
 def load_handler(dummy):
