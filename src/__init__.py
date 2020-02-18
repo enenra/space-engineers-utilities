@@ -15,7 +15,7 @@ bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie, Kamikaze",
-    "version": (0, 7, 1),
+    "version": (0, 9, 0),
     "blender": (2, 81, 0),
     "location": "View3D > Tools ",
     "warning": "",
@@ -43,35 +43,39 @@ from bpy.types import (Panel,
                        PropertyGroup,
                        )
 
-from .empties.seut_mt_contextMenu           import SEUT_MT_ContextMenu
-from .empties.seut_pt_emptyMenu             import SEUT_PT_EmptyLink
-from .empties.seut_ot_addHighlightEmpty     import SEUT_OT_AddHighlightEmpty
-from .empties.seut_ot_addDummy              import SEUT_OT_AddDummy
-from .empties.seut_ot_addPresetSubpart      import SEUT_OT_AddPresetSubpart
-from .empties.seut_ot_addCustomSubpart      import SEUT_OT_AddCustomSubpart
-from .empties.seut_ot_emptyToCubeType       import SEUT_OT_EmptiesToCubeType
-from .export.seut_ot_exportMain             import SEUT_OT_ExportMain
-from .export.seut_ot_exportBS               import SEUT_OT_ExportBS
-from .export.seut_ot_exportLOD              import SEUT_OT_ExportLOD
-from .export.seut_ot_exportHKT              import SEUT_OT_ExportHKT
-from .export.seut_ot_exportSBC              import SEUT_OT_ExportSBC
-from .export.seut_ot_exportMWM              import SEUT_OT_ExportMWM
-from .export.seut_ot_export                 import SEUT_OT_Export
-from .export.seut_ot_exportAllScenes        import SEUT_OT_ExportAllScenes
-from .export.seut_ot_exportMaterials        import SEUT_OT_ExportMaterials
-from .materials.seut_materials              import SEUT_Materials
-from .materials.seut_pt_matToolbar          import SEUT_PT_Panel_Materials
-from .materials.seut_pt_matToolbar          import SEUT_PT_Panel_MatLib
-from .materials.seut_ot_remapMaterials      import SEUT_OT_RemapMaterials
-from .materials.seut_ot_refreshMatLibs      import SEUT_OT_RefreshMatLibs
-from .materials.seut_ot_matCreate           import SEUT_OT_MatCreate
-from .materials.seut_matLib                 import SEUT_MatLibProps
-from .materials.seut_matLib                 import SEUT_UL_MatLib
+from .empties.seut_mt_contextMenu               import SEUT_MT_ContextMenu
+from .empties.seut_pt_emptyMenu                 import SEUT_PT_EmptyLink
+from .empties.seut_ot_addHighlightEmpty         import SEUT_OT_AddHighlightEmpty
+from .empties.seut_ot_addDummy                  import SEUT_OT_AddDummy
+from .empties.seut_ot_addPresetSubpart          import SEUT_OT_AddPresetSubpart
+from .empties.seut_ot_addCustomSubpart          import SEUT_OT_AddCustomSubpart
+from .empties.seut_ot_emptyToCubeType           import SEUT_OT_EmptiesToCubeType
+from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
+from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
+from .export.seut_ot_exportMain                 import SEUT_OT_ExportMain
+from .export.seut_ot_exportBS                   import SEUT_OT_ExportBS
+from .export.seut_ot_exportLOD                  import SEUT_OT_ExportLOD
+from .export.seut_ot_exportHKT                  import SEUT_OT_ExportHKT
+from .export.seut_ot_exportSBC                  import SEUT_OT_ExportSBC
+from .export.seut_ot_exportMWM                  import SEUT_OT_ExportMWM
+from .export.seut_ot_export                     import SEUT_OT_Export
+from .export.seut_ot_exportAllScenes            import SEUT_OT_ExportAllScenes
+from .export.seut_ot_exportMaterials            import SEUT_OT_ExportMaterials
+from .export.seut_ot_copyExportFolder           import SEUT_OT_CopyExportFolder
+from .materials.seut_materials                  import SEUT_Materials
+from .materials.seut_pt_matToolbar              import SEUT_PT_Panel_Materials
+from .materials.seut_pt_matToolbar              import SEUT_PT_Panel_MatLib
+from .materials.seut_ot_remapMaterials          import SEUT_OT_RemapMaterials
+from .materials.seut_ot_refreshMatLibs          import SEUT_OT_RefreshMatLibs
+from .materials.seut_ot_matCreate               import SEUT_OT_MatCreate
+from .materials.seut_matLib                     import SEUT_MatLibProps
+from .materials.seut_matLib                     import SEUT_UL_MatLib
 
 from .seut_preferences              import SEUT_AddonPreferences
 from .seut_pt_toolbar               import SEUT_PT_Panel
 from .seut_pt_toolbar               import SEUT_PT_Panel_BoundingBox
 from .seut_pt_toolbar               import SEUT_PT_Panel_Mirroring
+from .seut_pt_toolbar               import SEUT_PT_Panel_Mountpoints
 from .seut_pt_toolbar               import SEUT_PT_Panel_Export
 from .seut_pt_toolbar               import SEUT_PT_Panel_Import
 from .seut_ot_import                import SEUT_OT_Import
@@ -80,8 +84,11 @@ from .seut_ot_gridScale             import SEUT_OT_GridScale
 from .seut_ot_bBox                  import SEUT_OT_BBox
 from .seut_ot_bBoxAuto              import SEUT_OT_BBoxAuto
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
+from .seut_ot_mountpoints           import SEUT_OT_Mountpoints
+from .seut_ot_addMountpointArea     import SEUT_OT_AddMountpointArea
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_ot_simpleNavigation      import SEUT_OT_SimpleNavigation
+from .seut_scene                    import SEUT_MountpointAreas
 from .seut_scene                    import SEUT_Scene
 from .seut_object                   import SEUT_Object
 from .seut_windowManager            import SEUT_WindowManager
@@ -92,6 +99,7 @@ classes = (
     SEUT_PT_Panel,
     SEUT_PT_Panel_BoundingBox,
     SEUT_PT_Panel_Mirroring,
+    SEUT_PT_Panel_Mountpoints,
     SEUT_PT_Panel_Export,
     SEUT_PT_Panel_Import,
     SEUT_PT_Panel_Materials,
@@ -111,19 +119,25 @@ classes = (
     SEUT_OT_ExportHKT,
     SEUT_OT_ExportSBC,
     SEUT_OT_ExportMWM,
+    SEUT_OT_CopyExportFolder,
     SEUT_OT_Import,
     SEUT_OT_StructureConversion,
     SEUT_OT_RemapMaterials,
     SEUT_OT_EmptiesToCubeType,
+    SEUT_OT_ConvertBonesToBlenderFormat,
+    SEUT_OT_ConvertBonesToSEFormat,
     SEUT_OT_GridScale,
     SEUT_OT_BBox,
     SEUT_OT_BBoxAuto,
     SEUT_OT_Mirroring,
+    SEUT_OT_Mountpoints,
+    SEUT_OT_AddMountpointArea,
     SEUT_OT_RecreateCollections,
     SEUT_OT_SimpleNavigation,
     SEUT_OT_MatCreate,
     SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
+    SEUT_MountpointAreas,
     SEUT_Scene,
     SEUT_Object,
     SEUT_WindowManager,
@@ -137,6 +151,7 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
+    bpy.types.VIEW3D_MT_add.append(menu_draw)
 
     bpy.types.Material.seut = PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
@@ -154,6 +169,7 @@ def unregister():
         bpy.utils.unregister_class(cls)
         
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
+    bpy.types.VIEW3D_MT_add.remove(menu_draw)
 
     del bpy.types.Material.seut
     del bpy.types.Scene.seut

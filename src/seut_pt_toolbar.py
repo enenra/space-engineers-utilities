@@ -25,17 +25,17 @@ class SEUT_PT_Panel(Panel):
         
         box = layout.box()
         if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'mirror':
-            box.label(text="SubtypeId (File Name)")
-        elif scene.seut.sceneType == 'subpart':
-            box.label(text="File Name")
+            box.label(text="SubtypeId (File Name)", icon='COPY_ID')
+        elif scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
+            box.label(text="File Name", icon='FILE')
         box.prop(scene.seut, "subtypeId", text="", expand=True)
 
         box = layout.box()
-        box.label(text="Grid Scale")
+        box.label(text="Grid Scale", icon='GRID')
         row = box.row()
         row.prop(scene.seut,'gridScale', expand=True)
         
-        layout.operator('object.recreate_collections', text="Recreate Collections")
+        layout.operator('object.recreate_collections', icon='COLLECTION_NEW')
         
         layout.prop(wm.seut,'simpleNavigationToggle')
 
@@ -56,26 +56,27 @@ class SEUT_PT_Panel_BoundingBox(Panel):
         # Toggle
         layout.prop(wm.seut,'bBoxToggle', expand=True)
 
-        # Size
-        box = layout.box()
-        box.label(text="Size")
-        row = box.row()
-        row.prop(scene.seut, "bBox_X")
-        row.prop(scene.seut, "bBox_Y")
-        row.prop(scene.seut, "bBox_Z")
+        if wm.seut.bBoxToggle == 'on':
+            # Size
+            box = layout.box()
+            box.label(text="Size", icon='PIVOT_BOUNDBOX')
+            row = box.row()
+            row.prop(scene.seut, "bBox_X")
+            row.prop(scene.seut, "bBox_Y")
+            row.prop(scene.seut, "bBox_Z")
 
-        row = box.row()
-        # row.prop(wm.seut, 'bboxColor', text="")
-        # row.prop(wm.seut, 'bboxTransparency', text="")
-        
-        row = box.row()
-        row.operator('object.bbox_auto', text="Automatic")
+            row = box.row()
+            # row.prop(wm.seut, 'bboxColor', text="")
+            # row.prop(wm.seut, 'bboxTransparency', text="")
+            
+            row = box.row()
+            row.operator('object.bbox_auto', icon='AUTO')
 
 
 class SEUT_PT_Panel_Mirroring(Panel):
     """Creates the mirroring panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_Mirroring"
-    bl_label = "Mirroring"
+    bl_label = "Mirroring Mode"
     bl_category = "SEUT"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -88,14 +89,32 @@ class SEUT_PT_Panel_Mirroring(Panel):
         
         layout.prop(scene.seut, 'mirroringToggle', expand=True)
 
-        layout.prop(scene.seut, 'mirroringScene', text="Model")
-        """
-        box = layout.box()
-        box.label(text="Mirroring X: " + scene.seut.mirroring_X)
-        box.label(text="Mirroring Y: " + scene.seut.mirroring_Y)
-        box.label(text="Mirroring Z: " + scene.seut.mirroring_Z)
-        """
+        if scene.seut.mirroringToggle == 'on':
+            layout.prop(scene.seut, 'mirroringScene', text="Model", icon='MOD_MIRROR')
+
+
+class SEUT_PT_Panel_Mountpoints(Panel):
+    """Creates the mountpoints panel for SEUT"""
+    bl_idname = "SEUT_PT_Panel_Mountpoints"
+    bl_label = "Mountpoint Mode"
+    bl_category = "SEUT"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        wm = context.window_manager
         
+        layout.prop(scene.seut, 'mountpointToggle', expand=True)
+
+        if scene.seut.mountpointToggle == 'on':
+            box = layout.box()
+            box.label(text="Areas", icon='MESH_PLANE')
+            box.prop(wm.seut, 'mountpointSide', icon='AXIS_SIDE')
+            box.operator('scene.add_mountpoint_area', icon='ADD')
+
 
 class SEUT_PT_Panel_Export(Panel):
     """Creates the export panel for SEUT"""
@@ -114,51 +133,28 @@ class SEUT_PT_Panel_Export(Panel):
         # Export
         row = layout.row()
         row.scale_y = 2.0
-        row.operator('scene.export_all_scenes')
-        layout.operator('scene.export')
-        
-        """
-        # Partial
-        box = layout.box()
-        box.label(text="Partial Export")
-        split = box.split()
-        
-        col = split.column()
-        col.operator('object.export_main', text="Main")
-        col.operator('object.export_lod', text="LODs")
-
-        col = split.column()
-        col.operator('object.export_buildstages', text="Build Stages")
-        col.operator('object.export_hkt', text="Collision")
-        """
+        row.operator('scene.export_all_scenes', icon='EXPORT')
+        row = layout.row()
+        row.scale_y = 1.1
+        row.operator('scene.export', icon='EXPORT')
 
         # Options
         box = layout.box()
-        box.label(text="Options")
-        """
-        split = box.split()
-        col = split.column()
-        col.prop(scene.seut, "export_fbx")
-        col.prop(scene.seut, "export_sbc")
-
-        col = split.column()
-        col.prop(scene.seut, "export_xml")
-        col.prop(scene.seut, "export_hkt")
-        """
-        row = box.row()
-
-        # row.prop(scene.seut, "axis_up")
-        # row.prop(scene.seut, "axis_forward")
+        box.label(text="Options", icon='SETTINGS')
     
         box.prop(scene.seut, "export_deleteLooseFiles")
         box.prop(scene.seut, "export_rescaleFactor")
         
-        box.prop(scene.seut, "export_exportPath", text="Folder", expand=True)
+        split = box.split(factor=0.85)
+        col = split.column()
+        col.prop(scene.seut, "export_exportPath", text="Folder", expand=True)
+        col = split.column()
+        col.operator('scene.copy_export_folder', text="", icon='PASTEDOWN')
         
         # LOD
         if collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None or collections['bs_lod'] is not None:
             box = layout.box()
-            box.label(text="LOD Distance")
+            box.label(text="LOD Distance", icon='DRIVER_DISTANCE')
             if collections['lod1'] is not None:
                 box.prop(scene.seut, "export_lod1Distance")
             if collections['lod2'] is not None:
@@ -178,16 +174,26 @@ class SEUT_PT_Panel_Import(Panel):
     bl_region_type = "UI"
 
     def draw(self, context):
+
+        scene = context.scene
         layout = self.layout
 
         # Import
         row = layout.row()
         row.scale_y = 2.0
-        row.operator('scene.import', text="Import")
+        row.operator('scene.import', icon='IMPORT')
 
         # Repair
         box = layout.box()
-        box.label(text="Repair")
-        box.operator('object.emptytocubetype', text="Display Empties as 'Cube'")
-        box.operator('object.remapmaterials', text="Remap Materials")
-        box.operator('object.structure_conversion', text="Convert to new structure")
+        box.label(text="Repair", icon='TOOL_SETTINGS')
+        box.operator('object.emptytocubetype', icon='EMPTY_DATA')
+        box.operator('object.remapmaterials', icon='MATERIAL')
+        box.operator('object.structure_conversion', icon='OUTLINER')
+
+        if scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
+            # Bones
+            box = layout.box()
+            box.label(text="Bone Conversion", icon='ARMATURE_DATA')
+            box.operator('object.convertbonestoblenderformat', icon='OUTLINER_OB_ARMATURE')
+            box.operator('object.convertbonestoseformat', icon='OUTLINER_DATA_ARMATURE')
+        

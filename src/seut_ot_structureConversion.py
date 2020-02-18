@@ -2,7 +2,8 @@ import bpy
 
 from bpy.types import Operator
 
-from .seut_utils    import linkSubpartScene
+from .seut_ot_mirroring     import SEUT_OT_Mirroring
+from .seut_utils            import linkSubpartScene
 
 class SEUT_OT_StructureConversion(Operator):
     """Ports blend files created with the old plugin to the new structure"""
@@ -76,6 +77,8 @@ class SEUT_OT_StructureConversion(Operator):
                     scn.collection.children.unlink(collection)
                     bpy.data.collections['SEUT' + tag].children.link(collection)
                 
+                collection.hide_viewport = False
+                
             # Convert custom properties of empties from harag's to the default blender method.
             for obj in scn.objects:
                 if obj.type == 'EMPTY':
@@ -109,6 +112,22 @@ class SEUT_OT_StructureConversion(Operator):
                             
                             if targetObjectName in bpy.data.scenes:
                                 obj.seut.linkedScene = bpy.data.scenes[targetObjectName]
+        
+            # Convert Mirroring information
+            if 'Mirroring' + tag in bpy.data.collections:
+                for mirrorEmpty in bpy.data.collections['Mirroring' + tag].objects:
+                    if mirrorEmpty.type == 'EMPTY':
+                        if mirrorEmpty.name == 'MirrorFrontBack':
+                            mirrorEmpty.name = 'Mirroring X'
+                            SEUT_OT_Mirroring.saveRotationToProps(self, context, mirrorEmpty)
+                        elif mirrorEmpty.name == 'MirrorLeftRight':
+                            mirrorEmpty.name = 'Mirroring Y'
+                            SEUT_OT_Mirroring.saveRotationToProps(self, context, mirrorEmpty)
+                        elif mirrorEmpty.name == 'MirrorTopBottom':
+                            mirrorEmpty.name = 'Mirroring Z'
+                            SEUT_OT_Mirroring.saveRotationToProps(self, context, mirrorEmpty)
+                    
+                scn.seut.mirroringToggle = 'off'
         
         bpy.context.window.scene = currentScene
 

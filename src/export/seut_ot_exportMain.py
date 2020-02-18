@@ -51,6 +51,16 @@ class SEUT_OT_ExportMain(Operator):
         result = errorToolPath(self, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:
             return result
+        
+        foundArmatures = False
+        for obj in collections['main'].objects:
+            if obj is not None and obj.type == 'ARMATURE':
+                foundArmatures = True
+        
+        if not foundArmatures and (scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'):
+            self.report({'WARNING'}, "SEUT: Scene is of type '%s' but does not contain any armatures." % (scene.seut.sceneType))
+        if foundArmatures and not (scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'):
+            self.report({'WARNING'}, "SEUT: Scene is of type '%s' but contains armatures." % (scene.seut.sceneType))
 
         # Export XML if boolean is set.
         if scene.seut.export_xml:

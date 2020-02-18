@@ -7,7 +7,8 @@ from bpy.props  import (EnumProperty,
                         IntProperty,
                         StringProperty,
                         BoolProperty,
-                        PointerProperty
+                        PointerProperty,
+                        CollectionProperty
                         )
 
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
@@ -21,8 +22,10 @@ def update_GridScale(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_MirroringToggle(self, context):
-    # Calling the operator and doing the check for off / on there means we can use report()
-    bpy.ops.object.mirroring()
+    bpy.ops.scene.mirroring()
+
+def update_MountpointToggle(self, context):
+    bpy.ops.scene.mountpoints()
 
 def update_mirroringScene(self, context):
     bpy.ops.scene.mirroring()
@@ -62,6 +65,36 @@ def update_linkSubpartInstances(self, context):
 def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'mirror'
 
+class SEUT_MountpointAreas(PropertyGroup):
+    
+    side: EnumProperty(
+    name='Side',
+    items=(
+        ('front', 'Front', ''),
+        ('back', 'Back', ''),
+        ('left', 'Left', ''),
+        ('right', 'Right', ''),
+        ('top', 'Top', ''),
+        ('bottom', 'Bottom', '')
+        ),
+    default='front'        
+    )
+    x: FloatProperty(
+        name="Location X",
+        default=0
+    )
+    y: FloatProperty(
+        name="Location Y",
+        default=0
+    )
+    xDim: FloatProperty(
+        name="Dimension X",
+        default=0
+    )
+    yDim: FloatProperty(
+        name="Dimension Y",
+        default=0
+    )
 
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
@@ -71,7 +104,9 @@ class SEUT_Scene(PropertyGroup):
         items=(
             ('mainScene', 'Main', 'This scene is a main scene'),
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene'),
-            ('mirror', 'Mirroring', 'This scene contains the mirror model of another scene')
+            ('mirror', 'Mirroring', 'This scene contains the mirror model of another scene'),
+            ('character', 'Character ', 'This scene contains a character model'),
+            ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
             ),
         default='mainScene'
     )
@@ -223,11 +258,26 @@ class SEUT_Scene(PropertyGroup):
     )
     mirroringScene: PointerProperty(
         name='Mirror Model',
-        description="The scene which contains the (optional) mirror model",
+        description="The scene which contains the (optional) mirror model. Must be set to type: 'Mirroring'",
         type=bpy.types.Scene,
         poll=poll_linkedScene,
         update=update_mirroringScene
     )
+
+    # Mountpoints
+    mountpointToggle: EnumProperty(
+        name='Mountpoints',
+        items=(
+            ('on', 'On', ''),
+            ('off', 'Off', '')
+            ),
+        default='off',
+        update=update_MountpointToggle
+    )
+    mountpointAreas: CollectionProperty(
+        type=SEUT_MountpointAreas
+    )
+    
 
     # Export
     export_deleteLooseFiles: BoolProperty(
@@ -317,19 +367,4 @@ class SEUT_Scene(PropertyGroup):
             ('-Z', '-Z', '')
             ),
         default='Z'
-    )
-    
-    # Materials
-    matPreset: EnumProperty(
-        name='SEUT Material Preset',
-        description="Select a nodetree preset for your material",
-        items=(
-            ('SMAT_Preset_Full', 'Full', '[X] Alpha\n[X] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_Full_NoEmissive', 'No Emissive', '[X] Alpha\n[_] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_Full_NoADD', 'Full, No ADD', '[X] Alpha\n[_] Emissive\n[_] ADD\n[X] NG'),
-            ('SMAT_Preset_NoAlpha', 'No Alpha', '[_] Alpha\n[X] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_NoAlpha_NoEmissive', 'No Alpha, No Emissive', '[_] Alpha\n[_] Emissive\n[X] ADD\n[X] NG'),
-            ('SMAT_Preset_NoADD', 'No ADD', '[_] Alpha\n[_] Emissive\n[_] ADD\n[X] NG')
-            ),
-        default='SMAT_Preset_Full'
     )

@@ -6,8 +6,9 @@ import xml.dom.minidom
 from bpy.types      import Operator
 
 from ..seut_ot_mirroring            import SEUT_OT_Mirroring
+from ..seut_ot_mountpoints          import SEUT_OT_Mountpoints
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral
+from ..seut_errors                  import errorExportGeneral, errorCollection
 
 class SEUT_OT_ExportSBC(Operator):
     """Exports to SBC"""
@@ -52,6 +53,11 @@ class SEUT_OT_ExportSBC(Operator):
             print("SEUT Info: Scene '" + scene.name + "' is of type 'Subpart'. SBC export skipped.")
             return {'FINISHED'}
 
+        # Checks whether collection exists, is excluded or is empty
+        result = errorCollection(self, context, collections['main'], False)
+        if not result == {'CONTINUE'}:
+            return result
+
         if collections['bs1'] is not None and collections['bs2'] is not None:
             if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
                 self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1. (015)")
@@ -88,8 +94,10 @@ class SEUT_OT_ExportSBC(Operator):
 
         if scene.seut.gridScale == 'large':
             def_CubeSize.text = 'Large'
+            gridSize = 2.5
         elif scene.seut.gridScale == 'small':
             def_CubeSize.text = 'Small'
+            gridSize = 0.5
         
         def_BlockTopology = ET.SubElement(def_definition, 'BlockTopology')
         def_BlockTopology.text = 'TriangleMesh'
@@ -98,6 +106,17 @@ class SEUT_OT_ExportSBC(Operator):
         def_Size.set('x', str(scene.seut.bBox_X))
         def_Size.set('y', str(scene.seut.bBox_Z))   # This looks wrong but it's correct: Blender has different forward than SE.
         def_Size.set('z', str(scene.seut.bBox_Y))
+
+        centerEmpty = None
+        for obj in collections['main'].objects:
+            if obj is not None and obj.type == 'EMPTY' and obj.name == 'Center':
+                centerEmpty = obj
+
+        if centerEmpty is not None:                
+            def_Center = ET.SubElement(def_definition, 'Center')
+            def_Center.set('x', str(round(centerEmpty.location.x / gridSize)))
+            def_Center.set('y', str(round(centerEmpty.location.z / gridSize)))   # This looks wrong but it's correct: Blender has different forward than SE.
+            def_Center.set('z', str(round(centerEmpty.location.y / gridSize)))
 
         def_ModelOffset = ET.SubElement(def_definition, 'ModelOffset')
         def_ModelOffset.set('x', '0')
@@ -110,18 +129,90 @@ class SEUT_OT_ExportSBC(Operator):
         offset = path.find("Models\\")
 
         def_Model = ET.SubElement(def_definition, 'Model')
-        def_Model.text = path[offset:] + scene.seut.subtypeId + '.mwm'
+        def_Model.text=path[offset:] + scene.seut.subtypeId + '.mwm'
+
+        if scene.seut.subtypeId == "":
+            scene.seut.subtypeId = scene.name
+        tag = ' (' + scene.seut.subtypeId + ')'
+
+        if 'Mountpoints' + tag in bpy.data.collections:
+            SEUT_OT_Mountpoints.saveMountpointData(context, bpy.data.collections['Mountpoints' + tag])
         
-        """
-        def_Mountpoints = ET.SubElement(def_definition, 'Mountpoints')
-        def_Mountpoint = ET.SubElement(def_Mountpoints, 'Mountpoint')
-        def_Mountpoint.set('Side', 'PLACEHOLDER')
-        def_Mountpoint.set('StartX', 'PLACEHOLDER')
-        def_Mountpoint.set('StartY', 'PLACEHOLDER')
-        def_Mountpoint.set('EndX', 'PLACEHOLDER')
-        def_Mountpoint.set('EndY', 'PLACEHOLDER')
-        def_Mountpoint.set('Default', 'PLACEHOLDER')
-        """
+        if len(scene.seut.mountpointAreas) != 0:
+
+            if scene.seut.gridScale == 'small':
+                scale = 0.5
+            else:
+                scale = 2.5
+
+            bboxX = scene.seut.bBox_X * scale
+            bboxY = scene.seut.bBox_Y * scale
+            bboxZ = scene.seut.bBox_Z * scale
+
+            def_Mountpoints = ET.SubElement(def_definition, 'Mountpoints')
+
+            for area in scene.seut.mountpointAreas:
+                if area is not None:
+
+                    def_Mountpoint = ET.SubElement(def_Mountpoints, 'Mountpoint')
+
+                    sideName = area.side.capitalize()
+
+                    if area.side == 'front' or area.side == 'back':
+                        if area.x + (area.xDim / 2) - (bboxX / 2) > 0:
+                            startX = 0.0
+                        else:
+                            startX = 100 / bboxX * abs(area.x + (area.xDim / 2) - (bboxX / 2))
+
+                        if area.y + (area.yDim / 2) - (bboxZ / 2) > 0:
+                            startY = 0.0
+                        else:
+                            startY = 100 / bboxZ * abs(area.y + (area.yDim / 2) - (bboxZ / 2))
+
+                        endX = 100 / bboxX * abs(area.x - (area.xDim / 2) - (bboxX / 2))
+                        endY = 100 / bboxZ * abs(area.y - (area.yDim / 2) - (bboxZ / 2))
+
+                    elif area.side == 'left' or area.side == 'right':
+                        if area.x + (area.xDim / 2) - (bboxY / 2) > 0:
+                            startX = 0.0
+                        else:
+                            startX = 100 / bboxY * abs(area.x + (area.xDim / 2) - (bboxY / 2))
+
+                        if area.y + (area.yDim / 2) - (bboxZ / 2) > 0:
+                            startY = 0.0
+                        else:
+                            startY = 100 / bboxZ * abs(area.y + (area.yDim / 2) - (bboxZ / 2))
+                            
+                        endX = 100 / bboxY * abs(area.x - (area.xDim / 2) - (bboxY / 2))
+                        endY = 100 / bboxZ * abs(area.y - (area.yDim / 2) - (bboxZ / 2))
+
+                    elif area.side == 'top' or area.side == 'bottom':
+                        if area.x + (area.xDim / 2) - (bboxX / 2) > 0:
+                            startX = 0.0
+                        else:
+                            startX = 100 / bboxX * abs(area.x + (area.xDim / 2) - (bboxX / 2))
+
+                        if area.y + (area.yDim / 2) - (bboxY / 2) > 0:
+                            startY = 0.0
+                        else:
+                            startY = 100 / bboxY * abs(area.y + (area.yDim / 2) - (bboxY / 2))
+
+                        endX = 100 / bboxX * abs(area.x - (area.xDim / 2) - (bboxX / 2))
+                        endY = 100 / bboxY * abs(area.y - (area.yDim / 2) - (bboxY / 2))
+                    
+                    if endX > 100:
+                        endX = 100.0
+                    if endY > 100:
+                        endY = 100.0
+
+                    def_Mountpoint.set('Side', sideName)
+                    def_Mountpoint.set('StartX', str(round(startX, 2)))
+                    def_Mountpoint.set('StartY', str(round(startY, 2)))
+                    def_Mountpoint.set('EndX', str(round(endX, 2)))
+                    def_Mountpoint.set('EndY', str(round(endY, 2)))
+
+                    if area.side == 'bottom':
+                        def_Mountpoint.set('Default', 'true')
         
         # Creating Build Stage references.
         if collections['bs1'] is not None or collections['bs2'] is not None or collections['bs3'] is not None:
@@ -166,6 +257,18 @@ class SEUT_OT_ExportSBC(Operator):
         if scene.seut.mirroring_Z != 'None':
             def_MirroringZ = ET.SubElement(def_definition, 'MirroringZ')
             def_MirroringZ.text = scene.seut.mirroring_Z
+        
+        # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
+        if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
+            def_MirroringBlock = ET.SubElement(def_definition, 'MirroringBlock')
+            def_MirroringBlock.text = scene.seut.mirroringScene.seut.subtypeId
+
+        elif scene.seut.sceneType == 'mirror':
+            for scn in bpy.data.scenes:
+                if scn.seut.mirroringScene == scene:
+                    def_MirroringBlock = ET.SubElement(def_definition, 'MirroringBlock')
+                    def_MirroringBlock.text = scn.seut.subtypeId
+
 
         # Write to file, place in export folder
         xmlString = xml.dom.minidom.parseString(ET.tostring(definitions))

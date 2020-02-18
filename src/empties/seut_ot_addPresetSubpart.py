@@ -31,9 +31,9 @@ class SEUT_OT_AddPresetSubpart(Operator):
             ('GatlingTurretBase1', 'Gatling Turret Base 1', 'Subpart for the first rotating part on a gatling turret'),
             ('GatlingTurretBase2', 'Gatling Turret Base 2', 'Subpart for the second rotating part on a gatling turret (mounted on the first)'),
             ('GatlingBarrel', 'Gatling Barrel', 'Subpart for the third rotating part on a gatling turret (the rotating barrel)'),
-            ('PistonSubpart1', 'Piston Subpart 1', 'The piston subpart attached to its base'),
-            ('PistonSubpart2', 'Piston Subpart 2', 'The piston subpart attached to its first subpart'),
-            ('PistonSubpart3', 'Piston Subpart 3', 'The piston subpart attached to its second subpart'),
+            ('PistonSubpart1', 'Piston Subpart 1', 'The piston subpart attached to its base.\nWarning: Empty must also be present in BS collections or game will CTD on placement!'),
+            ('PistonSubpart2', 'Piston Subpart 2', 'The piston subpart attached to its first subpart.\nWarning: Empty must also be present in BS collections or game will CTD on placement!'),
+            ('PistonSubpart3', 'Piston Subpart 3', 'The piston subpart attached to its second subpart.\nWarning: Empty must also be present in BS collections or game will CTD on placement!'),
             ('TurbineRotor', 'Wind Turbine Rotor', 'The subpart containing the rotating blades of a wind turbine'),
             ('HangarDoor', 'Hangar Door Part', 'Subpart for a hangar door section. \nSupports index, and all of these subparts are placed within its base')
             ),

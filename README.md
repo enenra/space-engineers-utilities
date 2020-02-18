@@ -24,6 +24,10 @@ A Blender 2.8+ addon.
 * Export material library to XML
 * Link MatLibs directly from the UI
 * Warning when empties are set up in a way that won't work ingame
+* Rotate empties in mirroring-mode to output mirror information to the SBC
+* Create new character models
+* Create new character animations and poses
+* Define mountpoints by placing areas on the six sides of the bounding box in mountpoint-mode
 
 ## Installation
 1. Download the latest release of the addon from the releases section, enable it in Blender.
@@ -33,23 +37,16 @@ A Blender 2.8+ addon.
 5. Within the resulting directory you should have the following structure:
 ```
 SEUT\Materials\
-SEUT\Tools\
-SEUT\convert_textures.bat
-```
-5. Download [Eikester's MWM Builder](https://forum.keenswh.com/threads/mwmbuilder-fixes.7391806/) and unzip it into `SEUT\Tools\MWMB\`.
-6. Download Harag's [Custom FBX Importer](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1) and place it into `SEUT\Tools\`.
-7. Download the Havok Content Tools ([64bit](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i)/[32bit](https://drive.google.com/open?id=1DL3-evI3LSIstVTjYvjw01rtpI3iAhDh)) and install them to `SEUT\Tools\Havok\`.
-8. Run the BAT file. Point it at the correct folder for your SE installation and SE Mod SDK's `texconv.exe`
-9. Once the textures are unpacked, you should have the following structure:
-```
-SEUT\Materials\
 SEUT\Textures\
 SEUT\Tools\
-SEUT\convert_textures.bat
 ```
-10. Go to Edit --> Preferences --> Add-ons --> Scene: Space Engineers Utilities and set the paths to the respective folders and files within `SEUT\`.
-11. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
-12. In the `N`-toolbar within the Node Editor / Shader Editor, enable `MatLib_Presets.blend`. Also enable any of the other `MatLib_*`-files to link their materials into the current file.
+5. Download [Stollie's MWM Builder](https://github.com/cstahlhut/MWMBuilder/releases) (StollieMWMBuilder.rar) and unzip it into `SEUT\Tools\MWMB\`.
+6. Download Harag's [Custom FBX Importer](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1) and place it into `SEUT\Tools\`.
+7. Download the Havok Content Tools ([64bit](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i)/[32bit](https://drive.google.com/open?id=1DL3-evI3LSIstVTjYvjw01rtpI3iAhDh)) and install them to `SEUT\Tools\Havok\`.
+8. Run `bulkTexConverter.exe`. Point it at the correct folders for your SE installation, SEUT Tools folder and SEUT Textures folder and load presets by using File --> Load Presets. Then run the conversion.
+9. In Blender, go to Edit --> Preferences --> Add-ons --> Scene: Space Engineers Utilities and set the paths to the respective folders and files within `SEUT\`.
+10. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
+11. In the `N`-toolbar within the Node Editor / Shader Editor, enable `MatLib_Presets.blend`. Also enable any of the other `MatLib_*`-files to link their materials into the current file.
 
 ## Support	
 Please consider supporting the development of this addon by becoming one of Stollie's patreons! Without him, the development of the addon would never have gotten this far.	
@@ -57,6 +54,7 @@ Please consider supporting the development of this addon by becoming one of Stol
 [![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Patreon_logo_with_wordmark.svg/512px-Patreon_logo_with_wordmark.svg.png)](https://www.patreon.com/Stollie)	
 
 ## Credits	
-* **Stollie** - So much general help but also writing everything havok-related, which I wouldn't have been able to do at all.	
-* **Harag** - Writing the original Blender SE plugin. A lot of code in this addon is based on his.	
+* **Stollie** - So much general help but also writing everything character, export and MWM-related, which I wouldn't have been able to do at all.	
+* **Harag** - Writing the [original Blender SE plugin](https://github.com/harag-on-steam/se-blender). A lot of code in this addon is based on his.	
+* **Wizard Lizard** - For hours of testing as well as writing the [SE Texture Converter](https://github.com/TheWizardLizard/SETextureConverter) to save us all from having to deal with batch files.
 * **Kamikaze (Blender Discord)** - Writing the `remapMaterials()`-function and generally helping out constantly by answering a lot of questions.

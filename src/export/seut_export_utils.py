@@ -5,13 +5,13 @@ import subprocess
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
-from os.path                        import join
-from mathutils                      import Matrix	
-from bpy_extras.io_utils            import axis_conversion, ExportHelper
+from os.path                                import join
+from mathutils                              import Matrix	
+from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
-from .havok.seut_havok_fbx          import save_single
-from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_utils                   import linkSubpartScene, unlinkSubpartScene
+from ..export.seut_custom_fbx_exporter       import save_single
+from ..seut_ot_recreateCollections          import SEUT_OT_RecreateCollections
+from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene
 
 def export_XML(self, context, collection):
     """Exports the XML file for a defined collection"""
@@ -25,17 +25,28 @@ def export_XML(self, context, collection):
     model = ET.Element('Model')
     model.set('Name', 'Default')
 
-    paramCentered = ET.SubElement(model, 'Parameter')
-    paramCentered.set('Name', 'Centered')
-    paramCentered.text = 'false'
+    if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
+        paramRescaleFactor = ET.SubElement(model, 'Parameter')
+        paramRescaleFactor.set('Name', 'RescaleFactor')
+        paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor)
+        
+        paramCentered = ET.SubElement(model, 'Parameter')
+        paramCentered.set('Name', 'Centered')
+        paramCentered.text = 'false'
 
-    paramRescaleFactor = ET.SubElement(model, 'Parameter')
-    paramRescaleFactor.set('Name', 'RescaleFactor')
-    paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor)
+        paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
+        paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
+        paramRescaleToLengthInMeters.text = 'false'
+    
+    elif scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
+        paramRescaleFactor = ET.SubElement(model, 'Parameter')
+        paramRescaleFactor.set('Name', 'RescaleFactor')
+        paramRescaleFactor.text = '0.01'
 
-    paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
-    paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
-    paramRescaleToLengthInMeters.text = 'false'
+    if scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
+        paramRotationY = ET.SubElement(model, 'Parameter')
+        paramRotationY.set('Name', 'RotationY')
+        paramRotationY.text = '180'
     
     path = bpy.path.abspath(scene.seut.export_exportPath)
 
@@ -138,7 +149,10 @@ def export_XML(self, context, collection):
                     else:
                         matCM = ET.SubElement(matEntry, 'Parameter')
                         matCM.set('Name', 'ColorMetalTexture')
-                        matCM.text = images['cm'].filepath[offset:]
+                        matCM.text = os.path.splitext(images['cm'].filepath[offset:])[0] + ".dds"
+                    
+                    if not isValidResolution(images['cm'].size[0]) or not isValidResolution(images['cm'].size[1]):
+                        self.report({'WARNING'}, "SEUT: 'CM' texture of local material '%s' is not of a valid resolution. May not display correctly ingame." % (mat.name))
                 
                 # _ng NormalGloss texture
                 if images['ng'] == None:
@@ -150,7 +164,10 @@ def export_XML(self, context, collection):
                     else:
                         matNG = ET.SubElement(matEntry, 'Parameter')
                         matNG.set('Name', 'NormalGlossTexture')
-                        matNG.text = images['ng'].filepath[offset:]
+                        matNG.text = os.path.splitext(images['ng'].filepath[offset:])[0] + ".dds"
+                    
+                    if not isValidResolution(images['ng'].size[0]) or not isValidResolution(images['ng'].size[1]):
+                        self.report({'WARNING'}, "SEUT: 'NG' texture of local material '%s' is not of a valid resolution. May not display correctly ingame." % (mat.name))
                 
                 # _add AddMaps texture
                 if images['add'] == None:
@@ -162,7 +179,10 @@ def export_XML(self, context, collection):
                     else:
                         matADD = ET.SubElement(matEntry, 'Parameter')
                         matADD.set('Name', 'AddMapsTexture')
-                        matADD.text = images['add'].filepath[offset:]
+                        matADD.text = os.path.splitext(images['add'].filepath[offset:])[0] + ".dds"
+                    
+                    if not isValidResolution(images['add'].size[0]) or not isValidResolution(images['add'].size[1]):
+                        self.report({'WARNING'}, "SEUT: 'ADD' texture of local material '%s' is not of a valid resolution. May not display correctly ingame." % (mat.name))
                 
                 # _alphamask Alphamask texture
                 if images['am'] == None:
@@ -174,7 +194,10 @@ def export_XML(self, context, collection):
                     else:
                         matAM = ET.SubElement(matEntry, 'Parameter')
                         matAM.set('Name', 'AlphamaskTexture')
-                        matAM.text = images['am'].filepath[offset:]
+                        matAM.text = os.path.splitext(images['am'].filepath[offset:])[0] + ".dds"
+                    
+                    if not isValidResolution(images['am'].size[0]) or not isValidResolution(images['am'].size[1]):
+                        self.report({'WARNING'}, "SEUT: 'ALPHAMASK' texture of local material '%s' is not of a valid resolution. May not display correctly ingame." % (mat.name))
 
                 # If no textures are added to the material, remove the entry again.
                 if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
@@ -401,6 +424,17 @@ def removeExportDummiesFromMat(self, context, material):
 
     return
 
+def isValidResolution(number):
+    """Returns True if number is a valid resolution (a square of 2)"""
+
+    if number == 2:
+        return True
+    elif number % 2 != 0:
+        return False
+
+    half = number / 2
+
+    return isValidResolution(half)
 
 # STOLLIE: Standard output error operator class for catching error return codes.
 class StdoutOperator():
@@ -531,55 +565,71 @@ class ExportSettings:
 # HARAG: MATRIX_SCALE_DOWN = Matrix.Scale(0.2, 4) * MATRIX_NORMAL
 def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavokfbxfile = False, kwargs = None):	
     kwargs = {	
+        
+        # Operator settings
         'version': 'BIN7400',
-        'ui_tab': 'SKIP_SAVE',
-        'global_matrix': Matrix(),
-        'apply_unit_scale': True,
-        'global_scale': 0.1, # STOLLIE: Is 1.0 in Blender Source
-        'apply_scale_options': 'FBX_SCALE_NONE',
-        'axis_up': 'Y',	 # STOLLIE: Normally a Z in Blender source.	Y aligns correctly in SE.
-        'axis_forward': 'Z', # STOLLIE: Normally a Y in Blender source. -Z is correct forward.
-        'context_objects': objects, #STOLLIE: Is None in Blender Source.
+        'path_mode': 'AUTO',
+        'batch_mode': 'OFF', # STOLLIE: Part of Save method not save single in Blender source, default = OFF.	
+
+        # Include settings.
         'object_types': {'MESH', 'EMPTY'}, # STOLLIE: Is None in Blender source.
-        'use_mesh_modifiers': True,
-        'use_mesh_modifiers_render': True,
+        'use_custom_props': False, # HARAG: SE / Havok properties are hacked directly into the modified fbx importer in fbx.py
+
+        # Transform settings.
+        'global_scale': 0.1, # STOLLIE: Is 1.0 in Blender Source
+        'apply_scale_options': 'FBX_SCALE_NONE',        
+        'axis_forward': 'Z', # STOLLIE: Normally a Y in Blender source. -Z is correct forward.
+        'axis_up': 'Y',	 # STOLLIE: Normally a Z in Blender source.	Y aligns correctly in SE.
+        
+        # HARAG: The export to Havok needs this, it's off for the MwmFileNode (bake_space_transform).
+        # STOLLIE: This is False on Blender source. If set to True on MWM exports it breaks subpart orientations (bake_space_transform).
+        'bake_space_transform': False,
+
+        # Geometry settings.
         'mesh_smooth_type': 'OFF', # STOLLIE: Normally 'FACE' in Blender source.
         'use_subsurf': False,
-        'use_armature_deform_only': False,	
-        'bake_anim': False, # HARAG: no animation export to SE by default - STOLLIE: True in Blender source.
-        'bake_anim_use_all_bones': True,	
-        'bake_anim_use_nla_strips': True,	
-        'bake_anim_use_all_actions': True,
-        'bake_anim_step': 1.0,
-        'bake_anim_simplify_factor': 1.0,
-        'bake_anim_force_startend_keying': True,
-        'add_leaf_bones': False,
-        'primary_bone_axis': 'X', # STOLLIE: Swapped for SE, Y in Blender source.	
-        'secondary_bone_axis': 'Y', # STOLLIE: Swapped for SE, X in Blender source. """	
-        'use_metadata': True,
-        'path_mode': 'AUTO',
+        'use_mesh_modifiers': True,
         'use_mesh_edges': False, # STOLLIE: True in Blender source.
         'use_tspace': False, # BLENDER: Why? Unity is expected to support tspace import...	
-        'embed_textures': False,	
-        'use_custom_props': False, # HARAG: SE / Havok properties are hacked directly into the modified fbx importer in fbx.py
-        # HARAG: The export to Havok needs this, it's off for the MwmFileNode
-        # STOLLIE: This is False on Blender source. If set to True on MWM exports it breaks subpart orientations.
-        'bake_space_transform': False, 
-        'armature_nodetype': 'NULL',	
-        'use_selection' : False,
+        'use_mesh_modifiers_render': True,
+
+         # For amature.
+        'primary_bone_axis': 'X', # STOLLIE: Swapped for SE, Y in Blender source.	
+        'secondary_bone_axis': 'Y', # STOLLIE: Swapped for SE, X in Blender source.
+        'armature_nodetype': 'NULL',
+        'use_armature_deform_only': False,
+        'add_leaf_bones': False,
+
+        # For animations.
+        'bake_anim': False, # HARAG: no animation export to SE by default - STOLLIE: True in Blender source.
+        'bake_anim_use_all_bones': True,
+        'bake_anim_use_nla_strips': True,
+        'bake_anim_use_all_actions': True,
+        'bake_anim_force_startend_keying': True,
+        'bake_anim_step': 1.0,
+        'bake_anim_simplify_factor': 1.0,
+                
+        # Random properties not seen in Blender FBX export UI.
+        'ui_tab': 'SKIP_SAVE',
+        'global_matrix': Matrix(),
+        'use_metadata': True,
+        'embed_textures': False,
         'use_anim' : False, # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.
         'use_anim_action_all' : True, # Not a Blender property.	
         'use_default_take' : True, # Not a Blender property.	
         'use_anim_optimize' : True, # Not a Blender property.	
         'anim_optimize_precision' : 6.0, # Not a Blender property.	
-        'batch_mode': 'OFF', # STOLLIE: Part of Save method not save single in Blender source, default = OFF.	
-        'use_batch_own_dir': True,	# STOLLIE: Part of Save method not save single in Blender source, default = False.	
+        'use_batch_own_dir': True,	# STOLLIE: Part of Save method not save single in Blender source, default = False.
     }	
 
     if kwargs:	
         if isinstance(kwargs, bpy.types.PropertyGroup):	
             kwargs = {prop : getattr(kwargs, prop) for prop in kwargs.rna_type.properties.keys()}	
-        kwargs.update(**kwargs)	
+        kwargs.update(**kwargs)
+
+    # These cannot be overriden and are always set here
+    kwargs['use_selection'] = False # because of context_objects
+    kwargs['context_objects'] = objects	# STOLLIE: Is None in Blender Source.
 
     if ishavokfbxfile:
         kwargs['bake_space_transform'] = True        
@@ -587,6 +637,23 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
     if scene.seut.sceneType == 'subpart':
         kwargs['axis_forward'] = '-Z'
 
+    if scene.seut.sceneType == 'character':
+        kwargs['global_scale'] = 1.00
+        kwargs['axis_forward'] = '-Z'
+        kwargs['object_types'] = {'MESH', 'EMPTY', 'ARMATURE'} # STOLLIE: Is None in Blender source.
+        kwargs['add_leaf_bones'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.     
+        kwargs['apply_unit_scale'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.    
+
+    if scene.seut.sceneType == 'character_animation':
+        kwargs['axis_forward'] = '-Z'
+        kwargs['object_types'] = {'EMPTY', 'ARMATURE'} # STOLLIE: Is None in Blender source.
+        kwargs['use_armature_deform_only'] = True
+        kwargs['bake_anim'] = True # HARAG: no animation export to SE by default - STOLLIE: True in Blender source.
+        kwargs['bake_anim_simplify_factor'] = 0.0
+        kwargs['use_anim'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.
+        kwargs['apply_unit_scale'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.    
+
+    # if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
     global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
     scale = kwargs['global_scale']
 

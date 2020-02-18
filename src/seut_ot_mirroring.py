@@ -37,7 +37,7 @@ mirroringPresets = OrderedDict([
 
 class SEUT_OT_Mirroring(Operator):
     """Handles setup of mirroring options"""
-    bl_idname = "object.mirroring"
+    bl_idname = "scene.mirroring"
     bl_label = "Mirroring"
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -47,6 +47,8 @@ class SEUT_OT_Mirroring(Operator):
         scene = context.scene
 
         if scene.seut.mirroringToggle == 'on':
+            if scene.seut.mountpointToggle == 'on':
+                scene.seut.mountpointToggle = 'off'
             SEUT_OT_Mirroring.mirroringSetup(self, context)
 
         elif scene.seut.mirroringToggle == 'off':
@@ -61,6 +63,11 @@ class SEUT_OT_Mirroring(Operator):
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
+
+        # If mode is not object mode, export fails horribly.
+        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
+            currentMode = bpy.context.object.mode
+            bpy.ops.object.mode_set(mode='OBJECT')
 
         if collections['seut'] is None:
             print("SEUT Warning: Collection 'SEUT " + scene.name + "' not found. Action not possible. (002)")
@@ -77,6 +84,26 @@ class SEUT_OT_Mirroring(Operator):
         if not result == {'CONTINUE'}:
             scene.seut.mirroringToggle = 'off'
             return
+
+        presetMat = None
+        matXfound = False
+        matYfound = False
+        matZfound = False
+        for mat in bpy.data.materials:
+            if mat.name == 'SMAT_Mirror_X':
+                matX = mat
+                matXfound = True
+            elif mat.name == 'SMAT_Mirror_Y':
+                matY = mat
+                matYfound = True
+            elif mat.name == 'SMAT_Mirror_Z':
+                matZ = mat
+                matZfound = True
+        
+        if not matXfound or not matYfound or not matZfound:
+            print("SEUT: Cannot find mirror axis materials. Re-link 'MatLib_Presets.blend'! (026)")
+            scene.seut.mirroringToggle = 'off'
+            return {'CANCELLED'}
             
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
@@ -111,7 +138,9 @@ class SEUT_OT_Mirroring(Operator):
         if scene.seut.bBox_Z > size: size = scene.seut.bBox_Z
         emptySize = size * factor
 
-        offset = size * factor * factor
+        offset = (size * 2 + size / 2) * factor
+
+        ninetyDeg = pi * 90 / 180
 
         # Create empties (using property rotation info) with certain distance from bounding box
         bpy.ops.object.add(type='EMPTY', location=(offset, 0.0, 0.0), rotation=emptyXRotation)
@@ -119,33 +148,54 @@ class SEUT_OT_Mirroring(Operator):
         emptyX.name = 'Mirroring X'
         emptyX.empty_display_type = 'ARROWS'
         emptyX.empty_display_size = emptySize
+        bpy.ops.mesh.primitive_plane_add(size=emptySize * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(offset / 2, 0.0, 0.0), rotation=(0.0, ninetyDeg, 0.0))
+        planeX = bpy.context.view_layer.objects.active
+        planeX.name = 'X Axis Mirror Plane'
+        planeX.active_material = matX
 
         bpy.ops.object.add(type='EMPTY', location=(0.0, offset, 0.0), rotation=emptyYRotation)
         emptyY = bpy.context.view_layer.objects.active
         emptyY.name = 'Mirroring Y'
         emptyY.empty_display_type = 'ARROWS'
         emptyY.empty_display_size = emptySize
+        bpy.ops.mesh.primitive_plane_add(size=emptySize * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(0.0, offset / 2, 0.0), rotation=(ninetyDeg, 0.0, 0.0))
+        planeY = bpy.context.view_layer.objects.active
+        planeY.name = 'Y Axis Mirror Plane'
+        planeY.active_material = matY
 
         bpy.ops.object.add(type='EMPTY', location=(0.0, 0.0, offset), rotation=emptyZRotation)
         emptyZ = bpy.context.view_layer.objects.active
         emptyZ.name = 'Mirroring Z'
         emptyZ.empty_display_type = 'ARROWS'
         emptyZ.empty_display_size = emptySize
+        bpy.ops.mesh.primitive_plane_add(size=emptySize * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(0.0, 0.0, offset / 2), rotation=(0.0, 0.0, ninetyDeg))
+        planeZ = bpy.context.view_layer.objects.active
+        planeZ.name = 'Z Axis Mirror Plane'
+        planeZ.active_material = matZ
 
         parentCollection = getParentCollection(context, emptyX)
         if parentCollection != collection:
             collection.objects.link(emptyX)
             collection.objects.link(emptyY)
             collection.objects.link(emptyZ)
+            collection.objects.link(planeX)
+            collection.objects.link(planeY)
+            collection.objects.link(planeZ)
 
             if parentCollection is None:
                 scene.collection.objects.unlink(emptyX)
                 scene.collection.objects.unlink(emptyY)
                 scene.collection.objects.unlink(emptyZ)
+                scene.collection.objects.unlink(planeX)
+                scene.collection.objects.unlink(planeY)
+                scene.collection.objects.unlink(planeZ)
             else:
                 parentCollection.objects.unlink(emptyX)
                 parentCollection.objects.unlink(emptyY)
                 parentCollection.objects.unlink(emptyZ)
+                parentCollection.objects.unlink(planeX)
+                parentCollection.objects.unlink(planeY)
+                parentCollection.objects.unlink(planeZ)
 
         # Instance main collection or mirroringScene main collection under empties
         sourceScene = scene
@@ -158,6 +208,13 @@ class SEUT_OT_Mirroring(Operator):
         linkSubpartScene(self, scene, emptyY, collection)
         emptyZ.seut.linkedScene = sourceScene
         linkSubpartScene(self, scene, emptyZ, collection)
+            
+        # Reset interaction mode
+        try:
+            if bpy.context.object is not None and currentMode is not None:
+                bpy.ops.object.mode_set(mode=currentMode)
+        except:
+            pass
 
         return {'FINISHED'}
     
@@ -167,22 +224,38 @@ class SEUT_OT_Mirroring(Operator):
 
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
+
+        # If mode is not object mode, export fails horribly.
+        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
+            currentMode = bpy.context.object.mode
+            bpy.ops.object.mode_set(mode='OBJECT')
+
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
         tag = ' (' + scene.seut.subtypeId + ')'
 
         # Save empty rotation values to properties, delete children instances, remove empty
-        for empty in scene.objects:
-            if empty is not None and empty.type == 'EMPTY' and (empty.name == 'Mirroring X' or empty.name == 'Mirroring Y' or empty.name == 'Mirroring Z'):
-                SEUT_OT_Mirroring.saveRotationToProps(self, context, empty)
-                if len(empty.children) > 0:
-                    unlinkSubpartScene(empty)
-                empty.select_set(state=False, view_layer=context.window.view_layer)
-                bpy.data.objects.remove(empty)
-
+        for obj in scene.objects:
+            if obj is not None and obj.type == 'EMPTY' and (obj.name == 'Mirroring X' or obj.name == 'Mirroring Y' or obj.name == 'Mirroring Z'):
+                SEUT_OT_Mirroring.saveRotationToProps(self, context, obj)
+                if len(obj.children) > 0:
+                    unlinkSubpartScene(obj)
+                obj.select_set(state=False, view_layer=context.window.view_layer)
+                bpy.data.objects.remove(obj)
+            elif obj.name == 'X Axis Mirror Plane' or obj.name == 'X Axis Mirror Plane' or obj.name == 'X Axis Mirror Plane':
+                obj.select_set(state=False, view_layer=context.window.view_layer)
+                bpy.data.objects.remove(obj)
+    
         # Delete collection
         if 'Mirroring' + tag in bpy.data.collections:
             bpy.data.collections.remove(bpy.data.collections['Mirroring' + tag])
+            
+        # Reset interaction mode
+        try:
+            if bpy.context.object is not None and currentMode is not None:
+                bpy.ops.object.mode_set(mode=currentMode)
+        except:
+            pass
 
         return {'FINISHED'}
     
