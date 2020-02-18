@@ -32,12 +32,11 @@ class SEUT_OT_AddDummy(Operator):
             ('vent', 'Air Vent', 'Adds air vent functionality'),
             ('gear_lock', 'Landing Gear', 'Adds landing gear functionality. Any geometry within the empty will be a valid lock target - not only near the point of origin'),
             ('shiptool', 'Ship Tool', 'The point of origin for ship tool effects (not visual)'),
-            ('electric_motor', 'Electric Motor', 'The location onto which a rotor head will be placed'),
+            ('electric_motor', 'Electric Motor', 'The location onto which a rotor head or wheel will be placed'),
             ('character', 'Character', 'The location in which the character model will be placed. Point of origin is generally aligned with the butt of the character but this can depend on the pose'),
             ('particles1', 'Particles 1', 'Point of origin for particles (used in grinder and welder)'),
             ('particles2', 'Particles 2', 'Point of origin for particles (used in grinder)'),
             ('TopBlock', 'Piston Top', 'The top part of a piston'),
-            ('wheel', 'Wheel', 'The position at which a wheel is placed'),
             ('center', 'Center', 'Defines the center of a block')
             ),
         default='conveyorline'
