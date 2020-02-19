@@ -78,6 +78,7 @@ from .seut_pt_toolbar               import SEUT_PT_Panel_Mirroring
 from .seut_pt_toolbar               import SEUT_PT_Panel_Mountpoints
 from .seut_pt_toolbar               import SEUT_PT_Panel_Export
 from .seut_pt_toolbar               import SEUT_PT_Panel_Import
+from .seut_pt_toolbar               import SEUT_PT_Panel_IconRender
 from .seut_ot_import                import SEUT_OT_Import
 from .seut_ot_structureConversion   import SEUT_OT_StructureConversion
 from .seut_ot_gridScale             import SEUT_OT_GridScale
@@ -88,6 +89,8 @@ from .seut_ot_mountpoints           import SEUT_OT_Mountpoints
 from .seut_ot_addMountpointArea     import SEUT_OT_AddMountpointArea
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_ot_simpleNavigation      import SEUT_OT_SimpleNavigation
+from .seut_ot_iconRender            import SEUT_OT_IconRender
+from .seut_ot_iconRenderPreview     import SEUT_OT_IconRenderPreview
 from .seut_scene                    import SEUT_MountpointAreas
 from .seut_scene                    import SEUT_Scene
 from .seut_object                   import SEUT_Object
@@ -102,6 +105,7 @@ classes = (
     SEUT_PT_Panel_Mountpoints,
     SEUT_PT_Panel_Export,
     SEUT_PT_Panel_Import,
+    SEUT_PT_Panel_IconRender,
     SEUT_PT_Panel_Materials,
     SEUT_PT_Panel_MatLib,
     SEUT_PT_EmptyLink,
@@ -137,6 +141,8 @@ classes = (
     SEUT_OT_MatCreate,
     SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
+    SEUT_OT_IconRender,
+    SEUT_OT_IconRenderPreview,
     SEUT_MountpointAreas,
     SEUT_Scene,
     SEUT_Object,

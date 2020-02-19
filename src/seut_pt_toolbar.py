@@ -197,3 +197,45 @@ class SEUT_PT_Panel_Import(Panel):
             box.operator('object.convertbonestoblenderformat', icon='OUTLINER_OB_ARMATURE')
             box.operator('object.convertbonestoseformat', icon='OUTLINER_DATA_ARMATURE')
         
+
+class SEUT_PT_Panel_IconRender(Panel):
+    """Creates the mirroring panel for SEUT"""
+    bl_idname = "SEUT_PT_Panel_IconRender"
+    bl_label = "Icon Render Mode"
+    bl_category = "SEUT"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        wm = context.window_manager
+        
+        layout.prop(scene.seut, 'renderToggle', expand=True)
+
+        camera = None
+        for cam in bpy.data.cameras:
+            if cam.name == 'ICON':
+                camera = cam
+        empty = None
+        for obj in bpy.data.objects:
+            if obj.type == 'EMPTY' and obj.name == 'Icon Render':
+                empty = obj
+
+        if scene.seut.renderToggle == 'on':
+            layout.operator('scene.icon_render_preview', icon='RENDER_RESULT')
+
+            box = layout.box()
+            box.label(text='View', icon='CAMERA_DATA')
+            if camera is not None:
+                box.prop(scene.seut, 'renderZoom')
+            if empty is not None:
+                box.prop(scene.seut, 'renderEmptyRotation')
+
+            box = layout.box()
+            box.label(text='Options', icon='SETTINGS')
+            box.prop(scene.seut, 'renderColorOverlay', invert_checkbox=True)
+            box.prop(scene.seut, 'renderResolution')
+            box.prop(scene.render.image_settings, 'file_format')
+            box.prop(scene.render, 'filepath')

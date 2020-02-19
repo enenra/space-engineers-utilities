@@ -24,11 +24,40 @@ def update_GridScale(self, context):
 def update_MirroringToggle(self, context):
     bpy.ops.scene.mirroring()
 
+def update_mirroringScene(self, context):
+    bpy.ops.scene.mirroring()
+
 def update_MountpointToggle(self, context):
     bpy.ops.scene.mountpoints()
 
-def update_mirroringScene(self, context):
-    bpy.ops.scene.mirroring()
+def update_RenderToggle(self, context):
+    bpy.ops.scene.icon_render()
+
+def update_RenderResolution(self, context):
+    scene = context.scene
+
+    scene.render.resolution_x = scene.seut.renderResolution
+    scene.render.resolution_y = scene.seut.renderResolution
+
+def update_renderEmptyRotation(self, context):
+    scene = context.scene
+
+    empty = bpy.data.objects['Icon Render']
+    if empty is not None:
+        empty.rotation_euler = scene.seut.renderEmptyRotation
+
+def update_renderColorOverlay(self, context):
+    scene = context.scene
+
+    if scene.node_tree.nodes['RGB'] is not None:
+        scene.node_tree.nodes['RGB'].mute = scene.seut.renderColorOverlay
+
+def update_renderZoom(self, context):
+    scene = context.scene
+
+    camera = bpy.data.objects['ICON']
+    if camera is not None:
+        camera.data.lens = scene.seut.renderZoom
 
 def update_subtypeId(self, context):
     scene = context.scene
@@ -367,4 +396,51 @@ class SEUT_Scene(PropertyGroup):
             ('-Z', '-Z', '')
             ),
         default='Z'
+    )
+
+    # Icon Render
+    renderToggle: EnumProperty(
+        name='Render',
+        items=(
+            ('on', 'On', ''),
+            ('off', 'Off', '')
+            ),
+        default='off',
+        update=update_RenderToggle
+    )
+    renderOutputFormat: EnumProperty(
+        name='Format',
+        items=(
+            ('png', 'PNG', 'Render output will be in PNG format'),
+            ('tif', 'TIF', 'Render output will be in TIF format'),
+            ('dds', 'DDS', 'Render output will be in DDS format')
+            ),
+        default='png'
+    )
+    renderColorOverlay: BoolProperty(
+        name="Color Overlay",
+        description="Whether to overlay the blue color",
+        default=False,
+        update=update_renderColorOverlay
+    )
+    renderResolution: IntProperty(
+        name="Resolution",
+        description="The resolution Blender should render at",
+        default=128,
+        min=0,
+        update=update_RenderResolution
+    )
+    renderEmptyRotation: FloatVectorProperty(
+        name="Rotation",
+        description="The rotation of the empty holding the render setup",
+        subtype='EULER',
+        default=(0.0, 0.0, 0.0),
+        update=update_renderEmptyRotation
+    )
+    renderZoom: IntProperty(
+        name="Zoom",
+        description="The zoom of the camera",
+        default=70,
+        min=0,
+        update=update_renderZoom
     )
