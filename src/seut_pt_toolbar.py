@@ -230,15 +230,14 @@ class SEUT_PT_Panel_IconRender(Panel):
             box = layout.box()
             box.label(text='View', icon='CAMERA_DATA')
             if camera is not None:
-                box.prop(camera, 'lens', text='Zoom')
+                box.prop(scene.seut, 'renderZoom')
             if empty is not None:
-                box.prop(empty, 'rotation_euler', text='Rotation')
+                box.prop(scene.seut, 'renderEmptyRotation')
 
             box = layout.box()
             box.label(text='Options', icon='SETTINGS')
             box.prop(scene.seut, 'renderColorOverlay')
-            box.prop(scene.render, 'resolution_x')
-            box.prop(scene.render, 'resolution_y')
+            box.prop(scene.seut, 'renderResolution')
             box.prop(scene.render.image_settings, 'file_format')
             # box.prop(scene.seut, 'renderOutputFormat', icon='FILE_IMAGE')
             # box.prop(scene.render, 'filepath')

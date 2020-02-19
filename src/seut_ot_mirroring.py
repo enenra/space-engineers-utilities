@@ -46,9 +46,15 @@ class SEUT_OT_Mirroring(Operator):
 
         scene = context.scene
 
+        # There may be trouble with multiple modes being active at the same time so I'm going to disable the other ones for all scenes, as well as this one for all scenes but the active one
         if scene.seut.mirroringToggle == 'on':
-            if scene.seut.mountpointToggle == 'on':
-                scene.seut.mountpointToggle = 'off'
+            for scn in bpy.data.scenes:
+                if scn.seut.mountpointToggle == 'on' or scn.seut.renderToggle == 'on':
+                    scn.seut.mountpointToggle = 'off'
+                    scn.seut.renderToggle = 'off'
+                if scn != scene:
+                    scn.seut.mirroringToggle = 'off'
+
             SEUT_OT_Mirroring.mirroringSetup(self, context)
 
         elif scene.seut.mirroringToggle == 'off':

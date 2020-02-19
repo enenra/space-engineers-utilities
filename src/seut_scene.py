@@ -33,6 +33,26 @@ def update_MountpointToggle(self, context):
 def update_RenderToggle(self, context):
     bpy.ops.scene.icon_render()
 
+def update_RenderResolution(self, context):
+    scene = context.scene
+
+    scene.render.resolution_x = scene.seut.renderResolution
+    scene.render.resolution_y = scene.seut.renderResolution
+
+def update_renderEmptyRotation(self, context):
+    scene = context.scene
+
+    empty = bpy.data.objects['Icon Render']
+    if empty is not None:
+        empty.rotation_euler = scene.seut.renderEmptyRotation
+
+def update_renderZoom(self, context):
+    scene = context.scene
+
+    camera = bpy.data.objects['ICON']
+    if camera is not None:
+        camera.data.lens = scene.seut.renderZoom
+
 def update_subtypeId(self, context):
     scene = context.scene
 
@@ -395,4 +415,25 @@ class SEUT_Scene(PropertyGroup):
         name="Color Overlay",
         description="Whether to overlay the blue color",
         default=True
+    )
+    renderResolution: IntProperty(
+        name="Resolution",
+        description="The resolution Blender should render at",
+        default=128,
+        min=0,
+        update=update_RenderResolution
+    )
+    renderEmptyRotation: FloatVectorProperty(
+        name="Rotation",
+        description="The rotation of the empty holding the render setup",
+        subtype='EULER',
+        default=(0.0, 0.0, 0.0),
+        update=update_renderEmptyRotation
+    )
+    renderZoom: IntProperty(
+        name="Zoom",
+        description="The zoom of the camera",
+        default=70,
+        min=0,
+        update=update_renderZoom
     )

@@ -18,10 +18,15 @@ class SEUT_OT_IconRender(Operator):
 
         scene = context.scene
 
+        # There may be trouble with multiple modes being active at the same time so I'm going to disable the other ones for all scenes, as well as this one for all scenes but the active one
         if scene.seut.renderToggle == 'on':
-            if scene.seut.mirroringToggle == 'on' or scene.seut.mountpointToggle == 'on':
-                scene.seut.mirroringToggle = 'off'
-                scene.seut.mountpointToggle == 'off'
+            for scn in bpy.data.scenes:
+                if scn.seut.mirroringToggle == 'on' or scn.seut.mountpointToggle == 'on':
+                    scn.seut.mirroringToggle = 'off'
+                    scn.seut.mountpointToggle == 'off'
+                if scn != scene:
+                    scn.seut.renderToggle = 'off'
+
             result = SEUT_OT_IconRender.renderSetup(self, context)
 
         elif scene.seut.renderToggle == 'off':
@@ -69,7 +74,7 @@ class SEUT_OT_IconRender(Operator):
 
 
         # Spawn holder empty
-        bpy.ops.object.add(type='EMPTY')
+        bpy.ops.object.add(type='EMPTY', rotation=scene.seut.renderEmptyRotation)
         empty = bpy.context.view_layer.objects.active
         empty.name = 'Icon Render'
         empty.empty_display_type = 'SPHERE'
@@ -80,7 +85,7 @@ class SEUT_OT_IconRender(Operator):
         camera.parent = empty
         scene.camera = camera
         camera.name = 'ICON'
-        camera.data.lens = 70.0
+        camera.data.lens = scene.seut.renderZoom
 
         # Spawn lights
         bpy.ops.object.light_add(type='POINT', location=(15.0, 0.0, 10.0))
@@ -124,9 +129,6 @@ class SEUT_OT_IconRender(Operator):
 
         # Spawn compositor node tree
 
-        # Render settings
-        scene.render.resolution_x = 128
-        scene.render.resolution_y = 128
     
         return {'FINISHED'}
 
