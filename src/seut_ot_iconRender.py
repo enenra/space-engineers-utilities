@@ -85,6 +85,7 @@ class SEUT_OT_IconRender(Operator):
         camera.parent = empty
         scene.camera = camera
         camera.name = 'ICON'
+        camera.data.name = 'ICON'
         camera.data.lens = scene.seut.renderZoom
 
         # Spawn lights
@@ -128,7 +129,42 @@ class SEUT_OT_IconRender(Operator):
                 parentCollection.objects.unlink(rimLight)
 
         # Spawn compositor node tree
+        scene.use_nodes = True
 
+        tree = scene.node_tree
+
+        tree.nodes.clear()
+
+        node_renderLayers = tree.nodes.new(type='CompositorNodeRLayers')
+        node_colorCorrection = tree.nodes.new(type='CompositorNodeColorCorrection')
+        node_RGB = tree.nodes.new(type='CompositorNodeRGB')
+        node_mixRGB = tree.nodes.new(type='CompositorNodeMixRGB')
+        node_outputFile = tree.nodes.new(type='CompositorNodeOutputFile')
+        node_viewer = tree.nodes.new(type='CompositorNodeViewer')
+
+        tree.links.new(node_renderLayers.outputs[0], node_colorCorrection.inputs[0])
+        tree.links.new(node_colorCorrection.outputs[0], node_mixRGB.inputs[1])
+        tree.links.new(node_RGB.outputs[0], node_mixRGB.inputs[2])
+        tree.links.new(node_mixRGB.outputs[0], node_outputFile.inputs[0])
+        tree.links.new(node_mixRGB.outputs[0], node_viewer.inputs[0])
+
+        node_colorCorrection.midtones_gain = 2.0
+        node_colorCorrection.shadows_gain = 2.5
+
+        node_RGB.outputs[0].default_value = (0.23074, 0.401978, 0.514918, 1)  # 84AABE
+        
+        node_mixRGB.blend_type = 'COLOR'
+
+        # Force update render resolution
+        scene.seut.renderResolution = scene.seut.renderResolution
+        scene.render.engine = 'BLENDER_EEVEE'
+        
+        # Reset interaction mode
+        try:
+            if bpy.context.object is not None and currentMode is not None:
+                bpy.ops.object.mode_set(mode=currentMode)
+        except:
+            pass
     
         return {'FINISHED'}
 
@@ -164,6 +200,12 @@ class SEUT_OT_IconRender(Operator):
         # Delete collection
         if 'Render' + tag in bpy.data.collections:
             bpy.data.collections.remove(bpy.data.collections['Render' + tag])
+
+        # Delete Node Tree
+        try:
+            scene.node_tree.nodes.clear()
+        except AttributeError:
+            pass
             
         # Reset interaction mode
         try:

@@ -92,6 +92,9 @@ class SEUT_OT_RecreateCollections(Operator):
                 if col.name == 'Mountpoints' + tag or col.name == 'Mountpoints' + tagOld:
                     col.name = 'Mountpoints' + tag
 
+                if col.name == 'Render' + tag or col.name == 'Render' + tagOld:
+                    col.name = 'Render' + tag
+
                 elif col.name == 'LOD1' + tag or col.name == 'LOD1' + tagOld:
                     col.name = 'LOD1' + tag
 

@@ -198,7 +198,6 @@ class SEUT_PT_Panel_Import(Panel):
             box.operator('object.convertbonestoseformat', icon='OUTLINER_DATA_ARMATURE')
         
 
-
 class SEUT_PT_Panel_IconRender(Panel):
     """Creates the mirroring panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_IconRender"
@@ -225,7 +224,7 @@ class SEUT_PT_Panel_IconRender(Panel):
                 empty = obj
 
         if scene.seut.renderToggle == 'on':
-            layout.operator('render.render', icon='RENDER_RESULT')
+            layout.operator('scene.icon_render_preview', icon='RENDER_RESULT')
 
             box = layout.box()
             box.label(text='View', icon='CAMERA_DATA')
@@ -236,8 +235,7 @@ class SEUT_PT_Panel_IconRender(Panel):
 
             box = layout.box()
             box.label(text='Options', icon='SETTINGS')
-            box.prop(scene.seut, 'renderColorOverlay')
+            box.prop(scene.seut, 'renderColorOverlay', invert_checkbox=True)
             box.prop(scene.seut, 'renderResolution')
             box.prop(scene.render.image_settings, 'file_format')
-            # box.prop(scene.seut, 'renderOutputFormat', icon='FILE_IMAGE')
-            # box.prop(scene.render, 'filepath')
+            box.prop(scene.render, 'filepath')

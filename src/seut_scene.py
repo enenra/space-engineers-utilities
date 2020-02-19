@@ -46,6 +46,12 @@ def update_renderEmptyRotation(self, context):
     if empty is not None:
         empty.rotation_euler = scene.seut.renderEmptyRotation
 
+def update_renderColorOverlay(self, context):
+    scene = context.scene
+
+    if scene.node_tree.nodes['RGB'] is not None:
+        scene.node_tree.nodes['RGB'].mute = scene.seut.renderColorOverlay
+
 def update_renderZoom(self, context):
     scene = context.scene
 
@@ -414,7 +420,8 @@ class SEUT_Scene(PropertyGroup):
     renderColorOverlay: BoolProperty(
         name="Color Overlay",
         description="Whether to overlay the blue color",
-        default=True
+        default=False,
+        update=update_renderColorOverlay
     )
     renderResolution: IntProperty(
         name="Resolution",
