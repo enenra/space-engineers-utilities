@@ -1,5 +1,7 @@
 import bpy
 
+from math   import pi
+
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_errors                   import errorCollection
 
@@ -124,3 +126,8 @@ def getParentCollection(context, childObject):
                     return value
     
     return None
+
+def toRadians(number):
+    """Converts degrees to radians"""
+
+    return pi * number / 180

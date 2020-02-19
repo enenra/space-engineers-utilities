@@ -24,11 +24,14 @@ def update_GridScale(self, context):
 def update_MirroringToggle(self, context):
     bpy.ops.scene.mirroring()
 
+def update_mirroringScene(self, context):
+    bpy.ops.scene.mirroring()
+
 def update_MountpointToggle(self, context):
     bpy.ops.scene.mountpoints()
 
-def update_mirroringScene(self, context):
-    bpy.ops.scene.mirroring()
+def update_RenderToggle(self, context):
+    bpy.ops.scene.icon_render()
 
 def update_subtypeId(self, context):
     scene = context.scene
@@ -367,4 +370,29 @@ class SEUT_Scene(PropertyGroup):
             ('-Z', '-Z', '')
             ),
         default='Z'
+    )
+
+    # Icon Render
+    renderToggle: EnumProperty(
+        name='Render',
+        items=(
+            ('on', 'On', ''),
+            ('off', 'Off', '')
+            ),
+        default='off',
+        update=update_RenderToggle
+    )
+    renderOutputFormat: EnumProperty(
+        name='Format',
+        items=(
+            ('png', 'PNG', 'Render output will be in PNG format'),
+            ('tif', 'TIF', 'Render output will be in TIF format'),
+            ('dds', 'DDS', 'Render output will be in DDS format')
+            ),
+        default='png'
+    )
+    renderColorOverlay: BoolProperty(
+        name="Color Overlay",
+        description="Whether to overlay the blue color",
+        default=True
     )
