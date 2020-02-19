@@ -36,7 +36,6 @@ class SEUT_OT_Mountpoints(Operator):
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
 
-        # If mode is not object mode, export fails horribly.
         if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
             currentMode = bpy.context.object.mode
             bpy.ops.object.mode_set(mode='OBJECT')
