@@ -84,3 +84,8 @@ class SEUT_WindowManager(PropertyGroup):
         default='SMAT_Preset_Full'
 
     )
+
+    # Errors
+    errorText: StringProperty(
+        name="Error"
+    )

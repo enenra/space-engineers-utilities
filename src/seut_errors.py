@@ -107,3 +107,22 @@ def isCollectionExcluded(collectionName, allCurrentViewLayerCollections):
                         return True
                     else:
                         return False
+                        
+
+def draw_error(self, context):
+    wm = context.window_manager
+
+    self.layout.label(text=wm.seut.errorText, icon='ERROR')
+
+
+def showError(context, title, text):
+
+    wm = context.window_manager
+    wm.seut.errorText = text
+
+    context.window_manager.popup_menu(draw_error, title=title)
+    print(text)
+
+    wm.seut.errorText = ""
+
+    return

@@ -3,7 +3,7 @@ import bpy
 from math   import pi
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_errors                   import errorCollection
+from .seut_errors                   import errorCollection, showError
 
 def linkSubpartScene(self, originScene, empty, targetCollection):
     """Link instances of subpart scene objects as children to empty"""
@@ -25,7 +25,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
     # This prevents instancing loops.
     for o in subpartCollections['main'].objects:
         if o is not None and o.type == 'EMPTY' and o.seut.linkedScene == originScene:
-            print("SEUT Error: Linking to scene '" + subpartScene.name + "' from '" + currentScene.name + "' would create a subpart instancing loop.")
+            showError(context, "Report: Error", "SEUT Error: Linking to scene '" + subpartScene.name + "' from '" + currentScene.name + "' would create a subpart instancing loop.")
             empty.seut.linkedScene = None
             empty['file'] = None
             context.window.scene = currentScene

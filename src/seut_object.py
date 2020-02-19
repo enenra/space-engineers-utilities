@@ -11,6 +11,7 @@ from bpy.props  import (EnumProperty,
                         )
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_errors                   import showError
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, getParentCollection
 
 
@@ -36,7 +37,7 @@ def update_linkedScene(self, context):
                     try:
                         linkSubpartScene(self, scene, empty)
                     except AttributeError:
-                        print("SEUT Error: Collection not found, excluded or empty. Action not possible. (022)")
+                        showError(context, "Report: Error", "SEUT Error: Collection not found, excluded or empty. Action not possible. (022)")
 
 
 def update_linkedObject(self, context):

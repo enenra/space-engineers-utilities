@@ -4,7 +4,7 @@ from math           import pi
 from bpy.types      import Operator
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_errors                   import errorCollection, isCollectionExcluded
+from .seut_errors                   import errorCollection, isCollectionExcluded, showError
 from .seut_utils                    import getParentCollection
 
 class SEUT_OT_Mountpoints(Operator):
@@ -47,13 +47,13 @@ class SEUT_OT_Mountpoints(Operator):
             bpy.ops.object.mode_set(mode='OBJECT')
 
         if collections['seut'] is None:
-            print("SEUT Warning: Collection 'SEUT (" + scene.name + ")' not found. Action not possible. (002)")
+            showError(context, "Report: Error", "SEUT Error: Collection 'SEUT (" + scene.name + ")' not found. Action not possible. (002)")
             scene.seut.mountpointToggle = 'off'
             return {'CANCELLED'}
 
         isExcluded = isCollectionExcluded(collections['seut'].name, allCurrentViewLayerCollections)
         if isExcluded or isExcluded is None:
-            print("SEUT Warning: Collection 'SEUT " + scene.name + "' excluded from view layer. Action not possible. (019)")
+            showError(context, "Report: Error", "SEUT Error: Collection 'SEUT " + scene.name + "' excluded from view layer. Action not possible. (019)")
             scene.seut.mountpointToggle = 'off'
             return {'CANCELLED'}
 
@@ -63,7 +63,7 @@ class SEUT_OT_Mountpoints(Operator):
                 mpMat = mat
         
         if mpMat is None:
-            print("SEUT: Cannot find mountpoint material. Re-link 'MatLib_Presets.blend'! (027)")
+            showError(context, "Report: Error", "SEUT Error: Cannot find mountpoint material. Re-link 'MatLib_Presets.blend'! (027)")
             scene.seut.mountpointToggle = 'off'
             return {'CANCELLED'}
             

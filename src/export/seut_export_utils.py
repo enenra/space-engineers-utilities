@@ -9,9 +9,11 @@ from os.path                                import join
 from mathutils                              import Matrix	
 from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
-from ..export.seut_custom_fbx_exporter       import save_single
+from ..export.seut_custom_fbx_exporter      import save_single
 from ..seut_ot_recreateCollections          import SEUT_OT_RecreateCollections
 from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene
+
+from ..seut_errors                          import showError
 
 def export_XML(self, context, collection):
     """Exports the XML file for a defined collection"""
@@ -500,8 +502,8 @@ def delete_loose_files(path):
             os.remove(fileName)
 
     except EnvironmentError:
-        self.report({'ERROR'}, "SEUT: Loose files file deletion failed. (020)")
-        print("SEUT Error: File Deletion failed. (020)")
+        self.report({'ERROR'}, "SEUT: Deletion of loose files failed. (020)")
+        print("SEUT Error: Deletion of loose files failed. (020)")
 
 class ExportSettings:
     def __init__(self, scene, depsgraph, mwmDir=None):
@@ -543,7 +545,7 @@ class ExportSettings:
                 logtextInspector(out)
 
         except subprocess.CalledProcessError as e:
-            print("SEUT Error: There was an error during exportation caused by Havok or MWMBuilder. Please refer to the logs in your export folder for details. (023)")
+            showError(context, "Report: Error", "SEUT Error: There was an error during exportation caused by Havok or MWMBuilder. Please refer to the logs in your export folder for details. (023)")
             if self.isLogToolOutput and logfile:
                 write_to_log(logfile, e.output, cmdline=cmdline, cwd=cwd, loglines=loglines)
             if e.returncode not in successfulExitCodes:

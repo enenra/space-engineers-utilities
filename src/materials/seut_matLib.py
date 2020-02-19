@@ -10,6 +10,8 @@ from bpy.props  import (EnumProperty,
                         BoolProperty,
                         PointerProperty)
 
+from ..seut_errors  import showError
+
 def update_enabled(self, context):
     wm = context.window_manager
 
@@ -18,7 +20,7 @@ def update_enabled(self, context):
     materialsPath = os.path.normpath(bpy.path.abspath(preferences.materialsPath))
 
     if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-        print("SEUT Info: Path to Materials Folder (Addon Preferences) '" + materialsPath + "' not valid. (017)")
+        showError(context, "Report: Error", "SEUT Error: Path to Materials Folder (Addon Preferences) '" + materialsPath + "' not valid. (017)")
         return
 
     # Read MatLib materials.

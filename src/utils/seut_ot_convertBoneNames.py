@@ -25,13 +25,13 @@ class SEUT_OT_ConvertBonesToBlenderFormat(Operator):
         armature = context.object
         
         if armature == None or armature.type is None or not armature:
-            self.report({'ERROR'}, "SEUT: Object is not an Armature. (100)")
-            print("No object selected.")
+            self.report({'ERROR'}, "SEUT: Object is not an Armature. (028)")
+            print("SEUT Error: Object is not an Armature. (028)")
             return {'CANCELLED'}
         
         if armature.type == None or armature.type is None or armature.type != 'ARMATURE':
-            self.report({'ERROR'}, "SEUT: No Armature selected. (101)")
-            print("Object is not an armature.")
+            self.report({'ERROR'}, "SEUT: No Armature selected. (029)")
+            print("SEUT Error: No Armature selected. (029)")
             return {'CANCELLED'}
         
         # Renaming patterns

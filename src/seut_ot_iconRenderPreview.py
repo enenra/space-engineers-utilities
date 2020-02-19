@@ -1,5 +1,4 @@
 import bpy
-import os
 
 from bpy.types      import Operator
 
@@ -60,5 +59,7 @@ class SEUT_OT_IconRenderPreview(Operator):
                 bpy.ops.object.mode_set(mode=currentMode)
         except:
             pass
+
+        self.report({'INFO'}, "SEUT: Icon successfully saved to '%s'." % (scene.render.filepath + scene.seut.subtypeId + '.' + scene.render.image_settings.file_format.lower()))
 
         return {'FINISHED'}

@@ -5,7 +5,7 @@ from bpy.types      import Operator
 from collections    import OrderedDict
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_errors                   import errorCollection, isCollectionExcluded
+from .seut_errors                   import errorCollection, isCollectionExcluded, showError
 from .seut_utils                    import getParentCollection, linkSubpartScene, unlinkSubpartScene
 
 mirroringPresets = OrderedDict([
@@ -75,13 +75,13 @@ class SEUT_OT_Mirroring(Operator):
             bpy.ops.object.mode_set(mode='OBJECT')
 
         if collections['seut'] is None:
-            print("SEUT Warning: Collection 'SEUT " + scene.name + "' not found. Action not possible. (002)")
+            showError(context, "Report: Error", "SEUT Error: Collection 'SEUT " + scene.name + "' not found. Action not possible. (002)")
             scene.seut.mirroringToggle = 'off'
             return
 
         isExcluded = isCollectionExcluded(collections['seut'].name, allCurrentViewLayerCollections)
         if isExcluded or isExcluded is None:
-            print("SEUT Warning: Collection 'SEUT " + scene.name + "' excluded from view layer. Action not possible. (019)")
+            showError(context, "Report: Error", "SEUT Error: Collection 'SEUT " + scene.name + "' excluded from view layer. Action not possible. (019)")
             scene.seut.mirroringToggle = 'off'
             return
 
@@ -106,7 +106,7 @@ class SEUT_OT_Mirroring(Operator):
                 matZfound = True
         
         if not matXfound or not matYfound or not matZfound:
-            print("SEUT: Cannot find mirror axis materials. Re-link 'MatLib_Presets.blend'! (026)")
+            showError(context, "Report: Error", "SEUT Error: Cannot find mirror axis materials. Re-link 'MatLib_Presets.blend'! (026)")
             scene.seut.mirroringToggle = 'off'
             return {'CANCELLED'}
             
@@ -285,7 +285,7 @@ class SEUT_OT_Mirroring(Operator):
                 print("SEUT Info: Empty '" + empty.name + "' rotation " + str(rotConverted) + " registered as: " + str(key))
         
         if not found:
-            print("SEUT Error: Empty '" + empty.name + "' has incorrect rotation value: " + str(rotConverted) + " (023)")
+            showError(context, "Report: Error", "SEUT Error: Empty '" + empty.name + "' has incorrect rotation value: " + str(rotConverted) + " (023)")
 
         return
 

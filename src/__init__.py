@@ -50,8 +50,6 @@ from .empties.seut_ot_addDummy                  import SEUT_OT_AddDummy
 from .empties.seut_ot_addPresetSubpart          import SEUT_OT_AddPresetSubpart
 from .empties.seut_ot_addCustomSubpart          import SEUT_OT_AddCustomSubpart
 from .empties.seut_ot_emptyToCubeType           import SEUT_OT_EmptiesToCubeType
-from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
-from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
 from .export.seut_ot_exportMain                 import SEUT_OT_ExportMain
 from .export.seut_ot_exportBS                   import SEUT_OT_ExportBS
 from .export.seut_ot_exportLOD                  import SEUT_OT_ExportLOD
@@ -70,6 +68,8 @@ from .materials.seut_ot_refreshMatLibs          import SEUT_OT_RefreshMatLibs
 from .materials.seut_ot_matCreate               import SEUT_OT_MatCreate
 from .materials.seut_matLib                     import SEUT_MatLibProps
 from .materials.seut_matLib                     import SEUT_UL_MatLib
+from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
+from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
 
 from .seut_preferences              import SEUT_AddonPreferences
 from .seut_pt_toolbar               import SEUT_PT_Panel

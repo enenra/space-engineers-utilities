@@ -13,6 +13,7 @@ from bpy.props  import (EnumProperty,
 
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_errors                   import showError
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene
 
 
@@ -66,7 +67,7 @@ def update_subtypeId(self, context):
     for scn in bpy.data.scenes:
         if scn is not scene and scn.seut.subtypeId == scene.seut.subtypeId:
             scene.seut.subtypeId = scene.seut.subtypeBefore
-            print("SEUT Error: Cannot set SubtypeId to a SubtypeId that already exists in the file for another scene. (018)")
+            showError(context, "Report: Error", "SEUT Error: Cannot set SubtypeId to a SubtypeId that already exists in the file for another scene. (018)")
             return
 
     if scene.seut.subtypeId != scene.seut.subtypeBefore:
