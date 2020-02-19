@@ -37,6 +37,7 @@ class SEUT_OT_AddDummy(Operator):
             ('particles1', 'Particles 1', 'Point of origin for particles (used in grinder and welder)'),
             ('particles2', 'Particles 2', 'Point of origin for particles (used in grinder)'),
             ('TopBlock', 'Piston Top', 'The top part of a piston'),
+            ('wheel', 'Wheel', 'The position at which a wheel is connected to a suspension'),
             ('center', 'Center', 'Defines the center of a block')
             ),
         default='conveyorline'
@@ -138,6 +139,10 @@ class SEUT_OT_AddDummy(Operator):
 
         if self.detectorType == 'TopBlock':
             emptyName = "dummy_TopBlock"
+            usesIndex = False
+
+        if self.detectorType == 'wheel':
+            emptyName = "dummy_wheel"
             usesIndex = False
 
         if self.detectorType == 'center':
