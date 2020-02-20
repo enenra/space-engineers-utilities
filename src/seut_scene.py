@@ -1,4 +1,5 @@
 import bpy
+import os
 
 from bpy.types  import PropertyGroup
 from bpy.props  import (EnumProperty,
@@ -90,6 +91,18 @@ def update_linkSubpartInstances(self, context):
                     linkSubpartScene(self, scene, empty, None)
                 else:
                     unlinkSubpartScene(empty)
+
+
+def update_export_exportPath(self, context):
+    scene = context.scene
+
+    if self.export_exportPath == "":
+        return
+
+    if os.path.isdir(self.export_exportPath):
+        if self.export_exportPath.find('Models\\') == -1:
+            showError(context, "Report: Error", "SEUT Error: Export path '" + self.export_exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
+            self.export_exportPath = ""
 
 
 def poll_linkedScene(self, object):
@@ -344,7 +357,8 @@ class SEUT_Scene(PropertyGroup):
     export_exportPath: StringProperty(
         name="Export Folder",
         description="What folder to export to",
-        subtype="DIR_PATH"
+        subtype="DIR_PATH",
+        update=update_export_exportPath
     )
     export_lod1Distance: IntProperty(
         name="LOD1:",

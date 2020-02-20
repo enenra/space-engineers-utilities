@@ -15,7 +15,7 @@ bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie, Kamikaze",
-    "version": (0, 9, 0),
+    "version": (0, 9, 5),
     "blender": (2, 81, 0),
     "location": "View3D > Tools ",
     "warning": "",
@@ -76,9 +76,9 @@ from .seut_pt_toolbar               import SEUT_PT_Panel
 from .seut_pt_toolbar               import SEUT_PT_Panel_BoundingBox
 from .seut_pt_toolbar               import SEUT_PT_Panel_Mirroring
 from .seut_pt_toolbar               import SEUT_PT_Panel_Mountpoints
+from .seut_pt_toolbar               import SEUT_PT_Panel_IconRender
 from .seut_pt_toolbar               import SEUT_PT_Panel_Export
 from .seut_pt_toolbar               import SEUT_PT_Panel_Import
-from .seut_pt_toolbar               import SEUT_PT_Panel_IconRender
 from .seut_ot_import                import SEUT_OT_Import
 from .seut_ot_structureConversion   import SEUT_OT_StructureConversion
 from .seut_ot_gridScale             import SEUT_OT_GridScale
@@ -103,9 +103,9 @@ classes = (
     SEUT_PT_Panel_BoundingBox,
     SEUT_PT_Panel_Mirroring,
     SEUT_PT_Panel_Mountpoints,
+    SEUT_PT_Panel_IconRender,
     SEUT_PT_Panel_Export,
     SEUT_PT_Panel_Import,
-    SEUT_PT_Panel_IconRender,
     SEUT_PT_Panel_Materials,
     SEUT_PT_Panel_MatLib,
     SEUT_PT_EmptyLink,
