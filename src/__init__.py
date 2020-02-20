@@ -96,6 +96,8 @@ from .seut_object                   import SEUT_Object
 from .seut_windowManager            import SEUT_MatLibProps
 from .seut_windowManager            import SEUT_WindowManager
 
+from . import addon_updater_ops
+
 
 classes = (
     SEUT_AddonPreferences,
@@ -153,6 +155,9 @@ classes = (
 
 
 def register():
+    
+    addon_updater_ops.register(bl_info)
+    
     for cls in classes:
         bpy.utils.register_class(cls)
 
