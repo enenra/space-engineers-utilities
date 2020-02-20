@@ -66,7 +66,6 @@ from .materials.seut_pt_matToolbar              import SEUT_PT_Panel_MatLib
 from .materials.seut_ot_remapMaterials          import SEUT_OT_RemapMaterials
 from .materials.seut_ot_refreshMatLibs          import SEUT_OT_RefreshMatLibs
 from .materials.seut_ot_matCreate               import SEUT_OT_MatCreate
-from .materials.seut_matLib                     import SEUT_MatLibProps
 from .materials.seut_matLib                     import SEUT_UL_MatLib
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
@@ -94,6 +93,7 @@ from .seut_ot_iconRenderPreview     import SEUT_OT_IconRenderPreview
 from .seut_scene                    import SEUT_MountpointAreas
 from .seut_scene                    import SEUT_Scene
 from .seut_object                   import SEUT_Object
+from .seut_windowManager            import SEUT_MatLibProps
 from .seut_windowManager            import SEUT_WindowManager
 
 
@@ -146,8 +146,8 @@ classes = (
     SEUT_MountpointAreas,
     SEUT_Scene,
     SEUT_Object,
-    SEUT_WindowManager,
     SEUT_MatLibProps,
+    SEUT_WindowManager,
     SEUT_UL_MatLib,
 )
 
@@ -164,9 +164,6 @@ def register():
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
     bpy.types.WindowManager.seut = PointerProperty(type=SEUT_WindowManager)
 
-    bpy.types.WindowManager.matlibs = CollectionProperty(type=SEUT_MatLibProps)
-    bpy.types.WindowManager.matlib_index = IntProperty(name="Enable or Disable MatLibs in the Materials folder", default=0)
-
     bpy.app.handlers.load_post.append(load_handler)
 
 
@@ -181,9 +178,6 @@ def unregister():
     del bpy.types.Scene.seut
     del bpy.types.Object.seut
     del bpy.types.WindowManager.seut
-
-    del bpy.types.WindowManager.matlibs
-    del bpy.types.WindowManager.matlib_index
 
     bpy.app.handlers.load_post.remove(load_handler)
 

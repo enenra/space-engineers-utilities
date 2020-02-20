@@ -39,19 +39,19 @@ class SEUT_OT_RefreshMatLibs(Operator):
 
         # Add everything in the directory that is not already in the set to the set
         for libNew in newSet:
-            if libNew in wm.matlibs:
+            if libNew in wm.seut.matlibs:
                 continue
             else:
-                item = wm.matlibs.add()
+                item = wm.seut.matlibs.add()
                 item.name = libNew
 
         # If the set has entries that don't exist in the directory, remove them
-        for libOld in wm.matlibs:
+        for libOld in wm.seut.matlibs:
             if libOld.name in newSet:
                 continue
             else:
-                for idx in range(0, len(wm.matlibs)):
-                    if wm.matlibs[idx].name == libOld.name:
-                        wm.matlibs.remove(idx)
+                for idx in range(0, len(wm.seut.matlibs)):
+                    if wm.seut.matlibs[idx].name == libOld.name:
+                        wm.seut.matlibs.remove(idx)
 
         return {'FINISHED'}

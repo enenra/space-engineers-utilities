@@ -1,65 +1,7 @@
 import bpy
 import os
 
-from bpy.types  import PropertyGroup, UIList
-from bpy.props  import (EnumProperty,
-                        FloatProperty,
-                        FloatVectorProperty,
-                        IntProperty,
-                        StringProperty,
-                        BoolProperty,
-                        PointerProperty)
-
-from ..seut_errors  import showError
-
-def update_enabled(self, context):
-    wm = context.window_manager
-
-    addon = __package__[:__package__.find(".")]
-    preferences = bpy.context.preferences.addons.get(addon).preferences
-    materialsPath = os.path.normpath(bpy.path.abspath(preferences.materialsPath))
-
-    if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-        showError(context, "Report: Error", "SEUT Error: Path to Materials Folder (Addon Preferences) '" + materialsPath + "' not valid. (017)")
-        return
-
-    # Read MatLib materials.
-    for lib in wm.matlibs:
-        with bpy.data.libraries.load(materialsPath + "\\" + lib.name, link=True) as (data_from, data_to):
-
-            # If the lib is disabled, unlink its materials from the current file. (unless it's local)
-            if not lib.enabled:
-                for mat in data_from.materials:
-                    if mat in bpy.data.materials and bpy.data.materials[mat].library is not None:
-                        bpy.data.materials.remove(bpy.data.materials[mat], do_unlink=True)
-                for img in data_from.images:
-                    if img in bpy.data.images and bpy.data.images[img].library is not None:
-                        bpy.data.images.remove(bpy.data.images[img], do_unlink=True)
-                for ngroup in data_from.node_groups:
-                    if ngroup in bpy.data.node_groups and bpy.data.node_groups[ngroup].library is not None:
-                        bpy.data.node_groups.remove(bpy.data.node_groups[ngroup], do_unlink=True)
-
-    # Read MatLib materials.
-    for lib in wm.matlibs:
-        with bpy.data.libraries.load(materialsPath + "\\" + lib.name, link=True) as (data_from, data_to):
-
-            # If the lib is enabled, link them to the current file.
-            if lib.enabled:
-                data_to.materials = data_from.materials
-
-
-
-class SEUT_MatLibProps(PropertyGroup):
-    """Holder for the various MatLib properties"""
-
-    name: StringProperty(
-        name="Name of MatLib"
-    )
-    enabled: BoolProperty(
-        name="Enable or Disable MatLibs in the Materials folder",
-        default=False,
-        update=update_enabled
-    )
+from bpy.types  import UIList
 
 
 class SEUT_UL_MatLib(UIList):
@@ -69,9 +11,9 @@ class SEUT_UL_MatLib(UIList):
 
         split = layout.split(factor=0.9)
         if item.enabled:
-            split.label(text=item.name, icon='LINKED')
+            split.label(text=item.name[:-6], icon='LINKED')
         else:
-            split.label(text=item.name, icon='UNLINKED')
+            split.label(text=item.name[:-6], icon='UNLINKED')
         split.prop(item, "enabled", text="", index=index)
 
     def invoke(self, context, event):
