@@ -62,6 +62,16 @@ class SEUT_OT_ExportMain(Operator):
         if foundArmatures and not (scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'):
             self.report({'WARNING'}, "SEUT: Scene is of type '%s' but contains armatures." % (scene.seut.sceneType))
 
+        unparentedObjects = 0
+        for obj in collections['main'].objects:
+            if obj.parent is None:
+                unparentedObjects += 1
+        
+        if unparentedObjects > 1:
+            self.report({'ERROR'}, "SEUT: Cannot export collection if it has more than one top-level (unparented) object. (031)")
+            print("SEUT Error: Cannot export collection if it has more than one top-level (unparented) object. (031)")
+            return {'CANCELLED'}
+
         # Export XML if boolean is set.
         if scene.seut.export_xml:
             self.report({'INFO'}, "SEUT: Exporting XML for 'Main'.")
