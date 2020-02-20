@@ -205,6 +205,8 @@ def export_XML(self, context, collection):
                 if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
                     self.report({'INFO'}, "SEUT: Local material '%s' does not contain any valid textures. Skipping." % (mat.name))
                     model.remove(matEntry)
+                else:
+                    self.report({'INFO'}, "SEUT: Local material '%s' saved. Don't forget to include relevant DDS texture files in mod!" % (mat.name))
 
         elif mat.library != None:
             matRef = ET.SubElement(model, 'MaterialRef')
