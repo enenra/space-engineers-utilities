@@ -16,7 +16,7 @@ bl_info = {
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie, Kamikaze",
     "version": (0, 9, 5),
-    "blender": (2, 81, 0),
+    "blender": (2, 82, 0),
     "location": "View3D > Tools ",
     "warning": "",
     "wiki_url": "https://github.com/enenra/space-engineers-utilities",
