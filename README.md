@@ -28,6 +28,9 @@ A Blender 2.8+ addon.
 * Create new character models
 * Create new character animations and poses
 * Define mountpoints by placing areas on the six sides of the bounding box in mountpoint-mode
+* Render block icon
+* Alternative Simple Navigation
+* Auto updater implemented
 
 ## Installation
 1. Download the latest release of the addon from the releases section, enable it in Blender.
