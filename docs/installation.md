@@ -12,7 +12,7 @@ layout: default
 
 3. Click `Install...` and select the ZIP file you downloaded in step 1. It should now show up in the list:
 
-![](./assets/images/installation_4.png)
+<img src="./assets/images/installation_4.png" width="150" height="100" />
 
 4. 
 
