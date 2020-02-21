@@ -6,11 +6,13 @@ layout: default
 
 # Installation
 
-1. Download the latest release of SEUT from the [download](./download.html) section.
+1. Download the latest release of SEUT from the [download](./download.html)-section.
 
 2. Open Blender, go to `Edit --> Preferences... --> Add-ons` and toggle `Enabled Add-ons only` to `ON`.
 
-3. Click `Install...` and select the ZIP file you downloaded in step 1.
+3. Click `Install...` and select the ZIP file you downloaded in step 1. It should now show up in the list:
+
+![](./assets/images/installation_4.png)
 
 4. 
 
