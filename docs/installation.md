@@ -10,11 +10,11 @@ layout: default
 
 2. Unpack the SEUT Supplementary Files into a drive with ~15GB of available disk space. (Required for the converted textures.) This should yield you the following structure in the resulting directory:
 
-```
-SEUT\Materials\
-SEUT\Textures\
-SEUT\Tools\
-```
+    ```
+    SEUT\Materials\
+    SEUT\Textures\
+    SEUT\Tools\
+    ```
 
 3. Unpack the downloaded `StollieMWMBuilder.rar` into `SEUT\Tools\MWMB\`.
 
@@ -28,7 +28,7 @@ SEUT\Tools\
 
 8. Click `Install...` and select the just downloaded `space_engineers_utilities_***.zip`. The addon should now show up in the list:
 
-![](./assets/images/installation_4.png)
+    ![](./assets/images/installation_4.png)
 
 9. Set the paths in the preferences of `Scene: Space Engineer Utilities` to the respective folder and tools.
 
