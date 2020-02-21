@@ -15,7 +15,7 @@ from bpy.props  import (EnumProperty,
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_errors                   import showError
-from .seut_utils                    import linkSubpartScene, unlinkSubpartScene
+from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, toRadians
 
 
 # These update_* functions need to be above the class... for some reason.
@@ -449,7 +449,7 @@ class SEUT_Scene(PropertyGroup):
         name="Rotation",
         description="The rotation of the empty holding the render setup",
         subtype='EULER',
-        default=(0.0, 0.0, 0.0),
+        default=(toRadians(-20), 0.0, toRadians(45)),
         update=update_renderEmptyRotation
     )
     renderZoom: IntProperty(

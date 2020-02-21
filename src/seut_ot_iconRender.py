@@ -80,7 +80,7 @@ class SEUT_OT_IconRender(Operator):
         empty.empty_display_type = 'SPHERE'
         
         # Spawn camera
-        bpy.ops.object.camera_add(location=(6.92579, 7.35889, 4.95831), rotation=(toRadians(63.5593), 0.0, toRadians(136.692)))
+        bpy.ops.object.camera_add(location=(0.0, -15, 0.0), rotation=(toRadians(90), 0.0, 0.0))
         camera = bpy.context.view_layer.objects.active
         camera.parent = empty
         scene.camera = camera
@@ -89,19 +89,19 @@ class SEUT_OT_IconRender(Operator):
         camera.data.lens = scene.seut.renderZoom
 
         # Spawn lights
-        bpy.ops.object.light_add(type='POINT', location=(15.0, 0.0, 10.0))
+        bpy.ops.object.light_add(type='POINT', location=(-12.5, -12.5, 5.0), rotation=(0.0, 0.0, 0.0))
         keyLight = bpy.context.view_layer.objects.active
         keyLight.parent = empty
         keyLight.name = 'Key Light'
         keyLight.data.energy = 7500.0
         
-        bpy.ops.object.light_add(type='POINT', location=(0.0, 15.0, 0.75))
+        bpy.ops.object.light_add(type='POINT', location=(10.0, -10.0, -2.5), rotation=(0.0, 0.0, 0.0))
         fillLight = bpy.context.view_layer.objects.active
         fillLight.parent = empty
         fillLight.name = 'Fill Light'
         fillLight.data.energy = 5000.0
         
-        bpy.ops.object.light_add(type='SPOT', location=(-6.72737, -6.72737, -3.07979), rotation=(toRadians(107.937), 0.0, toRadians(-45.0)))
+        bpy.ops.object.light_add(type='SPOT', location=(0.0, 15.0, 0.0), rotation=(toRadians(-90), 0.0, 0.0))
         rimLight = bpy.context.view_layer.objects.active
         rimLight.parent = empty
         rimLight.name = 'Rim Light'
@@ -158,6 +158,9 @@ class SEUT_OT_IconRender(Operator):
         # Force update render resolution
         scene.seut.renderResolution = scene.seut.renderResolution
         scene.render.engine = 'BLENDER_EEVEE'
+        scene.render.film_transparent = True
+
+        context.active_object.select_set(state=False, view_layer=context.window.view_layer)
         
         # Reset interaction mode
         try:
