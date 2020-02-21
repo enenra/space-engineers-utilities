@@ -2,7 +2,6 @@
 layout: default
 ---
 
-# Overview
 * [Download](./download.html)
 * [Installation](./installation.html)
 * [Documentation](./documentation.html)
