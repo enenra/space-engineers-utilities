@@ -6,32 +6,32 @@ layout: default
 
 # Installation
 
-1. Download the latest release of SEUT from the [download](./download.html)-section.
+1. Download the latest release of SEUT, its supplementary files and the additional required tools from the [download](./download.html)-section.
 
-2. Open Blender, go to `Edit --> Preferences... --> Add-ons` and toggle `Enabled Add-ons only` to `ON`.
+2. Unpack the SEUT Supplementary Files into a drive with ~15GB of available disk space. (Required for the converted textures.) This should yield you the following structure in the resulting directory:
 
-3. Click `Install...` and select the just downloaded `space_engineers_utilities_***.zip`. The addon should now show up in the list:
-
-![](./assets/images/installation_4.png)
-
-4. 
-
----
-
-4. Download the latest release of the addon from the releases section, enable it in Blender.
-5. Download the supplementary ZIP (SEUT.zip) containing additional required files.
-6. Ensure you have downloaded the Space Engineers Mod SDK. (Library --> Enable tool display --> Space Engineers Mod SDK in your available games list)
-7. Unpack the supplementary ZIP file onto a drive with ~15GB available disk space. (for the unpacked textures)
-8. Within the resulting directory you should have the following structure:
 ```
 SEUT\Materials\
 SEUT\Textures\
 SEUT\Tools\
 ```
-5. Download [Stollie's MWM Builder](https://github.com/cstahlhut/MWMBuilder/releases) (StollieMWMBuilder.rar) and unzip it into `SEUT\Tools\MWMB\`.
-6. Download Harag's [Custom FBX Importer](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1) and place it into `SEUT\Tools\`.
-7. Download the Havok Content Tools ([64bit](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i)/[32bit](https://drive.google.com/open?id=1DL3-evI3LSIstVTjYvjw01rtpI3iAhDh)) and install them to `SEUT\Tools\Havok\`.
-8. Run `bulkTexConverter.exe`. Point it at the correct folders for your SE installation, SEUT Tools folder and SEUT Textures folder and load presets by using File --> Load Presets. Then run the conversion.
-9. In Blender, go to Edit --> Preferences --> Add-ons --> Scene: Space Engineers Utilities and set the paths to the respective folders and files within `SEUT\`.
-10. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
-11. In the `N`-toolbar within the Node Editor / Shader Editor, enable `MatLib_Presets.blend`. Also enable any of the other `MatLib_*`-files to link their materials into the current file.
+
+3. Unpack the downloaded `StollieMWMBuilder.rar` into `SEUT\Tools\MWMB\`.
+
+4. Place the downloaded `FBXImporter.exe` into `SEUT\Tools\`.
+
+5. Install the downloaded Havok Content Tools to `SEUT\Tools\Havok\`.
+
+6. Run `bulkTexConverter.exe` in `SEUT\Tools\`. Point it at the correct folders for your SE installation, SEUT Tools folder and SEUT Textures folder and load presets by using `File --> Load Presets` (top left of the window). Then run the conversion. This may take several minutes to complete.
+
+7. Open Blender, go to `Edit --> Preferences... --> Add-ons` and toggle `Enabled Add-ons only` to `ON`.
+
+8. Click `Install...` and select the just downloaded `space_engineers_utilities_***.zip`. The addon should now show up in the list:
+
+![](./assets/images/installation_4.png)
+
+9. Set the paths in the preferences of `Scene: Space Engineer Utilities` to the respective folder and tools.
+
+10. In the Blender main view (`3D Viewport`), open the SEUT main panel by pressing `N`. On the right side of the viewport, a tab labelled `SEUT` will become available. This is where most of the functionality of SEUT is accessed from.
+
+11. Go to the `Shading`-tab at the top of the Blender window. In the bottom center you will see the `Node Editor`. Press `N` with your cursor within the `Node Editor` to open up another toolbar will become available. Open the `SEUT`-tab and enable `MatLib_Presets` in the Material Libraries panel. If you wish to import vanilla Space Engineers models, also enable `MatLib_Materials` and `MatLib_Items`.
