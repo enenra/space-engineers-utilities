@@ -13,5 +13,5 @@ layout: default
 
 ## Additional Required Tools
 **Stollie's MWM Builder** | 0.1 | [DOWNLOAD](https://github.com/cstahlhut/MWMBuilder/releases)
-**Custom FBX Importer** |  | [DOWNLOAD](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1)
-**Havok Content Tools** |  | [DOWNLOAD 64bit](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i) / [DOWNLOAD 32bit](https://drive.google.com/open?id=1DL3-evI3LSIstVTjYvjw01rtpI3iAhDh)
+**Custom FBX Importer** | . | [DOWNLOAD](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1)
+**Havok Content Tools 64bit** | . | [DOWNLOAD](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i)
