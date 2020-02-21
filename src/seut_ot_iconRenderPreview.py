@@ -21,6 +21,10 @@ class SEUT_OT_IconRenderPreview(Operator):
 
         scene = context.scene
         wm = context.window_manager
+            
+        if scene.seut.subtypeId == "":
+            scene.seut.subtypeId = scene.name
+        tag = ' (' + scene.seut.subtypeId + ')'
 
         if context.object is not None and context.object.mode is not 'OBJECT':
             currentMode = context.object.mode
@@ -33,7 +37,14 @@ class SEUT_OT_IconRenderPreview(Operator):
 
         for col in collections.values():
             if col is not None:
-                col.hide_viewport = True
+                if col.name == 'Main' + tag:
+                    for obj in col.objects:
+                        obj.hide_render = False
+                        obj.hide_viewport = False
+                else:
+                    for obj in col.objects:
+                        obj.hide_render = True
+                        obj.hide_viewport = True
 
         # This path juggling is to prevent Blender from saving the default render output
         path = scene.render.filepath
@@ -50,7 +61,9 @@ class SEUT_OT_IconRenderPreview(Operator):
         
         for col in collections.values():
             if col is not None:
-                col.hide_viewport = False
+                for obj in col.objects:
+                    obj.hide_render = False
+                    obj.hide_viewport = False
 
         wm.seut.simpleNavigationToggle = simpleNav
 
