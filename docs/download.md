@@ -12,6 +12,7 @@ layout: default
 **SEUT Supplementary Files** | 0.9.6 | [DOWNLOAD]()
 
 ## Additional Required Tools
+
 **Stollie's MWM Builder** | 0.1 | [DOWNLOAD](https://github.com/cstahlhut/MWMBuilder/releases)
-**Custom FBX Importer** | . | [DOWNLOAD](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1)
-**Havok Content Tools 64bit** | . | [DOWNLOAD](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i)
+**Custom FBX Importer** |  | [DOWNLOAD](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1)
+**Havok Content Tools 64bit** |  | [DOWNLOAD](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i)
