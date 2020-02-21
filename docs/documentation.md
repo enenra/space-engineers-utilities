@@ -6,11 +6,10 @@ layout: default
 
 ---
 
-<table style="margin-left:auto;margin-right:auto;">
+<table align="center">
     <tr>
         <th>Test1</th>
         <th>Test2</th>
-        <th>Test3</th>
     </tr>
 </table>
 
