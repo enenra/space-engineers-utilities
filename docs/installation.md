@@ -33,5 +33,9 @@ layout: default
 9. Set the paths in the preferences of `Scene: Space Engineer Utilities` to the respective folder and tools.
 
 10. In the Blender main view (`3D Viewport`), open the SEUT main panel by pressing `N`. On the right side of the viewport, a tab labelled `SEUT` will become available. This is where most of the functionality of SEUT is accessed from.
+    
+    ![](./assets/images/installation_10.png)
 
 11. Go to the `Shading`-tab at the top of the Blender window. In the bottom center you will see the `Node Editor`. Press `N` with your cursor within the `Node Editor` to open up another toolbar will become available. Open the `SEUT`-tab and enable `MatLib_Presets` in the Material Libraries panel. If you wish to import vanilla Space Engineers models, also enable `MatLib_Materials` and `MatLib_Items`.
+    
+    ![](./assets/images/installation_11.png)
