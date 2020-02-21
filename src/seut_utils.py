@@ -16,6 +16,9 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
     subpartScene = empty.seut.linkedScene
     context.window.scene = subpartScene
 
+    if context.object is not None and context.object.mode is not 'OBJECT':
+        ops.object.mode_set(mode='OBJECT')
+
     subpartCollections = SEUT_OT_RecreateCollections.getCollections(subpartScene)
     # Checks whether collection exists, is excluded or is empty
     result = errorCollection(self, context, subpartCollections['main'], False)
