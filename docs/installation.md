@@ -2,7 +2,7 @@
 layout: default
 ---
 
-[Home](./index.html) | [Download](./download.html) | **Installation** | [Documentation](./documentation.html) | [Report Issue](https://github.com/enenra/space-engineers-utilities/issues/new) | [About](./about.html)
+[Home](./index.html) | [Download](./download.html) | **Installation** | [Documentation](./documentation.html) | [Troubleshooting](./troubleshooting.html) | [About](./about.html)
 
 # Installation
 
