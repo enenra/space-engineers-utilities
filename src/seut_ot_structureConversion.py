@@ -50,7 +50,7 @@ class SEUT_OT_StructureConversion(Operator):
                     collection.name = 'Collision' + tag
                     
                 elif collection.name == 'Collection 3' or collection.name[:13] == 'Collection 3.':
-                    collection.name = 'MountPoints' + tag
+                    collection.name = 'Mountpoints' + tag
                     
                 elif collection.name == 'Collection 4' or collection.name[:13] == 'Collection 4.':
                     collection.name = 'Mirroring' + tag
@@ -128,6 +128,15 @@ class SEUT_OT_StructureConversion(Operator):
                             SEUT_OT_Mirroring.saveRotationToProps(self, context, mirrorEmpty)
                     
                 scn.seut.mirroringToggle = 'off'
+            
+            # Clean up mountpoints - cannot convert them
+            if 'Mountpoints' + tag in bpy.data.collections:
+                for mp in bpy.data.collections['Mountpoints' + tag].objects:
+                    for child in mp.children:
+                        bpy.data.objects.remove(child)
+                    mp.select_set(state=False, view_layer=context.window.view_layer)
+                    bpy.data.objects.remove(mp)
+                bpy.data.collections.remove(bpy.data.collections['Mountpoints' + tag])
         
         bpy.context.window.scene = currentScene
 
