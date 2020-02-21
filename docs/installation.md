@@ -5,11 +5,22 @@ layout: default
 [Home](./index.html) | [Download](./download.html) | **Installation** | [Documentation](./documentation.html) | [Report Issue](https://github.com/enenra/space-engineers-utilities/issues/new) | [About](./about.html)
 
 # Installation
-1. Download the latest release of the addon from the releases section, enable it in Blender.
-2. Download the supplementary ZIP (SEUT.zip) containing additional required files.
-3. Ensure you have downloaded the Space Engineers Mod SDK. (Library --> Enable tool display --> Space Engineers Mod SDK in your available games list)
-4. Unpack the supplementary ZIP file onto a drive with ~15GB available disk space. (for the unpacked textures)
-5. Within the resulting directory you should have the following structure:
+
+1. Download the latest release of SEUT from the [download](./download.html) section.
+
+2. Open Blender, go to `Edit --> Preferences... --> Add-ons` and toggle `Enabled Add-ons only` to `ON`.
+
+3. Click `Install...` and select the ZIP file you downloaded in step 1.
+
+4. 
+
+---
+
+4. Download the latest release of the addon from the releases section, enable it in Blender.
+5. Download the supplementary ZIP (SEUT.zip) containing additional required files.
+6. Ensure you have downloaded the Space Engineers Mod SDK. (Library --> Enable tool display --> Space Engineers Mod SDK in your available games list)
+7. Unpack the supplementary ZIP file onto a drive with ~15GB available disk space. (for the unpacked textures)
+8. Within the resulting directory you should have the following structure:
 ```
 SEUT\Materials\
 SEUT\Textures\
