@@ -12,7 +12,7 @@ layout: default
 
 3. Click `Install...` and select the just downloaded `space_engineers_utilities_***.zip`. The addon should now show up in the list:
 
-![image](./assets/images/installation_4.png = 250x250)
+![](./assets/images/installation_4.png)
 
 4. 
 
