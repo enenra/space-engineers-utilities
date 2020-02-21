@@ -6,11 +6,11 @@ layout: default
 
 ---
 
-**Documentation** | [Tutorials](./tutorials.html)
+[Documentation](./tutorials.html) | **Tutorials**
 
 ---
 
-[Main Panel]() | [Node Editor Panel]() | [Context / Add Menu]() | [Object Properties]() | [Preferences]() 
+[Installation](./installation.html) | [Create a Material]()
 
-# Documentation
+# Tutorials
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vulputate, libero quis facilisis mollis, odio enim lobortis ipsum, in tempus mi mi eget libero. Phasellus sit amet egestas nisl. Nulla convallis purus a nisl tristique condimentum. Praesent ut ligula non justo congue convallis. Curabitur nisl ex, luctus et ante quis, hendrerit scelerisque urna. Fusce molestie pretium lacinia. Sed gravida purus quis enim ullamcorper, ac fringilla nisi porta.
