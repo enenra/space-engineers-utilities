@@ -49,7 +49,7 @@ class SEUT_OT_RefreshMatLibs(Operator):
         for libOld in wm.seut.matlibs:
             if libOld.name in newSet:
                 for mat in bpy.data.materials:
-                    if mat.library.name == libOld.name:
+                    if mat.library is not None and mat.library.name == libOld.name:
                         wm.seut.matlibs[wm.seut.matlibs.find(libOld.name)].enabled = True
                         break
                 continue
