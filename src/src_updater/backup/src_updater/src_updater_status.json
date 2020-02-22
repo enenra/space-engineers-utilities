@@ -4,7 +4,7 @@
     "update_ready": true,
     "ignore": false,
     "just_restored": false,
-    "just_updated": true,
+    "just_updated": false,
     "version_text": {
         "link": "https://api.github.com/repos/enenra/space-engineers-utilities/zipball/v0.9.6",
         "version": [
