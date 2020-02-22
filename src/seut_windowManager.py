@@ -40,38 +40,15 @@ def update_enabled(self, context):
     else:
         with bpy.data.libraries.load(materialsPath + "\\" + self.name, link=True) as (data_from, data_to):
                 for mat in data_from.materials:
-                    if mat in bpy.data.materials and bpy.data.materials[mat].library is not None:
+                    if mat in bpy.data.materials and bpy.data.materials[mat].library is not None and bpy.data.materials[mat].library.name == self.name:
                         bpy.data.materials.remove(bpy.data.materials[mat], do_unlink=True)
                 for img in data_from.images:
-                    if img in bpy.data.images and bpy.data.images[img].library is not None:
+                    if img in bpy.data.images and bpy.data.images[img].library is not None and bpy.data.images[img].library.name == self.name:
                         bpy.data.images.remove(bpy.data.images[img], do_unlink=True)
                 for ngroup in data_from.node_groups:
-                    if ngroup in bpy.data.node_groups and bpy.data.node_groups[ngroup].library is not None:
+                    if ngroup in bpy.data.node_groups and bpy.data.node_groups[ngroup].library is not None and bpy.data.node_groups[ngroup].library.name == self.name:
                         bpy.data.node_groups.remove(bpy.data.node_groups[ngroup], do_unlink=True)
-
-    """
-    # Read MatLib materials.
-    for lib in wm.seut.matlibs:
-        # If the lib is disabled, unlink its materials from the current file. (unless it's local)
-        if not lib.enabled:
-            with bpy.data.libraries.load(materialsPath + "\\" + lib.name, link=True) as (data_from, data_to):
-                for mat in data_from.materials:
-                    if mat in bpy.data.materials and bpy.data.materials[mat].library is not None:
-                        bpy.data.materials.remove(bpy.data.materials[mat], do_unlink=True)
-                for img in data_from.images:
-                    if img in bpy.data.images and bpy.data.images[img].library is not None:
-                        bpy.data.images.remove(bpy.data.images[img], do_unlink=True)
-                for ngroup in data_from.node_groups:
-                    if ngroup in bpy.data.node_groups and bpy.data.node_groups[ngroup].library is not None:
-                        bpy.data.node_groups.remove(bpy.data.node_groups[ngroup], do_unlink=True)
-
-    # Read MatLib materials.
-    for lib in wm.seut.matlibs:
-        # If the lib is enabled, link them to the current file.
-        if lib.enabled:
-            with bpy.data.libraries.load(materialsPath + "\\" + lib.name, link=True) as (data_from, data_to):
-                data_to.materials = data_from.materials
-    """
+                        
 
 class SEUT_MatLibProps(PropertyGroup):
     """Holder for the various MatLib properties"""
