@@ -13,7 +13,9 @@ layout: default
 **Main Panel** | [Node Editor Panel](./node-editor-panel.html) | [Context / Add Menu](./context-menu.html) | [Object Properties](./object-properties.html) | [Preferences](./preferences.html) 
 
 # Main Panel
-The main SEUT panel holds the vast majority of the functionality of the addon.
+The main SEUT panel holds the vast majority of the functionality of the addon. It can be found on the right side of the `3D Viewport` (button marked in green) of Blender and opened by pressing `N` while the cursor is within the viewport.
+
+![](../assets/images/main-panel.png)
 
 ## Space Engineers Utilities
 ![](../assets/images/main-panel_1.png)
