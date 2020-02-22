@@ -16,9 +16,9 @@ def update_fbxImporterPath(self, context):
     if self.fbxImporterPath == "":
         return
 
-    if os.path.isdir(self.fbxImporterPath):
-        if os.path.exists(self.fbxImporterPath + name):
-            self.fbxImporterPath = self.fbxImporterPath + name
+    if os.path.isdir(bpy.path.abspath(self.fbxImporterPath)):
+        if os.path.exists(bpy.path.abspath(self.fbxImporterPath) + name):
+            self.fbxImporterPath = bpy.path.abspath(self.fbxImporterPath) + name
         else:
             showError(context, "Report: Error", "SEUT Error: Path is directory, not EXE. (030)")
             self.fbxImporterPath = ""
@@ -34,9 +34,9 @@ def update_havokPath(self, context):
     if self.havokPath == "":
         return
 
-    if os.path.isdir(self.havokPath):
-        if os.path.exists(self.havokPath + name):
-            self.havokPath = self.havokPath + name
+    if os.path.isdir(bpy.path.abspath(self.havokPath)):
+        if os.path.exists(bpy.path.abspath(self.havokPath) + name):
+            self.havokPath = bpy.path.abspath(self.havokPath) + name
         else:
             showError(context, "Report: Error", "SEUT Error: Path is directory, not EXE. (030)")
             self.havokPath = ""
@@ -52,8 +52,8 @@ def update_materialsPath(self, context):
     if self.materialsPath == "":
         return
 
-    if os.path.isdir(self.materialsPath):
-        if not self.materialsPath[-10:-1] == 'Materials':
+    if os.path.isdir(bpy.path.abspath(self.materialsPath)):
+        if not bpy.path.abspath(self.materialsPath[-10:-1]) == 'Materials':
             showError(context, "Report: Error", "SEUT Error: Path does not point to a 'Materials'-folder. (017)")
             self.materialsPath = ""
         else:
@@ -66,9 +66,9 @@ def update_mwmbPath(self, context):
     if self.mwmbPath == "":
         return
 
-    if os.path.isdir(self.mwmbPath):
-        if os.path.exists(self.mwmbPath + name):
-            self.mwmbPath = self.mwmbPath + name
+    if os.path.isdir(bpy.path.abspath(self.mwmbPath)):
+        if os.path.exists(bpy.path.abspath(self.mwmbPath) + name):
+            self.mwmbPath = bpy.path.abspath(self.mwmbPath) + name
         else:
             showError(context, "Report: Error", "SEUT Error: Path is directory, not EXE. (030)")
             self.mwmbPath = ""
@@ -108,31 +108,31 @@ class SEUT_AddonPreferences(AddonPreferences):
     )
 
     # addon updater preferences from `__init__`, be sure to copy all of them
-    auto_check_update = bpy.props.BoolProperty(
+    auto_check_update: bpy.props.BoolProperty(
         name = "Auto-check for Update",
         description = "If enabled, auto-check for updates using an interval",
         default = True,
     )
-    updater_intrval_months = bpy.props.IntProperty(
+    updater_intrval_months: bpy.props.IntProperty(
         name='Months',
         description = "Number of months between checking for updates",
         default=0,
         min=0
     )
-    updater_intrval_days = bpy.props.IntProperty(
+    updater_intrval_days: bpy.props.IntProperty(
         name='Days',
         description = "Number of days between checking for updates",
         default=0,
         min=0,
     )
-    updater_intrval_hours = bpy.props.IntProperty(
+    updater_intrval_hours: bpy.props.IntProperty(
         name='Hours',
         description = "Number of hours between checking for updates",
         default=23,
         min=0,
         max=23
     )
-    updater_intrval_minutes = bpy.props.IntProperty(
+    updater_intrval_minutes: bpy.props.IntProperty(
         name='Minutes',
         description = "Number of minutes between checking for updates",
         default=0,
