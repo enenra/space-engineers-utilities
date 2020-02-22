@@ -58,7 +58,7 @@ By default, because SEUT relies on collections to organize your model, you will 
 The bounding box indicates the size of the block inside Space Engineers. Be sure to adjust it so all of your block is within it (unless in some special cases). Furthermore, the entirety of the collision model als must be within the bounding box - otherwise the block will revert to cube collision.
 
 ### Size
-Use the `X`, `Y` and `Z`-properties to adjust the size of the bounding box.
+Use the `X`, `Y` and `Z`-properties to adjust the size of the bounding box. These values are written to the SBC.
 
 ### Automatic
 This button will make the addon attempt to automatically set the bounding box to encompass the entire geometry. It is currently not very accurate.
@@ -68,8 +68,25 @@ This button will make the addon attempt to automatically set the bounding box to
 ## Mirroring Mode
 ![](./../assets/images/mirror-mode_1.png)
 
+Mirroring Mode is used to set up block mirroring options within Space Engineers. Its results are written to the SBC. Refer to the [Mirroring Tutorial]() for more details.
+
+### Model
+This links to a `Mirroring`-type scene, which is used instead of an instance of the normal model contained within the `Main`-collection for mirroring display.
+
+---
+
 ## Mountpoint Mode
 ![](./../assets/images/mountpoint-mode_1.png)
+
+Mountpoint Mode allows the user to define the areas of the block that attach to other blocks. Mountpoints are divided by the block's `Sides`. Each `Side` can have multiple defined `Areas` that are valid attachment points.
+
+### Side
+Select one of the six sides of the block as a target for the `Add Area`-button.
+
+### Add Area
+Adds a new area to a side that can be repositioned and rescaled (rotation is not saved).
+
+---
 
 ## Icon Render Mode
 ![](./../assets/images/icon-render-mode_1.png)
