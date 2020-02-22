@@ -39,7 +39,14 @@ The SubtypeId is furthermore used to mark all collections belonging to a scene s
 | **Note:** SubtypeId must be unique within a blend file. Measures have been implemented to ensure that it is but there's still a small chance of it happening. If it does happen, undo to before it did. |
 
 ### Grid Scale
+This option sets your Blender grid to align to the size of either large or small grid *within Space Engineers*. The grid is set to half the size of either to allow you to correctly place the blocks on world origin in Blender.
+This setting is also used to by the addon to adjust what gets written to the SBC as well as to scale the bounding box so make sure it's set to the correct scale for your block.
 
+### Recreate Collections
+This button will create the various collections SEUT uses to organize your models within the active scene. The addon requires you to place all objects it should handle within one of these collections.
+
+### Simple Navigation
+By default, because SEUT relies on collections to organize your model, you will be switching between collections fairly often. However, generally you'll only really want to look at the contents of a single collection at a time. Enabling this option will hide all non-active collections automatically. Thus, whenever you click on another of the SEUT collections, it will be unhidden and all other collections will be hidden in turn.
 
 ## Bounding Box
 ![](./../assets/images/bounding-box_1.png)
