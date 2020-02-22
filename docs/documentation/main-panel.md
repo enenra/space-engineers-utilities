@@ -35,7 +35,7 @@ Allows selection of scene type. Depending on the scene type, a scene is **export
 * **Character Animation** - This scene contains either a character pose or character animation and is treated differently by the exporter. Refer to the [Character Modding Tutorial]() for further details.
 
 ### SubtypeId
-The SubtypeId is your model's **unique identifier**. It is written both into the SBC as well as written into the filename of the exported models. In scenes of type `Subpart`, `Character` and `Character Animation` it only defines the filename as no SBC is created for these on export.
+The SubtypeId is your model's **unique identifier**. It is written both into the `SBC` as well as written into the filename of the exported models. In scenes of type `Subpart`, `Character` and `Character Animation` it only defines the filename as no `SBC` is created for these on export.
 The SubtypeId is furthermore used to **mark all collections** belonging to a scene so that they can be differntiated from same-function collections in other scenes.
 
 | **Note:** SubtypeId **must be unique within a blend file**. Measures have been implemented to ensure that it is but there's still a small chance of it happening. If it does happen, undo to before it did. |
@@ -55,7 +55,9 @@ By default, because SEUT relies on collections to organize your model, you will 
 ## Bounding Box
 ![](./../assets/images/bounding-box_1.png)
 
-The bounding box indicates the size of the block inside Space Engineers. Be sure to adjust it so all of your block is within it (unless in some special cases). Furthermore, the entirety of the collision model als must be within the bounding box - otherwise the block will revert to cube collision.
+The bounding box **indicates the size of the block** inside Space Engineers. Be sure to adjust it so all of your block is within it (unless in some special cases). 
+
+| **Note:** Especially the entirety of the collision model must be within the bounding box - otherwise the block will revert to cube collision. |
 
 ### Size
 Use the `X`, `Y` and `Z`-properties to adjust the size of the bounding box. These values are written to the SBC.
@@ -78,7 +80,7 @@ This links to a `Mirroring`-type scene, which is used instead of an instance of 
 ## Mountpoint Mode
 ![](./../assets/images/mountpoint-mode_1.png)
 
-Mountpoint Mode allows the user to define the areas of the block that attach to other blocks. Mountpoints are divided by the block's `Sides`. Each `Side` can have multiple defined `Areas` that are valid attachment points.
+Mountpoint Mode allows the user to define the **areas of the block** that **attach to other blocks**. Mountpoints are divided by the block's `Sides`. Each `Side` can have multiple defined `Areas` that are valid attachment points.Refer to the [Mountpoint Tutorial]() for more details.
 
 ### Side
 Select one of the six sides of the block as a target for the `Add Area`-button.
@@ -91,8 +93,53 @@ Adds a new area to a side that can be repositioned and rescaled (rotation is not
 ## Icon Render Mode
 ![](./../assets/images/icon-render-mode_1.png)
 
+Icon Render Mode allows the easy rendering of icons for a block.
+
+### Render
+This button will save the current camera view as a render to the specified `Output Path`. It will only render the scene's `Main`-collection.
+
+### Zoom
+This property adjusts the camera's zoom level.
+
+### Rotation
+These properties allow for the rotation of the camera and lighting setup around the point of origin.
+
+### Color Overlay
+Untoggling this property will remove the blue tint from the resulting icon render.
+
+### Resolution
+Sets the resolution in pixels of the resulting render.
+
+### File Format
+Sets the file format of the resulting image.
+
+### Output Path
+Sets the path to which the render will be saved when `Render` is pressed.
+
+---
+
 ## Export
 ![](./../assets/images/export_1.png)
+
+### Export All Scenes
+This button will iterate through all scenes and their collections within the `BLEND`-file and export them one by one. 
+
+### Export Current Scene
+Exports all collections within the current scene.
+
+### Delete Loose Files
+By default, the only files resulting from export are the `SBC` and `MWM` files, as all **intermediary files are automatically cleaned up**. Untoggling this option will prevent these "loose files" from being cleaned up and thus allows for debugging issues.
+
+### Rescale Factor
+The rescale factor allows for the rescaling of the exported models. A large grid block can be exported as a small grid block by setting this value to `0.2`.
+
+| **Note:** Don't forget to change your SubtypeId before exporting a small grid version of your block or it will overwrite your previously exported large grid version. |
+
+### Export Folder
+The directory to export your model to. Must contain `Models\` in its path to be eligible. Set this to directly export into your mod's directory.
+
+#### Copy Export Folder
+This button copies the current `Export Folder` to all other scenes within the `BLEND`-file.
 
 ## Import
 ![](./../assets/images/import_1.png)
