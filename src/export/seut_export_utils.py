@@ -432,6 +432,9 @@ def removeExportDummiesFromMat(self, context, material):
 
 def isValidResolution(number):
     """Returns True if number is a valid resolution (a square of 2)"""
+    
+    if number <= 0:
+        return False
 
     return math.log(number, 2).is_integer()
 
