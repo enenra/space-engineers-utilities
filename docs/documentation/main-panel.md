@@ -17,6 +17,8 @@ The main SEUT panel holds the vast majority of the functionality of the addon. I
 
 ![](../assets/images/main-panel.png)
 
+---
+
 ## Space Engineers Utilities
 ![](../assets/images/main-panel_1.png)
 
@@ -48,8 +50,20 @@ This button will create the various collections SEUT uses to **organize your mod
 ### Simple Navigation
 By default, because SEUT relies on collections to organize your model, you will be switching between collections fairly often. However, generally you'll only really want to look at the contents of a single collection at a time. Enabling this option will **hide all non-active collections** automatically. Thus, whenever you click on another of the SEUT collections, it will be unhidden and all other collections will be hidden in turn.
 
+---
+
 ## Bounding Box
 ![](./../assets/images/bounding-box_1.png)
+
+The bounding box indicates the size of the block inside Space Engineers. Be sure to adjust it so all of your block is within it (unless in some special cases). Furthermore, the entirety of the collision model als must be within the bounding box - otherwise the block will revert to cube collision.
+
+### Size
+Use the `X`, `Y` and `Z`-properties to adjust the size of the bounding box.
+
+### Automatic
+This button will make the addon attempt to automatically set the bounding box to encompass the entire geometry. It is currently not very accurate.
+
+---
 
 ## Mirroring Mode
 ![](./../assets/images/mirror-mode_1.png)
