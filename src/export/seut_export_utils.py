@@ -434,6 +434,8 @@ def isValidResolution(number):
 
     if number == 2:
         return True
+    elif number < 2:
+        return False
     elif number % 2 != 0:
         return False
 
