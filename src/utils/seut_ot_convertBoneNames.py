@@ -20,7 +20,8 @@ class SEUT_OT_ConvertBonesToBlenderFormat(Operator):
 
         exlcudedBoneNames = ["SE_RigPelvis", "SE_RigSpine1", "SE_RigSpine2",
                             "SE_RigSpine3", "SE_RigSpine4", "SE_RigRibcage",
-                            "SE_RigNeck", "SE_RigRibcageBone001"]
+                            "SE_RigNeck", "SE_RigRibcageBone001", "SE_RigHelmetGlassBone",
+                            "SE_RigHead"]
         
         armature = context.object
         
@@ -91,7 +92,8 @@ class SEUT_OT_ConvertBonesToSEFormat(Operator):
 
         exlcudedBoneNames = ["SE_RigPelvis", "SE_RigSpine1", "SE_RigSpine2",
                             "SE_RigSpine3", "SE_RigSpine4", "SE_RigRibcage",
-                            "SE_RigNeck", "SE_RigRibcageBone001"]
+                            "SE_RigNeck", "SE_RigRibcageBone001", "SE_RigHelmetGlassBone",
+                            "SE_RigHead"]
 
         armature = bpy.context.object
         
