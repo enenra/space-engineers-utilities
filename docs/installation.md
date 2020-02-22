@@ -39,3 +39,7 @@ layout: default
 11. Go to the `Shading`-tab at the top of the Blender window. In the bottom center you will see the `Node Editor`. Press `N` with your cursor within the `Node Editor` to open up another toolbar will become available. Open the `SEUT`-tab and enable `MatLib_Presets` in the Material Libraries panel. If you wish to import vanilla Space Engineers models, also enable `MatLib_Materials` and `MatLib_Items`.
     
     ![](./assets/images/installation_11.png)
+
+12. In the Blender header, click `Window --> Toggle System Console`. SEUT will print additional information in here and it is the first place you should check if something doesn't work as it seems like it should.
+    
+    ![](./assets/images/installation_12.png)
