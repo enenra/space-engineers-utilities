@@ -216,20 +216,13 @@ class SEUT_OT_ExportSBC(Operator):
                         if endY > scene.seut.bBox_Y:
                             endY = scene.seut.bBox_Y
 
-                    def_Mountpoint.attrib = OrderedDict([
-                        ('Side', sideName),
-                        ('StartX', str(round(startX, 2))),
-                        ('StartY', str(round(startY, 2))),
-                        ('EndX', str(round(endX, 2))),
-                        ('EndY', str(round(endY, 2))),
-                        ])
-                    """
-                    def_Mountpoint.set('Side', sideName)
-                    def_Mountpoint.set('StartX', str(round(startX, 2)))
-                    def_Mountpoint.set('StartY', str(round(startY, 2)))
-                    def_Mountpoint.set('EndX', str(round(endX, 2)))
-                    def_Mountpoint.set('EndY', str(round(endY, 2)))
-                    """
+                    # Need to do this to prevent ET from auto-rearranging keys.
+                    def_Mountpoint.set('a_Side', sideName)
+                    def_Mountpoint.set('b_StartX', str(round(startX, 2)))
+                    def_Mountpoint.set('c_StartY', str(round(startY, 2)))
+                    def_Mountpoint.set('d_EndX', str(round(endX, 2)))
+                    def_Mountpoint.set('e_EndY', str(round(endY, 2)))
+
         
         # Creating Build Stage references.
         if collections['bs1'] is not None or collections['bs2'] is not None or collections['bs3'] is not None:
@@ -290,6 +283,13 @@ class SEUT_OT_ExportSBC(Operator):
         # Write to file, place in export folder
         xmlString = xml.dom.minidom.parseString(ET.tostring(definitions))
         xmlFormatted = xmlString.toprettyxml()
+
+        # Fixing the entries
+        xmlFormatted = xmlFormatted.replace("a_Side", "Side")
+        xmlFormatted = xmlFormatted.replace("b_StartX", "StartX")
+        xmlFormatted = xmlFormatted.replace("c_StartY", "StartY")
+        xmlFormatted = xmlFormatted.replace("d_EndX", "EndX")
+        xmlFormatted = xmlFormatted.replace("e_EndY", "EndY")
 
         filename = scene.seut.subtypeId
 
