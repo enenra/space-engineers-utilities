@@ -31,9 +31,16 @@ class SEUT_OT_RemapMaterials(Operator):
             bpy.context.window.scene = scene
 
             for obj in bpy.context.view_layer.objects:
+
+                if obj.type == 'EMPTY':
+                    continue
+
                 # Select this object and remove any unused materials
                 bpy.context.view_layer.objects.active = obj
-                bpy.ops.object.material_slot_remove_unused()
+                try:
+                    bpy.ops.object.material_slot_remove_unused()
+                except RuntimeError:
+                    self.report({'WARNING'}, "SEUT: Could not remove unused material slots for object '%s'." % (obj.name))
 
                 for slot in obj.material_slots:
                     if slot.material != None and slot.material.library == None:
