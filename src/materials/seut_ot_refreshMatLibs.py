@@ -48,6 +48,10 @@ class SEUT_OT_RefreshMatLibs(Operator):
         # If the set has entries that don't exist in the directory, remove them
         for libOld in wm.seut.matlibs:
             if libOld.name in newSet:
+                for mat in bpy.data.materials:
+                    if mat.library is not None and mat.library.name == libOld.name:
+                        wm.seut.matlibs[wm.seut.matlibs.find(libOld.name)].enabled = True
+                        break
                 continue
             else:
                 for idx in range(0, len(wm.seut.matlibs)):

@@ -1,5 +1,6 @@
 import bpy
 import os
+import math
 import glob
 import subprocess
 import xml.etree.ElementTree as ET
@@ -154,7 +155,7 @@ def export_XML(self, context, collection):
                         matCM.text = os.path.splitext(images['cm'].filepath[offset:])[0] + ".dds"
                     
                     if not isValidResolution(images['cm'].size[0]) or not isValidResolution(images['cm'].size[1]):
-                        self.report({'WARNING'}, "SEUT: 'CM' texture of local material '%s' is not of a valid resolution. May not display correctly ingame." % (mat.name))
+                        self.report({'WARNING'}, "SEUT: 'CM' texture of local material '%s' is not of a valid resolution (%sx%s). May not display correctly ingame." % (mat.name, str(images['cm'].size[0]), str(images['cm'].size[1])))
                 
                 # _ng NormalGloss texture
                 if images['ng'] == None:
@@ -169,7 +170,7 @@ def export_XML(self, context, collection):
                         matNG.text = os.path.splitext(images['ng'].filepath[offset:])[0] + ".dds"
                     
                     if not isValidResolution(images['ng'].size[0]) or not isValidResolution(images['ng'].size[1]):
-                        self.report({'WARNING'}, "SEUT: 'NG' texture of local material '%s' is not of a valid resolution. May not display correctly ingame." % (mat.name))
+                        self.report({'WARNING'}, "SEUT: 'NG' texture of local material '%s' is not of a valid resolution (%sx%s). May not display correctly ingame." % (mat.name, str(images['ng'].size[0]), str(images['ng'].size[1])))
                 
                 # _add AddMaps texture
                 if images['add'] == None:
@@ -184,7 +185,7 @@ def export_XML(self, context, collection):
                         matADD.text = os.path.splitext(images['add'].filepath[offset:])[0] + ".dds"
                     
                     if not isValidResolution(images['add'].size[0]) or not isValidResolution(images['add'].size[1]):
-                        self.report({'WARNING'}, "SEUT: 'ADD' texture of local material '%s' is not of a valid resolution. May not display correctly ingame." % (mat.name))
+                        self.report({'WARNING'}, "SEUT: 'ADD' texture of local material '%s' is not of a valid resolution (%sx%s). May not display correctly ingame." % (mat.name, str(images['add'].size[0]), str(images['add'].size[1])))
                 
                 # _alphamask Alphamask texture
                 if images['am'] == None:
@@ -199,7 +200,7 @@ def export_XML(self, context, collection):
                         matAM.text = os.path.splitext(images['am'].filepath[offset:])[0] + ".dds"
                     
                     if not isValidResolution(images['am'].size[0]) or not isValidResolution(images['am'].size[1]):
-                        self.report({'WARNING'}, "SEUT: 'ALPHAMASK' texture of local material '%s' is not of a valid resolution. May not display correctly ingame." % (mat.name))
+                        self.report({'WARNING'}, "SEUT: 'ALPHAMASK' texture of local material '%s' is not of a valid resolution (%sx%s). May not display correctly ingame." % (mat.name, str(images['am'].size[0]), str(images['am'].size[1])))
 
                 # If no textures are added to the material, remove the entry again.
                 if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
@@ -431,17 +432,11 @@ def removeExportDummiesFromMat(self, context, material):
 
 def isValidResolution(number):
     """Returns True if number is a valid resolution (a square of 2)"""
-
-    if number == 2:
-        return True
-    elif number < 2:
-        return False
-    elif number % 2 != 0:
+    
+    if number <= 0:
         return False
 
-    half = number / 2
-
-    return isValidResolution(half)
+    return math.log(number, 2).is_integer()
 
 # STOLLIE: Standard output error operator class for catching error return codes.
 class StdoutOperator():
