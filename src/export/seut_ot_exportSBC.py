@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
 from bpy.types      import Operator
+from collections    import OrderedDict
 
 from ..seut_ot_mirroring            import SEUT_OT_Mirroring
 from ..seut_ot_mountpoints          import SEUT_OT_Mountpoints
@@ -149,12 +150,12 @@ class SEUT_OT_ExportSBC(Operator):
             bboxY = scene.seut.bBox_Y * scale
             bboxZ = scene.seut.bBox_Z * scale
 
-            def_Mountpoints = ET.SubElement(def_definition, 'Mountpoints')
+            def_Mountpoints = ET.SubElement(def_definition, 'MountPoints')
 
             for area in scene.seut.mountpointAreas:
                 if area is not None:
 
-                    def_Mountpoint = ET.SubElement(def_Mountpoints, 'Mountpoint')
+                    def_Mountpoint = ET.SubElement(def_Mountpoints, 'MountPoint')
 
                     sideName = area.side.capitalize()
 
@@ -215,14 +216,20 @@ class SEUT_OT_ExportSBC(Operator):
                         if endY > scene.seut.bBox_Y:
                             endY = scene.seut.bBox_Y
 
+                    def_Mountpoint.attrib = OrderedDict([
+                        ('Side', sideName),
+                        ('StartX', str(round(startX, 2))),
+                        ('StartY', str(round(startY, 2))),
+                        ('EndX', str(round(endX, 2))),
+                        ('EndY', str(round(endY, 2))),
+                        ])
+                    """
                     def_Mountpoint.set('Side', sideName)
                     def_Mountpoint.set('StartX', str(round(startX, 2)))
                     def_Mountpoint.set('StartY', str(round(startY, 2)))
                     def_Mountpoint.set('EndX', str(round(endX, 2)))
                     def_Mountpoint.set('EndY', str(round(endY, 2)))
-
-                    if area.side == 'bottom':
-                        def_Mountpoint.set('Default', 'true')
+                    """
         
         # Creating Build Stage references.
         if collections['bs1'] is not None or collections['bs2'] is not None or collections['bs3'] is not None:
@@ -288,6 +295,7 @@ class SEUT_OT_ExportSBC(Operator):
 
         exportedXML = open(path + filename + ".sbc", "w")
         exportedXML.write(xmlFormatted)
+
         self.report({'INFO'}, "SEUT: '%s.sbc' has been created." % (path + filename))
 
         return {'FINISHED'}
