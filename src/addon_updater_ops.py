@@ -968,7 +968,7 @@ def update_settings_ui(self, context, element=None):
 		split = subcol.split(align=True)
 		split.scale_y = 2
 		split.operator(addon_updater_update_now.bl_idname,
-					text="Update now to "+str(updater.current_version))
+					text="Update now to "+str(updater.update_version))
 		split = subcol.split(align=True)
 		split.scale_y = 2
 		split.operator(addon_updater_check_now.bl_idname,
