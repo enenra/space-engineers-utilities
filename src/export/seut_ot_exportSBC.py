@@ -162,48 +162,58 @@ class SEUT_OT_ExportSBC(Operator):
                         if area.x + (area.xDim / 2) - (bboxX / 2) > 0:
                             startX = 0.0
                         else:
-                            startX = 100 / bboxX * abs(area.x + (area.xDim / 2) - (bboxX / 2))
+                            startX = abs(area.x + (area.xDim / 2) - (bboxX / 2)) / scale
 
                         if area.y + (area.yDim / 2) - (bboxZ / 2) > 0:
                             startY = 0.0
                         else:
-                            startY = 100 / bboxZ * abs(area.y + (area.yDim / 2) - (bboxZ / 2))
+                            startY = abs(area.y + (area.yDim / 2) - (bboxZ / 2)) / scale
 
-                        endX = 100 / bboxX * abs(area.x - (area.xDim / 2) - (bboxX / 2))
-                        endY = 100 / bboxZ * abs(area.y - (area.yDim / 2) - (bboxZ / 2))
+                        endX = abs(area.x - (area.xDim / 2) - (bboxX / 2)) / scale
+                        endY = abs(area.y - (area.yDim / 2) - (bboxZ / 2)) / scale
+
+                        if endX > scene.seut.bBox_X:
+                            endX = scene.seut.bBox_X
+                        if endY > scene.seut.bBox_Z:
+                            endY = scene.seut.bBox_Z
 
                     elif area.side == 'left' or area.side == 'right':
                         if area.x + (area.xDim / 2) - (bboxY / 2) > 0:
                             startX = 0.0
                         else:
-                            startX = 100 / bboxY * abs(area.x + (area.xDim / 2) - (bboxY / 2))
+                            startX = abs(area.x + (area.xDim / 2) - (bboxY / 2)) / scale
 
                         if area.y + (area.yDim / 2) - (bboxZ / 2) > 0:
                             startY = 0.0
                         else:
-                            startY = 100 / bboxZ * abs(area.y + (area.yDim / 2) - (bboxZ / 2))
+                            startY = abs(area.y + (area.yDim / 2) - (bboxZ / 2)) / scale
                             
-                        endX = 100 / bboxY * abs(area.x - (area.xDim / 2) - (bboxY / 2))
-                        endY = 100 / bboxZ * abs(area.y - (area.yDim / 2) - (bboxZ / 2))
+                        endX = abs(area.x - (area.xDim / 2) - (bboxY / 2)) / scale
+                        endY = abs(area.y - (area.yDim / 2) - (bboxZ / 2)) / scale
+
+                        if endX > scene.seut.bBox_Y:
+                            endX = scene.seut.bBox_Y
+                        if endY > scene.seut.bBox_Z:
+                            endY = scene.seut.bBox_Z
 
                     elif area.side == 'top' or area.side == 'bottom':
                         if area.x + (area.xDim / 2) - (bboxX / 2) > 0:
                             startX = 0.0
                         else:
-                            startX = 100 / bboxX * abs(area.x + (area.xDim / 2) - (bboxX / 2))
+                            startX = abs(area.x + (area.xDim / 2) - (bboxX / 2)) / scale
 
                         if area.y + (area.yDim / 2) - (bboxY / 2) > 0:
                             startY = 0.0
                         else:
-                            startY = 100 / bboxY * abs(area.y + (area.yDim / 2) - (bboxY / 2))
+                            startY = abs(area.y + (area.yDim / 2) - (bboxY / 2)) / scale
 
-                        endX = 100 / bboxX * abs(area.x - (area.xDim / 2) - (bboxX / 2))
-                        endY = 100 / bboxY * abs(area.y - (area.yDim / 2) - (bboxY / 2))
-                    
-                    if endX > 100:
-                        endX = 100.0
-                    if endY > 100:
-                        endY = 100.0
+                        endX = abs(area.x - (area.xDim / 2) - (bboxX / 2)) / scale
+                        endY = abs(area.y - (area.yDim / 2) - (bboxY / 2)) / scale
+
+                        if endX > scene.seut.bBox_X:
+                            endX = scene.seut.bBox_X
+                        if endY > scene.seut.bBox_Y:
+                            endY = scene.seut.bBox_Y
 
                     def_Mountpoint.set('Side', sideName)
                     def_Mountpoint.set('StartX', str(round(startX, 2)))
