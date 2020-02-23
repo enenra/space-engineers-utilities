@@ -2,13 +2,37 @@ import bpy
 import os
 
 from bpy.types  import Operator, AddonPreferences
-from bpy.props  import (StringProperty,
-                       EnumProperty
-                       )
+from bpy.props  import BoolProperty, StringProperty, EnumProperty
 
 from .seut_errors   import showError
 
 from . import addon_updater_ops
+
+def set_stollie_tools_paths(self, context):
+    scene = context.scene
+
+    if not self.set_stollie_tools_paths:
+        return
+    else:
+        self.materialsPath = "C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"
+        self.mwmbPath = "C:\\3D_Projects\\BlenderPlugins\\StollieMWMBuilder\\MwmBuilder.exe"
+        self.fbxImporterPath = "C:\\3D_Projects\\BlenderPlugins\\HavokFBXImporter\\FBXImporter.exe"
+        self.havokPath = "C:\\3D_Projects\\BlenderPlugins\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
+
+def update_materialsPath(self, context):
+    scene = context.scene
+
+    if self.materialsPath == "":
+        return
+
+    if os.path.isdir(bpy.path.abspath(self.materialsPath)):
+        if not bpy.path.abspath(self.materialsPath[-10:-1]) == 'Materials':
+            showError(context, "Report: Error", "SEUT Error: Path (" + bpy.path.abspath(self.materialsPath[-10:-1]) + ")" + 
+                " does not point to a 'Materials'-folder. (017)")
+            self.materialsPath = ""
+        else:
+            bpy.ops.scene.refresh_matlibs()
+    
 
 def update_fbxImporterPath(self, context):
     name = 'FBXImporter.exe'
@@ -46,20 +70,6 @@ def update_havokPath(self, context):
         self.havokPath = ""
 
 
-def update_materialsPath(self, context):
-    scene = context.scene
-
-    if self.materialsPath == "":
-        return
-
-    if os.path.isdir(bpy.path.abspath(self.materialsPath)):
-        if not bpy.path.abspath(self.materialsPath[-10:-1]) == 'Materials':
-            showError(context, "Report: Error", "SEUT Error: Path does not point to a 'Materials'-folder. (017)")
-            self.materialsPath = ""
-        else:
-            bpy.ops.scene.refresh_matlibs()
-    
-
 def update_mwmbPath(self, context):
     name = str('MwmBuilder.exe')
 
@@ -82,6 +92,24 @@ class SEUT_AddonPreferences(AddonPreferences):
     """Saves the preferences set by the user"""
     bl_idname = __package__
 
+    # addon updater preferences from `__init__`, be sure to copy all of them
+    enable_dev_only_options: BoolProperty(
+        name = "Enable Dev only options",
+        description = "Enable Dev only options",
+        default = False
+    )
+    set_stollie_tools_paths: BoolProperty(
+        name = "Set Stollie Paths",
+        description = "Set Stollie Paths",
+        default = False,
+        update=set_stollie_tools_paths
+    )
+    materialsPath: StringProperty(
+        name="Materials Folder",
+        description="This folder contains material information in the form of XML libraries as well as BLEND MatLibs",
+        subtype='FILE_PATH',
+        update=update_materialsPath
+    )
     fbxImporterPath: StringProperty(
         name="Custom FBX Importer",
         description="Despite its name, this tool is mainly used to export models to the FBX format",
@@ -99,12 +127,6 @@ class SEUT_AddonPreferences(AddonPreferences):
         description="This tool converts the individual 'loose files' that the export yields into MWM files the game can read",
         subtype='FILE_PATH',
         update=update_mwmbPath
-    )
-    materialsPath: StringProperty(
-        name="Materials Folder",
-        description="This folder contains material information in the form of XML libraries as well as BLEND MatLibs",
-        subtype='FILE_PATH',
-        update=update_materialsPath
     )
 
     # addon updater preferences from `__init__`, be sure to copy all of them
@@ -142,6 +164,11 @@ class SEUT_AddonPreferences(AddonPreferences):
 
     def draw(self, context):
         layout = self.layout
+
+        layout.prop(self, "enable_dev_only_options")
+
+        if self.enable_dev_only_options:
+            layout.prop(self, "set_stollie_tools_paths")
 
         layout.prop(self, "materialsPath", expand=True)
         box = layout.box()

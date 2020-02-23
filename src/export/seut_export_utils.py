@@ -540,7 +540,7 @@ class ExportSettings:
             self._mwmbuilder = tool_path('mwmbPath', 'MWM Builder')
         return self._mwmbuilder
 
-    def callTool(self, cmdline, logfile=None, cwd=None, successfulExitCodes=[0], loglines=[], logtextInspector=None):
+    def callTool(self, context, cmdline, tooltype, logfile=None, cwd=None, successfulExitCodes=[0], loglines=[], logtextInspector=None):
         try:
             out = subprocess.check_output(cmdline, cwd=cwd, stderr=subprocess.STDOUT, shell=True)
             if self.isLogToolOutput and logfile:
@@ -549,10 +549,11 @@ class ExportSettings:
                 logtextInspector(out)
 
         except subprocess.CalledProcessError as e:
-            showError(context, "Report: Error", "SEUT Error: There was an error during exportation caused by Havok or MWMBuilder. Please refer to the logs in your export folder for details. (023)")
             if self.isLogToolOutput and logfile:
                 write_to_log(logfile, e.output, cmdline=cmdline, cwd=cwd, loglines=loglines)
             if e.returncode not in successfulExitCodes:
+                showError(context, "Report: Error", "SEUT Error: There was an error during exportation caused by " + str(tooltype) + "."
+                + " Please refer to the logs in your export folder for details. (023)")
                 raise
     
     def __getitem__(self, key): # makes all attributes available for parameter substitution

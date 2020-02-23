@@ -1,13 +1,20 @@
 import os
 import glob
 
-from .seut_export_utils     import ExportSettings
+from .seut_export_utils         import ExportSettings
+from ..utils.called_tool_type   import ToolType
 
 def mwmbuilder(self, context, path, mwmpath, settings: ExportSettings, mwmfile: str, materialspath):
     try:
         scene = context.scene
         cmdline = [settings.mwmbuilder, '/f', '/s:'+path+'', '/m:'+scene.seut.subtypeId+'*.fbx', '/o:'+mwmpath+'', '/x:'+materialspath+'']
-        settings.callTool(cmdline, cwd=path, logfile=path + scene.seut.subtypeId + '.log')
+        settings.callTool(
+            context,
+            cmdline,
+            ToolType(3),
+            cwd=path,
+            logfile=path + scene.seut.subtypeId + '.log'            
+        )
     finally:
         fileRemovalList = [fileName for fileName in glob.glob(mwmpath + "*.hkt.mwm")]
         try:
