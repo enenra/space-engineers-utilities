@@ -201,6 +201,7 @@ class Singleton_updater(object):
 	@property
 	def current_version(self):
 		return self._current_version
+		
 	@current_version.setter
 	def current_version(self, tuple_values):
 		if tuple_values==None:
