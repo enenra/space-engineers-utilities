@@ -67,7 +67,7 @@ class SEUT_OT_ExportHKT(Operator):
             return result
         
         for obj in collections['hkt'].objects:
-            if obj is not None and len(obj.data.uv_layers) < 1:
+            if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
                 self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
                 print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
                 return {'CANCELLED'}
