@@ -65,6 +65,12 @@ class SEUT_OT_ExportHKT(Operator):
         result = errorToolPath(self, havokPath, "Havok Standalone Filter Manager", "hctStandAloneFilterManager.exe")
         if not result == {'CONTINUE'}:
             return result
+        
+        for obj in collections['hkt'].objects:
+            if len(obj.data.uv_layers) < 1:
+                self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
+                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                return {'CANCELLED'}
 
         for obj in collections['hkt'].objects:
             context.view_layer.objects.active = obj

@@ -71,6 +71,24 @@ class SEUT_OT_ExportBS(Operator):
                 self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
                 print("SEUT Error: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
                 return {'CANCELLED'}
+        
+        for obj in collections['bs1'].objects:
+            if len(obj.data.uv_layers) < 1:
+                self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
+                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                return {'CANCELLED'}
+        
+        for obj in collections['bs2'].objects:
+            if len(obj.data.uv_layers) < 1:
+                self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
+                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                return {'CANCELLED'}
+        
+        for obj in collections['bs3'].objects:
+            if len(obj.data.uv_layers) < 1:
+                self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
+                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                return {'CANCELLED'}
 
         # Export BS1, if present.
         if colBS1Good:

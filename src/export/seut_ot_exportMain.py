@@ -71,6 +71,12 @@ class SEUT_OT_ExportMain(Operator):
             self.report({'ERROR'}, "SEUT: Cannot export collection if it has more than one top-level (unparented) object. (031)")
             print("SEUT Error: Cannot export collection if it has more than one top-level (unparented) object. (031)")
             return {'CANCELLED'}
+        
+        for obj in collections['main'].objects:
+            if len(obj.data.uv_layers) < 1:
+                self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
+                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                return {'CANCELLED'}
 
         # Export XML if boolean is set.
         if scene.seut.export_xml:
