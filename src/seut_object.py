@@ -32,10 +32,10 @@ def update_linkedScene(self, context):
             unlinkSubpartScene(empty)
 
             if empty.seut.linkedScene is not None:
-                empty['file'] = empty.seut.linkedScene.name
+                empty['file'] = empty.seut.linkedScene.seut.subtypeId
                 if scene.seut.linkSubpartInstances:
                     try:
-                        linkSubpartScene(self, scene, empty)
+                        linkSubpartScene(self, scene, empty, None)
                     except AttributeError:
                         showError(context, "Report: Error", "SEUT Error: Collection not found, excluded or empty. Action not possible. (022)")
 

@@ -321,7 +321,7 @@ def export_model_FBX(self, context, collection):
                 if emptyObj.parent is not None and emptyObj.seut.linkedObject.parent is not None and emptyObj.parent != emptyObj.seut.linkedObject.parent:
                     print("SEUT Warning: Highlight empty '" + emptyObj.name + "' and its linked object '" + emptyObj.seut.linkedObject.name + "' have different parent objects. This may prevent it from working properly ingame.")
             if 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
-                emptyObj['file'] = emptyObj.seut.linkedScene.name
+                emptyObj['file'] = emptyObj.seut.linkedScene.seut.subtypeId
                 unlinkSubpartScene(emptyObj)
 
     for objMat in bpy.data.materials:

@@ -73,8 +73,9 @@ def update_subtypeId(self, context):
 
     if scene.seut.subtypeId != scene.seut.subtypeBefore:
         SEUT_OT_RecreateCollections.rename_Collections(scene)
-        scene.name = scene.seut.subtypeId
         scene.seut.subtypeBefore = scene.seut.subtypeId
+        
+    scene.name = scene.seut.subtypeId
 
 def update_linkSubpartInstances(self, context):
     scene = context.scene
