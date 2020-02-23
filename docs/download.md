@@ -8,8 +8,8 @@ layout: default
 
 ## Space Engineers Utilities
 
-**SEUT Blender Addon** | 0.9.8 | [DOWNLOAD](https://github.com/enenra/space-engineers-utilities/releases/download/v0.9.8/space_engineers_utilities_0_9_8.zip)
-**SEUT Supplementary Files** | 0.9.8 | [DOWNLOAD](https://github.com/enenra/space-engineers-utilities/releases/download/v0.9.8/SEUT.zip)
+**SEUT Blender Addon** | 0.9.81 | [DOWNLOAD](https://github.com/enenra/space-engineers-utilities/releases/download/v0.9.81/space_engineers_utilities_0_9_81.zip)
+**SEUT Supplementary Files** | 0.9.81 | [DOWNLOAD](https://github.com/enenra/space-engineers-utilities/releases/download/v0.9.81/SEUT.zip)
 
 
 ## Additional Required Tools
