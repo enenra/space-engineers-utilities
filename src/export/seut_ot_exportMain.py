@@ -73,7 +73,7 @@ class SEUT_OT_ExportMain(Operator):
             return {'CANCELLED'}
         
         for obj in collections['main'].objects:
-            if len(obj.data.uv_layers) < 1:
+            if obj is not None and len(obj.data.uv_layers) < 1:
                 self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
                 print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
                 return {'CANCELLED'}

@@ -87,25 +87,25 @@ class SEUT_OT_ExportLOD(Operator):
                 return {'CANCELLED'}
         
         for obj in collections['lod1'].objects:
-            if len(obj.data.uv_layers) < 1:
+            if obj is not None and len(obj.data.uv_layers) < 1:
                 self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
                 print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
                 return {'CANCELLED'}
         
         for obj in collections['lod2'].objects:
-            if len(obj.data.uv_layers) < 1:
+            if obj is not None and len(obj.data.uv_layers) < 1:
                 self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
                 print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
                 return {'CANCELLED'}
         
         for obj in collections['lod3'].objects:
-            if len(obj.data.uv_layers) < 1:
+            if obj is not None and len(obj.data.uv_layers) < 1:
                 self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
                 print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
                 return {'CANCELLED'}
         
         for obj in collections['bs_lod'].objects:
-            if len(obj.data.uv_layers) < 1:
+            if obj is not None and len(obj.data.uv_layers) < 1:
                 self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
                 print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
                 return {'CANCELLED'}
