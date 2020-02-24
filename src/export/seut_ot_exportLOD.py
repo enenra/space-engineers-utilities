@@ -86,29 +86,33 @@ class SEUT_OT_ExportLOD(Operator):
                 print("SEUT Error: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
                 return {'CANCELLED'}
         
-        for obj in collections['lod1'].objects:
-            if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
-                return {'CANCELLED'}
+        if colLOD1Good:
+            for obj in collections['lod1'].objects:
+                if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
+                    self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
+                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                    return {'CANCELLED'}
         
-        for obj in collections['lod2'].objects:
-            if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
-                return {'CANCELLED'}
+        if colLOD2Good:
+            for obj in collections['lod2'].objects:
+                if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
+                    self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
+                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                    return {'CANCELLED'}
         
-        for obj in collections['lod3'].objects:
-            if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
-                return {'CANCELLED'}
+        if colLOD3Good:
+            for obj in collections['lod3'].objects:
+                if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
+                    self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
+                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                    return {'CANCELLED'}
         
-        for obj in collections['bs_lod'].objects:
-            if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
-                return {'CANCELLED'}
+        if colBSLODGood:
+            for obj in collections['bs_lod'].objects:
+                if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
+                    self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
+                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                    return {'CANCELLED'}
 
         # Export LOD1, if present.
         if colLOD1Good:
