@@ -68,6 +68,27 @@ def update_renderZoom(self, context):
     if camera is not None:
         camera.data.lens = scene.seut.renderZoom
 
+def update_renderDistance(self, context):
+    scene = context.scene
+
+    empty = bpy.data.objects['Icon Render']
+    if empty is not None:
+        empty.scale.x = self.renderDistance
+        empty.scale.y = self.renderDistance
+        empty.scale.z = self.renderDistance
+
+    keyLight = bpy.data.objects['Key Light']
+    if keyLight is not None:
+        keyLight.data.energy = 7500.0 * scene.seut.renderDistance
+        
+    fillLight = bpy.data.objects['Fill Light']
+    if fillLight is not None:
+        fillLight.data.energy = 5000.0 * scene.seut.renderDistance
+        
+    rimLight = bpy.data.objects['Rim Light']
+    if rimLight is not None:
+        rimLight.data.energy = 10000.0 * scene.seut.renderDistance
+
 def update_subtypeId(self, context):
     scene = context.scene
 
@@ -473,4 +494,12 @@ class SEUT_Scene(PropertyGroup):
         default=70,
         min=0,
         update=update_renderZoom
+    )
+    renderDistance: FloatProperty(
+        name="Distance",
+        description="The distance of the camera and lights from origin",
+        default=1,
+        min=1,
+        max=10,
+        update=update_renderDistance
     )

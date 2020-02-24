@@ -76,6 +76,9 @@ class SEUT_OT_IconRender(Operator):
         # Spawn holder empty
         bpy.ops.object.add(type='EMPTY', location=scene.seut.renderEmptyLocation, rotation=scene.seut.renderEmptyRotation)
         empty = bpy.context.view_layer.objects.active
+        empty.scale.x = scene.seut.renderDistance
+        empty.scale.y = scene.seut.renderDistance
+        empty.scale.z = scene.seut.renderDistance
         empty.name = 'Icon Render'
         empty.empty_display_type = 'SPHERE'
         
@@ -93,19 +96,19 @@ class SEUT_OT_IconRender(Operator):
         keyLight = bpy.context.view_layer.objects.active
         keyLight.parent = empty
         keyLight.name = 'Key Light'
-        keyLight.data.energy = 7500.0
+        keyLight.data.energy = 7500.0 * scene.seut.renderDistance
         
         bpy.ops.object.light_add(type='POINT', location=(10.0, -10.0, -2.5), rotation=(0.0, 0.0, 0.0))
         fillLight = bpy.context.view_layer.objects.active
         fillLight.parent = empty
         fillLight.name = 'Fill Light'
-        fillLight.data.energy = 5000.0
+        fillLight.data.energy = 5000.0 * scene.seut.renderDistance
         
         bpy.ops.object.light_add(type='SPOT', location=(0.0, 15.0, 0.0), rotation=(toRadians(-90), 0.0, 0.0))
         rimLight = bpy.context.view_layer.objects.active
         rimLight.parent = empty
         rimLight.name = 'Rim Light'
-        rimLight.data.energy = 10000.0
+        rimLight.data.energy = 10000.0 * scene.seut.renderDistance
         
         parentCollection = getParentCollection(context, empty)
         if parentCollection != collection:

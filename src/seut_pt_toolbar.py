@@ -154,6 +154,22 @@ class SEUT_PT_Panel_IconRender(Panel):
             box.label(text='View', icon='CAMERA_DATA')
             if camera is not None:
                 box.prop(scene.seut, 'renderZoom')
+            
+            keyLight = None
+            fillLight = None
+            rimLight = None
+            for obj in bpy.data.objects:
+                if obj.type == 'LIGHT':
+                    if obj.name == 'Key Light':
+                        keyLight = obj
+                    elif obj.name == 'Fill Light':
+                        fillLight = obj
+                    elif obj.name == 'Rim Light':
+                        rimLight = obj
+                        
+            if camera is not None and keyLight is not None and fillLight is not None and rimLight is not None:
+                box.prop(scene.seut, 'renderDistance')
+
             if empty is not None:
                 box.prop(scene.seut, 'renderEmptyLocation')
             if empty is not None:
