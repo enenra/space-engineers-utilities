@@ -155,6 +155,8 @@ class SEUT_PT_Panel_IconRender(Panel):
             if camera is not None:
                 box.prop(scene.seut, 'renderZoom')
             if empty is not None:
+                box.prop(scene.seut, 'renderEmptyLocation')
+            if empty is not None:
                 box.prop(scene.seut, 'renderEmptyRotation')
 
             box = layout.box()

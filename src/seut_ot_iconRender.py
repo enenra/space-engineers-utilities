@@ -74,7 +74,7 @@ class SEUT_OT_IconRender(Operator):
 
 
         # Spawn holder empty
-        bpy.ops.object.add(type='EMPTY', rotation=scene.seut.renderEmptyRotation)
+        bpy.ops.object.add(type='EMPTY', location=scene.seut.renderEmptyLocation, rotation=scene.seut.renderEmptyRotation)
         empty = bpy.context.view_layer.objects.active
         empty.name = 'Icon Render'
         empty.empty_display_type = 'SPHERE'

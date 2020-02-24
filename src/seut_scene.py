@@ -48,6 +48,13 @@ def update_renderEmptyRotation(self, context):
     if empty is not None:
         empty.rotation_euler = scene.seut.renderEmptyRotation
 
+def update_renderEmptyLocation(self, context):
+    scene = context.scene
+
+    empty = bpy.data.objects['Icon Render']
+    if empty is not None:
+        empty.location = scene.seut.renderEmptyLocation
+
 def update_renderColorOverlay(self, context):
     scene = context.scene
 
@@ -452,6 +459,13 @@ class SEUT_Scene(PropertyGroup):
         subtype='EULER',
         default=(toRadians(-20), 0.0, toRadians(45)),
         update=update_renderEmptyRotation
+    )
+    renderEmptyLocation: FloatVectorProperty(
+        name="Location",
+        description="The location of the empty holding the render setup",
+        subtype='XYZ',
+        default=(0.0, 0.0, 0.0),
+        update=update_renderEmptyLocation
     )
     renderZoom: IntProperty(
         name="Zoom",
