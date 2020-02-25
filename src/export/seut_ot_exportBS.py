@@ -86,7 +86,7 @@ class SEUT_OT_ExportBS(Operator):
                     print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
                     return {'CANCELLED'}
         
-        if colBS3Good
+        if colBS3Good:
             for obj in collections['bs3'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
                     self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
