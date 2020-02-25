@@ -31,15 +31,10 @@ class SEUT_PT_Panel_Materials(Panel):
 
             box.prop(material.seut, 'overrideMatLib')
             box.prop(material.seut, 'technique', icon='IMGDISPLAY')
-
-            if material.seut.technique == 'GLASS' or material.seut.technique == 'ALPHA_MASKED':
-                boxSpec = box.box()
-                boxSpec.label(text="Specularity")
-                boxSpec.prop(material.seut, 'specularIntensity')
-                boxSpec.prop(material.seut, 'specularPower')
-
-                boxDiff = box.box()
-                boxDiff.prop(material.seut, 'diffuseColor', text="Diffuse Color")
+            box.prop(material.seut, 'facing')
+            
+            box.prop(material.seut, 'windScale', icon='SORTSIZE')
+            box.prop(material.seut, 'windFrequency', icon='GROUP')
 
         box = layout.box()
         box.label(text="Create new SEUT Material", icon='MATERIAL')

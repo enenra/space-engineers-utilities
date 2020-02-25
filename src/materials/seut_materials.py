@@ -31,32 +31,30 @@ class SEUT_Materials(PropertyGroup):
             ),
         default='MESH'
     )
-    specularIntensity: FloatProperty(
-        name="Intensity:",
-        description="Determines the intensity of the transparent material's specularity",
+    facing: EnumProperty(
+        name='Facing',
+        description="The facing mode of the material",
+        items=(
+            ('None', 'None', 'No facing mode (standard)'),
+            ('Vertical', 'Vertical', 'Vertical facing mode'),
+            ('Full', 'Full', 'Full facing mode'),
+            ('Impostor', 'Imposter', 'Imposter facing mode')
+            ),
+        default='None'
+    )
+    windScale: FloatProperty(
+        name="Wind Scale:",
+        description="Only relevant for trees and bushes",
+        default=0,
+        min=0,
+        max=1
+    )
+    windFrequency: FloatProperty(
+        name="Wind Frequency:",
+        description="Only relevant for trees and bushes",
         default=0,
         min=0,
         max=100
-    )
-    specularPower: FloatProperty(
-        name="Power:",
-        description="Determines the power of the transparent material's specularity",
-        default=0,
-        min=0,
-        max=100
-    )
-    diffuseColor: FloatVectorProperty(
-        name="Color",
-        description="The color of the tint when looking through this transparent material",
-        subtype='COLOR',
-        default=(0, 0, 0)
-    )
-
-    diffuseTexture: StringProperty(
-        name="Diffuse Texture:",
-        description="",
-        subtype="FILE_PATH",
-        default=""
     )
 
     nodeLinkedToOutputName: StringProperty(
