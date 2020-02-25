@@ -59,6 +59,8 @@ def export_XML(self, context, collection):
     for mat in bpy.data.materials:
         if mat == None:
             continue
+        if mat.users == 0 or mat.users == 1 and mat.use_fake_user:
+            continue
         
         # This ensures that the material presets used internally are not written to the XML.
         if mat.name[:5] == 'SMAT_':
