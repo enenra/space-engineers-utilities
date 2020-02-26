@@ -50,8 +50,8 @@ class SEUT_OT_ExportSBC(Operator):
             print("SEUT Info: 'SBC' is toggled off. SBC export skipped.")
             return {'FINISHED'}
         
-        if context.scene.seut.sceneType == 'subpart':
-            print("SEUT Info: Scene '" + scene.name + "' is of type 'Subpart'. SBC export skipped.")
+        if scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
+            print("SEUT Info: Scene '" + scene.name + "' is of type '" + scene.seut.sceneType + "'. SBC export skipped.")
             return {'FINISHED'}
 
         # Checks whether collection exists, is excluded or is empty
