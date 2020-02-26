@@ -16,6 +16,8 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
     subpartScene = empty.seut.linkedScene
     context.window.scene = subpartScene
 
+    currentArea = context.area.type
+    context.area.type = 'VIEW_3D'
     if context.object is not None and context.object.mode is not 'OBJECT':
         bpy.ops.object.mode_set(mode='OBJECT')
 
@@ -94,6 +96,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
                     linkSubpartScene(self, originScene, linkedObject, targetCollection)
         
     # Switch back to previous scene
+    context.area.type = currentArea
     context.window.scene = currentScene
     
     return {'CONTINUE'}

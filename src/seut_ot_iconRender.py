@@ -42,6 +42,8 @@ class SEUT_OT_IconRender(Operator):
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
 
+        currentArea = context.area.type
+        context.area.type = 'VIEW_3D'
         if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
             currentMode = bpy.context.object.mode
             bpy.ops.object.mode_set(mode='OBJECT')
@@ -172,6 +174,8 @@ class SEUT_OT_IconRender(Operator):
         except:
             pass
 
+        context.area.type = currentArea
+        
         return {'FINISHED'}
 
 
@@ -181,6 +185,8 @@ class SEUT_OT_IconRender(Operator):
         scene = context.scene
 
         # If mode is not object mode, export fails horribly.
+        currentArea = context.area.type
+        context.area.type = 'VIEW_3D'
         if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
             currentMode = bpy.context.object.mode
             bpy.ops.object.mode_set(mode='OBJECT')
@@ -219,6 +225,8 @@ class SEUT_OT_IconRender(Operator):
                 bpy.ops.object.mode_set(mode=currentMode)
         except:
             pass
+
+        context.area.type = currentArea
 
 
         return {'FINISHED'}

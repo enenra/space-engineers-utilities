@@ -26,6 +26,8 @@ class SEUT_OT_IconRenderPreview(Operator):
             scene.seut.subtypeId = scene.name
         tag = ' (' + scene.seut.subtypeId + ')'
 
+        currentArea = context.area.type
+        context.area.type = 'VIEW_3D'
         if context.object is not None and context.object.mode is not 'OBJECT':
             currentMode = context.object.mode
             bpy.ops.object.mode_set(mode='OBJECT')
@@ -72,6 +74,8 @@ class SEUT_OT_IconRenderPreview(Operator):
                 bpy.ops.object.mode_set(mode=currentMode)
         except:
             pass
+
+        context.area.type = currentArea
 
         self.report({'INFO'}, "SEUT: Icon successfully saved to '%s'." % (scene.render.filepath + scene.seut.subtypeId + '.' + scene.render.image_settings.file_format.lower()))
 

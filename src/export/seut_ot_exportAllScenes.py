@@ -14,6 +14,8 @@ class SEUT_OT_ExportAllScenes(Operator):
     def execute(self, context):
 
         # If mode is not object mode, export fails horribly.
+        currentArea = context.area.type
+        context.area.type = 'VIEW_3D'
         if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
             currentMode = bpy.context.object.mode
             bpy.ops.object.mode_set(mode='OBJECT')
@@ -45,6 +47,8 @@ class SEUT_OT_ExportAllScenes(Operator):
                 bpy.ops.object.mode_set(mode=currentMode)
         except TypeError:
             pass
+
+        context.area.type = currentArea
         
         self.report({'INFO'}, "SEUT: %i of %i scenes successfully exported. Refer to Blender System Console for details." % (sceneCounter - notExportedCounter, sceneCounter))
 

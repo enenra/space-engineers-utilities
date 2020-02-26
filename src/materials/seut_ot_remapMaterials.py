@@ -12,10 +12,14 @@ class SEUT_OT_RemapMaterials(Operator):
 
         print("SEUT Info: Remapping local materials to library.")
 
+        currentArea = context.area.type
+        context.area.type = 'VIEW_3D'
         if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
             bpy.ops.object.mode_set(mode='OBJECT')
 
         SEUT_OT_RemapMaterials.remapMaterials(self, context)
+
+        context.area.type = currentArea
 
         return {'FINISHED'}
     

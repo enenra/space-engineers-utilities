@@ -1,4 +1,3 @@
 # Ignore these file types
 *__pycache__/
 src/src_updater/src_updater_status.json
-src/src_updater/src_updater_status.json
