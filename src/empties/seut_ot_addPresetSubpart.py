@@ -35,7 +35,9 @@ class SEUT_OT_AddPresetSubpart(Operator):
             ('PistonSubpart2', 'Piston Subpart 2', 'The piston subpart attached to its first subpart.\nWarning: Empty must also be present in BS collections or game will CTD on placement!'),
             ('PistonSubpart3', 'Piston Subpart 3', 'The piston subpart attached to its second subpart.\nWarning: Empty must also be present in BS collections or game will CTD on placement!'),
             ('TurbineRotor', 'Wind Turbine Rotor', 'The subpart containing the rotating blades of a wind turbine'),
-            ('HangarDoor', 'Hangar Door Part', 'Subpart for a hangar door section. \nSupports index, and all of these subparts are placed within its base')
+            ('HangarDoor', 'Hangar Door Part', 'Subpart for a hangar door section. \nSupports index, and all of these subparts are placed within its base'),
+            ('LaserComTurret', 'Laser Antenna targeter azimuth', 'Subpart for a laser antenna turret'),
+            ('LaserCom', 'Laser Antenna targeter eleveation', 'Subpart for a laser antenna turret (attached to Laser Antenna azimuth subpart)')
             ),
         default='DoorLeft'
     )
