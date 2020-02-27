@@ -141,5 +141,12 @@ The directory to export your model to. Must contain `Models\` in its path to be 
 #### Copy Export Folder
 This button copies the current `Export Folder` to all other scenes within the `BLEND`-file.
 
+---
+
 ## Import
 ![](./../assets/images/import_1.png)
+
+### Import FBX
+This button allows for the import of FBX files. Imported geometry is automatically processed further, thus it is heavily recommended to use this button over the default Blender FBX import option.
+
+### Display Empties as 'Cube'
