@@ -249,7 +249,12 @@ def export_XML(self, context, collection):
             bs_lodModel.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '_BS_LOD'
 
     # Create file with subtypename + collection name and write string to it
-    xmlString = xml.dom.minidom.parseString(ET.tostring(model))
+    tempString = ET.tostring(model, 'utf-8')
+    try:
+        tempString.decode('ascii')
+    except UnicodeDecodeError:
+        showError(context, "Report: Error", "SEUT Error: Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, Material names or object names. (033)")
+    xmlString = xml.dom.minidom.parseString(tempString)
     xmlFormatted = xmlString.toprettyxml()
     
     fileType = collection.name[:collection.name.find(" (")]
@@ -488,8 +493,7 @@ def delete_loose_files(path):
             os.remove(fileName)
 
     except EnvironmentError:
-        self.report({'ERROR'}, "SEUT: Deletion of loose files failed. (020)")
-        print("SEUT Error: Deletion of loose files failed. (020)")
+        showError(context, "Report: Error", "SEUT: Deletion of loose files failed. (020)")
 
 class ExportSettings:
     def __init__(self, scene, depsgraph, mwmDir=None):

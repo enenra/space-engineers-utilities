@@ -9,7 +9,7 @@ from collections    import OrderedDict
 from ..seut_ot_mirroring            import SEUT_OT_Mirroring
 from ..seut_ot_mountpoints          import SEUT_OT_Mountpoints
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection
+from ..seut_errors                  import errorExportGeneral, errorCollection, showError
 
 class SEUT_OT_ExportSBC(Operator):
     """Exports to SBC"""
@@ -281,7 +281,12 @@ class SEUT_OT_ExportSBC(Operator):
 
 
         # Write to file, place in export folder
-        xmlString = xml.dom.minidom.parseString(ET.tostring(definitions))
+        tempString = ET.tostring(definitions, 'utf-8')
+        try:
+            tempString.decode('ascii')
+        except UnicodeDecodeError:
+            showError(context, "Report: Error", "SEUT Error: Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, Material names or object names. (033)")
+        xmlString = xml.dom.minidom.parseString(tempString)
         xmlFormatted = xmlString.toprettyxml()
 
         # Fixing the entries

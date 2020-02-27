@@ -5,6 +5,8 @@ import xml.dom.minidom
 
 from bpy.types  import Operator
 
+from ..seut_errors  import showError
+
 class SEUT_OT_ExportMaterials(Operator):
     """Export local materials to Materials.xml file"""
     bl_idname = "scene.export_materials"
@@ -130,7 +132,12 @@ class SEUT_OT_ExportMaterials(Operator):
                     materials.remove(matEntry)
                     
         # Create file with subtypename + collection name and write string to it
-        xmlString = xml.dom.minidom.parseString(ET.tostring(materials))
+        tempString = ET.tostring(materials, 'utf-8')
+        try:
+            tempString.decode('ascii')
+        except UnicodeDecodeError:
+            showError(context, "Report: Error", "SEUT Error: Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, Material names or object names. (033)")
+        xmlString = xml.dom.minidom.parseString(tempString)
         xmlFormatted = xmlString.toprettyxml()
         
         offset = bpy.path.basename(bpy.context.blend_data.filepath).find(".blend")
