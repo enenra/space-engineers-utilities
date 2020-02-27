@@ -26,7 +26,7 @@ layout: default
 
 7. Open Blender, go to `Edit --> Preferences... --> Add-ons` and toggle `Enabled Add-ons only` to `ON`.
 
-8. Click `Install...` and select the just downloaded `space_engineers_utilities_***.zip`. The addon should now show up in the list:
+8. Click `Install...` and select the freshly downloaded `space_engineers_utilities_***.zip`. The addon should now show up in the list:
 
     ![](./assets/images/installation_4.png)
 
