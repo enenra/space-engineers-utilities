@@ -27,7 +27,8 @@ class SEUT_PT_Panel(Panel):
         box = layout.box()
         box.label(text=scene.name, icon_value=layout.icon(scene))
         box.prop(scene.seut, 'sceneType')
-        box.prop(scene.seut,'linkSubpartInstances')
+        if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_anmiation':
+            box.prop(scene.seut,'linkSubpartInstances')
         
         box = layout.box()
         if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'mirror':
@@ -88,6 +89,11 @@ class SEUT_PT_Panel_Mirroring(Panel):
     bl_region_type = "UI"
     bl_options = {'DEFAULT_CLOSED'}
 
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation' and scene.seut.sceneType != 'subpart'
+
     def draw(self, context):
         layout = self.layout
         scene = context.scene
@@ -107,6 +113,11 @@ class SEUT_PT_Panel_Mountpoints(Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation' and scene.seut.sceneType != 'subpart'
 
     def draw(self, context):
         layout = self.layout
@@ -130,6 +141,11 @@ class SEUT_PT_Panel_IconRender(Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation' and scene.seut.sceneType != 'subpart'
 
     def draw(self, context):
         layout = self.layout
@@ -210,7 +226,8 @@ class SEUT_PT_Panel_Export(Panel):
         box.label(text="Options", icon='SETTINGS')
     
         box.prop(scene.seut, "export_deleteLooseFiles")
-        box.prop(scene.seut, "export_rescaleFactor")
+        if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_anmiation':
+            box.prop(scene.seut, "export_rescaleFactor")
         
         split = box.split(factor=0.85)
         col = split.column()

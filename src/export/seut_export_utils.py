@@ -26,12 +26,12 @@ def export_XML(self, context, collection):
 
     # Create XML tree and add initial parameters.
     model = ET.Element('Model')
-    model.set('Name', 'Default')
+    model.set('Name', scene.seut.subtypeId)
 
     if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
         paramRescaleFactor = ET.SubElement(model, 'Parameter')
         paramRescaleFactor.set('Name', 'RescaleFactor')
-        paramRescaleFactor.text = str(context.scene.seut.export_rescaleFactor)
+        paramRescaleFactor.text = str(scene.seut.export_rescaleFactor)
         
         paramCentered = ET.SubElement(model, 'Parameter')
         paramCentered.set('Name', 'Centered')
