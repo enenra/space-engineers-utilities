@@ -18,19 +18,21 @@ class SEUT_OT_IconRender(Operator):
 
         scene = context.scene
 
+        if scene.seut.renderToggle == 'off':
+            result = SEUT_OT_IconRender.cleanRenderSetup(self, context)
+
         # There may be trouble with multiple modes being active at the same time so I'm going to disable the other ones for all scenes, as well as this one for all scenes but the active one
-        if scene.seut.renderToggle == 'on':
+        elif scene.seut.renderToggle == 'on':
             for scn in bpy.data.scenes:
+                context.window.scene = scn
                 if scn.seut.mirroringToggle == 'on' or scn.seut.mountpointToggle == 'on':
                     scn.seut.mirroringToggle = 'off'
                     scn.seut.mountpointToggle == 'off'
                 if scn != scene:
                     scn.seut.renderToggle = 'off'
 
+            context.window.scene = scene
             result = SEUT_OT_IconRender.renderSetup(self, context)
-
-        elif scene.seut.renderToggle == 'off':
-            result = SEUT_OT_IconRender.cleanRenderSetup(self, context)
 
         return result
     

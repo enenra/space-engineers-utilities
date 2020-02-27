@@ -18,19 +18,21 @@ class SEUT_OT_Mountpoints(Operator):
 
         scene = context.scene
 
+        if scene.seut.mountpointToggle == 'off':
+            result = SEUT_OT_Mountpoints.cleanMountpointSetup(self, context)
+
         # There may be trouble with multiple modes being active at the same time so I'm going to disable the other ones for all scenes, as well as this one for all scenes but the active one
-        if scene.seut.mountpointToggle == 'on':
+        elif scene.seut.mountpointToggle == 'on':
             for scn in bpy.data.scenes:
+                context.window.scene = scn
                 if scn.seut.mirroringToggle == 'on' or scn.seut.renderToggle == 'on':
                     scn.seut.mirroringToggle = 'off'
                     scn.seut.renderToggle = 'off'
                 if scn != scene:
                     scn.seut.mountpointToggle = 'off'
 
+            context.window.scene = scene
             result = SEUT_OT_Mountpoints.mountpointSetup(self, context)
-
-        elif scene.seut.mountpointToggle == 'off':
-            result = SEUT_OT_Mountpoints.cleanMountpointSetup(self, context)
 
         return result
     
