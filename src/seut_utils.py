@@ -25,6 +25,8 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
     # Checks whether collection exists, is excluded or is empty
     result = errorCollection(self, context, subpartCollections['main'], False)
     if not result == {'CONTINUE'}:
+        context.area.type = currentArea
+        context.window.scene = currentScene
         return result
     
     # This prevents instancing loops.
@@ -33,6 +35,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
             showError(context, "Report: Error", "SEUT Error: Linking to scene '" + subpartScene.name + "' from '" + currentScene.name + "' would create a subpart instancing loop.")
             empty.seut.linkedScene = None
             empty['file'] = None
+            context.area.type = currentArea
             context.window.scene = currentScene
             return {'CANCEL'}
 
