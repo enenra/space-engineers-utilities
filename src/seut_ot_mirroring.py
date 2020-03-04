@@ -280,6 +280,37 @@ class SEUT_OT_Mirroring(Operator):
 
         scene = context.scene
         rotation = bpy.data.objects[empty.name].rotation_euler
+        rotX = round(rotation[0] * 180 / pi)
+        rotY = round(rotation[1] * 180 / pi)
+        rotZ = round(rotation[2] * 180 / pi)
+
+        if rotX == -180:
+            rotX = 180
+        elif rotX == 270:
+            rotX = -90
+        elif rotX == -270:
+            rotX = 90
+        elif rotX == -0:
+            rotX = 0
+
+        if rotY == -180:
+            rotY = 180
+        elif rotY == 270:
+            rotY = -90
+        elif rotY == -270:
+            rotY = 90
+        elif rotY == -0:
+            rotY = 0
+
+        if rotZ == -180:
+            rotZ = 180
+        elif rotZ == 270:
+            rotZ = -90
+        elif rotZ == -270:
+            rotZ = 90
+        elif rotZ == -0:
+            rotZ = 0
+
         rotConverted = (round(rotation[0] * 180 / pi), round(rotation[1] * 180 / pi), round(rotation[2] * 180 / pi))
 
         found = False
