@@ -10,23 +10,16 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
 
     context = bpy.context
     parentCollections = SEUT_OT_RecreateCollections.getCollections(originScene)
-    
-    # Switch to subpartScene to get collections
+
     currentScene = bpy.context.window.scene
     subpartScene = empty.seut.linkedScene
-    context.window.scene = subpartScene
-
-    currentArea = context.area.type
-    context.area.type = 'VIEW_3D'
-    if context.object is not None and context.object.mode is not 'OBJECT':
-        bpy.ops.object.mode_set(mode='OBJECT')
 
     subpartCollections = SEUT_OT_RecreateCollections.getCollections(subpartScene)
     # Checks whether collection exists, is excluded or is empty
     result = errorCollection(self, context, subpartCollections['main'], False)
     if not result == {'CONTINUE'}:
-        context.area.type = currentArea
-        context.window.scene = currentScene
+        empty.seut.linkedScene = None
+        empty['file'] = None
         return result
     
     # This prevents instancing loops.
@@ -35,9 +28,15 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
             showError(context, "Report: Error", "SEUT Error: Linking to scene '" + subpartScene.name + "' from '" + currentScene.name + "' would create a subpart instancing loop.")
             empty.seut.linkedScene = None
             empty['file'] = None
-            context.area.type = currentArea
-            context.window.scene = currentScene
             return {'CANCEL'}
+    
+    # Switch to subpartScene to get collections
+    context.window.scene = subpartScene
+
+    currentArea = context.area.type
+    context.area.type = 'VIEW_3D'
+    if context.object is not None and context.object.mode is not 'OBJECT':
+        bpy.ops.object.mode_set(mode='OBJECT')
 
     objectsToIterate = set(subpartCollections['main'].objects)
 

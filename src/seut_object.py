@@ -38,6 +38,7 @@ def update_linkedScene(self, context):
                         linkSubpartScene(self, scene, empty, None)
                     except AttributeError:
                         showError(context, "Report: Error", "SEUT Error: Collection not found, excluded or empty. Action not possible. (022)")
+                        empty.seut.linkedScene = None
 
 
 def update_linkedObject(self, context):
