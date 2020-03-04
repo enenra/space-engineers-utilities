@@ -46,7 +46,7 @@ class SEUT_OT_AddCustomSubpart(Operator):
                 parentCollection.objects.unlink(empty)
 
 
-        empty.empty_display_type = "CUBE"
+        empty.empty_display_type = 'ARROWS'
 
         bpy.data.objects[empty.name][customPropName] = ""
         

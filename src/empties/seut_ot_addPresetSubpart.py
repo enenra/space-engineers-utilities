@@ -131,7 +131,7 @@ class SEUT_OT_AddPresetSubpart(Operator):
 
         bpy.ops.object.add(type='EMPTY')
         empty = bpy.context.view_layer.objects.active
-        empty.empty_display_type = "CUBE"
+        empty.empty_display_type = 'ARROWS'
 
         if usesIndex:
             empty.name = emptyName + str(self.index)
