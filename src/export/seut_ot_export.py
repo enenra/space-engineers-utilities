@@ -60,8 +60,11 @@ class SEUT_OT_Export(Operator):
             SEUT_OT_ExportMWM.export_MWM(self, context)
         
         # Reset interaction mode
-        if bpy.context.object is not None and bpy.context.object.mode is not None:
-            bpy.ops.object.mode_set(mode=currentMode)
+        try:
+            if bpy.context.object is not None and bpy.context.object.mode is not None:
+                bpy.ops.object.mode_set(mode=currentMode)
+        except:
+            pass
             
         context.area.type = currentArea
 
