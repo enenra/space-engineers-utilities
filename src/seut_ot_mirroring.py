@@ -311,7 +311,7 @@ class SEUT_OT_Mirroring(Operator):
         elif rotZ == -0:
             rotZ = 0
 
-        rotConverted = (round(rotation[0] * 180 / pi), round(rotation[1] * 180 / pi), round(rotation[2] * 180 / pi))
+        rotConverted = (rotX, rotY, rotZ)
 
         found = False
         for key, value in mirroringPresets.items():
