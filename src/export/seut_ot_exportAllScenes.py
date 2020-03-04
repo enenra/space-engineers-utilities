@@ -45,7 +45,7 @@ class SEUT_OT_ExportAllScenes(Operator):
         try:
             if bpy.context.object is not None and currentMode is not None:
                 bpy.ops.object.mode_set(mode=currentMode)
-        except TypeError:
+        except:
             pass
 
         context.area.type = currentArea
