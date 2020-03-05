@@ -24,7 +24,7 @@ class SEUT_Materials(PropertyGroup):
             ('DECAL', 'DECAL', "Makes the material look like it's part of the model behind it"),
             ('DECAL_NOPREMULT', 'DECAL_NOPREMULT', "Higher accuracy of transparency than 'DECAL', but same visual style"),
             ('DECAL_CUTOUT', 'DECAL_CUTOUT', "Makes the material look like it cuts into the model behind it"),
-            ('GLASS', 'GLASS', 'Transparent material - requires additional values to be set'),
+            ('GLASS', 'GLASS', 'Transparent material - requires additional values to be set in TransparentMaterials.sbc'),
             ('ALPHA_MASKED', 'ALPHA_MASKED', 'Has an alphamask texture'),
             ('SHIELD', 'SHIELD', 'Animated material used on SafeZone shield - currently limited to default one'),
             ('HOLO', 'HOLO', 'Transparent LCD screen texture')
