@@ -26,7 +26,7 @@ class SEUT_Materials(PropertyGroup):
             ('DECAL_CUTOUT', 'DECAL_CUTOUT', "Makes the material look like it cuts into the model behind it"),
             ('GLASS', 'GLASS', 'Transparent material - requires additional values to be set in TransparentMaterials.sbc'),
             ('ALPHA_MASKED', 'ALPHA_MASKED', 'Has an alphamask texture'),
-            ('SHIELD', 'SHIELD', 'Animated material used on SafeZone shield - currently limited to default one'),
+            ('SHIELD', 'SHIELD', 'Animated material used on SafeZone shield - currently limited to default one.\nWarning: Causes Space Engineers to crash with some block types'),
             ('HOLO', 'HOLO', 'Transparent LCD screen texture')
             ),
         default='MESH'
