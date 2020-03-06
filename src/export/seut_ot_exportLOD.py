@@ -49,22 +49,22 @@ class SEUT_OT_ExportLOD(Operator):
             return result
 
         colLOD1Good = False
-        result = errorCollection(self, context, collections['lod1'], partial)
+        result = errorCollection(self, scene, collections['lod1'], partial)
         if result == {'CONTINUE'}:
             colLOD1Good = True
 
         colLOD2Good = False
-        result = errorCollection(self, context, collections['lod2'], partial)
+        result = errorCollection(self, scene, collections['lod2'], partial)
         if result == {'CONTINUE'}:
             colLOD2Good = True
 
         colLOD3Good = False
-        result = errorCollection(self, context, collections['lod3'], partial)
+        result = errorCollection(self, scene, collections['lod3'], partial)
         if result == {'CONTINUE'}:
             colLOD3Good = True
 
         colBSLODGood = False
-        result = errorCollection(self, context, collections['bs_lod'], partial)
+        result = errorCollection(self, scene, collections['bs_lod'], partial)
         if result == {'CONTINUE'}:
             colBSLODGood = True
 

@@ -54,7 +54,7 @@ class SEUT_OT_ExportHKT(Operator):
         havokPath = os.path.normpath(bpy.path.abspath(preferences.havokPath))
 
         # Checks whether collection exists, is excluded or is empty
-        result = errorCollection(self, context, collections['hkt'], partial)
+        result = errorCollection(self, scene, collections['hkt'], partial)
         if not result == {'CONTINUE'}:
             return result
 

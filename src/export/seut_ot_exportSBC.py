@@ -55,7 +55,7 @@ class SEUT_OT_ExportSBC(Operator):
             return {'FINISHED'}
 
         # Checks whether collection exists, is excluded or is empty
-        result = errorCollection(self, context, collections['main'], False)
+        result = errorCollection(self, scene, collections['main'], False)
         if not result == {'CONTINUE'}:
             return result
 

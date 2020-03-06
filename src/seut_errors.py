@@ -40,10 +40,10 @@ def errorExportGeneral(self, context):
 
     return {'CONTINUE'}
 
-def errorCollection(self, context, collection, partial):
+def errorCollection(self, scene, collection, partial):
     """Check if collection exists, is not excluded and is not empty"""
 
-    allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
+    allCurrentViewLayerCollections = scene.view_layers[0].layer_collection.children
 
     if collection is None:
         if partial:

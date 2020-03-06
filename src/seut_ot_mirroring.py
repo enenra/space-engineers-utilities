@@ -89,7 +89,7 @@ class SEUT_OT_Mirroring(Operator):
             scene.seut.mirroringToggle = 'off'
             return
 
-        result = errorCollection(self, context, collections['main'], True)
+        result = errorCollection(self, scene, collections['main'], True)
         if not result == {'CONTINUE'}:
             scene.seut.mirroringToggle = 'off'
             return
