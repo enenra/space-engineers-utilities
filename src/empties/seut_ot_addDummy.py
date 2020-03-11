@@ -22,7 +22,7 @@ class SEUT_OT_AddDummy(Operator):
             ('conveyorline_small', 'Conveyorline Small', 'Small conveyor connection point without direct access. Deos not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('Connector', 'Connector', 'Adds connector functionality.\n Warning: Cannot be placed too far from block origin or the connector will only spin grids instead of connecting'),
             ('merge', 'Merge Block', 'Adds merge block functionality'),
-            ('thruster_flame', 'Thruster Flame', 'Determines the point where the thruster flame will appear.\nNotes: Empty size defines flame width. Flame length is controlled within the SBC definition. Flare will only appear on empty with lowest index\nWarning: Thrust direction is always the Y+ axis'),
+            ('thruster_flame', 'Thruster Flame', 'Determines the point where the thruster flame will appear.\nNotes: Empty size defines flame width. Flame length is controlled within the SBC definition. Flare will only appear on empty with lowest index.\nWarning: Thrust direction is always the Y+ axis'),
             ('muzzle_missile', 'Muzzle Missile', 'The point of origin for missiles shot by the block.\nNotes: Should be placed with some distance to mesh, otherwise missiles can collide with geometry of launcher.\nWarning: Shoot direction is always the Y+ axis'),
             ('muzzle_projectile', 'Muzzle Projectile', 'The point of origin for projectiles shot by the block.\nWarning: Shoot direction is always the Y+ axis'),
             ('respawn', 'Respawn Point', 'The location in which players will respawn. Tends to place player origin (feet) to middlepoint of empty'),
