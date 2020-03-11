@@ -310,6 +310,7 @@ def export_model_FBX(self, context, collection):
                 print("SEUT Warning: Parent of empty '" + emptyObj.name + "' ('" + emptyObj.parent.name + "') has a parent object. This may prevent the empty from working properly ingame.")
 
             if 'highlight' in emptyObj and emptyObj.seut.linkedObject is not None:
+                emptyObj['highlight'] = emptyObj.seut.linkedObject.name
                 if emptyObj.parent is not None and emptyObj.seut.linkedObject.parent is not None and emptyObj.parent != emptyObj.seut.linkedObject.parent:
                     print("SEUT Warning: Highlight empty '" + emptyObj.name + "' and its linked object '" + emptyObj.seut.linkedObject.name + "' have different parent objects. This may prevent it from working properly ingame.")
             if 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
