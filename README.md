@@ -2,59 +2,53 @@
 A Blender 2.8+ addon.
 
 ## Features
-* Full Blender 2.8+ integration using collections instead of layers
-* Spawn dummies, highlight empties and subparts directly from the context menu
-* See full SE materials in Blender, as close to how they appear in the game as possible
-* Create your own custom materials in Blender from presets
-* Vanilla materials of imported FBX are automatically switched to make them display correctly
-* Empties on imported FBX are automatically switched to cube display
-* Set LOD distances directly in the UI
-* Change grid scale between large and small grid directly
-* See bounding box of block (respects grid scale setting)
-* Exports collision model
-* Exports basic CubeBlocks entry
-* Exports directly to MWM
-* HKT is automatically rescaled with rescalefactor along with rest of model
-* Support for Blender files with multiple scenes
-* Structure conversion to convert BLEND files created with the old plugin to the new structure
-* Support for Build Stage LOD
-* Empty target objects can be set in dedicated panel
-* Subpart scenes within the same file can be instanced into their parent scenes
-* Full multi-scene support
-* Export material library to XML
-* Link MatLibs directly from the UI
-* Warning when empties are set up in a way that won't work ingame
-* Rotate empties in mirroring-mode to output mirror information to the SBC
-* Create new character models
-* Create new character animations and poses
-* Define mountpoints by placing areas on the six sides of the bounding box in mountpoint-mode
-* Render block icon
-* Alternative Simple Navigation
-* Auto updater implemented
+### Blender
+* **Full Blender 2.8+ support** using collections to organize models.
+* **Simple Navigation** to easily edit models one collection at a time.
+* Robust **error handling** and extensive **feedback** to help you avoid issues further down the road and inform you **if and what** is the problem.
+* Full support for **multiple scenes** per BLEND file.
+* Set the **grid scale** to preset Space Engineers values to easily see the size of your model.
+* Through a **Addon Auto Updater** the addon will notify the user of newly released versions.
+
+##### Modes
+* Use **Bounding Box Mode** to define the bounding box of your model.
+* **Mirroring Mode** allows for easy setup of mirroring for blocks.
+* By using **Mountpoint Mode** the user can define the mountpoints on a block in a straightforward manner.
+* Use **Icon Render Mode** to easily create icons for your blocks in the style of vanilla Space Engineers blocks.
+<br><br/>
+
+### Import
+* Import Space Engineers **FBX files** through the addon to automatically display its materials in Blender.
+* **Structure Conversion** functionality allows for easy conversion of BLEND files created with the old 2.7x plugin to the new format.
+<br><br/>
+
+### Materials
+* **Displays** most vanilla Space Engineers materials **directly in Blender**.
+* Contains **Material Libraries** with most vanilla materials, ready to apply to new models.
+* Create **your own** Space Engineers materials.
+* Create **your own Material Libraries**.
+<br><br/>
+
+### Empties
+* **Subparts are instanced** into other scenes to show how the model will look ingame.
+* Easily **create and manage** empties for different purposes by selecting from exhaustive lists.
+<br><br/>
+
+### Export
+* Define a **RescaleFactor** to easily convert your large grid models to small grid.
+* Define **LOD Distances** to set from which distance your LOD models are displayed.
+* Directly export to **MWM**-format, ready to be loaded into the game.
+* Additional definitions are exported to a **CubeBlocks** file.
+* Full support for creating **character models** and **character poses & animations**.
 
 ## Installation
-1. Download the latest release of the addon from the releases section, enable it in Blender.
-2. Download the supplementary ZIP (SEUT.zip) containing additional required files.
-3. Ensure you have downloaded the Space Engineers Mod SDK. (Library --> Enable tool display --> Space Engineers Mod SDK in your available games list)
-4. Unpack the supplementary ZIP file onto a drive with ~15GB available disk space. (for the unpacked textures)
-5. Within the resulting directory you should have the following structure:
-```
-SEUT\Materials\
-SEUT\Textures\
-SEUT\Tools\
-```
-5. Download [Stollie's MWM Builder](https://github.com/cstahlhut/MWMBuilder/releases) (StollieMWMBuilder.rar) and unzip it into `SEUT\Tools\MWMB\`.
-6. Download Harag's [Custom FBX Importer](https://github.com/harag-on-steam/fbximporter/releases/tag/havok2013.1-fbx2015.1) and place it into `SEUT\Tools\`.
-7. Download the Havok Content Tools ([64bit](https://drive.google.com/open?id=1bXqAcIvzTHpxuAcMogduHqohL0zXq90i)/[32bit](https://drive.google.com/open?id=1DL3-evI3LSIstVTjYvjw01rtpI3iAhDh)) and install them to `SEUT\Tools\Havok\`.
-8. Run `bulkTexConverter.exe`. Point it at the correct folders for your SE installation, SEUT Tools folder and SEUT Textures folder and load presets by using File --> Load Presets. Then run the conversion.
-9. In Blender, go to Edit --> Preferences --> Add-ons --> Scene: Space Engineers Utilities and set the paths to the respective folders and files within `SEUT\`.
-10. Open the Toolbar in Blender by pressing `N` in the 3D View or Node Editor. Access Empty spawning by right-clicking into the 3D View.
-11. In the `N`-toolbar within the Node Editor / Shader Editor, enable `MatLib_Presets.blend`. Also enable any of the other `MatLib_*`-files to link their materials into the current file.
+Please follow the [installation guide](https://space-engineers-modding.github.io/modding-reference/tutorials/tools/3d-modelling/seut/setup.html) here.
 
 ## Support	
 Please consider supporting the development of this addon by becoming one of Stollie's patreons! Without him, the development of the addon would never have gotten this far.	
+<br><br/>
 
-[![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Patreon_logo_with_wordmark.svg/512px-Patreon_logo_with_wordmark.svg.png)](https://www.patreon.com/Stollie)	
+<p style="text-align:center">[![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Patreon_logo_with_wordmark.svg/256px-Patreon_logo_with_wordmark.svg.png)](https://www.patreon.com/Stollie)</p>
 
 ## Credits	
 * **Stollie** - So much general help but also writing everything character, export and MWM-related, which I wouldn't have been able to do at all.	
