@@ -15,24 +15,20 @@ A Blender 2.8+ addon.
 * **Mirroring Mode** allows for easy setup of mirroring for blocks.
 * By using **Mountpoint Mode** the user can define the mountpoints on a block in a straightforward manner.
 * Use **Icon Render Mode** to easily create icons for your blocks in the style of vanilla Space Engineers blocks.
-<br><br/>
 
 ### Import
 * Import Space Engineers **FBX files** through the addon to automatically display its materials in Blender.
 * **Structure Conversion** functionality allows for easy conversion of BLEND files created with the old 2.7x plugin to the new format.
-<br><br/>
 
 ### Materials
 * **Displays** most vanilla Space Engineers materials **directly in Blender**.
 * Contains **Material Libraries** with most vanilla materials, ready to apply to new models.
 * Create **your own** Space Engineers materials.
 * Create **your own Material Libraries**.
-<br><br/>
 
 ### Empties
 * **Subparts are instanced** into other scenes to show how the model will look ingame.
 * Easily **create and manage** empties for different purposes by selecting from exhaustive lists.
-<br><br/>
 
 ### Export
 * Define a **RescaleFactor** to easily convert your large grid models to small grid.
@@ -42,13 +38,12 @@ A Blender 2.8+ addon.
 * Full support for creating **character models** and **character poses & animations**.
 
 ## Installation
-Please follow the [installation guide](https://space-engineers-modding.github.io/modding-reference/tutorials/tools/3d-modelling/seut/setup.html) here.
+Please follow the [installation guide](https://space-engineers-modding.github.io/modding-reference/tutorials/tools/3d-modelling/seut/setup.html).
 
 ## Support	
 Please consider supporting the development of this addon by becoming one of Stollie's patreons! Without him, the development of the addon would never have gotten this far.	
-<br><br/>
 
-<p style="text-align:center">[![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Patreon_logo_with_wordmark.svg/256px-Patreon_logo_with_wordmark.svg.png)](https://www.patreon.com/Stollie)</p>
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Patreon_logo_with_wordmark.svg/256px-Patreon_logo_with_wordmark.svg.png)](https://www.patreon.com/Stollie)
 
 ## Credits	
 * **Stollie** - So much general help but also writing everything character, export and MWM-related, which I wouldn't have been able to do at all.	
