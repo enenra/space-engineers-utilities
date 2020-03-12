@@ -1,5 +1,5 @@
 # Space Engineers Utilities
-A Blender 2.8+ addon.
+A Blender 2.8+ addon to streamline working on assets for Space Engineers.
 
 ## Features
 ### Blender
