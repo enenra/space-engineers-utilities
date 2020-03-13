@@ -76,21 +76,21 @@ class SEUT_OT_ExportBS(Operator):
             for obj in collections['bs1'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
                     self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
                     return {'CANCELLED'}
         
         if colBS2Good:
             for obj in collections['bs2'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
                     self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
                     return {'CANCELLED'}
         
         if colBS3Good:
             for obj in collections['bs3'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
                     self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
                     return {'CANCELLED'}
 
         # Export BS1, if present.

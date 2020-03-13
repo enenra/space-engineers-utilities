@@ -75,7 +75,7 @@ class SEUT_OT_ExportMain(Operator):
         for obj in collections['main'].objects:
             if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
                 self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers.")
+                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
                 return {'CANCELLED'}
 
         # Export XML if boolean is set.
