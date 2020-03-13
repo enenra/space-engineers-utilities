@@ -132,6 +132,16 @@ class SEUT_OT_ExportSBC(Operator):
         def_Model = ET.SubElement(def_definition, 'Model')
         def_Model.text=path[offset:] + scene.seut.subtypeId + '.mwm'
 
+        # Basic components
+        def_Components = ET.SubElement(def_definition, 'Components')
+        def_Component = ET.SubElement(def_Components, 'Component')
+        def_Component.set('Subtype', 'SteelPlate')
+        def_Component.set('Count', '10')
+
+        def_CriticalComponent = ET.SubElement(def_definition, 'CriticalComponent')
+        def_CriticalComponent.set('Subtype', 'SteelPlate')
+        def_CriticalComponent.set('Index', '0')
+
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
         tag = ' (' + scene.seut.subtypeId + ')'
@@ -252,6 +262,10 @@ class SEUT_OT_ExportSBC(Operator):
                         def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage)[:4])
 
                     def_BS_Model.set('File', path[offset:] + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
+
+        # BlockPairName
+        def_BlockPairName = ET.SubElement(def_definition, 'BlockPairName')
+        def_BlockPairName.text = scene.seut.subtypeId
 
         # Mirroring
         for empty in scene.objects:
