@@ -43,6 +43,10 @@ class SEUT_OT_Export(Operator):
         if not result == {'CONTINUE'}:
             return result
         
+        # Character animations need at least one keyframe
+        if scene.seut.sceneType == 'character_animation' and len(scene.timeline_markers) <= 0:
+            scene.timeline_markers.new('F_00', frame=0)
+        
         # Call all the individual export operators
         result_main = SEUT_OT_ExportMain.export_Main(self, context, True)
         SEUT_OT_ExportBS.export_BS(self, context, True)
