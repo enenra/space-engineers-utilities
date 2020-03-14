@@ -47,7 +47,7 @@ def errorCollection(self, scene, collection, partial):
 
     if collection is None:
         if partial:
-            print("SEUT Warning: Collection not found. Action not possible. (002)")
+            print("SEUT Warning: Collection not found. Action not possible.")
             return {'FINISHED'}
         else:
             self.report({'ERROR'}, "SEUT: Collection not found. Action not possible. (002)")
