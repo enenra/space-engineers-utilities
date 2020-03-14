@@ -67,7 +67,7 @@ class SEUT_OT_Mountpoints(Operator):
                 mpMat = mat
         
         if mpMat is None:
-            showError(context, "Report: Error", "SEUT Error: Cannot find mountpoint material. Re-link 'MatLib_Presets.blend'! (027)")
+            showError(context, "Report: Error", "SEUT Error: Cannot find mountpoint material. Re-link 'MatLib_Presets'! (027)")
             scene.seut.mountpointToggle = 'off'
             return {'CANCELLED'}
             

@@ -70,7 +70,7 @@ class SEUT_OT_ExportLOD(Operator):
 
         if (not colLOD1Good and colLOD2Good) or (not colLOD2Good and colLOD3Good):
             if partial:
-                print("SEUT Warning: Invalid LOD setup. Cannot have LOD2 but no LOD1, or LOD3 but no LOD2. (015)")
+                print("SEUT Warning: Invalid LOD setup. Cannot have LOD2 but no LOD1, or LOD3 but no LOD2.")
                 return {'FINISHED'}
             else:
                 self.report({'ERROR'}, "SEUT: Invalid LOD setup. Cannot have LOD2 but no LOD1, or LOD3 but no LOD2. (015)")
@@ -79,7 +79,7 @@ class SEUT_OT_ExportLOD(Operator):
 
         if scene.seut.export_lod1Distance > scene.seut.export_lod2Distance or scene.seut.export_lod2Distance > scene.seut.export_lod3Distance:
             if partial:
-                print("SEUT Warning: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
+                print("SEUT Warning: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2.")
                 return {'FINISHED'}
             else:
                 self.report({'ERROR'}, "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")

@@ -58,7 +58,7 @@ def errorCollection(self, scene, collection, partial):
 
     if isExcluded or isExcluded is None:
         if partial:
-            print("SEUT Warning: Collection '" + collection.name + "' excluded from view layer or cannot be found. Action not possible. (019)")
+            print("SEUT Warning: Collection '" + collection.name + "' excluded from view layer or cannot be found. Action not possible.")
             return {'FINISHED'}
         else:
             self.report({'ERROR'}, "SEUT: Collection '%s' excluded from view layer or cannot be found. Action not possible. (019)" % (collection.name))
@@ -67,7 +67,7 @@ def errorCollection(self, scene, collection, partial):
 
     if len(collection.objects) == 0:
         if partial:
-            print("SEUT Warning: Collection '" + collection.name + "' is empty. Action not possible. (005)")
+            print("SEUT Warning: Collection '" + collection.name + "' is empty. Action not possible.")
             return {'FINISHED'}
         else:
             self.report({'ERROR'}, "SEUT: Collection '%s' is empty. Action not possible. (005)" % (collection.name))

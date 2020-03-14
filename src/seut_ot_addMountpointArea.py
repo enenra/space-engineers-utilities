@@ -27,7 +27,7 @@ class SEUT_OT_AddMountpointArea(Operator):
                 mpMat = mat
         
         if mpMat is None:
-            self.report({'ERROR'}, "SEUT: Cannot find mountpoint material. Re-link 'MatLib_Presets.blend'! (027)")
+            self.report({'ERROR'}, "SEUT: Cannot find mountpoint material. Re-link 'MatLib_Presets'! (027)")
             return {'CANCELLED'}
 
         side = wm.seut.mountpointSide

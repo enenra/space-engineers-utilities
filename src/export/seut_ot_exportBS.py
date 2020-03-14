@@ -65,7 +65,7 @@ class SEUT_OT_ExportBS(Operator):
 
         if (not colBS1Good and colBS2Good) or (not colBS2Good and colBS3Good):
             if partial:
-                print("SEUT Warning: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
+                print("SEUT Warning: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2.")
                 return {'FINISHED'}
             else:
                 self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")

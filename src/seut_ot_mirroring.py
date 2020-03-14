@@ -110,7 +110,7 @@ class SEUT_OT_Mirroring(Operator):
                 matZfound = True
         
         if not matXfound or not matYfound or not matZfound:
-            showError(context, "Report: Error", "SEUT Error: Cannot find mirror axis materials. Re-link 'MatLib_Presets.blend'! (026)")
+            showError(context, "Report: Error", "SEUT Error: Cannot find mirror axis materials. Re-link 'MatLib_Presets'! (026)")
             scene.seut.mirroringToggle = 'off'
             return {'CANCELLED'}
             
