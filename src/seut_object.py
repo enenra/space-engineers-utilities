@@ -59,7 +59,7 @@ def poll_linkedScene(self, object):
 
 
 def poll_linkedObject(self, object):
-    return object != bpy.context.view_layer.objects.active
+    return object != bpy.context.view_layer.objects.active and bpy.context.view_layer.objects.active.parent == object.parent
 
 
 class SEUT_Object(PropertyGroup):
