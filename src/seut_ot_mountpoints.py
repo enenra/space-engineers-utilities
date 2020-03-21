@@ -111,14 +111,14 @@ class SEUT_OT_Mountpoints(Operator):
         emptyLeft = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Left', collection, None)
         emptyLeft.empty_display_type = 'SINGLE_ARROW'
         emptyLeft.rotation_euler.x = pi * -90 / 180
-        emptyLeft.rotation_euler.z = pi * -270 / 180
-        emptyLeft.location.x = -(bboxX / 2 * 1.05)
+        emptyLeft.rotation_euler.z = pi * 270 / 180
+        emptyLeft.location.x = bboxX / 2 * 1.05
 
         emptyRight = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Right', collection, None)
         emptyRight.empty_display_type = 'SINGLE_ARROW'
         emptyRight.rotation_euler.x = pi * -90 / 180
-        emptyRight.rotation_euler.z = pi * 270 / 180
-        emptyRight.location.x = bboxX / 2 * 1.05
+        emptyRight.rotation_euler.z = pi * -270 / 180
+        emptyRight.location.x = -(bboxX / 2 * 1.05)
 
         emptyTop = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Top', collection, None)
         emptyTop.empty_display_type = 'SINGLE_ARROW'
