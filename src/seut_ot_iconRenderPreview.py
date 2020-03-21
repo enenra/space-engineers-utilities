@@ -58,7 +58,7 @@ class SEUT_OT_IconRenderPreview(Operator):
         area.spaces.active.image = bpy.data.images['Viewer Node']
 
         scene.render.filepath = os.path.abspath(path)
-        bpy.data.images['Viewer Node'].save_render(scene.render.filepath + scene.seut.subtypeId + '.' + scene.render.image_settings.file_format.lower())
+        bpy.data.images['Viewer Node'].save_render(scene.render.filepath + "\\" + scene.seut.subtypeId + '.' + scene.render.image_settings.file_format.lower())
         
         for col in collections.values():
             if col is not None:
