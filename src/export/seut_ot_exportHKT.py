@@ -84,10 +84,6 @@ class SEUT_OT_ExportHKT(Operator):
 
         path = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
 
-        # Re-scale collision objects via rescale factor before export.
-        for obj in collections['hkt'].objects:
-            obj.scale *= context.scene.seut.export_rescaleFactor
-
         # FBX export via Custom FBX Importer
         fbxhktfile = join(path, scene.seut.subtypeId + ".hkt.fbx")
         hktfile = join(path, scene.seut.subtypeId + ".hkt")

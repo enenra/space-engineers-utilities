@@ -31,7 +31,7 @@ def export_XML(self, context, collection):
     if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
         paramRescaleFactor = ET.SubElement(model, 'Parameter')
         paramRescaleFactor.set('Name', 'RescaleFactor')
-        paramRescaleFactor.text = str(round(scene.seut.export_rescaleFactor, 1))
+        paramRescaleFactor.text = '1.0'
         
         paramCentered = ET.SubElement(model, 'Parameter')
         paramCentered.set('Name', 'Centered')
@@ -651,6 +651,8 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
     # if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
     global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
     scale = kwargs['global_scale']
+
+    scale *= scene.seut.export_rescaleFactor
 
     if abs(1.0-scale) >= 0.000001:
         global_matrix = Matrix.Scale(scale, 4) @ global_matrix
