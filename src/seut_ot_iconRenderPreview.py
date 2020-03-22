@@ -57,7 +57,7 @@ class SEUT_OT_IconRenderPreview(Operator):
         image = area.spaces.active.image
         area.spaces.active.image = bpy.data.images['Viewer Node']
 
-        scene.render.filepath = os.path.abspath(path)
+        scene.render.filepath = os.path.normpath(bpy.path.abspath(path))
         bpy.data.images['Viewer Node'].save_render(scene.render.filepath + "\\" + scene.seut.subtypeId + '.' + scene.render.image_settings.file_format.lower())
         
         for col in collections.values():
@@ -74,6 +74,6 @@ class SEUT_OT_IconRenderPreview(Operator):
         except:
             pass
 
-        self.report({'INFO'}, "SEUT: Icon successfully saved to '%s'." % (os.path.abspath(scene.render.filepath) + "\\" + scene.seut.subtypeId + '.' + scene.render.image_settings.file_format.lower()))
+        self.report({'INFO'}, "SEUT: Icon successfully saved to '%s'." % (scene.render.filepath + "\\" + scene.seut.subtypeId + '.' + scene.render.image_settings.file_format.lower()))
 
         return {'FINISHED'}
