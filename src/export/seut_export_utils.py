@@ -31,7 +31,7 @@ def export_XML(self, context, collection):
     if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
         paramRescaleFactor = ET.SubElement(model, 'Parameter')
         paramRescaleFactor.set('Name', 'RescaleFactor')
-        paramRescaleFactor.text = str(round(scene.seut.export_rescaleFactor, 1))
+        paramRescaleFactor.text = '1.0'
         
         paramCentered = ET.SubElement(model, 'Parameter')
         paramCentered.set('Name', 'Centered')
