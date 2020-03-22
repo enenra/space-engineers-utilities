@@ -277,10 +277,10 @@ class SEUT_OT_ExportSBC(Operator):
             def_MirroringX.text = scene.seut.mirroring_X
         if scene.seut.mirroring_Y != 'None':
             def_MirroringY = ET.SubElement(def_definition, 'MirroringY')
-            def_MirroringY.text = scene.seut.mirroring_Y
+            def_MirroringY.text = scene.seut.mirroring_Z                    # This looks wrong but SE works with different Axi than Blender
         if scene.seut.mirroring_Z != 'None':
             def_MirroringZ = ET.SubElement(def_definition, 'MirroringZ')
-            def_MirroringZ.text = scene.seut.mirroring_Z
+            def_MirroringZ.text = scene.seut.mirroring_Y
         
         # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
         if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
