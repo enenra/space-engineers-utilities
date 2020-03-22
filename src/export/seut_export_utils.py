@@ -31,7 +31,7 @@ def export_XML(self, context, collection):
     if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
         paramRescaleFactor = ET.SubElement(model, 'Parameter')
         paramRescaleFactor.set('Name', 'RescaleFactor')
-        paramRescaleFactor.text = str(scene.seut.export_rescaleFactor)
+        paramRescaleFactor.text = str(round(scene.seut.export_rescaleFactor, 1))
         
         paramCentered = ET.SubElement(model, 'Parameter')
         paramCentered.set('Name', 'Centered')
@@ -51,7 +51,7 @@ def export_XML(self, context, collection):
         paramRotationY.set('Name', 'RotationY')
         paramRotationY.text = '180'
     
-    path = bpy.path.abspath(scene.seut.export_exportPath)
+    path = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
 
     # Currently no support for the other material parameters - are those even needed anymore?
 
@@ -289,7 +289,7 @@ def export_model_FBX(self, context, collection):
     else:
         filename = scene.seut.subtypeId + '_' + fileType
 
-    path = bpy.path.abspath(scene.seut.export_exportPath)
+    path = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
     
     # Exporting the collection.
     # I can only export the currently active collection, so I need to set the target collection to active (for which I have to link it for some reason),
