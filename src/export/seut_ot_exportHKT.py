@@ -93,9 +93,5 @@ class SEUT_OT_ExportHKT(Operator):
         # Then create the HKT file.
         process_hktfbx_to_fbximporterhkt(context, settings, fbxhktfile, hktfile)
         process_fbximporterhkt_to_final_hkt_for_mwm(self, context, scene, path, settings, hktfile, hktfile)
-
-        # Re-scale collision objects via rescale factor after export.
-        for obj in collections['hkt'].objects:
-            obj.scale /= context.scene.seut.export_rescaleFactor
            
         return {'FINISHED'}
