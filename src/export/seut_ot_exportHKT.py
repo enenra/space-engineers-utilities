@@ -82,7 +82,7 @@ class SEUT_OT_ExportHKT(Operator):
             # bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) # This runs on all objects instead of just the active one for some reason. Breaks when there's instanced subparts.
             bpy.ops.rigidbody.object_add(type='ACTIVE')
 
-        path = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
+        path = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
 
         # FBX export via Custom FBX Importer
         fbxhktfile = join(path, scene.seut.subtypeId + ".hkt.fbx")

@@ -53,9 +53,9 @@ class SEUT_OT_ExportMWM(Operator):
             print("SEUT Info: Path to Materials Folder '" + materialsPath + "' not valid. (017)")
             return {'CANCELLED'}
 
-        path = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
+        path = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
             
-        mwmpath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
+        mwmpath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
         mwmfile = join(mwmpath, scene.seut.subtypeId + ".mwm")
         materialspath = bpy.path.abspath(preferences.materialsPath)
         
