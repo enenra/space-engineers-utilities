@@ -32,7 +32,8 @@ class SEUT_OT_AddHighlightEmpty(Operator):
             ('advanceddoor', 'Advanced Door', 'Defines advanced door access point'),
             ('block', 'Medical Station', 'Defines access point to part of medical station that allows for health / o2 / h2 / energy regeneration'),
             ('wardrobe', 'Wardrobe', 'Defines access point to part of medical station that allows the switching of skins.\nNote: Moves player to within the empty and disables jetpack. May require geometry above and below so player does not fall due to gravity'),
-            ('cryopod', 'Cryopod', 'Defines cryopod access point')
+            ('cryopod', 'Cryopod', 'Defines cryopod access point'),
+            ('inventory', 'Inventory', 'Defines inventory access point (without conveyor functionality)')
             ),
         default='conveyor'
     )
@@ -111,6 +112,10 @@ class SEUT_OT_AddHighlightEmpty(Operator):
 
         if self.detectorType == 'cryopod':
             emptyName = "detector_cryopod_"
+            usesIndex = True
+
+        if self.detectorType == 'inventory':
+            emptyName = "detector_inventory_"
             usesIndex = True
         
         # Spawn empty on world origin

@@ -21,6 +21,8 @@ class SEUT_OT_AddDummy(Operator):
             ('conveyorline', 'Conveyorline', 'Conveyor connection point without direct access. Does not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('conveyorline_small', 'Conveyorline Small', 'Small conveyor connection point without direct access. Deos not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('Connector', 'Connector', 'Adds connector functionality.\n Warning: Cannot be placed too far from block origin or the connector will only spin grids instead of connecting'),
+            ('ejector', 'Ejector', 'Adds ejector functionality'),
+            ('collector', 'Collector', 'Adds collector functionality'),
             ('merge', 'Merge Block', 'Adds merge block functionality'),
             ('thruster_flame', 'Thruster Flame', 'Determines the point where the thruster flame will appear.\nNotes: Empty size defines flame width. Flame length is controlled within the SBC definition. Flare will only appear on empty with lowest index.\nWarning: Thrust direction is always the Y+ axis'),
             ('muzzle_missile', 'Muzzle Missile', 'The point of origin for missiles shot by the block.\nNotes: Should be placed with some distance to mesh, otherwise missiles can collide with geometry of launcher.\nWarning: Shoot direction is always the Y+ axis'),
@@ -72,6 +74,14 @@ class SEUT_OT_AddDummy(Operator):
 
         if self.detectorType == 'Connector':
             emptyName = "dummy_detector_Connector_"
+            usesIndex = True
+
+        if self.detectorType == 'ejector':
+            emptyName = "dummy_detector_ejector_"
+            usesIndex = True
+
+        if self.detectorType == 'collector':
+            emptyName = "dummy_detector_collector_"
             usesIndex = True
 
         if self.detectorType == 'merge':
