@@ -275,10 +275,10 @@ class SEUT_OT_ExportSBC(Operator):
         if scene.seut.mirroring_X != 'None':
             def_MirroringX = ET.SubElement(def_definition, 'MirroringX')
             def_MirroringX.text = scene.seut.mirroring_X
-        if scene.seut.mirroring_Y != 'None':
+        if scene.seut.mirroring_Z != 'None':                                # This looks wrong but SE works with different Axi than Blender
             def_MirroringY = ET.SubElement(def_definition, 'MirroringY')
-            def_MirroringY.text = scene.seut.mirroring_Z                    # This looks wrong but SE works with different Axi than Blender
-        if scene.seut.mirroring_Z != 'None':
+            def_MirroringY.text = scene.seut.mirroring_Z
+        if scene.seut.mirroring_Y != 'None':
             def_MirroringZ = ET.SubElement(def_definition, 'MirroringZ')
             def_MirroringZ.text = scene.seut.mirroring_Y
         
