@@ -96,6 +96,10 @@ class SEUT_OT_Mountpoints(Operator):
         bboxY = scene.seut.bBox_Y * scale
         bboxZ = scene.seut.bBox_Z * scale
 
+        # The 3D cursor is used as the origin. If it's not on center, everything is misaligned ingame.
+        cursorLocation = scene.cursor.location.copy()
+        scene.cursor.location = (0.0, 0.0, 0.0)
+
         # Create and position side empties
         emptyFront = SEUT_OT_Mountpoints.createEmpty(context, 'Mountpoints Front', collection, None)
         emptyFront.empty_display_type = 'SINGLE_ARROW'
@@ -153,6 +157,9 @@ class SEUT_OT_Mountpoints(Operator):
                 plane.location.y = area.y
 
         plane.select_set(state=False, view_layer=context.window.view_layer)
+
+        # Reset cursor location
+        scene.cursor.location = cursorLocation
 
         # Reset interaction mode
         try:
@@ -262,6 +269,10 @@ class SEUT_OT_Mountpoints(Operator):
             currentMode = bpy.context.object.mode
             bpy.ops.object.mode_set(mode='OBJECT')
 
+        # The 3D cursor is used as the origin. If it's not on center, everything is misaligned ingame.
+        cursorLocation = scene.cursor.location.copy()
+        scene.cursor.location = (0.0, 0.0, 0.0)
+
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
         tag = ' (' + scene.seut.subtypeId + ')'
@@ -281,6 +292,9 @@ class SEUT_OT_Mountpoints(Operator):
         # Delete collection
         if 'Mountpoints' + tag in bpy.data.collections:
             bpy.data.collections.remove(bpy.data.collections['Mountpoints' + tag])
+
+        # Reset cursor location
+        scene.cursor.location = cursorLocation
             
         # Reset interaction mode
         try:

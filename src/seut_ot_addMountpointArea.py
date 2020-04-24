@@ -30,6 +30,10 @@ class SEUT_OT_AddMountpointArea(Operator):
             self.report({'ERROR'}, "SEUT: Cannot find mountpoint material. Re-link 'MatLib_Presets'! (027)")
             return {'CANCELLED'}
 
+        # The 3D cursor is used as the origin. If it's not on center, everything is misaligned ingame.
+        cursorLocation = scene.cursor.location.copy()
+        scene.cursor.location = (0.0, 0.0, 0.0)
+
         side = wm.seut.mountpointSide
 
         if scene.seut.gridScale == 'small':
@@ -55,5 +59,8 @@ class SEUT_OT_AddMountpointArea(Operator):
 
         area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area ' + side.capitalize(), 1, scale, scale, None, None, collection, bpy.data.objects['Mountpoints ' + side.capitalize()])
         area.active_material = mpMat
+
+        # Reset cursor location
+        scene.cursor.location = cursorLocation
 
         return {'FINISHED'}
