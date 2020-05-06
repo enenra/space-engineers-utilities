@@ -209,7 +209,7 @@ class SEUT_OT_Mirroring(Operator):
         # Instance main collection or mirroringScene main collection under empties
         sourceScene = scene
         if scene.seut.mirroringScene is not None:
-            sourceScene = scene
+            sourceScene = scene.seut.mirroringScene
         
         emptyX.seut.linkedScene = sourceScene
         linkSubpartScene(self, scene, emptyX, collection)
