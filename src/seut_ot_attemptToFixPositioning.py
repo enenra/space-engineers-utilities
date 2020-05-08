@@ -11,7 +11,7 @@ class SEUT_OT_AttemptToFixPositioning(Operator):
     # Greys the button out if there is no active object.
     @classmethod
     def poll(cls, context):
-        return len(context.selected_objects) != 0
+        return len(context.selected_objects) == 1
 
 
     def execute(self, context):
@@ -29,9 +29,14 @@ class SEUT_OT_AttemptToFixPositioning(Operator):
         children = set(obj.children)
 
         for child in obj.children:
-            bpy.context.window.view_layer.objects.active = child
-            child.select_set(state=True, view_layer=bpy.context.window.view_layer)
-            bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+            if child.type == 'EMPTY':
+                child.location.x = child.location.x + parentX / obj.scale.x
+                child.location.y = child.location.y + parentY / obj.scale.y
+                child.location.z = child.location.z + parentZ / obj.scale.z
+            else:
+                bpy.context.window.view_layer.objects.active = child
+                child.select_set(state=True, view_layer=bpy.context.window.view_layer)
+                bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
 
         obj.location.x = parentX
         obj.location.y = parentY
