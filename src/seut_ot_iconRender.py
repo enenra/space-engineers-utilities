@@ -27,7 +27,7 @@ class SEUT_OT_IconRender(Operator):
                 context.window.scene = scn
                 if scn.seut.mirroringToggle == 'on' or scn.seut.mountpointToggle == 'on':
                     scn.seut.mirroringToggle = 'off'
-                    scn.seut.mountpointToggle == 'off'
+                    scn.seut.mountpointToggle = 'off'
                 if scn != scene:
                     scn.seut.renderToggle = 'off'
 
