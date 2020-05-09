@@ -92,6 +92,9 @@ def update_renderDistance(self, context):
 def update_subtypeId(self, context):
     scene = context.scene
 
+    if scene.seut.subtypeId == "":
+        scene.seut.subtypeId = scene.name
+
     # If the subtypeId already exists for a scene in the file, prevent it from being set
     for scn in bpy.data.scenes:
         if scn is not scene and scn.seut.subtypeId == scene.seut.subtypeId:
