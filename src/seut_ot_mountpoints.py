@@ -202,6 +202,8 @@ class SEUT_OT_Mountpoints(Operator):
 
         scene = context.scene
 
+        bpy.ops.object.mode_set(mode='OBJECT')
+
         bpy.ops.mesh.primitive_plane_add(size=size, calc_uvs=True, enter_editmode=False, align='WORLD')
         area = bpy.context.view_layer.objects.active
         area.name = name
