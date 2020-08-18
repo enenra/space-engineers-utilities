@@ -4,8 +4,6 @@ from bpy.types  import Panel
 
 from .seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 
-from . import addon_updater_ops
-
 class SEUT_PT_Panel(Panel):
     """Creates the topmost panel for SEUT"""
     bl_idname = "SEUT_PT_Panel"
@@ -18,10 +16,6 @@ class SEUT_PT_Panel(Panel):
         layout = self.layout
         scene = context.scene
         wm = context.window_manager
-
-        addon_updater_ops.check_for_update_background()
-        
-        addon_updater_ops.update_notice_box_ui(self, context)
 
         # SubtypeId
         box = layout.box()

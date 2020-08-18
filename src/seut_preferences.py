@@ -6,8 +6,6 @@ from bpy.props  import BoolProperty, StringProperty, EnumProperty
 
 from .seut_errors   import showError
 
-from . import addon_updater_ops
-
 def set_stollie_tools_paths(self, context):
     scene = context.scene
 
@@ -91,13 +89,6 @@ def update_mwmbPath(self, context):
 class SEUT_AddonPreferences(AddonPreferences):
     """Saves the preferences set by the user"""
     bl_idname = __package__
-
-    # addon updater preferences from `__init__`, be sure to copy all of them
-    enable_dev_only_options: BoolProperty(
-        name = "Enable Dev only options",
-        description = "Enable Dev only options",
-        default = False
-    )
     set_stollie_tools_paths: BoolProperty(
         name = "Set Stollie Paths",
         description = "Set Stollie Paths",
@@ -129,46 +120,8 @@ class SEUT_AddonPreferences(AddonPreferences):
         update=update_mwmbPath
     )
 
-    # addon updater preferences from `__init__`, be sure to copy all of them
-    auto_check_update: bpy.props.BoolProperty(
-        name = "Auto-check for Update",
-        description = "If enabled, auto-check for updates using an interval",
-        default = True,
-    )
-    updater_intrval_months: bpy.props.IntProperty(
-        name='Months',
-        description = "Number of months between checking for updates",
-        default=0,
-        min=0
-    )
-    updater_intrval_days: bpy.props.IntProperty(
-        name='Days',
-        description = "Number of days between checking for updates",
-        default=0,
-        min=0,
-    )
-    updater_intrval_hours: bpy.props.IntProperty(
-        name='Hours',
-        description = "Number of hours between checking for updates",
-        default=23,
-        min=0,
-        max=23
-    )
-    updater_intrval_minutes: bpy.props.IntProperty(
-        name='Minutes',
-        description = "Number of minutes between checking for updates",
-        default=0,
-        min=0,
-        max=59
-    )
-
     def draw(self, context):
         layout = self.layout
-
-        layout.prop(self, "enable_dev_only_options")
-
-        if self.enable_dev_only_options:
-            layout.prop(self, "set_stollie_tools_paths")
 
         layout.prop(self, "materialsPath", expand=True)
         box = layout.box()
@@ -176,8 +129,5 @@ class SEUT_AddonPreferences(AddonPreferences):
         box.prop(self, "mwmbPath", expand=True)
         box.prop(self, "fbxImporterPath", expand=True)
         box.prop(self, "havokPath", expand=True)
-
-
-        addon_updater_ops.update_settings_ui(self,context)
 
         return

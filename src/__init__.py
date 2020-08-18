@@ -15,8 +15,8 @@ bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie, Kamikaze",
-    "version": (0, 9, 90),
-    "blender": (2, 82, 0),
+    "version": (0, 9, 91),
+    "blender": (2, 83, 0),
     "location": "View3D > Tools ",
     "warning": "",
     "wiki_url": "https://github.com/enenra/space-engineers-utilities",
@@ -97,8 +97,6 @@ from .seut_object                       import SEUT_Object
 from .seut_windowManager                import SEUT_MatLibProps
 from .seut_windowManager                import SEUT_WindowManager
 
-from . import addon_updater_ops
-
 
 classes = (
     SEUT_AddonPreferences,
@@ -157,8 +155,6 @@ classes = (
 
 
 def register():
-    
-    addon_updater_ops.register(bl_info)
     
     for cls in classes:
         bpy.utils.register_class(cls)
