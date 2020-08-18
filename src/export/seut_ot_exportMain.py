@@ -1,5 +1,6 @@
 import bpy
 import os
+import re
 
 from bpy.types                      import Operator
 
@@ -77,6 +78,11 @@ class SEUT_OT_ExportMain(Operator):
                 self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
                 print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
                 return {'CANCELLED'}
+
+        for obj in collections['main'].objects:
+            if obj is not None and obj.type == 'EMPTY':
+                if re.search(".00*", obj.name[-4:]) not None or re.search(".0**", obj.name[-4:]) not None or re.search(".***", obj.name[-4:]) not None:
+                    self.report({'WARNING'}, "SEUT: Name of empty '%s' ends on '%s'. This might cause the empty to not work properly ingame." % (obj.name, obj.name[-4:]))
 
         # Export XML if boolean is set.
         if scene.seut.export_xml:
