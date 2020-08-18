@@ -57,7 +57,13 @@ class SEUT_OT_AddMountpointArea(Operator):
             x = scene.seut.bBox_X
             y = scene.seut.bBox_Y
 
-        area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area ' + side.capitalize(), 1, scale, scale, None, None, collection, bpy.data.objects['Mountpoints ' + side.capitalize()])
+        # Ensure empty still exists
+        try:
+            area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area ' + side.capitalize(), 1, scale, scale, None, None, collection, bpy.data.objects['Mountpoints ' + side.capitalize()])
+        except KeyError:
+            self.report({'ERROR'}, "SEUT: 'Mountpoints " + side.capitalize() + "' not found. Disable and then re-enable Mountpoint Mode to recreate! (036)")
+            return {'CANCELLED'}
+
         area.active_material = mpMat
 
         # Reset cursor location

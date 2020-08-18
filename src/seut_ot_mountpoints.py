@@ -202,7 +202,11 @@ class SEUT_OT_Mountpoints(Operator):
 
         scene = context.scene
 
-        bpy.ops.object.mode_set(mode='OBJECT')
+        currentArea = context.area.type
+        context.area.type = 'VIEW_3D'
+        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
+            currentMode = bpy.context.object.mode
+            bpy.ops.object.mode_set(mode='OBJECT')
 
         bpy.ops.mesh.primitive_plane_add(size=size, calc_uvs=True, enter_editmode=False, align='WORLD')
         area = bpy.context.view_layer.objects.active
@@ -226,6 +230,14 @@ class SEUT_OT_Mountpoints(Operator):
         
         if parent is not None:
             area.parent = parent
+
+        try:
+            if bpy.context.object is not None and currentMode is not None:
+                bpy.ops.object.mode_set(mode=currentMode)
+        except:
+            pass
+
+        context.area.type = currentArea
 
         return area
     
