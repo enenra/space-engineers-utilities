@@ -17,6 +17,7 @@ class SEUT_OT_ExportAllScenes(Operator):
         currentArea = context.area.type
         context.area.type = 'VIEW_3D'
         if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
+            bpy.context.object.hide_set(False)
             currentMode = bpy.context.object.mode
             bpy.ops.object.mode_set(mode='OBJECT')
 

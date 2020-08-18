@@ -35,6 +35,7 @@ class SEUT_OT_Export(Operator):
 
         currentMode = None
         if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
+            bpy.context.object.hide_set(False)
             currentMode = bpy.context.object.mode
             bpy.ops.object.mode_set(mode='OBJECT')
 
