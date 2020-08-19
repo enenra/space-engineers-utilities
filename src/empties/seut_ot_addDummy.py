@@ -95,12 +95,12 @@ class SEUT_OT_AddDummy(Operator):
         if self.detectorType == 'muzzle_missile':
             emptyName = "muzzle_missile_"
             usesIndex = True
-            displayType = 'SINGLE_ARROW'
+            displayType = 'CONE'
 
         if self.detectorType == 'muzzle_projectile':
             emptyName = "muzzle_projectile_"
             usesIndex = True
-            displayType = 'SINGLE_ARROW'
+            displayType = 'CONE'
 
         if self.detectorType == 'respawn':
             emptyName = "dummy_detector_respawn"
@@ -113,7 +113,7 @@ class SEUT_OT_AddDummy(Operator):
         if self.detectorType == 'camera':
             emptyName = "dummy_camera"
             usesIndex = False
-            displayType = 'SINGLE_ARROW'
+            displayType = 'CONE'
 
         if self.detectorType == 'upgrade':
             emptyName = "detector_upgrade_"
