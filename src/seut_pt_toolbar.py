@@ -220,7 +220,11 @@ class SEUT_PT_Panel_Export(Panel):
         box.label(text="Options", icon='SETTINGS')
     
         box.prop(scene.seut, "export_deleteLooseFiles")
+
         if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_anmiation':
+            row = box.row()
+            row.prop(scene.seut, "export_largeGrid")
+            row.prop(scene.seut, "export_smallGrid")
             box.prop(scene.seut, "export_rescaleFactor")
         
         split = box.split(factor=0.85)

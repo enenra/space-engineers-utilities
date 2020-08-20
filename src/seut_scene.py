@@ -125,6 +125,20 @@ def update_linkSubpartInstances(self, context):
                     unlinkSubpartScene(empty)
 
 
+def update_export_largeGrid(self, context):
+    scene = context.scene
+
+    if not self.export_smallGrid and not self.export_largeGrid:
+        self.export_smallGrid = True
+
+
+def update_export_smallGrid(self, context):
+    scene = context.scene
+
+    if not self.export_largeGrid and not self.export_smallGrid:
+        self.export_largeGrid = True
+
+
 def update_export_exportPath(self, context):
     scene = context.scene
 
@@ -359,6 +373,18 @@ class SEUT_Scene(PropertyGroup):
         name="Delete Loose Files",
         description="Whether the intermediary files should be deleted after the MWM has been created",
         default=True
+    )
+    export_largeGrid: BoolProperty(
+        name="Large Grid",
+        description="Whether to export to large grid",
+        default=True,
+        update=update_export_largeGrid
+    )
+    export_smallGrid: BoolProperty(
+        name="Small Grid",
+        description="Whether to export to small grid",
+        default=False,
+        update=update_export_smallGrid
     )
     export_fbx: BoolProperty(
         name="FBX",
