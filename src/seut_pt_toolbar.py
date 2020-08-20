@@ -20,7 +20,7 @@ class SEUT_PT_Panel(Panel):
         if not 'SEUT' in scene.view_layers:
             row = layout.row()
             row.scale_y = 2.0
-            row.operator('object.recreate_collections', text="Initialize SEUT", icon='COLLECTION_NEW')
+            row.operator('object.recreate_collections', text="Initialize SEUT Scene", icon='OUTLINER')
 
         else:
 
