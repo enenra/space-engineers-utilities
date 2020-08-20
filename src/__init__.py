@@ -200,6 +200,9 @@ def menu_draw(self, context):
 
 @persistent
 def load_handler(dummy):
+
+    bpy.ops.object.recreate_collections()
+
     bpy.ops.object.gridscale()
     try:
         bpy.ops.scene.refresh_matlibs()

@@ -1,4 +1,5 @@
 import bpy
+import re
 
 from bpy.types import Operator
 
@@ -19,6 +20,9 @@ class SEUT_OT_RecreateCollections(Operator):
     def getCollections(scene):
         """Scans existing collections to find the SEUT ones"""
 
+        if not 'SEUT' in bpy.context.scene.view_layers:
+            bpy.context.scene.view_layers[0].name = 'SEUT'
+
         tag = ' (' + scene.seut.subtypeId + ')'
 
         collections = {
@@ -34,10 +38,13 @@ class SEUT_OT_RecreateCollections(Operator):
             'bs_lod': None,
             }
 
-        if len(bpy.data.collections) > 0:
-            for col in bpy.data.collections:
-                if col.name == 'SEUT' + tag:
-                    collections['seut'] = col
+        children = scene.view_layers['SEUT'].layer_collection.children
+
+        if str('SEUT' + tag) in children:
+            collections['seut'] = children['SEUT' + tag].collection
+
+        if not collections['seut'] is None:
+            for col in collections['seut'].children:
 
                 if col.name == 'Main' + tag:
                     collections['main'] = col
@@ -72,49 +79,58 @@ class SEUT_OT_RecreateCollections(Operator):
     def rename_Collections(scene):
         """Scans existing collections to find the SEUT ones and renames them if the tag has changed"""
 
+        if not 'SEUT' in bpy.context.scene.view_layers:
+            bpy.context.scene.view_layers[0].name = 'SEUT'
+
         tag = ' (' + scene.seut.subtypeId + ')'
         tagOld = ' (' + scene.seut.subtypeBefore + ')'
 
-        if len(bpy.data.collections) > 0:
-            for col in bpy.data.collections:
-                if col.name == 'SEUT' + tag or col.name == 'SEUT' + tagOld:
-                    col.name = 'SEUT' + tag
+        children = scene.view_layers['SEUT'].layer_collection.children
 
-                if col.name == 'Main' + tag or col.name == 'Main' + tagOld:
-                    col.name = 'Main' + tag
+        for main in children:
+            if main.collection.name == 'SEUT' + tagOld or main.collection.name[:4 + len(tagOld)] == 'SEUT' + tagOld and re.search("\.[0-9]{3}", main.collection.name[-4:]) != None:
+                mainCollection = main.collection
+                main.collection.name = 'SEUT' + tag
+        
+        if mainCollection is None:
+            return
 
-                if col.name == 'Collision' + tag or col.name == 'Collision' + tagOld:
-                    col.name = 'Collision' + tag
-
-                if col.name == 'Mirroring' + tag or col.name == 'Mirroring' + tagOld:
-                    col.name = 'Mirroring' + tag
-
-                if col.name == 'Mountpoints' + tag or col.name == 'Mountpoints' + tagOld:
-                    col.name = 'Mountpoints' + tag
-
-                if col.name == 'Render' + tag or col.name == 'Render' + tagOld:
-                    col.name = 'Render' + tag
-
-                elif col.name == 'LOD1' + tag or col.name == 'LOD1' + tagOld:
-                    col.name = 'LOD1' + tag
-
-                elif col.name == 'LOD2' + tag or col.name == 'LOD2' + tagOld:
-                    col.name = 'LOD2' + tag
-
-                elif col.name == 'LOD3' + tag or col.name == 'LOD3' + tagOld:
-                    col.name = 'LOD3' + tag
-
-                elif col.name == 'BS1' + tag or col.name == 'BS1' + tagOld:
-                    col.name = 'BS1' + tag
-
-                elif col.name == 'BS2' + tag or col.name == 'BS2' + tagOld:
-                    col.name = 'BS2' + tag
-                    
-                elif col.name == 'BS3' + tag or col.name == 'BS3' + tagOld:
-                    col.name = 'BS3' + tag
-                    
-                elif col.name == 'BS_LOD' + tag or col.name == 'BS_LOD' + tagOld:
-                    col.name = 'BS_LOD' + tag
+        for col in mainCollection.children:
+            if col.name[:6] == 'Main (':
+                col.name = 'Main' + tag
+                
+            elif col.name[:11] == 'Collision (':
+                col.name = 'Collision' + tag
+                
+            elif col.name[:11] == 'Mirroring (':
+                col.name = 'Mirroring' + tag
+                
+            elif col.name[:13] == 'Mountpoints (':
+                col.name = 'Mountpoints' + tag
+                
+            elif col.name[:8] == 'Render (':
+                col.name = 'Render' + tag
+                
+            elif col.name[:6] == 'LOD1 (':
+                col.name = 'LOD1' + tag
+                
+            elif col.name[:6] == 'LOD2 (':
+                col.name = 'LOD2' + tag
+                
+            elif col.name[:6] == 'LOD3 (':
+                col.name = 'LOD3' + tag
+                
+            elif col.name[:5] == 'BS1 (':
+                col.name = 'BS1' + tag
+                
+            elif col.name[:5] == 'BS2 (':
+                col.name = 'BS2' + tag
+                
+            elif col.name[:5] == 'BS3 (':
+                col.name = 'BS3' + tag
+                
+            elif col.name[:8] == 'BS_LOD (':
+                col.name = 'BS_LOD' + tag
 
         return
 
@@ -124,8 +140,12 @@ class SEUT_OT_RecreateCollections(Operator):
 
         scene = context.scene
 
+        if not 'SEUT' in bpy.context.scene.view_layers:
+            bpy.context.scene.view_layers[0].name = 'SEUT'
+
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
+            scene.seut.subtypeBefore = scene.name
             
         tag = ' (' + scene.seut.subtypeId + ')'
 

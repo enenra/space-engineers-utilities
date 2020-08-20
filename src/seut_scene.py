@@ -94,6 +94,7 @@ def update_subtypeId(self, context):
 
     if scene.seut.subtypeId == "":
         scene.seut.subtypeId = scene.name
+        scene.seut.subtypeBefore = scene.name
 
     # If the subtypeId already exists for a scene in the file, prevent it from being set
     for scn in bpy.data.scenes:
@@ -102,7 +103,7 @@ def update_subtypeId(self, context):
             showError(context, "Report: Error", "SEUT Error: Cannot set SubtypeId to a SubtypeId that already exists in the file for another scene. (018)")
             return
 
-    if scene.seut.subtypeId != scene.seut.subtypeBefore:
+    if scene.seut.subtypeId != scene.seut.subtypeBefore and scene.seut.subtypeBefore is not "":
         SEUT_OT_RecreateCollections.rename_Collections(scene)
         scene.seut.subtypeBefore = scene.seut.subtypeId
         
