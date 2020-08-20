@@ -60,8 +60,12 @@ class SEUT_OT_Export(Operator):
             gridScale = str(scene.seut.gridScale)
             scene.seut.gridScale = 'large'
 
+            # Set rescaleFactor only if grid wasn't previously large already (in which case the assumption is that it was modelled on a large grid and already the right size)
             rescaleFactor = int(scene.seut.export_rescaleFactor)
-            scene.seut.export_rescaleFactor = 1.0
+            if gridScale == 'small':
+                scene.seut.export_rescaleFactor = 5.0
+            else:
+                scene.seut.export_rescaleFactor = 1.0
 
             exportPath = scene.seut.export_exportPath
             if scene.seut.export_exportPath.find("/small/") != -1:
@@ -106,6 +110,8 @@ class SEUT_OT_Export(Operator):
             rescaleFactor = int(scene.seut.export_rescaleFactor)
             if gridScale == 'large':
                 scene.seut.export_rescaleFactor = 0.2
+            else:
+                scene.seut.export_rescaleFactor = 1.0
 
             exportPath = scene.seut.export_exportPath
             if scene.seut.export_exportPath.find("/large/") != -1:
