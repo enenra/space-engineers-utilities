@@ -81,7 +81,6 @@ class SEUT_OT_ExportMain(Operator):
 
         for obj in collections['main'].objects:
             if obj is not None and obj.type == 'EMPTY':
-                print("This: " + str(re.search(".00*", obj.name[-4:])))
                 if re.search("\.[0-9]{3}", obj.name[-4:]) != None:
                     self.report({'WARNING'}, "SEUT: Name of empty '%s' ends on '%s'. This might cause the empty to not work properly ingame." % (obj.name, obj.name[-4:]))
 
