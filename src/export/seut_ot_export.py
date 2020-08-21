@@ -52,6 +52,13 @@ class SEUT_OT_Export(Operator):
             subtypeId = str(scene.seut.subtypeId)
             if scene.seut.subtypeId.find("_SG_") != -1:
                 scene.seut.subtypeId = scene.seut.subtypeId.replace("_SG_", "_LG_")
+
+            elif scene.seut.subtypeId[:3] == "SG_":
+                scene.seut.subtypeId = scene.seut.subtypeId.replace("SG_", "LG_")
+
+            elif scene.seut.subtypeId[:3] == "LG_":
+                pass
+
             elif scene.seut.subtypeId.find("_LG_") == -1:
                 scene.seut.subtypeId = "LG_" + scene.seut.subtypeId
 
@@ -98,6 +105,13 @@ class SEUT_OT_Export(Operator):
             subtypeId = str(scene.seut.subtypeId)
             if scene.seut.subtypeId.find("_LG_") != -1:
                 scene.seut.subtypeId = scene.seut.subtypeId.replace("_LG_", "_SG_")
+
+            elif scene.seut.subtypeId[:3] == "LG_":
+                scene.seut.subtypeId = scene.seut.subtypeId.replace("LG_", "SG_")
+
+            elif scene.seut.subtypeId[:3] == "SG_":
+                pass
+            
             elif scene.seut.subtypeId.find("_SG_") == -1:
                 scene.seut.subtypeId = "SG_" + scene.seut.subtypeId
 
