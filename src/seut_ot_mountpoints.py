@@ -46,10 +46,10 @@ class SEUT_OT_Mountpoints(Operator):
 
         currentArea = context.area.type
         context.area.type = 'VIEW_3D'
-        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
-            bpy.context.object.hide_set(False)
-            currentMode = bpy.context.object.mode
+        if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
+            context.object.select_set(False)
+            context.view_layer.objects.active = None
 
         if collections['seut'] is None:
             showError(context, "Report: Error", "SEUT Error: Collection 'SEUT (" + scene.name + ")' not found. Action not possible. (002)")
@@ -162,13 +162,6 @@ class SEUT_OT_Mountpoints(Operator):
         # Reset cursor location
         scene.cursor.location = cursorLocation
 
-        # Reset interaction mode
-        try:
-            if bpy.context.object is not None and currentMode is not None:
-                bpy.ops.object.mode_set(mode=currentMode)
-        except:
-            pass
-
         context.area.type = currentArea
 
         return {'FINISHED'}
@@ -205,10 +198,10 @@ class SEUT_OT_Mountpoints(Operator):
 
         currentArea = context.area.type
         context.area.type = 'VIEW_3D'
-        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
-            bpy.context.object.hide_set(False)
-            currentMode = bpy.context.object.mode
+        if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
+            context.object.select_set(False)
+            context.view_layer.objects.active = None
 
         bpy.ops.mesh.primitive_plane_add(size=size, calc_uvs=True, enter_editmode=False, align='WORLD')
         area = bpy.context.view_layer.objects.active
@@ -232,12 +225,6 @@ class SEUT_OT_Mountpoints(Operator):
         
         if parent is not None:
             area.parent = parent
-
-        try:
-            if bpy.context.object is not None and currentMode is not None:
-                bpy.ops.object.mode_set(mode=currentMode)
-        except:
-            pass
 
         context.area.type = currentArea
 
@@ -281,10 +268,10 @@ class SEUT_OT_Mountpoints(Operator):
         # If mode is not object mode, export fails horribly.
         currentArea = context.area.type
         context.area.type = 'VIEW_3D'
-        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
-            bpy.context.object.hide_set(False)
-            currentMode = bpy.context.object.mode
+        if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
+            context.object.select_set(False)
+            context.view_layer.objects.active = None
 
         # The 3D cursor is used as the origin. If it's not on center, everything is misaligned ingame.
         cursorLocation = scene.cursor.location.copy()
@@ -312,13 +299,6 @@ class SEUT_OT_Mountpoints(Operator):
 
         # Reset cursor location
         scene.cursor.location = cursorLocation
-            
-        # Reset interaction mode
-        try:
-            if bpy.context.object is not None and currentMode is not None:
-                bpy.ops.object.mode_set(mode=currentMode)
-        except:
-            pass
 
         context.area.type = currentArea
 

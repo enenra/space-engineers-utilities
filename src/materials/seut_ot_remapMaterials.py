@@ -14,9 +14,10 @@ class SEUT_OT_RemapMaterials(Operator):
 
         currentArea = context.area.type
         context.area.type = 'VIEW_3D'
-        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
-            bpy.context.object.hide_set(False)
+        if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
+            context.object.select_set(False)
+            context.view_layer.objects.active = None
 
         SEUT_OT_RemapMaterials.remapMaterials(self, context)
 

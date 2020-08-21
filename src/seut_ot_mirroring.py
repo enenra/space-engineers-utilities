@@ -75,10 +75,10 @@ class SEUT_OT_Mirroring(Operator):
 
         currentArea = context.area.type
         context.area.type = 'VIEW_3D'
-        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
-            bpy.context.object.hide_set(False)
-            currentMode = bpy.context.object.mode
+        if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
+            context.object.select_set(False)
+            context.view_layer.objects.active = None
 
         if collections['seut'] is None:
             showError(context, "Report: Error", "SEUT Error: Collection 'SEUT " + scene.name + "' not found. Action not possible. (002)")
@@ -219,13 +219,6 @@ class SEUT_OT_Mirroring(Operator):
         linkSubpartScene(self, scene, emptyY, collection)
         emptyZ.seut.linkedScene = sourceScene
         linkSubpartScene(self, scene, emptyZ, collection)
-            
-        # Reset interaction mode
-        try:
-            if bpy.context.object is not None and currentMode is not None:
-                bpy.ops.object.mode_set(mode=currentMode)
-        except:
-            pass
 
         context.area.type = currentArea
 
@@ -241,10 +234,10 @@ class SEUT_OT_Mirroring(Operator):
         # If mode is not object mode, export fails horribly.
         currentArea = context.area.type
         context.area.type = 'VIEW_3D'
-        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
-            bpy.context.object.hide_set(False)
-            currentMode = bpy.context.object.mode
+        if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
+            context.object.select_set(False)
+            context.view_layer.objects.active = None
 
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
@@ -265,13 +258,6 @@ class SEUT_OT_Mirroring(Operator):
         # Delete collection
         if 'Mirroring' + tag in bpy.data.collections:
             bpy.data.collections.remove(bpy.data.collections['Mirroring' + tag])
-            
-        # Reset interaction mode
-        try:
-            if bpy.context.object is not None and currentMode is not None:
-                bpy.ops.object.mode_set(mode=currentMode)
-        except:
-            pass
 
         context.area.type = currentArea
 

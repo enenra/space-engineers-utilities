@@ -16,10 +16,10 @@ class SEUT_OT_ExportAllScenes(Operator):
         # If mode is not object mode, export fails horribly.
         currentArea = context.area.type
         context.area.type = 'VIEW_3D'
-        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
-            bpy.context.object.hide_set(False)
-            currentMode = bpy.context.object.mode
+        if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
+            context.object.select_set(False)
+            context.view_layer.objects.active = None
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
@@ -41,13 +41,6 @@ class SEUT_OT_ExportAllScenes(Operator):
                 print("SEUT Info: Scene '" + scn.name + "' could not be exported.")
 
         context.window.scene = originalScene
-
-        # Reset interaction mode
-        try:
-            if bpy.context.object is not None and currentMode is not None:
-                bpy.ops.object.mode_set(mode=currentMode)
-        except:
-            pass
 
         context.area.type = currentArea
         

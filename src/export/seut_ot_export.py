@@ -32,12 +32,10 @@ class SEUT_OT_Export(Operator):
         # If mode is not object mode, export fails horribly.
         currentArea = context.area.type
         context.area.type = 'VIEW_3D'
-
-        currentMode = None
-        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
-            bpy.context.object.hide_set(False)
-            currentMode = bpy.context.object.mode
+        if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
+            context.object.select_set(False)
+            context.view_layer.objects.active = None
 
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
@@ -139,13 +137,6 @@ class SEUT_OT_Export(Operator):
             scene.seut.gridScale = gridScale
             scene.seut.export_rescaleFactor = rescaleFactor
             scene.seut.export_exportPath = exportPath
-        
-        # Reset interaction mode
-        try:
-            if bpy.context.object is not None and bpy.context.object.mode is not None:
-                bpy.ops.object.mode_set(mode=currentMode)
-        except:
-            pass
             
         context.area.type = currentArea
 

@@ -46,10 +46,10 @@ class SEUT_OT_IconRender(Operator):
 
         currentArea = context.area.type
         context.area.type = 'VIEW_3D'
-        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
-            bpy.context.object.hide_set(False)
-            currentMode = bpy.context.object.mode
+        if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
+            context.object.select_set(False)
+            context.view_layer.objects.active = None
 
         if collections['seut'] is None:
             showError(context, "Report: Error", "SEUT Error: Collection 'SEUT (" + scene.name + ")' not found. Action not possible. (002)")
@@ -169,13 +169,6 @@ class SEUT_OT_IconRender(Operator):
         scene.render.film_transparent = True
 
         context.active_object.select_set(state=False, view_layer=context.window.view_layer)
-        
-        # Reset interaction mode
-        try:
-            if bpy.context.object is not None and currentMode is not None:
-                bpy.ops.object.mode_set(mode=currentMode)
-        except:
-            pass
 
         context.area.type = currentArea
         
@@ -190,10 +183,10 @@ class SEUT_OT_IconRender(Operator):
         # If mode is not object mode, export fails horribly.
         currentArea = context.area.type
         context.area.type = 'VIEW_3D'
-        if bpy.context.object is not None and bpy.context.object.mode is not 'OBJECT':
-            bpy.context.object.hide_set(False)
-            currentMode = bpy.context.object.mode
+        if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
+            context.object.select_set(False)
+            context.view_layer.objects.active = None
 
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
@@ -221,13 +214,6 @@ class SEUT_OT_IconRender(Operator):
         try:
             scene.node_tree.nodes.clear()
         except AttributeError:
-            pass
-            
-        # Reset interaction mode
-        try:
-            if bpy.context.object is not None and currentMode is not None:
-                bpy.ops.object.mode_set(mode=currentMode)
-        except:
             pass
 
         context.area.type = currentArea

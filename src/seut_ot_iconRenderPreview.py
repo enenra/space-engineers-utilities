@@ -27,9 +27,10 @@ class SEUT_OT_IconRenderPreview(Operator):
             scene.seut.subtypeId = scene.name
         tag = ' (' + scene.seut.subtypeId + ')'
 
-        if context.object is not None and context.object.mode is not 'OBJECT':
-            currentMode = context.object.mode
+        if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
+            context.object.select_set(False)
+            context.view_layer.objects.active = None
 
         simpleNav = wm.seut.simpleNavigationToggle
         wm.seut.simpleNavigationToggle = False
@@ -67,12 +68,6 @@ class SEUT_OT_IconRenderPreview(Operator):
                     obj.hide_viewport = False
 
         wm.seut.simpleNavigationToggle = simpleNav
-
-        try:
-            if bpy.context.object is not None and currentMode is not None:
-                bpy.ops.object.mode_set(mode=currentMode)
-        except:
-            pass
 
         self.report({'INFO'}, "SEUT: Icon successfully saved to '%s'." % (scene.render.filepath + "\\" + scene.seut.subtypeId + '.' + scene.render.image_settings.file_format.lower()))
 

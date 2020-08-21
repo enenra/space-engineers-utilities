@@ -35,8 +35,10 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
 
     currentArea = context.area.type
     context.area.type = 'VIEW_3D'
-    if context.object is not None and context.object.mode is not 'OBJECT':
+    if context.object is not None:
         bpy.ops.object.mode_set(mode='OBJECT')
+        context.object.select_set(False)
+        context.view_layer.objects.active = None
 
     objectsToIterate = set(subpartCollections['main'].objects)
 
