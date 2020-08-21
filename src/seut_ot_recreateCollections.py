@@ -20,8 +20,8 @@ class SEUT_OT_RecreateCollections(Operator):
     def getCollections(scene):
         """Scans existing collections to find the SEUT ones"""
 
-        if not 'SEUT' in bpy.context.scene.view_layers:
-            bpy.context.scene.view_layers[0].name = 'SEUT'
+        if not 'SEUT' in scene.view_layers:
+            scene.view_layers[0].name = 'SEUT'
 
         tag = ' (' + scene.seut.subtypeId + ')'
 
@@ -79,8 +79,8 @@ class SEUT_OT_RecreateCollections(Operator):
     def rename_Collections(scene):
         """Scans existing collections to find the SEUT ones and renames them if the tag has changed"""
 
-        if not 'SEUT' in bpy.context.scene.view_layers:
-            bpy.context.scene.view_layers[0].name = 'SEUT'
+        if not 'SEUT' in scene.view_layers:
+            scene.view_layers[0].name = 'SEUT'
 
         tag = ' (' + scene.seut.subtypeId + ')'
         tagOld = ' (' + scene.seut.subtypeBefore + ')'
@@ -140,8 +140,8 @@ class SEUT_OT_RecreateCollections(Operator):
 
         scene = context.scene
 
-        if not 'SEUT' in bpy.context.scene.view_layers:
-            bpy.context.scene.view_layers[0].name = 'SEUT'
+        if not 'SEUT' in scene.view_layers:
+            scene.view_layers[0].name = 'SEUT'
 
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
