@@ -26,6 +26,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
             ('conveyor', 'Conveyor', 'Defines large conveyor access point.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('conveyor_small', 'Small Conveyor', 'Small Conveyor, Defines small conveyor access point.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('terminal', 'Terminal', 'Defines terminal access point'),
+            ('textpanel', 'Text Panel', 'Defines access points for LCD Text Panels'),
             ('button', 'Button', 'Defines access points for single buttons'),
             ('cockpit', 'Cockpit', 'Defines access point to block that can be entered'),
             ('door', 'Door', 'Defines door access point'),
@@ -85,6 +86,10 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         if self.detectorType == 'terminal':
             emptyName = "detector_terminal_"
             usesIndex = True
+
+        if self.detectorType == 'textpanel':
+            emptyName = "detector_textpanel"
+            usesIndex = False
 
         if self.detectorType == 'button':
             emptyName = "dummy_detector_panel_button_"
