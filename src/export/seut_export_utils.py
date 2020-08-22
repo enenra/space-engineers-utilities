@@ -316,6 +316,11 @@ def export_model_FBX(self, context, collection):
             if 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
                 emptyObj['file'] = emptyObj.seut.linkedScene.seut.subtypeId
                 unlinkSubpartScene(emptyObj)
+            
+            # Blender FBX export halves empty size on export, this works around it
+            emptyObj.scale.x *= 2
+            emptyObj.scale.y *= 2
+            emptyObj.scale.z *= 2
 
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
@@ -331,9 +336,16 @@ def export_model_FBX(self, context, collection):
     
     # Relink all subparts to empties
     for emptyObj in collection.objects:
-        if scene.seut.linkSubpartInstances:
-            if 'file' in emptyObj and emptyObj.seut.linkedScene is not None and emptyObj.seut.linkedScene.name in bpy.data.scenes:
-                linkSubpartScene(self, scene, emptyObj, None)
+        if emptyObj is not None and emptyObj.type == 'EMPTY':
+            
+            if scene.seut.linkSubpartInstances:
+                if 'file' in emptyObj and emptyObj.seut.linkedScene is not None and emptyObj.seut.linkedScene.name in bpy.data.scenes:
+                    linkSubpartScene(self, scene, emptyObj, None)
+
+            # Resetting empty size
+            emptyObj.scale.x *= 0.5
+            emptyObj.scale.y *= 0.5
+            emptyObj.scale.z *= 0.5
 
     bpy.context.scene.collection.children.unlink(collection)
     self.report({'INFO'}, "SEUT: '%s.fbx' has been created." % (path + filename))
