@@ -128,12 +128,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         location = bpy.data.objects[targetObject.name].location
         rotation = bpy.data.objects[targetObject.name].rotation_euler
 
-        xD = bpy.data.objects[targetObject.name].dimensions.x
-        yD = bpy.data.objects[targetObject.name].dimensions.y
-        zD = bpy.data.objects[targetObject.name].dimensions.z
-
         bpy.ops.object.add(type='EMPTY', location=location, rotation=rotation)
-        bpy.ops.transform.resize(value=(xD - 1, yD - 1, zD - 1))
         empty = bpy.context.view_layer.objects.active
 
         empty.parent = targetObject.parent
