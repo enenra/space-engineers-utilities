@@ -376,13 +376,13 @@ class SEUT_Scene(PropertyGroup):
         default=True
     )
     export_largeGrid: BoolProperty(
-        name="Large Grid",
+        name="Large",
         description="Whether to export to large grid",
         default=True,
         update=update_export_largeGrid
     )
     export_smallGrid: BoolProperty(
-        name="Small Grid",
+        name="Small",
         description="Whether to export to small grid",
         default=False,
         update=update_export_smallGrid

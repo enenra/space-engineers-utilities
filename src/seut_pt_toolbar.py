@@ -236,10 +236,17 @@ class SEUT_PT_Panel_Export(Panel):
             box = layout.box()
             box.label(text="Options", icon='SETTINGS')
         
-            box.prop(scene.seut, "export_deleteLooseFiles")
+            row = box.row()
+            split = box.split(factor=0.70)
+            col = split.column()
+            col.prop(scene.seut, "export_deleteLooseFiles")
+            col = split.column()
+            col.prop(scene.seut, "export_sbc")
 
             if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_anmiation':
-                row = box.row()
+                box2 = box.box()
+                box2.label(text="Grid Export", icon='GRID')
+                row = box2.row()
                 row.prop(scene.seut, "export_largeGrid")
                 row.prop(scene.seut, "export_smallGrid")
                 box.prop(scene.seut, "export_rescaleFactor")
