@@ -45,7 +45,12 @@ class SEUT_OT_AddMountpointArea(Operator):
             scene.seut.subtypeId = scene.name
         tag = ' (' + scene.seut.subtypeId + ')'
 
-        collection = bpy.data.collections['Mountpoints' + tag]
+        # Ensure MP collection still exists
+        try:
+            collection = bpy.data.collections['Mountpoints' + tag]
+        except KeyError:
+            self.report({'ERROR'}, "SEUT: Collection 'Mountpoints (" + tag + ")' not found. Disable and then re-enable Mountpoint Mode to recreate! (037)")
+            return {'CANCELLED'}
 
         if side == 'front' or side == 'back':
             x = scene.seut.bBox_X
