@@ -25,7 +25,6 @@ class SEUT_OT_Export(Operator):
     def execute(self, context):
 
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'scene.export'")
-        print("Exported with SEUT Version: " + str(__version__))
         
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
@@ -79,9 +78,9 @@ class SEUT_OT_Export(Operator):
             
 
             # Call all the individual export operators
-            result_main = SEUT_OT_ExportMain.export_Main(self, context, True)
             SEUT_OT_ExportBS.export_BS(self, context, True)
             SEUT_OT_ExportLOD.export_LOD(self, context, True)
+            result_main = SEUT_OT_ExportMain.export_Main(self, context, True)
 
             # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
             if scene.seut.export_hkt:
@@ -132,9 +131,9 @@ class SEUT_OT_Export(Operator):
             
 
             # Call all the individual export operators
-            result_main = SEUT_OT_ExportMain.export_Main(self, context, True)
             SEUT_OT_ExportBS.export_BS(self, context, True)
             SEUT_OT_ExportLOD.export_LOD(self, context, True)
+            result_main = SEUT_OT_ExportMain.export_Main(self, context, True)
 
             # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
             if scene.seut.export_hkt:

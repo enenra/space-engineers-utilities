@@ -1,5 +1,6 @@
 import bpy
 import os
+import re
 import math
 import glob
 import subprocess
@@ -304,6 +305,11 @@ def export_model_FBX(self, context, collection):
     # Unlink all subparts parented to an empty
     for emptyObj in collection.objects:
         if emptyObj is not None and emptyObj.type == 'EMPTY':
+            
+            # To ensure they work ingame (where duplicate names are no issue) this will remove the ".001" etc. from the name (and cause another empty to get this numbering)
+            if re.search("\.[0-9]{3}", emptyObj.name[-4:]) != None:
+                emptyObj.name = emptyObj.name[:-4]
+
             if emptyObj.parent is None:
                 print("SEUT Warning: Empty '" + emptyObj.name + "' has no parent object. This may prevent it from working properly ingame.")
             elif emptyObj.parent.parent is not None:
