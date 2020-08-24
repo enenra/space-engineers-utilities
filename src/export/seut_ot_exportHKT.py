@@ -27,16 +27,12 @@ class SEUT_OT_ExportHKT(Operator):
     def execute(self, context):
         """Exports collision to HKT"""
 
-        print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_hkt'")
-
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
         if not result == {'CONTINUE'}:
             return result
         
         result = SEUT_OT_ExportHKT.export_HKT(self, context, False)
-
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_hkt'")
 
         return result
     

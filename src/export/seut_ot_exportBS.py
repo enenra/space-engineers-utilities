@@ -22,16 +22,12 @@ class SEUT_OT_ExportBS(Operator):
     def execute(self, context):
         """Exports the 'Build Stages' collections"""
 
-        print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_buildstages'")
-
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
         if not result == {'CONTINUE'}:
             return result
 
         result = SEUT_OT_ExportBS.export_BS(self, context, False)
-
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_buildstages'")
 
         return result
     
@@ -93,31 +89,23 @@ class SEUT_OT_ExportBS(Operator):
                     print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
                     return {'CANCELLED'}
 
-        # Export BS1, if present.
-        if colBS1Good:
-            if scene.seut.export_xml:
-                self.report({'INFO'}, "SEUT: Exporting XML for 'BS1'.")
-                export_XML(self, context, collections['bs1'])
-            if scene.seut.export_fbx:
-                self.report({'INFO'}, "SEUT: Exporting FBX for 'BS1'.")
-                export_model_FBX(self, context, collections['bs1'])
-        
-        # Export BS2, if present.
-        if colBS2Good:
-            if scene.seut.export_xml:
-                self.report({'INFO'}, "SEUT: Exporting XML for 'BS2'.")
-                export_XML(self, context, collections['bs2'])
-            if scene.seut.export_fbx:
-                self.report({'INFO'}, "SEUT: Exporting FBX for 'BS2'.")
-                export_model_FBX(self, context, collections['bs2'])
 
-        # Export BS3, if present.
+        if colBS1Good:
+            print("\n------------------------------ Exporting Collection '" + collections['bs1'].name + "'.")
+            export_XML(self, context, collections['bs1'])
+            export_model_FBX(self, context, collections['bs1'])
+            print("------------------------------ Finished exporting Collection '" + collections['bs1'].name + "'.\n")
+        
+        if colBS2Good:
+            print("\n------------------------------ Exporting Collection '" + collections['bs2'].name + "'.")
+            export_XML(self, context, collections['bs2'])
+            export_model_FBX(self, context, collections['bs2'])
+            print("------------------------------ Finished exporting Collection '" + collections['bs2'].name + "'.\n")
+
         if colBS3Good:
-            if scene.seut.export_xml:
-                self.report({'INFO'}, "SEUT: Exporting XML for 'BS3'.")
-                export_XML(self, context, collections['bs3'])
-            if scene.seut.export_fbx:
-                self.report({'INFO'}, "SEUT: Exporting FBX for 'BS3'.")
-                export_model_FBX(self, context, collections['bs3'])
+            print("\n------------------------------ Exporting Collection '" + collections['bs3'].name + "'.")
+            export_XML(self, context, collections['bs3'])
+            export_model_FBX(self, context, collections['bs3'])
+            print("------------------------------ Finished exporting Collection '" + collections['bs3'].name + "'.\n")
         
         return {'FINISHED'}

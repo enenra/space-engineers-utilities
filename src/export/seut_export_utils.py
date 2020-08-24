@@ -192,10 +192,10 @@ def export_XML(self, context, collection):
 
                 # If no textures are added to the material, remove the entry again.
                 if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
-                    self.report({'INFO'}, "SEUT: Local material '%s' does not contain any valid textures. Skipping." % (mat.name))
+                    print("SEUT Info: Local material '%s' does not contain any valid textures. Skipping." % (mat.name))
                     model.remove(matEntry)
                 else:
-                    self.report({'INFO'}, "SEUT: Local material '%s' saved. Don't forget to include relevant DDS texture files in mod!" % (mat.name))
+                    print("SEUT Info: Local material '%s' saved. Don't forget to include relevant DDS texture files in mod!" % (mat.name))
 
         elif mat.library != None:
             matRef = ET.SubElement(model, 'MaterialRef')
@@ -209,7 +209,7 @@ def export_XML(self, context, collection):
         lod2Printed = False
 
         if collections['lod1'] == None or len(collections['lod1'].objects) == 0:
-            self.report({'INFO'}, "SEUT: Collection 'LOD1' not found or empty. Skipping XML entry.")
+            print("SEUT Info: Collection 'LOD1' not found or empty. Skipping XML entry.")
         else:
             lod1 = ET.SubElement(model, 'LOD')
             lod1.set('Distance', str(scene.seut.export_lod1Distance))
@@ -218,7 +218,7 @@ def export_XML(self, context, collection):
             lod1Printed = True
 
         if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
-            self.report({'INFO'}, "SEUT: Collection 'LOD2' not found or empty. Skipping XML entry.")
+            print("SEUT Info: Collection 'LOD2' not found or empty. Skipping XML entry.")
         else:
             if lod1Printed: 
                 lod2 = ET.SubElement(model, 'LOD')
@@ -230,7 +230,7 @@ def export_XML(self, context, collection):
                 self.report({'ERROR'}, "SEUT: LOD2 cannot be set if LOD1 is not. (006)")
 
         if collections['lod3'] == None or len(collections['lod3'].objects) == 0:
-            self.report({'INFO'}, "SEUT: Collection 'LOD3' not found or empty. Skipping XML entry.")
+            print("SEUT Info: Collection 'LOD3' not found or empty. Skipping XML entry.")
         else:
             if lod1Printed and lod2Printed:
                 lod3 = ET.SubElement(model, 'LOD')
@@ -267,7 +267,7 @@ def export_XML(self, context, collection):
 
     exportedXML = open(path + filename + ".xml", "w")
     exportedXML.write(xmlFormatted)
-    self.report({'INFO'}, "SEUT: '%s.xml' has been created." % (path + filename))
+    print("SEUT Info: '%s.xml' has been created." % (path + filename))
 
     return {'FINISHED'}
 
@@ -354,7 +354,7 @@ def export_model_FBX(self, context, collection):
             emptyObj.scale.z *= 0.5
 
     bpy.context.scene.collection.children.unlink(collection)
-    self.report({'INFO'}, "SEUT: '%s.fbx' has been created." % (path + filename))
+    print("SEUT Info: '%s.fbx' has been created." % (path + filename))
 
     return {'FINISHED'}
 

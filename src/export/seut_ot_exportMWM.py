@@ -19,16 +19,12 @@ class SEUT_OT_ExportMWM(Operator):
     def execute(self, context):
         """Compiles all loose files into a MWM"""
 
-        print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_main'")
-
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
         if not result == {'CONTINUE'}:
             return result
 
         result = SEUT_OT_ExportMWM.export_MWM(self, context)
-                
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_mwm'")
 
         return result
 
@@ -64,7 +60,5 @@ class SEUT_OT_ExportMWM(Operator):
         finally:
             if scene.seut.export_deleteLooseFiles:
                 delete_loose_files(path)
-                
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_mwm'")
 
         return {'FINISHED'}

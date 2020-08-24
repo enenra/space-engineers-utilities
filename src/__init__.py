@@ -22,7 +22,7 @@ bl_info = {
     "wiki_url": "https://space-engineers-modding.github.io/modding-reference/tools/3d-modelling/seut.html",
     "tracker_url": "https://github.com/enenra/space-engineers-utilities/issues",
     "support": "COMMUNITY",
-    "category": "Scene"
+    "category": "Modding"
 }
 
 import bpy

@@ -21,16 +21,12 @@ class SEUT_OT_ExportMain(Operator):
     def execute(self, context):
         """Exports the 'Main' collection"""
 
-        print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_main'")
-
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
         if not result == {'CONTINUE'}:
             return result
 
         result = SEUT_OT_ExportMain.export_Main(self, context, False)
-
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_main'")
 
         return result
     
@@ -78,19 +74,10 @@ class SEUT_OT_ExportMain(Operator):
                 print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
                 return {'CANCELLED'}
 
-        # Export XML if boolean is set.
-        if scene.seut.export_xml:
-            self.report({'INFO'}, "SEUT: Exporting XML for 'Main'.")
-            export_XML(self, context, collections['main'])
-        else:
-            print("SEUT Info: 'XML' export disabled.")
 
-        # Export FBX if boolean is set.
-        if scene.seut.export_fbx:
-            self.report({'INFO'}, "SEUT: Exporting FBX for 'Main'.")
-
-            export_model_FBX(self, context, collections['main'])
-        else:
-            print("SEUT Info: 'FBX' export disabled.")
+        print("\n------------------------------ Exporting Collection '" + collections['main'].name + "'.")
+        export_XML(self, context, collections['main'])
+        export_model_FBX(self, context, collections['main'])
+        print("------------------------------ Finished exporting Collection '" + collections['main'].name + "'.\n")
         
         return {'FINISHED'}

@@ -22,16 +22,12 @@ class SEUT_OT_ExportLOD(Operator):
     def execute(self, context):
         """Exports the 'LOD' collections"""
 
-        print("SEUT Info: Running operator: ------------------------------------------------------------------ 'object.export_lod'")
-
         # Checks export path and whether SubtypeId exists
         result = errorExportGeneral(self, context)
         if not result == {'CONTINUE'}:
             return result
         
         result = SEUT_OT_ExportLOD.export_LOD(self, context, False)
-
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'object.export_lod'")
 
         return result
     
@@ -114,40 +110,29 @@ class SEUT_OT_ExportLOD(Operator):
                     print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
                     return {'CANCELLED'}
 
-        # Export LOD1, if present.
+
         if colLOD1Good:
-            if scene.seut.export_xml:
-                self.report({'INFO'}, "SEUT: Exporting XML for 'LOD1'.")
-                export_XML(self, context, collections['lod1'])
-            if scene.seut.export_fbx:
-                self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD1'.")
-                export_model_FBX(self, context, collections['lod1'])
+            print("\n------------------------------ Exporting Collection '" + collections['lod1'].name + "'.")
+            export_XML(self, context, collections['lod1'])
+            export_model_FBX(self, context, collections['lod1'])
+            print("------------------------------ Finished exporting Collection '" + collections['lod1'].name + "'.")
         
-        # Export LOD2, if present.
         if colLOD2Good:
-            if scene.seut.export_xml:
-                self.report({'INFO'}, "SEUT: Exporting XML for 'LOD2'.")
-                export_XML(self, context, collections['lod2'])
-            if scene.seut.export_fbx:
-                self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD2'.")
-                export_model_FBX(self, context, collections['lod2'])
+            print("\n------------------------------ Exporting Collection '" + collections['lod2'].name + "'.")
+            export_XML(self, context, collections['lod2'])
+            export_model_FBX(self, context, collections['lod2'])
+            print("------------------------------ Finished exporting Collection '" + collections['lod2'].name + "'.")
 
-        # Export LOD3, if present.
         if colLOD3Good:
-            if scene.seut.export_xml:
-                self.report({'INFO'}, "SEUT: Exporting XML for 'LOD3'.")
-                export_XML(self, context, collections['lod3'])
-            if scene.seut.export_fbx:
-                self.report({'INFO'}, "SEUT: Exporting FBX for 'LOD3'.")
-                export_model_FBX(self, context, collections['lod3'])
+            print("\n------------------------------ Exporting Collection '" + collections['lod3'].name + "'.")
+            export_XML(self, context, collections['lod3'])
+            export_model_FBX(self, context, collections['lod3'])
+            print("------------------------------ Finished exporting Collection '" + collections['lod3'].name + "'.")
 
-        # Export BS_LOD, if present.
         if colBSLODGood:
-            if scene.seut.export_xml:
-                self.report({'INFO'}, "SEUT: Exporting XML for 'BS_LOD'.")
-                export_XML(self, context, collections['bs_lod'])
-            if scene.seut.export_fbx:
-                self.report({'INFO'}, "SEUT: Exporting FBX for 'BS_LOD'.")
-                export_model_FBX(self, context, collections['bs_lod'])
+            print("\n------------------------------ Exporting Collection '" + collections['bs_lod'].name + "'.")
+            export_XML(self, context, collections['bs_lod'])
+            export_model_FBX(self, context, collections['bs_lod'])
+            print("------------------------------ Finished exporting Collection '" + collections['bs_lod'].name + "'.")
         
         return {'FINISHED'}

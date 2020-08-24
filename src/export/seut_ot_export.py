@@ -13,7 +13,7 @@ from .seut_ot_exportHKT             import SEUT_OT_ExportHKT
 from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
 from .seut_ot_exportMWM             import SEUT_OT_ExportMWM
 from .seut_ot_exportSBC             import SEUT_OT_ExportSBC
-from ..seut_preferences              import get_addon_version
+from ..seut_preferences             import get_addon_version
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from ..seut_errors                  import errorExportGeneral
 
@@ -24,12 +24,11 @@ class SEUT_OT_Export(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-
-        print("SEUT Info: Running operator: ------------------------------------------------------------------ 'scene.export'")
-        print("Exported with SEUT version " + str(get_addon_version()))
         
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
+
+        print("\n============================================================ Exporting Scene '" + scene.name + "' with SEUT " + str(get_addon_version()) + ".")
 
         # If mode is not object mode, export fails horribly.
         currentArea = context.area.type
@@ -85,8 +84,7 @@ class SEUT_OT_Export(Operator):
             result_main = SEUT_OT_ExportMain.export_Main(self, context, True)
 
             # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
-            if scene.seut.export_hkt:
-                SEUT_OT_ExportHKT.export_HKT(self, context, True)
+            SEUT_OT_ExportHKT.export_HKT(self, context, True)
 
             if scene.seut.export_sbc:
                 SEUT_OT_ExportSBC.export_SBC(self, context)
@@ -138,8 +136,7 @@ class SEUT_OT_Export(Operator):
             result_main = SEUT_OT_ExportMain.export_Main(self, context, True)
 
             # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
-            if scene.seut.export_hkt:
-                SEUT_OT_ExportHKT.export_HKT(self, context, True)
+            SEUT_OT_ExportHKT.export_HKT(self, context, True)
 
             if scene.seut.export_sbc:
                 SEUT_OT_ExportSBC.export_SBC(self, context)
@@ -155,7 +152,5 @@ class SEUT_OT_Export(Operator):
             scene.seut.export_exportPath = exportPath
             
         context.area.type = currentArea
-
-        print("SEUT Info: Finished operator: ----------------------------------------------------------------- 'scene.export'")
 
         return {'FINISHED'}

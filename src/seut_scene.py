@@ -387,21 +387,6 @@ class SEUT_Scene(PropertyGroup):
         default=False,
         update=update_export_smallGrid
     )
-    export_fbx: BoolProperty(
-        name="FBX",
-        description="Whether to export to FBX",
-        default=True
-    )
-    export_xml: BoolProperty(
-        name="XML",
-        description="Whether to export to XML",
-        default=True
-    )
-    export_hkt: BoolProperty(
-        name="HKT",
-        description="Whether to export to HKT (Collision model filetype)",
-        default=True
-    )
     export_sbc: BoolProperty(
         name="SBC",
         description="Whether to export to SBC (CubeBlocks definition)",
