@@ -71,6 +71,11 @@ class SEUT_OT_ExportHKT(Operator):
                 self.report({'ERROR'}, "SEUT: Collision object '%s' has unapplied modifiers. Collision model cannot be created. (034)" % (obj.name))
                 print("SEUT Error: Collision object '" + obj.name + "' has unapplied modifiers. Collision model cannot be created. (034)")
                 return {'CANCELLED'}
+        
+        if len(collections['hkt'].objects) > 16:
+            self.report({'ERROR'}, "SEUT: Too many objects in Collision collection. Collection contains %s, but Space Engineers only supports a maximum of 16. (038)" % (len(collections['hkt'].objects)))
+            print("SEUT Error: Too many objects in Collision collection. Collection contains " + str(len(collections['hkt'].objects)) + ", but Space Engineers only supports a maximum of 16. (038)" )
+            return {'CANCELLED'}
 
 
         for obj in collections['hkt'].objects:
