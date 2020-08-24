@@ -131,9 +131,7 @@ def export_XML(self, context, collection):
                 offset = 0
 
                 # _cm ColorMask texture
-                if images['cm'] == None:
-                    self.report({'WARNING'}, "SEUT: No 'CM' texture or node found for local material '%s'. Skipping." % (mat.name))
-                else:
+                if not images['cm'] == None:
                     offset = images['cm'].filepath.find("Textures\\")
                     if offset == -1:
                         self.report({'ERROR'}, "SEUT: 'CM' texture filepath in local material '%s' does not contain 'Textures\\'. Cannot be transformed into relative path. (007)" % (mat.name))
@@ -146,9 +144,7 @@ def export_XML(self, context, collection):
                         self.report({'WARNING'}, "SEUT: 'CM' texture of local material '%s' is not of a valid resolution (%sx%s). May not display correctly ingame." % (mat.name, str(images['cm'].size[0]), str(images['cm'].size[1])))
                 
                 # _ng NormalGloss texture
-                if images['ng'] == None:
-                    self.report({'WARNING'}, "SEUT: No 'NG' texture or node found for local material '%s'. Skipping." % (mat.name))
-                else:
+                if not images['ng'] == None:
                     offset = images['ng'].filepath.find("Textures\\")
                     if offset == -1:
                         self.report({'ERROR'}, "SEUT: 'NG' texture filepath in local material '%s' does not contain 'Textures\\'. Cannot be transformed into relative path. (007)" % (mat.name))
@@ -161,9 +157,7 @@ def export_XML(self, context, collection):
                         self.report({'WARNING'}, "SEUT: 'NG' texture of local material '%s' is not of a valid resolution (%sx%s). May not display correctly ingame." % (mat.name, str(images['ng'].size[0]), str(images['ng'].size[1])))
                 
                 # _add AddMaps texture
-                if images['add'] == None:
-                    self.report({'WARNING'}, "SEUT: No 'ADD' texture or node found for local material '%s'. Skipping." % (mat.name))
-                else:
+                if not images['add'] == None:
                     offset = images['add'].filepath.find("Textures\\")
                     if offset == -1:
                         self.report({'ERROR'}, "SEUT: 'ADD' texture filepath in local material '%s' does not contain 'Textures\\'. Cannot be transformed into relative path. (007)" % (mat.name))
@@ -176,9 +170,7 @@ def export_XML(self, context, collection):
                         self.report({'WARNING'}, "SEUT: 'ADD' texture of local material '%s' is not of a valid resolution (%sx%s). May not display correctly ingame." % (mat.name, str(images['add'].size[0]), str(images['add'].size[1])))
                 
                 # _alphamask Alphamask texture
-                if images['am'] == None:
-                    self.report({'WARNING'}, "SEUT: No 'ALPHAMASK' texture or node found for local material '%s'. Skipping." % (mat.name))
-                else:
+                if not images['am'] == None:
                     offset = images['am'].filepath.find("Textures\\")
                     if offset == -1:
                         self.report({'ERROR'}, "SEUT: 'ALPHAMASK' texture filepath in local material '%s' does not contain 'Textures\\'. Cannot be transformed into relative path. (007)" % (mat.name))
