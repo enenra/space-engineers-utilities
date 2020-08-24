@@ -25,6 +25,7 @@ class SEUT_OT_Export(Operator):
     def execute(self, context):
 
         print("SEUT Info: Running operator: ------------------------------------------------------------------ 'scene.export'")
+        print("Exported with SEUT Version: " + str(__version__))
         
         scene = context.scene
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
