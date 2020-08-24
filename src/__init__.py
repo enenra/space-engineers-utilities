@@ -19,7 +19,7 @@ bl_info = {
     "blender": (2, 83, 0),
     "location": "View3D > Tools ",
     "warning": "",
-    "wiki_url": "https://github.com/enenra/space-engineers-utilities",
+    "wiki_url": "https://space-engineers-modding.github.io/modding-reference/tools/3d-modelling/seut.html",
     "tracker_url": "https://github.com/enenra/space-engineers-utilities/issues",
     "support": "COMMUNITY",
     "category": "Scene"
