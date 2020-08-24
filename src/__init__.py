@@ -169,6 +169,8 @@ def register():
 
     bpy.app.handlers.load_post.append(load_handler)
 
+    seut_preferences.addon_version = bl_info['version']
+
 
 def unregister():
     for cls in reversed(classes):

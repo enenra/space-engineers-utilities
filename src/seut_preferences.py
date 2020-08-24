@@ -84,6 +84,9 @@ def update_mwmbPath(self, context):
     elif os.path.basename(self.mwmbPath) != name:
         showError(context, "Report: Error", "SEUT Error: Incorrect file linked. Link '" + name + "' (030)")
         self.mwmbPath = ""
+
+def get_addon_version():
+    return addon_version
     
 
 class SEUT_AddonPreferences(AddonPreferences):
