@@ -316,9 +316,10 @@ def export_model_FBX(self, context, collection):
                 unlinkSubpartScene(emptyObj)
             
             # Blender FBX export halves empty size on export, this works around it
-            emptyObj.scale.x *= 2
-            emptyObj.scale.y *= 2
-            emptyObj.scale.z *= 2
+            if 'MaxHandle' not in emptyObj:
+                emptyObj.scale.x *= 2
+                emptyObj.scale.y *= 2
+                emptyObj.scale.z *= 2
 
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
@@ -341,9 +342,10 @@ def export_model_FBX(self, context, collection):
                     linkSubpartScene(self, scene, emptyObj, None)
 
             # Resetting empty size
-            emptyObj.scale.x *= 0.5
-            emptyObj.scale.y *= 0.5
-            emptyObj.scale.z *= 0.5
+            if 'MaxHandle' not in emptyObj:
+                emptyObj.scale.x *= 0.5
+                emptyObj.scale.y *= 0.5
+                emptyObj.scale.z *= 0.5
 
     bpy.context.scene.collection.children.unlink(collection)
     print("SEUT Info: '%s.fbx' has been created." % (path + filename))
