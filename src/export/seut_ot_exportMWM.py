@@ -44,7 +44,7 @@ class SEUT_OT_ExportMWM(Operator):
         if not result == {'CONTINUE'}:
             return result
 
-        if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
+        if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(bpy.path.abspath(materialsPath)) == False:
             self.report({'ERROR'}, "SEUT: Path to Materials Folder (Addon Preferences) '%s' not valid. (017)" % (materialsPath))
             print("SEUT Info: Path to Materials Folder '" + materialsPath + "' not valid. (017)")
             return {'CANCELLED'}

@@ -146,7 +146,7 @@ def update_export_exportPath(self, context):
     if self.export_exportPath == "":
         return
 
-    if os.path.isdir(self.export_exportPath):
+    if os.path.isdir(bpy.path.abspath(self.export_exportPath)):
         if self.export_exportPath.find('Models\\') == -1:
             showError(context, "Report: Error", "SEUT Error: Export path '" + self.export_exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
             self.export_exportPath = ""
