@@ -1,5 +1,6 @@
 import bpy
 import os
+import re
 
 from bpy.types  import Operator
 
@@ -57,5 +58,26 @@ class SEUT_OT_RefreshMatLibs(Operator):
                 for idx in range(0, len(wm.seut.matlibs)):
                     if wm.seut.matlibs[idx].name == libOld.name:
                         wm.seut.matlibs.remove(idx)
+        
+        # Finally, attempt to re-link any MatLibs with broken paths
+        currentArea = context.area.type
+        context.area.type = 'OUTLINER'
+
+        for lib in bpy.data.libraries:
+            if os.path.exists(lib.filepath) == False:
+                
+                if re.search("\.[0-9]{3}", lib.name[-4:]) != None:
+                    lib.name = lib.name[:-4]
+
+                try:
+                    bpy.ops.wm.lib_relocate(
+                        library=lib.name,
+                        directory=path,
+                        filename=lib.name
+                    )
+                except:
+                    print("SEUT Warning: Library '" + lib.name + "' could not be relocated in '" + path + "'.")
+
+        context.area.type = currentArea
 
         return {'FINISHED'}
