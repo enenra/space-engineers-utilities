@@ -49,19 +49,20 @@ class SEUT_OT_Export(Operator):
         
         # This exports to large grid, if selected, but also exports character-type scenes
         if scene.seut.export_largeGrid or scene.seut.sceneType == 'character_animation' or scene.seut.sceneType == 'character':
+            
+            if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+                subtypeId = str(scene.seut.subtypeId)
+                if scene.seut.subtypeId.find("_SG_") != -1:
+                    scene.seut.subtypeId = scene.seut.subtypeId.replace("_SG_", "_LG_")
 
-            subtypeId = str(scene.seut.subtypeId)
-            if scene.seut.subtypeId.find("_SG_") != -1:
-                scene.seut.subtypeId = scene.seut.subtypeId.replace("_SG_", "_LG_")
+                elif scene.seut.subtypeId[:3] == "SG_":
+                    scene.seut.subtypeId = scene.seut.subtypeId.replace("SG_", "LG_")
 
-            elif scene.seut.subtypeId[:3] == "SG_":
-                scene.seut.subtypeId = scene.seut.subtypeId.replace("SG_", "LG_")
+                elif scene.seut.subtypeId[:3] == "LG_":
+                    pass
 
-            elif scene.seut.subtypeId[:3] == "LG_":
-                pass
-
-            elif scene.seut.subtypeId.find("_LG_") == -1:
-                scene.seut.subtypeId = "LG_" + scene.seut.subtypeId
+                elif scene.seut.subtypeId.find("_LG_") == -1:
+                    scene.seut.subtypeId = "LG_" + scene.seut.subtypeId
 
             gridScale = str(scene.seut.gridScale)
             scene.seut.gridScale = 'large'
@@ -102,18 +103,19 @@ class SEUT_OT_Export(Operator):
         # This exports to large grid, if selected, but also exports character-type scenes
         if scene.seut.export_smallGrid:
 
-            subtypeId = str(scene.seut.subtypeId)
-            if scene.seut.subtypeId.find("_LG_") != -1:
-                scene.seut.subtypeId = scene.seut.subtypeId.replace("_LG_", "_SG_")
+            if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+                subtypeId = str(scene.seut.subtypeId)
+                if scene.seut.subtypeId.find("_LG_") != -1:
+                    scene.seut.subtypeId = scene.seut.subtypeId.replace("_LG_", "_SG_")
 
-            elif scene.seut.subtypeId[:3] == "LG_":
-                scene.seut.subtypeId = scene.seut.subtypeId.replace("LG_", "SG_")
+                elif scene.seut.subtypeId[:3] == "LG_":
+                    scene.seut.subtypeId = scene.seut.subtypeId.replace("LG_", "SG_")
 
-            elif scene.seut.subtypeId[:3] == "SG_":
-                pass
-            
-            elif scene.seut.subtypeId.find("_SG_") == -1:
-                scene.seut.subtypeId = "SG_" + scene.seut.subtypeId
+                elif scene.seut.subtypeId[:3] == "SG_":
+                    pass
+                
+                elif scene.seut.subtypeId.find("_SG_") == -1:
+                    scene.seut.subtypeId = "SG_" + scene.seut.subtypeId
 
             gridScale = str(scene.seut.gridScale)
             scene.seut.gridScale = 'small'
