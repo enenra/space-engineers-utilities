@@ -95,10 +95,11 @@ class SEUT_OT_Export(Operator):
                 SEUT_OT_ExportMWM.export_MWM(self, context)
 
             # Resetting the variables
-            scene.seut.subtypeId = subtypeId
-            scene.seut.gridScale = gridScale
-            scene.seut.export_rescaleFactor = rescaleFactor
-            scene.seut.export_exportPath = exportPath
+            if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+                scene.seut.subtypeId = subtypeId
+                scene.seut.gridScale = gridScale
+                scene.seut.export_rescaleFactor = rescaleFactor
+                scene.seut.export_exportPath = exportPath
         
         # This exports to large grid, if selected, but also exports character-type scenes
         if scene.seut.export_smallGrid:
@@ -148,10 +149,11 @@ class SEUT_OT_Export(Operator):
                 SEUT_OT_ExportMWM.export_MWM(self, context)
 
             # Resetting the variables
-            scene.seut.subtypeId = subtypeId
-            scene.seut.gridScale = gridScale
-            scene.seut.export_rescaleFactor = rescaleFactor
-            scene.seut.export_exportPath = exportPath
+            if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+                scene.seut.subtypeId = subtypeId
+                scene.seut.gridScale = gridScale
+                scene.seut.export_rescaleFactor = rescaleFactor
+                scene.seut.export_exportPath = exportPath
             
         context.area.type = currentArea
 
