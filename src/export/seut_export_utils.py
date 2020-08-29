@@ -312,7 +312,27 @@ def export_model_FBX(self, context, collection):
                 if emptyObj.parent is not None and emptyObj.seut.linkedObject.parent is not None and emptyObj.parent != emptyObj.seut.linkedObject.parent:
                     print("SEUT Warning: Highlight empty '" + emptyObj.name + "' and its linked object '" + emptyObj.seut.linkedObject.name + "' have different parent objects. This may prevent it from working properly ingame.")
             elif 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
-                emptyObj['file'] = emptyObj.seut.linkedScene.seut.subtypeId
+                reference = emptyObj.seut.linkedScene.seut.subtypeId
+
+                # Account for simultaneous export
+                if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+                    if scene.seut.subtypeId.find("LG_") != None:
+                        if reference.find("LG_") != None:
+                            pass
+                        elif reference.find("SG_") != None:
+                            reference = reference.replace("SG_", "LG_")
+                        else:
+                            reference = "LG_" + reference
+
+                    elif scene.seut.subtypeId.find("SG_") != None:
+                        if reference.find("SG_") != None:
+                            pass
+                        elif reference.find("LG_") != None:
+                            reference = reference.replace("LG_", "SG_")
+                        else:
+                            reference = "SG_" + reference
+                    
+                emptyObj['file'] = reference
                 unlinkSubpartScene(emptyObj)
             
             # Blender FBX export halves empty size on export, this works around it
@@ -340,6 +360,7 @@ def export_model_FBX(self, context, collection):
             if scene.seut.linkSubpartInstances:
                 if 'file' in emptyObj and emptyObj.seut.linkedScene is not None and emptyObj.seut.linkedScene.name in bpy.data.scenes:
                     linkSubpartScene(self, scene, emptyObj, None)
+                    emptyObj['file'] = emptyObj.seut.linkedScene.seut.subtypeId
 
             # Resetting empty size
             if 'MaxHandle' not in emptyObj:
