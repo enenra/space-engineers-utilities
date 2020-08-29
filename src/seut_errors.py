@@ -11,7 +11,7 @@ def errorExportGeneral(self, context):
     else:
         addon = __package__[:__package__.find(".")]
     preferences = bpy.context.preferences.addons.get(addon).preferences
-    exportPath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath))
+    exportPath = os.path.abspath(bpy.path.abspath(scene.seut.export_exportPath))
 
     # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
     if not bpy.data.is_saved:

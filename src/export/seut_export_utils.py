@@ -52,7 +52,7 @@ def export_XML(self, context, collection):
         paramRotationY.set('Name', 'RotationY')
         paramRotationY.text = '180'
     
-    path = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
+    path = os.path.abspath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
 
     # Currently no support for the other material parameters - are those even needed anymore?
 
@@ -282,7 +282,7 @@ def export_model_FBX(self, context, collection):
     else:
         filename = scene.seut.subtypeId + '_' + fileType
 
-    path = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
+    path = os.path.abspath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
     
     # Exporting the collection.
     # I can only export the currently active collection, so I need to set the target collection to active (for which I have to link it for some reason),
@@ -311,7 +311,7 @@ def export_model_FBX(self, context, collection):
                 emptyObj['highlight'] = emptyObj.seut.linkedObject.name
                 if emptyObj.parent is not None and emptyObj.seut.linkedObject.parent is not None and emptyObj.parent != emptyObj.seut.linkedObject.parent:
                     print("SEUT Warning: Highlight empty '" + emptyObj.name + "' and its linked object '" + emptyObj.seut.linkedObject.name + "' have different parent objects. This may prevent it from working properly ingame.")
-            if 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
+            elif 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
                 emptyObj['file'] = emptyObj.seut.linkedScene.seut.subtypeId
                 unlinkSubpartScene(emptyObj)
             
@@ -474,7 +474,7 @@ def tool_path(propertyName, displayName, toolPath=None):
     if toolPath is None:
         raise FileNotFoundError("%s is not configured", (displayName))
 
-    toolPath = os.path.normpath(bpy.path.abspath(toolPath))
+    toolPath = os.path.abspath(bpy.path.abspath(toolPath))
     if os.path.isfile(toolPath) is None:
         raise FileNotFoundError("%s: no such file %s" % (displayName, toolPath))
 

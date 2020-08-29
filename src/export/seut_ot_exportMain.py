@@ -37,7 +37,7 @@ class SEUT_OT_ExportMain(Operator):
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
-        fbxImporterPath = os.path.normpath(bpy.path.abspath(preferences.fbxImporterPath))
+        fbxImporterPath = os.path.abspath(bpy.path.abspath(preferences.fbxImporterPath))
 
         # Checks whether collection exists, is excluded or is empty
         result = errorCollection(self, scene, collections['main'], False)

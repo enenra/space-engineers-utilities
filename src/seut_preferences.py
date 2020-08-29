@@ -23,13 +23,16 @@ def update_materialsPath(self, context):
     if self.materialsPath == "":
         return
 
-    if os.path.isdir(bpy.path.abspath(self.materialsPath)):
+    if os.path.isdir(os.path.abspath(bpy.path.abspath(self.materialsPath))):
         if not bpy.path.abspath(self.materialsPath[-10:-1]) == 'Materials':
             showError(context, "Report: Error", "SEUT Error: Path (" + bpy.path.abspath(self.materialsPath[-10:-1]) + ")" + 
                 " does not point to a 'Materials'-folder. (017)")
             self.materialsPath = ""
         else:
             bpy.ops.scene.refresh_matlibs()
+    else:
+        showError(context, "Report: Error", "SEUT Error: Path '" + os.path.abspath(bpy.path.abspath(self.materialsPath)) + "' does not exist (039)")
+        self.materialsPath = ""
     
 
 def update_fbxImporterPath(self, context):
@@ -38,7 +41,7 @@ def update_fbxImporterPath(self, context):
     if self.fbxImporterPath == "":
         return
 
-    if os.path.isdir(bpy.path.abspath(self.fbxImporterPath)):
+    if os.path.isdir(os.path.abspath(bpy.path.abspath(self.fbxImporterPath))):
         if os.path.exists(bpy.path.abspath(self.fbxImporterPath) + name):
             self.fbxImporterPath = bpy.path.abspath(self.fbxImporterPath) + name
         else:
@@ -49,6 +52,10 @@ def update_fbxImporterPath(self, context):
         showError(context, "Report: Error", "SEUT Error: Incorrect file linked. Link '" + name + "' (030)")
         self.fbxImporterPath = ""
 
+    else:
+        showError(context, "Report: Error", "SEUT Error: Path '" + os.path.abspath(bpy.path.abspath(self.fbxImporterPath)) + "' does not exist (039)")
+        self.fbxImporterPath = ""
+
 
 def update_havokPath(self, context):
     name = 'hctStandAloneFilterManager.exe'
@@ -56,7 +63,7 @@ def update_havokPath(self, context):
     if self.havokPath == "":
         return
 
-    if os.path.isdir(bpy.path.abspath(self.havokPath)):
+    if os.path.isdir(os.path.abspath(bpy.path.abspath(self.havokPath))):
         if os.path.exists(bpy.path.abspath(self.havokPath) + name):
             self.havokPath = bpy.path.abspath(self.havokPath) + name
         else:
@@ -66,6 +73,10 @@ def update_havokPath(self, context):
     elif os.path.basename(self.havokPath) != name:
         showError(context, "Report: Error", "SEUT Error: Incorrect file linked. Link '" + name + "' (030)")
         self.havokPath = ""
+        
+    else:
+        showError(context, "Report: Error", "SEUT Error: Path '" + os.path.abspath(bpy.path.abspath(self.havokPath)) + "' does not exist (039)")
+        self.havokPath = ""
 
 
 def update_mwmbPath(self, context):
@@ -74,7 +85,7 @@ def update_mwmbPath(self, context):
     if self.mwmbPath == "":
         return
 
-    if os.path.isdir(bpy.path.abspath(self.mwmbPath)):
+    if os.path.isdir(os.path.abspath(bpy.path.abspath(self.mwmbPath))):
         if os.path.exists(bpy.path.abspath(self.mwmbPath) + name):
             self.mwmbPath = bpy.path.abspath(self.mwmbPath) + name
         else:
@@ -84,6 +95,11 @@ def update_mwmbPath(self, context):
     elif os.path.basename(self.mwmbPath) != name:
         showError(context, "Report: Error", "SEUT Error: Incorrect file linked. Link '" + name + "' (030)")
         self.mwmbPath = ""
+        
+    else:
+        showError(context, "Report: Error", "SEUT Error: Path '" + os.path.abspath(bpy.path.abspath(self.mwmbPath)) + "' does not exist (039)")
+        self.mwmbPath = ""
+
 
 def get_addon_version():
     return addon_version

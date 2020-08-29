@@ -36,22 +36,22 @@ class SEUT_OT_ExportMWM(Operator):
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
         settings = ExportSettings(scene, depsgraph)
-        mwmbPath = os.path.normpath(bpy.path.abspath(preferences.mwmbPath))
-        materialsPath = os.path.normpath(bpy.path.abspath(preferences.materialsPath))
+        mwmbPath = os.path.abspath(bpy.path.abspath(preferences.mwmbPath))
+        materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
         result = errorToolPath(self, mwmbPath, "MWM Builder", "MwmBuilder.exe")
         if not result == {'CONTINUE'}:
             return result
 
-        if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(bpy.path.abspath(materialsPath)) == False:
+        if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
             self.report({'ERROR'}, "SEUT: Path to Materials Folder (Addon Preferences) '%s' not valid. (017)" % (materialsPath))
             print("SEUT Info: Path to Materials Folder '" + materialsPath + "' not valid. (017)")
             return {'CANCELLED'}
 
-        path = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
+        path = os.path.abspath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
             
-        mwmpath = os.path.normpath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
+        mwmpath = os.path.abspath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
         mwmfile = join(mwmpath, scene.seut.subtypeId + ".mwm")
         materialspath = bpy.path.abspath(preferences.materialsPath)
         
