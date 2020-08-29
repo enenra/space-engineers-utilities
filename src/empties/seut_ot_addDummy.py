@@ -26,7 +26,7 @@ class SEUT_OT_AddDummy(Operator):
             ('ejector', 'Ejector', 'Adds ejector functionality'),
             ('collector', 'Collector', 'Adds collector functionality'),
             ('merge', 'Merge Block', 'Adds merge block functionality'),
-            ('thruster_flame', 'Thruster Flame', 'Determines the point where the thruster flame will appear.\nNotes: Empty size defines flame width. Flame length is controlled within the SBC definition. Flare will only appear on empty with lowest index.\nWarning: Thrust direction is always the Y+ axis'),
+            ('thruster_flame', 'Thruster Flame', 'Determines the point where the thruster flame will appear.\nNotes: Empty size defines flame width. Flame length is controlled within the SBC definition. Flare will only appear on empty with lowest index.\nWarning: Thrust direction is always Y-'),
             ('muzzle_missile', 'Muzzle Missile', 'The point of origin for missiles shot by the block.\nNotes: Should be placed with some distance to mesh, otherwise missiles can collide with geometry of launcher.\nWarning: Shoot direction is always the Y+ axis'),
             ('muzzle_projectile', 'Muzzle Projectile', 'The point of origin for projectiles shot by the block.\nWarning: Shoot direction is always the Y+ axis'),
             ('respawn', 'Respawn Point', 'The location in which players will respawn. Tends to place player origin (feet) to middlepoint of empty'),
@@ -101,6 +101,7 @@ class SEUT_OT_AddDummy(Operator):
         if self.detectorType == 'thruster_flame':
             emptyName = "thruster_flame_"
             usesIndex = True
+            displayType = 'CONE'
 
         if self.detectorType == 'muzzle_missile':
             emptyName = "muzzle_missile_"
