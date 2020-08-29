@@ -60,8 +60,12 @@ class SEUT_OT_RefreshMatLibs(Operator):
                         wm.seut.matlibs.remove(idx)
         
         # Finally, attempt to re-link any MatLibs with broken paths
-        currentArea = context.area.type
-        context.area.type = 'OUTLINER'
+        try:
+            currentArea = context.area.type
+            context.area.type = 'OUTLINER'
+        except AttributeError:
+            context.area.type = 'OUTLINER'
+            currentArea = context.area.type
 
         for lib in bpy.data.libraries:
             if os.path.exists(lib.filepath) == False:

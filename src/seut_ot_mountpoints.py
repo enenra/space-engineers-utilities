@@ -44,8 +44,13 @@ class SEUT_OT_Mountpoints(Operator):
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
 
-        currentArea = context.area.type
-        context.area.type = 'VIEW_3D'
+        try:
+            currentArea = context.area.type
+            context.area.type = 'VIEW_3D'
+        except AttributeError:
+            context.area.type = 'VIEW_3D'
+            currentArea = context.area.type
+            
         if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
             context.object.select_set(False)
@@ -196,8 +201,13 @@ class SEUT_OT_Mountpoints(Operator):
 
         scene = context.scene
 
-        currentArea = context.area.type
-        context.area.type = 'VIEW_3D'
+        try:
+            currentArea = context.area.type
+            context.area.type = 'VIEW_3D'
+        except AttributeError:
+            context.area.type = 'VIEW_3D'
+            currentArea = context.area.type
+            
         if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
             context.object.select_set(False)
@@ -266,8 +276,13 @@ class SEUT_OT_Mountpoints(Operator):
         scene = context.scene
 
         # If mode is not object mode, export fails horribly.
-        currentArea = context.area.type
-        context.area.type = 'VIEW_3D'
+        try:
+            currentArea = context.area.type
+            context.area.type = 'VIEW_3D'
+        except AttributeError:
+            context.area.type = 'VIEW_3D'
+            currentArea = context.area.type
+            
         if context.object is not None:
             bpy.ops.object.mode_set(mode='OBJECT')
             context.object.select_set(False)
