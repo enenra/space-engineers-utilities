@@ -64,8 +64,12 @@ class SEUT_OT_RefreshMatLibs(Operator):
             currentArea = context.area.type
             context.area.type = 'OUTLINER'
         except AttributeError:
-            context.area.type = 'OUTLINER'
-            currentArea = context.area.type
+            try:
+                context.area.type = 'OUTLINER'
+                currentArea = context.area.type
+            # If it fails here it generally means that this is on startup before context.area is even set.
+            except AttributeError:
+                pass
 
         for lib in bpy.data.libraries:
             if os.path.exists(lib.filepath) == False:
@@ -82,6 +86,9 @@ class SEUT_OT_RefreshMatLibs(Operator):
                 except:
                     print("SEUT Warning: Library '" + lib.name + "' could not be relocated in '" + path + "'.")
 
-        context.area.type = currentArea
+        try:
+            context.area.type = currentArea
+        except UnboundLocalError:
+            pass
 
         return {'FINISHED'}
