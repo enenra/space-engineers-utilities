@@ -371,8 +371,8 @@ class SEUT_Scene(PropertyGroup):
 
     # Export
     export_deleteLooseFiles: BoolProperty(
-        name="Delete Loose Files",
-        description="Whether the intermediary files should be deleted after the MWM has been created",
+        name="Delete Temp Files",
+        description="Whether the temporary files should be deleted after the MWM has been created",
         default=True
     )
     export_largeGrid: BoolProperty(
