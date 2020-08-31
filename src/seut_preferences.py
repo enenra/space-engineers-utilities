@@ -199,7 +199,7 @@ class SEUT_AddonPreferences(AddonPreferences):
     def draw(self, context):
         layout = self.layout
 
-        layout.prop(self, "set_dev_tools_paths")
+        # layout.prop(self, "set_dev_tools_paths")
 
         layout.prop(self, "materialsPath", expand=True)
         box = layout.box()
