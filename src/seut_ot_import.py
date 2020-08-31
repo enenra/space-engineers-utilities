@@ -70,7 +70,7 @@ class SEUT_OT_Import(Operator):
         for obj in importedObjects:
             
             # Empties are imported at 2x the size they should be, this fixes that issue
-            if obj.type == 'EMPTY' and 'MaxHandle' not in obj:
+            if obj.type == 'EMPTY' and 'MaxHandle' not in obj and 'file' not in obj:
                 obj.scale.x *= 0.5
                 obj.scale.y *= 0.5
                 obj.scale.z *= 0.5

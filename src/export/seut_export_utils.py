@@ -299,7 +299,7 @@ def export_model_FBX(self, context, collection):
         if emptyObj is not None and emptyObj.type == 'EMPTY':
             
             # To ensure they work ingame (where duplicate names are no issue) this will remove the ".001" etc. from the name (and cause another empty to get this numbering)
-            if re.search("\.[0-9]{3}", emptyObj.name[-4:]) != None:
+            if re.search("\.[0-9]{3}", emptyObj.name[-4:]) != None and emptyObj.name.find("(L)") == -1:
                 emptyObj.name = emptyObj.name[:-4]
 
             if emptyObj.parent is None:
@@ -336,7 +336,7 @@ def export_model_FBX(self, context, collection):
                 unlinkSubpartScene(emptyObj)
             
             # Blender FBX export halves empty size on export, this works around it
-            if 'MaxHandle' not in emptyObj:
+            if 'MaxHandle' not in emptyObj and 'file' not in emptyObj:
                 emptyObj.scale.x *= 2
                 emptyObj.scale.y *= 2
                 emptyObj.scale.z *= 2
@@ -363,7 +363,7 @@ def export_model_FBX(self, context, collection):
                     emptyObj['file'] = emptyObj.seut.linkedScene.seut.subtypeId
 
             # Resetting empty size
-            if 'MaxHandle' not in emptyObj:
+            if 'MaxHandle' not in emptyObj and 'file' not in emptyObj:
                 emptyObj.scale.x *= 0.5
                 emptyObj.scale.y *= 0.5
                 emptyObj.scale.z *= 0.5
