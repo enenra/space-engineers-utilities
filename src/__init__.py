@@ -16,7 +16,7 @@ bl_info = {
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie, Kamikaze",
     "version": (0, 9, 92),
-    "blender": (2, 83, 0),
+    "blender": (2, 9, 0),
     "location": "View3D > Tools ",
     "warning": "",
     "wiki_url": "https://space-engineers-modding.github.io/modding-reference/tools/3d-modelling/seut.html",
