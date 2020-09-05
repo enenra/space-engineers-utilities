@@ -18,7 +18,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
     # Greys the button out if there is no active object.
     @classmethod
     def poll(cls, context):
-        return len(context.selected_objects) != 0
+        return len(context.selected_objects) != 0 and context.selected_objects[0].type != 'EMPTY'
 
     detectorType: EnumProperty(
         name='Highlight Type',
