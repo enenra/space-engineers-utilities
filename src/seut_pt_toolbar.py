@@ -2,7 +2,8 @@ import bpy
 
 from bpy.types  import Panel
 
-from .seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_preferences              import get_addon_version
 
 class SEUT_PT_Panel(Panel):
     """Creates the topmost panel for SEUT"""
@@ -16,6 +17,13 @@ class SEUT_PT_Panel(Panel):
         layout = self.layout
         scene = context.scene
         wm = context.window_manager
+
+        currentVersionName = 'v' + str(get_addon_version()).replace("(", "").replace(")", "").replace(", ", ".")
+
+        if str(currentVersionName) != str(wm.seut.latest_version) and wm.seut.needs_update != "":
+            row = layout.row()
+            row.label(text=wm.seut.needs_update, icon='ERROR')
+            row.operator('wm.get_update', icon='IMPORT', text="")
 
         if not 'SEUT' in scene.view_layers:
             row = layout.row()

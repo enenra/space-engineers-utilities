@@ -198,6 +198,22 @@ class SEUT_AddonPreferences(AddonPreferences):
 
     def draw(self, context):
         layout = self.layout
+        wm = context.window_manager
+
+        currentVersionName = 'v' + str(get_addon_version()).replace("(", "").replace(")", "").replace(", ", ".")
+
+        row = layout.row()
+        row.label(text="Update Status:")
+
+        if str(currentVersionName) != str(wm.seut.latest_version):
+            row.label(text=wm.seut.needs_update, icon='ERROR')
+        else:
+            row.label(text=wm.seut.needs_update, icon='CHECKMARK')
+
+        if wm.seut.latest_version != "" and wm.seut.latest_version != currentVersionName:
+            row.operator('wm.get_update', icon='IMPORT')
+        else:
+            row.operator('wm.get_update', text="Releases", icon='IMPORT')
 
         # layout.prop(self, "set_dev_tools_paths")
 

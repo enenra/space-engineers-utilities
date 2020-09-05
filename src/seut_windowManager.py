@@ -139,3 +139,11 @@ class SEUT_WindowManager(PropertyGroup):
     errorText: StringProperty(
         name="Error"
     )
+
+    # Updater
+    needs_update: StringProperty(
+        name="Needs Update"
+    )
+    latest_version: StringProperty(
+        name="Latest Version"
+    )

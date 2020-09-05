@@ -14,7 +14,7 @@
 bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
-    "author": "enenra, Stollie, Kamikaze",
+    "author": "enenra, Stollie",
     "version": (0, 9, 93),
     "blender": (2, 90, 0),
     "location": "View3D > Tools ",
@@ -69,8 +69,10 @@ from .materials.seut_ot_matCreate               import SEUT_OT_MatCreate
 from .materials.seut_matLib                     import SEUT_UL_MatLib
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
+from .utils.seut_updater                        import checkUpdate
 
 from .seut_preferences                  import SEUT_AddonPreferences
+from .seut_preferences                  import get_addon_version
 from .seut_pt_toolbar                   import SEUT_PT_Panel
 from .seut_pt_toolbar                   import SEUT_PT_Panel_BoundingBox
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Mirroring
@@ -78,6 +80,7 @@ from .seut_pt_toolbar                   import SEUT_PT_Panel_Mountpoints
 from .seut_pt_toolbar                   import SEUT_PT_Panel_IconRender
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Export
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Import
+from .seut_ot_getUpdate                 import SEUT_OT_GetUpdate
 from .seut_ot_import                    import SEUT_OT_Import
 from .seut_ot_structureConversion       import SEUT_OT_StructureConversion
 from .seut_ot_attemptToFixPositioning   import SEUT_OT_AttemptToFixPositioning
@@ -112,6 +115,7 @@ classes = (
     SEUT_PT_EmptyLink,
     SEUT_OT_ExportMaterials,
     SEUT_MT_ContextMenu,
+    SEUT_OT_GetUpdate,
     SEUT_OT_AddHighlightEmpty,
     SEUT_OT_AddDummy,
     SEUT_OT_AddPresetSubpart,
@@ -211,6 +215,7 @@ def load_handler(dummy):
     except RuntimeError:
         print("SEUT Error: Available MatLibs could not be refreshed. (021)")
 
+    checkUpdate(get_addon_version())
 
 addon_keymaps = []
 
