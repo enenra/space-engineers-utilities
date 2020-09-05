@@ -185,6 +185,14 @@ class SEUT_MountpointAreas(PropertyGroup):
         name="Dimension Y",
         default=0
     )
+    default: BoolProperty(
+        name="Default",
+        default=False
+    )
+    pressurized: BoolProperty(
+        name="Pressurized",
+        default=False
+    )
 
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
@@ -219,8 +227,8 @@ class SEUT_Scene(PropertyGroup):
     gridScale: EnumProperty(
         name='Scale',
         items=(
-            ('large', 'Large', 'Large grid blocks (2.5m)'),
-            ('small', 'Small', 'Small grid blocks (0.5m)')
+            ('large', 'Large', 'Large grid blocks (2.5m)', 'MESH_CUBE', 1),
+            ('small', 'Small', 'Small grid blocks (0.5m)', 'META_CUBE', 2)
             ),
         default='large',
         update=update_GridScale

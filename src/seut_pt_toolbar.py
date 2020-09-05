@@ -137,6 +137,12 @@ class SEUT_PT_Panel_Mountpoints(Panel):
                 box = layout.box()
                 box.label(text="Areas", icon='MESH_PLANE')
                 box.prop(wm.seut, 'mountpointSide', icon='AXIS_SIDE')
+
+                if not context.active_object is None and context.active_object.name in bpy.data.collections['Mountpoints (' + scene.seut.subtypeId + ')'].objects and not context.active_object.type == 'EMPTY':
+                    row = box.row()
+                    row.prop(context.active_object.seut, 'default', icon='PINNED', text="Default")
+                    row.prop(context.active_object.seut, 'pressurized', icon='LOCKED', text="Pressurized")
+                    
                 box.operator('scene.add_mountpoint_area', icon='ADD')
         
 
@@ -247,8 +253,8 @@ class SEUT_PT_Panel_Export(Panel):
                 box2 = box.box()
                 box2.label(text="Grid Export", icon='GRID')
                 row = box2.row()
-                row.prop(scene.seut, "export_largeGrid")
-                row.prop(scene.seut, "export_smallGrid")
+                row.prop(scene.seut, "export_largeGrid", icon='MESH_CUBE')
+                row.prop(scene.seut, "export_smallGrid", icon='META_CUBE')
                 box.prop(scene.seut, "export_rescaleFactor")
             
             split = box.split(factor=0.85)

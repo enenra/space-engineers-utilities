@@ -161,6 +161,8 @@ class SEUT_OT_Mountpoints(Operator):
                 plane.active_material = mpMat
                 plane.location.x = area.x
                 plane.location.y = area.y
+                plane.seut.default = area.default
+                plane.seut.pressurized = area.pressurized
 
         plane.select_set(state=False, view_layer=context.window.view_layer)
 
@@ -264,9 +266,11 @@ class SEUT_OT_Mountpoints(Operator):
                     item.y = child.location.y
                     item.xDim = child.dimensions.x
                     item.yDim = child.dimensions.y
+                    item.default = child.seut.default
+                    item.pressurized = child.seut.pressurized
 
         for area in areas:
-            print("SEUT Info: Mountpoint Area " + area.side + " saved. Location x: " + str(area.x) + " Location y: " + str(area.y) + " Dimension x: " + str(area.xDim) + " Dimension y: " + str(area.yDim))
+            print("SEUT Info: Mountpoint Area " + area.side + " saved. Location x: " + str(area.x) + " Location y: " + str(area.y) + " Dimension x: " + str(area.xDim) + " Dimension y: " + str(area.yDim) + " Default: " + str(area.default) + " PressurizedWhenOpen: " + str(area.pressurized))
 
         return
 

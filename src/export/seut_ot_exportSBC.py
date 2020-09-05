@@ -228,6 +228,10 @@ class SEUT_OT_ExportSBC(Operator):
                     def_Mountpoint.set('c_StartY', str(round(startY, 2)))
                     def_Mountpoint.set('d_EndX', str(round(endX, 2)))
                     def_Mountpoint.set('e_EndY', str(round(endY, 2)))
+                    if area.default:
+                        def_Mountpoint.set('f_Default', str(area.default).lower())
+                    if area.pressurized:
+                        def_Mountpoint.set('g_PressurizedWhenOpen', str(area.pressurized).lower())
 
         
         # Creating Build Stage references.
@@ -305,6 +309,8 @@ class SEUT_OT_ExportSBC(Operator):
         xmlFormatted = xmlFormatted.replace("c_StartY", "StartY")
         xmlFormatted = xmlFormatted.replace("d_EndX", "EndX")
         xmlFormatted = xmlFormatted.replace("e_EndY", "EndY")
+        xmlFormatted = xmlFormatted.replace("f_Default", "Default")
+        xmlFormatted = xmlFormatted.replace("g_PressurizedWhenOpen", "PressurizedWhenOpen")
 
         filename = scene.seut.subtypeId
 

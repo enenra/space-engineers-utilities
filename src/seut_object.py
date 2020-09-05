@@ -53,6 +53,22 @@ def update_linkedObject(self, context):
             empty['highlight'] = empty.seut.linkedObject.name
 
 
+def update_default(self, context):
+    scene = context.scene
+
+    if not context.active_object.seut.default:
+        return
+
+    objects = bpy.data.collections['Mountpoints (' + scene.seut.subtypeId + ')'].objects
+    
+    if context.active_object.seut.default and context.active_object.name in objects:
+        for obj in objects:
+            if obj is context.active_object:
+                pass
+            elif obj.seut.default:
+                obj.seut.default = False
+
+
 # These prevent the selected scene from being the current scene and the selected object being the current object
 def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'subpart'
@@ -79,4 +95,17 @@ class SEUT_Object(PropertyGroup):
         type=bpy.types.Object,
         poll=poll_linkedObject,
         update=update_linkedObject
+    )
+    
+    default: BoolProperty(
+        name='Default',
+        description="Whether a Mountpoint Area is the one where a block is first attempted to be placed on",
+        default=False,
+        update=update_default
+    )
+    
+    pressurized: BoolProperty(
+        name='Pressurized When Open',
+        description="Whether a mountpoint on a door block stays pressurized when the door is opened",
+        default=False
     )
