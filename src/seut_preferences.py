@@ -206,6 +206,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         row.label(text="Update Status:")
 
         if str(currentVersionName) != str(wm.seut.latest_version):
+            row.alert = True
             row.label(text=wm.seut.needs_update, icon='ERROR')
         else:
             row.label(text=wm.seut.needs_update, icon='CHECKMARK')

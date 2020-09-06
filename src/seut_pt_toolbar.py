@@ -22,6 +22,7 @@ class SEUT_PT_Panel(Panel):
 
         if str(currentVersionName) != str(wm.seut.latest_version) and wm.seut.needs_update != "":
             row = layout.row()
+            row.alert = True
             row.label(text=wm.seut.needs_update, icon='ERROR')
             row.operator('wm.get_update', icon='IMPORT', text="")
 
