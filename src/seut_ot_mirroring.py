@@ -81,7 +81,6 @@ class SEUT_OT_Mirroring(Operator):
             currentArea = context.area.type
 
         if context.object is not None:
-            bpy.ops.object.mode_set(mode='OBJECT')
             context.object.select_set(False)
             context.view_layer.objects.active = None
 
@@ -245,7 +244,6 @@ class SEUT_OT_Mirroring(Operator):
             currentArea = context.area.type
             
         if context.object is not None:
-            bpy.ops.object.mode_set(mode='OBJECT')
             context.object.select_set(False)
             context.view_layer.objects.active = None
 
