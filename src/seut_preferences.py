@@ -34,8 +34,7 @@ def update_materialsPath(self, context):
 
     if os.path.isdir(os.path.abspath(bpy.path.abspath(self.materialsPath))):
         if not bpy.path.abspath(self.materialsPath[-10:-1]) == 'Materials':
-            showError(context, "Report: Error", "SEUT Error: Path (" + bpy.path.abspath(self.materialsPath[-10:-1]) + ")" + 
-                " does not point to a 'Materials'-folder. (017)")
+            showError(context, "Report: Error", "SEUT Error: Path (" + bpy.path.abspath(self.materialsPath[-10:-1]) + ") does not point to a 'Materials'-folder. (017)")
             self.materialsPath = ""
         else:
             bpy.ops.scene.refresh_matlibs()
@@ -216,7 +215,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         else:
             row.operator('wm.get_update', text="Releases", icon='IMPORT')
 
-        # layout.prop(self, "set_dev_tools_paths")
+        layout.prop(self, "set_dev_tools_paths")
 
         layout.prop(self, "materialsPath", expand=True)
         box = layout.box()

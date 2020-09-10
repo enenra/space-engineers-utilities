@@ -41,7 +41,7 @@ class SEUT_OT_MatCreate(Operator):
         activeMat = context.active_object.active_material
 
         if activeMat.node_tree is None:
-            self.report({'ERROR'}, "SEUT: Preset '%s' is invalid. Node Tree cannot be created. Re-link 'MatLib_Presets'! (016)" % (presetName))
+            self.report({'ERROR'}, "SEUT: Preset '%s' is invalid. Node Tree cannot be created. Re-link 'MatLib_Presets'! (040)" % (presetName))
             return {'CANCELLED'}
             
         else:

@@ -74,7 +74,7 @@ class SEUT_OT_ExportHKT(Operator):
         
         if len(collections['hkt'].objects) > 16:
             self.report({'ERROR'}, "SEUT: Too many objects in Collision collection. Collection contains %s, but Space Engineers only supports a maximum of 16. (038)" % (len(collections['hkt'].objects)))
-            print("SEUT Error: Too many objects in Collision collection. Collection contains " + str(len(collections['hkt'].objects)) + ", but Space Engineers only supports a maximum of 16. (038)" )
+            print("SEUT Error: Too many objects in Collision collection. Collection contains " + str(len(collections['hkt'].objects)) + ", but Space Engineers only supports a maximum of 16. (038)")
             return {'CANCELLED'}
 
 

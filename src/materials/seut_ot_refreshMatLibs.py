@@ -27,7 +27,7 @@ class SEUT_OT_RefreshMatLibs(Operator):
 
         if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
             self.report({'ERROR'}, "SEUT: Path to Materials Folder (Addon Preferences) '%s' not valid. (017)" % (materialsPath))
-            print("SEUT Info: Path to Materials Folder (Addon Preferences) '" + materialsPath + "' not valid. (017)")
+            print("SEUT Error: Path to Materials Folder (Addon Preferences) '" + materialsPath + "' not valid. (017)")
             return {'CANCELLED'}
 
         # Find all MatLibs in directory, save to set, then add to matlibs list

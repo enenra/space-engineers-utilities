@@ -572,8 +572,7 @@ class ExportSettings:
             if self.isLogToolOutput and logfile:
                 write_to_log(logfile, e.output, cmdline=cmdline, cwd=cwd, loglines=loglines)
             if e.returncode not in successfulExitCodes:
-                showError(context, "Report: Error", "SEUT Error: There was an error during export caused by " + str(tooltype) + "."
-                + " Please refer to the logs in your export folder for details. (035)")
+                showError(context, "Report: Error", "SEUT Error: There was an error during export caused by " + str(tooltype) + ". Please refer to the logs in your export folder for details. (035)")
                 raise
     
     def __getitem__(self, key): # makes all attributes available for parameter substitution
