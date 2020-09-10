@@ -70,6 +70,9 @@ from .materials.seut_matLib                     import SEUT_UL_MatLib
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
 from .utils.seut_updater                        import checkUpdate
+from .utils.seut_ot_getUpdate                   import SEUT_OT_GetUpdate
+from .utils.seut_ot_popupNotification           import SEUT_OT_PopupNotification
+from .utils.seut_ot_tempLinkButton              import SEUT_OT_TempLinkButton
 
 from .seut_preferences                  import SEUT_AddonPreferences
 from .seut_preferences                  import get_addon_version
@@ -80,7 +83,6 @@ from .seut_pt_toolbar                   import SEUT_PT_Panel_Mountpoints
 from .seut_pt_toolbar                   import SEUT_PT_Panel_IconRender
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Export
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Import
-from .seut_ot_getUpdate                 import SEUT_OT_GetUpdate
 from .seut_ot_import                    import SEUT_OT_Import
 from .seut_ot_structureConversion       import SEUT_OT_StructureConversion
 from .seut_ot_attemptToFixPositioning   import SEUT_OT_AttemptToFixPositioning
@@ -116,6 +118,8 @@ classes = (
     SEUT_OT_ExportMaterials,
     SEUT_MT_ContextMenu,
     SEUT_OT_GetUpdate,
+    SEUT_OT_PopupNotification,
+    SEUT_OT_TempLinkButton,
     SEUT_OT_AddHighlightEmpty,
     SEUT_OT_AddDummy,
     SEUT_OT_AddPresetSubpart,

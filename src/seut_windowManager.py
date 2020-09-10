@@ -135,9 +135,8 @@ class SEUT_WindowManager(PropertyGroup):
         default=0
     )
 
-    # Errors
-    errorText: StringProperty(
-        name="Error"
+    temp_link: StringProperty(
+        name="A temporary link"
     )
 
     # Updater
