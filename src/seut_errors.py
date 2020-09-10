@@ -98,7 +98,7 @@ def isCollectionExcluded(collectionName, allCurrentViewLayerCollections):
                     else:
                         return False
 
-def showErrorNew(self, context, err_type: str, err_message: str, show_link = True):
+def showErrorNew(self, context, err_type: str, err_message: str, show_link=True):
     def draw(self, context):
         # self.layout.label(text=self.p_text)
         # self.layout.label()
