@@ -59,7 +59,7 @@ def errorExportGeneral(self, context):
 
     # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
     if not bpy.data.is_saved:
-        report_error(context, '003', "asdasadas")
+        report_error(self, context, False, '003', "asdasadas")
         # self.report({'ERROR'}, "SEUT: BLEND file must be saved before export. (008)")
         # print("SEUT Error: BLEND file must be saved before export. (008)")
         return {'CANCELLED'}
@@ -164,7 +164,7 @@ def showError(context, title, message):
 
     return
 
-def report_error(context, code, variable_1 = None, variable_2 = None, variable_3 = None):
+def report_error(self, context, works, code, variable_1 = None, variable_2 = None, variable_3 = None):
 
     if not code in errors:
         return
@@ -181,5 +181,11 @@ def report_error(context, code, variable_1 = None, variable_2 = None, variable_3
     link = "https://space-engineers-modding.github.io/modding-reference/tools/3d-modelling/seut/troubleshooting.html#" + code
 
     bpy.ops.message.popup_message(p_type='ERROR', p_text=text, p_link=link)
+
+    if works:
+        self.report({'ERROR'}, text)
+        print("Error: " + text)
+    else:
+        showError(context, "Report: Error", text)
     
     return
