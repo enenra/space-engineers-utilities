@@ -64,14 +64,14 @@ class SEUT_OT_ExportHKT(Operator):
         
         for obj in collections['hkt'].objects:
             if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                report_error(self, context, True, '032', obj.name)
+                report_error(self, context, True, 'E032', obj.name)
                 return {'CANCELLED'}
             if len(obj.modifiers) > 0:
-                report_error(self, context, True, '034', obj.name)
+                report_error(self, context, True, 'E034', obj.name)
                 return {'CANCELLED'}
         
         if len(collections['hkt'].objects) > 16:
-            report_error(self, context, True, '038', len(collections['hkt'].objects))
+            report_error(self, context, True, 'E022', len(collections['hkt'].objects))
             return {'CANCELLED'}
 
 

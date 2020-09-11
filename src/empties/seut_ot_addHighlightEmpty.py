@@ -50,13 +50,13 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
         if collections['main'] is None:
-            report_error(self, context, True, '024')
+            report_error(self, context, True, 'E002', "'Main'")
             return {'CANCELLED'}
         
         targetObjects = bpy.context.view_layer.objects.selected
         
         if len(targetObjects) > 1:
-            report_error(self, context, True, '009')
+            report_error(self, context, True, 'E009')
             return {'CANCELLED'}
         
         # I need to figure out how I can get the first in the list but so far idk, this works
@@ -65,7 +65,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         
         parentCollection = getParentCollection(context, targetObject)
         if parentCollection != collections['main']:
-            report_error(self, context, True, '025')
+            report_error(self, context, True, 'E025')
             return {'CANCELLED'}
 
 

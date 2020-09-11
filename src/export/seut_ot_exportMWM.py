@@ -45,7 +45,7 @@ class SEUT_OT_ExportMWM(Operator):
             return result
 
         if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-            report_error(self, context, True, '017', materialsPath)
+            report_error(self, context, True, 'E012', "Materials Folder", materialsPath)
             return {'CANCELLED'}
 
         path = os.path.abspath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"

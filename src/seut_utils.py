@@ -25,7 +25,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
     # This prevents instancing loops.
     for o in subpartCollections['main'].objects:
         if o is not None and o.type == 'EMPTY' and o.seut.linkedScene == originScene:
-            report_error(self, context, False, '046', subpartScene.name, currentScene.name)
+            report_error(self, context, False, 'E005', subpartScene.name, currentScene.name)
             empty.seut.linkedScene = None
             empty['file'] = None
             return {'CANCEL'}

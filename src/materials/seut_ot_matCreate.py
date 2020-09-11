@@ -33,7 +33,7 @@ class SEUT_OT_MatCreate(Operator):
                 presetMat = mat
         
         if presetMat is None:
-            report_error(self, context, True, '016', presetName)
+            report_error(self, context, True, 'E016', presetName)
             return {'CANCELLED'}
             
         newMat = presetMat.copy()
@@ -43,7 +43,7 @@ class SEUT_OT_MatCreate(Operator):
         activeMat = context.active_object.active_material
 
         if activeMat.node_tree is None:
-            report_error(self, context, True, '040', presetName)
+            report_error(self, context, True, 'E016', presetName)
             return {'CANCELLED'}
             
         else:

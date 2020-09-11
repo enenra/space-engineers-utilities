@@ -85,13 +85,13 @@ class SEUT_OT_Mirroring(Operator):
             context.view_layer.objects.active = None
 
         if collections['seut'] is None:
-            report_error(self, context, False, '042', scene.name)
+            report_error(self, context, False, 'E002', "'SEUT (" + scene.name + ")'")
             scene.seut.mirroringToggle = 'off'
             return
 
         isExcluded = isCollectionExcluded(collections['seut'].name, allCurrentViewLayerCollections)
         if isExcluded or isExcluded is None:
-            report_error(self, context, False, '019', scene.name)
+            report_error(self, context, False, 'E002', '"' + scene.name + '"')
             scene.seut.mirroringToggle = 'off'
             return
 
@@ -116,7 +116,7 @@ class SEUT_OT_Mirroring(Operator):
                 matZfound = True
         
         if not matXfound or not matYfound or not matZfound:
-            report_error(self, context, False, '026')
+            report_error(self, context, False, 'E026', "Mirror Axis Materials")
             scene.seut.mirroringToggle = 'off'
             return {'CANCELLED'}
             
@@ -323,7 +323,7 @@ class SEUT_OT_Mirroring(Operator):
                 print("SEUT Info: Empty '" + empty.name + "' rotation " + str(rotConverted) + " registered as: " + str(key))
         
         if not found:
-            report_error(self, context, False, '023', empty.name, str(rotConverted))
+            report_error(self, context, False, 'E023', empty.name, str(rotConverted))
 
         return
 

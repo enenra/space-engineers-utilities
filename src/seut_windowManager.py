@@ -30,7 +30,7 @@ def update_enabled(self, context):
     materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
 
     if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-        report_error(self, context, False, '017', materialsPath)
+        report_error(self, context, False, 'E012', "Materials Folder", materialsPath)
         return
 
     if self.enabled:

@@ -69,7 +69,7 @@ class SEUT_OT_ExportLOD(Operator):
                 print("SEUT Warning: Invalid LOD setup. Cannot have LOD2 but no LOD1, or LOD3 but no LOD2.")
                 return {'FINISHED'}
             else:
-                report_error(self, context, True, '015', 'LOD')
+                report_error(self, context, True, 'E015', 'LOD')
                 return {'CANCELLED'}
 
         if scene.seut.export_lod1Distance > scene.seut.export_lod2Distance or scene.seut.export_lod2Distance > scene.seut.export_lod3Distance:
@@ -77,31 +77,31 @@ class SEUT_OT_ExportLOD(Operator):
                 print("SEUT Warning: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2.")
                 return {'FINISHED'}
             else:
-                report_error(self, context, True, '011')
+                report_error(self, context, True, 'E011')
                 return {'CANCELLED'}
         
         if colLOD1Good:
             for obj in collections['lod1'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    report_error(self, context, True, '032', obj.name)
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colLOD2Good:
             for obj in collections['lod2'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    report_error(self, context, True, '032', obj.name)
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colLOD3Good:
             for obj in collections['lod3'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    report_error(self, context, True, '032', obj.name)
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colBSLODGood:
             for obj in collections['bs_lod'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    report_error(self, context, True, '032', obj.name)
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
 
 

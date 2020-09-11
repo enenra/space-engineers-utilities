@@ -57,12 +57,12 @@ class SEUT_OT_ExportSBC(Operator):
 
         if collections['bs1'] is not None and collections['bs2'] is not None:
             if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
-                report_error(self, context, True, '015', 'BS')
+                report_error(self, context, True, 'E015', 'BS')
                 return {'CANCELLED'}
 
         if collections['bs2'] is not None and collections['bs3'] is not None:
             if (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
-                report_error(self, context, True, '015', 'BS')
+                report_error(self, context, True, 'E015', 'BS')
                 return {'CANCELLED'}
 
         # Create XML tree and add initial parameters.
@@ -136,7 +136,7 @@ class SEUT_OT_ExportSBC(Operator):
 
         def_CriticalComponent = ET.SubElement(def_definition, 'CriticalComponent')
         def_CriticalComponent.set('Subtype', 'SteelPlate')
-        def_CriticalComponent.set('Index', '0')
+        def_CriticalComponent.set('Index', 'E0')
 
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
@@ -299,7 +299,7 @@ class SEUT_OT_ExportSBC(Operator):
         try:
             tempString.decode('ascii')
         except UnicodeDecodeError:
-            report_error(self, context, True, '033')
+            report_error(self, context, True, 'E033')
         xmlString = xml.dom.minidom.parseString(tempString)
         xmlFormatted = xmlString.toprettyxml()
 

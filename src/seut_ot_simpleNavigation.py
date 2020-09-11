@@ -31,7 +31,7 @@ class SEUT_OT_SimpleNavigation(Operator):
                 check = True
 
         if not check:
-            report_error(self, context, False, '045')
+            report_error(self, context, False, 'E010')
             wm.seut.simpleNavigationToggle = False
             return {'CANCELLED'}
 

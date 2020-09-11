@@ -217,7 +217,7 @@ def load_handler(dummy):
     try:
         bpy.ops.scene.refresh_matlibs()
     except RuntimeError:
-        report_error(self, context, False, '021')
+        report_error(self, context, False, 'E021')
 
     checkUpdate(get_addon_version())
 

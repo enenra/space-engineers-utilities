@@ -37,7 +37,7 @@ def update_linkedScene(self, context):
                     try:
                         linkSubpartScene(self, scene, empty, None)
                     except AttributeError:
-                        report_error(self, context, False, '022')
+                        report_error(self, context, False, 'E002')
                         empty.seut.linkedScene = None
 
 

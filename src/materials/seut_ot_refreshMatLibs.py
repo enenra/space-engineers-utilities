@@ -28,7 +28,7 @@ class SEUT_OT_RefreshMatLibs(Operator):
         materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
 
         if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-            report_error(self, context, True, '017', materialsPath)
+            report_error(self, context, True, 'E012', "Materials Folder", materialsPath)
             return {'CANCELLED'}
 
         # Find all MatLibs in directory, save to set, then add to matlibs list

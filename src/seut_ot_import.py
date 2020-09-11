@@ -61,7 +61,7 @@ class SEUT_OT_Import(Operator):
 
         # Sanity check to catch import failure
         if importedObjects == None:
-            report_error(self, context, True, '001')
+            report_error(self, context, True, 'E001')
             return
 
         # Convert empties to display type 'cube'

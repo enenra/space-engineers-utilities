@@ -23,6 +23,6 @@ def mwmbuilder(self, context, path, mwmpath, settings: ExportSettings, mwmfile: 
                 os.remove(fileName)
 
         except EnvironmentError:
-            report_error(self, context, True, '020')
+            report_error(self, context, True, 'E020')
         
         self.report({'INFO'}, "SEUT: FBX and XML files of Scene '%s' have been compiled to MWM." % (scene.name))

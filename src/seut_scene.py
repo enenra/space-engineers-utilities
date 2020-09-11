@@ -100,7 +100,7 @@ def update_subtypeId(self, context):
     for scn in bpy.data.scenes:
         if scn is not scene and scn.seut.subtypeId == scene.seut.subtypeId:
             scene.seut.subtypeId = scene.seut.subtypeBefore
-            report_error(self, context, False, '018')
+            report_error(self, context, False, 'E018')
             return
 
     if scene.seut.subtypeId != scene.seut.subtypeBefore and scene.seut.subtypeBefore is not "":
@@ -148,7 +148,7 @@ def update_export_exportPath(self, context):
 
     if os.path.isdir(bpy.path.abspath(self.export_exportPath)):
         if self.export_exportPath.find('Models\\') == -1:
-            report_error(self, context, False, '014', self.export_exportPath)
+            report_error(self, context, False, 'E014', self.export_exportPath)
             self.export_exportPath = ""
 
 

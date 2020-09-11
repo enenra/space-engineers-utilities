@@ -28,11 +28,11 @@ class SEUT_OT_ConvertBonesToBlenderFormat(Operator):
         armature = context.object
         
         if armature == None or armature.type is None or not armature:
-            report_error(self, context, True, '028')
+            report_error(self, context, True, 'E028')
             return {'CANCELLED'}
         
         if armature.type == None or armature.type is None or armature.type != 'ARMATURE':
-            report_error(self, context, True, '029')
+            report_error(self, context, True, 'E029')
             return {'CANCELLED'}
         
         # Renaming patterns

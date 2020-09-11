@@ -64,12 +64,12 @@ class SEUT_OT_ExportMain(Operator):
                 unparentedObjects += 1
         
         if unparentedObjects > 1:
-            report_error(self, context, True, '031')
+            report_error(self, context, True, 'E031')
             return {'CANCELLED'}
         
         for obj in collections['main'].objects:
             if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                report_error(self, context, True, '032', obj.name)
+                report_error(self, context, True, 'E032', obj.name)
                 return {'CANCELLED'}
 
 

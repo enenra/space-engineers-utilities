@@ -64,25 +64,25 @@ class SEUT_OT_ExportBS(Operator):
                 print("SEUT Warning: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2.")
                 return {'FINISHED'}
             else:
-                report_error(self, context, True, '015', 'BS')
+                report_error(self, context, True, 'E015', 'BS')
                 return {'CANCELLED'}
         
         if colBS1Good:
             for obj in collections['bs1'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    report_error(self, context, True, '032', obj.name)
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colBS2Good:
             for obj in collections['bs2'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    report_error(self, context, True, '032', obj.name)
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colBS3Good:
             for obj in collections['bs3'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    report_error(self, context, True, '032', obj.name)
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
 
 

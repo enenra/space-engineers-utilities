@@ -31,7 +31,7 @@ class SEUT_OT_BBoxAuto(Operator):
             return {'CANCELLED'}
 
         if collections['main'] == None or len(collections['main'].objects) == 0:
-            report_error(self, context, True, '010')
+            report_error(self, context, True, 'E002', "'Main'")
             
             return {'CANCELLED'}
 

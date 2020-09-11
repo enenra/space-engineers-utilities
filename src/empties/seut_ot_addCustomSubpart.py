@@ -24,7 +24,7 @@ class SEUT_OT_AddCustomSubpart(Operator):
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
         if collections['main'] is None:
-            report_error(self, context, True, '024')
+            report_error(self, context, True, 'E002', "'Main'")
             return {'CANCELLED'}
             
         # Determine name strings.

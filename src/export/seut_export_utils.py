@@ -134,7 +134,7 @@ def export_XML(self, context, collection):
                 if not images['cm'] == None:
                     offset = images['cm'].filepath.find("Textures\\")
                     if offset == -1:
-                        report_error(self, context, True, '007', 'CM', mat.name)
+                        report_error(self, context, True, 'E007', 'CM', mat.name)
                     else:
                         matCM = ET.SubElement(matEntry, 'Parameter')
                         matCM.set('Name', 'ColorMetalTexture')
@@ -147,7 +147,7 @@ def export_XML(self, context, collection):
                 if not images['ng'] == None:
                     offset = images['ng'].filepath.find("Textures\\")
                     if offset == -1:
-                        report_error(self, context, True, '007', 'NG', mat.name)
+                        report_error(self, context, True, 'E007', 'NG', mat.name)
                     else:
                         matNG = ET.SubElement(matEntry, 'Parameter')
                         matNG.set('Name', 'NormalGlossTexture')
@@ -160,7 +160,7 @@ def export_XML(self, context, collection):
                 if not images['add'] == None:
                     offset = images['add'].filepath.find("Textures\\")
                     if offset == -1:
-                        report_error(self, context, True, '007', 'ADD', mat.name)
+                        report_error(self, context, True, 'E007', 'ADD', mat.name)
                     else:
                         matADD = ET.SubElement(matEntry, 'Parameter')
                         matADD.set('Name', 'AddMapsTexture')
@@ -173,7 +173,7 @@ def export_XML(self, context, collection):
                 if not images['am'] == None:
                     offset = images['am'].filepath.find("Textures\\")
                     if offset == -1:
-                        report_error(self, context, True, '007', 'ALPHAMASK', mat.name)
+                        report_error(self, context, True, 'E007', 'ALPHAMASK', mat.name)
                     else:
                         matAM = ET.SubElement(matEntry, 'Parameter')
                         matAM.set('Name', 'AlphamaskTexture')
@@ -219,7 +219,7 @@ def export_XML(self, context, collection):
                 lod2Model.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '_LOD2'
                 lod2Printed = True
             else:
-                report_error(self, context, True, '006')
+                report_error(self, context, True, 'E006')
 
         if collections['lod3'] == None or len(collections['lod3'].objects) == 0:
             print("SEUT Info: Collection 'LOD3' not found or empty. Skipping XML entry.")
@@ -230,7 +230,7 @@ def export_XML(self, context, collection):
                 lod3Model = ET.SubElement(lod3, 'Model')
                 lod3Model.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '_LOD3'
             else:
-                report_error(self, context, True, '006')
+                report_error(self, context, True, 'E006')
 
     if collection == collections['bs1'] or collection == collections['bs2'] or collection == collections['bs3']:
         if collections['bs_lod'] == None or len(collections['bs_lod'].objects) == 0:
@@ -246,7 +246,7 @@ def export_XML(self, context, collection):
     try:
         tempString.decode('ascii')
     except UnicodeDecodeError:
-        report_error(self, context, False, '033')
+        report_error(self, context, False, 'E033')
     xmlString = xml.dom.minidom.parseString(tempString)
     xmlFormatted = xmlString.toprettyxml()
     
@@ -527,7 +527,7 @@ def delete_loose_files(path):
             os.remove(fileName)
 
     except EnvironmentError:
-        report_error(self, context, False, '020')
+        report_error(self, context, False, 'E020')
 
 class ExportSettings:
     def __init__(self, scene, depsgraph, mwmDir=None):
@@ -572,7 +572,7 @@ class ExportSettings:
             if self.isLogToolOutput and logfile:
                 write_to_log(logfile, e.output, cmdline=cmdline, cwd=cwd, loglines=loglines)
             if e.returncode not in successfulExitCodes:
-                report_error(self, context, False, '035', str(tooltype))
+                report_error(self, context, False, 'E035', str(tooltype))
                 raise
     
     def __getitem__(self, key): # makes all attributes available for parameter substitution
