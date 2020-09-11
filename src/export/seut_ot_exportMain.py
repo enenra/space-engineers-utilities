@@ -40,7 +40,7 @@ class SEUT_OT_ExportMain(Operator):
         fbxImporterPath = os.path.abspath(bpy.path.abspath(preferences.fbxImporterPath))
 
         # Checks whether collection exists, is excluded or is empty
-        result = errorCollection(self, scene, collections['main'], False)
+        result = errorCollection(self, context, scene, collections['main'], False)
         if not result == {'CONTINUE'}:
             return result
 

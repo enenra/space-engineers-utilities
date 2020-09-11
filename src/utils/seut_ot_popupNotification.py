@@ -35,14 +35,13 @@ class SEUT_OT_PopupNotification(Operator):
 
         return {'FINISHED'}
  
-#    def invoke(self, context, event):
-#        return self.execute(context)
+    def invoke(self, context, event):
+        return self.execute(context)
 
     def displaySEMREFLink(self, context, text):
         def draw(self, context):
             self.layout.label(text=text)
-            self.layout.label()
-            self.layout.label()
+            self.layout.separator()
             self.layout.operator('wm.link_button', icon='PROPERTIES', text="SEMREF")
 
-        bpy.context.window_manager.popup_menu(draw, title="", icon='NONE')
+        bpy.context.window_manager.popup_menu(draw, title="Report: Error", icon='ERROR')

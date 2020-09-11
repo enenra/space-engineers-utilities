@@ -16,7 +16,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
 
     subpartCollections = SEUT_OT_RecreateCollections.getCollections(subpartScene)
     # Checks whether collection exists, is excluded or is empty
-    result = errorCollection(self, subpartScene, subpartCollections['main'], False)
+    result = errorCollection(self, context, subpartScene, subpartCollections['main'], False)
     if not result == {'CONTINUE'}:
         empty.seut.linkedScene = None
         empty['file'] = None

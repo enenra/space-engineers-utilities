@@ -87,18 +87,18 @@ class SEUT_OT_Mirroring(Operator):
         if collections['seut'] is None:
             report_error(self, context, False, 'E002', "'SEUT (" + scene.name + ")'")
             scene.seut.mirroringToggle = 'off'
-            return
+            return {'CANCELLED'}
 
         isExcluded = isCollectionExcluded(collections['seut'].name, allCurrentViewLayerCollections)
         if isExcluded or isExcluded is None:
             report_error(self, context, False, 'E002', '"' + scene.name + '"')
             scene.seut.mirroringToggle = 'off'
-            return
+            return {'CANCELLED'}
 
-        result = errorCollection(self, scene, collections['main'], True)
+        result = errorCollection(self, context, scene, collections['main'], False)
         if not result == {'CONTINUE'}:
             scene.seut.mirroringToggle = 'off'
-            return
+            return {'CANCELLED'}
 
         presetMat = None
         matXfound = False

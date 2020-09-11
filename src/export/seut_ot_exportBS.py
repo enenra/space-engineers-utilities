@@ -45,17 +45,17 @@ class SEUT_OT_ExportBS(Operator):
             return result
 
         colBS1Good = False
-        result = errorCollection(self, scene, collections['bs1'], partial)
+        result = errorCollection(self, context, scene, collections['bs1'], partial)
         if result == {'CONTINUE'}:
             colBS1Good = True
 
         colBS2Good = False
-        result = errorCollection(self, scene, collections['bs2'], partial)
+        result = errorCollection(self, context, scene, collections['bs2'], partial)
         if result == {'CONTINUE'}:
             colBS2Good = True
 
         colBS3Good = False
-        result = errorCollection(self, scene, collections['bs3'], partial)
+        result = errorCollection(self, context, scene, collections['bs3'], partial)
         if result == {'CONTINUE'}:
             colBS3Good = True
 

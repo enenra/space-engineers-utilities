@@ -40,6 +40,10 @@ errors = {
     'E035': "SEUT: There was an error during export caused by {variable_1}. Please refer to the logs in your export folder for details. (E035)",
 }
 
+warnings = {
+    'W001': ""
+}
+
 
 def errorExportGeneral(self, context):
     """Basic check for export path and SubtypeId existing"""
@@ -74,7 +78,7 @@ def errorExportGeneral(self, context):
 
     return {'CONTINUE'}
 
-def errorCollection(self, scene, collection, partial):
+def errorCollection(self, context, scene, collection, partial):
     """Check if collection exists, is not excluded and is not empty"""
 
     allCurrentViewLayerCollections = scene.view_layers[0].layer_collection.children
@@ -84,7 +88,7 @@ def errorCollection(self, scene, collection, partial):
             print("SEUT Warning: Collection not found. Action not possible.")
             return {'FINISHED'}
         else:
-            report_error(self, context, True, 'E002')
+            report_error(self, context, False, 'E002')
             return {'CANCELLED'}
             
     isExcluded = isCollectionExcluded(collection.name, allCurrentViewLayerCollections)
@@ -94,7 +98,7 @@ def errorCollection(self, scene, collection, partial):
             print("SEUT Warning: Collection '" + collection.name + "' excluded from view layer or cannot be found. Action not possible.")
             return {'FINISHED'}
         else:
-            report_error(self, context, True, 'E019', collection.name)
+            report_error(self, context, False, 'E019', collection.name)
             return {'CANCELLED'}
 
     if len(collection.objects) == 0:
@@ -102,7 +106,7 @@ def errorCollection(self, scene, collection, partial):
             print("SEUT Warning: Collection '" + collection.name + "' is empty. Action not possible.")
             return {'FINISHED'}
         else:
-            report_error(self, context, True, 'E002', '"' + collection.name + '"')
+            report_error(self, context, False, 'E002', '"' + collection.name + '"')
             return {'CANCELLED'}
     
     return {'CONTINUE'}
