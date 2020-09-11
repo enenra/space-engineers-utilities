@@ -16,7 +16,8 @@ from bpy.types import (Panel,
 
 from bpy.types                  import Operator
 
-from .materials.seut_ot_remapMaterials    import SEUT_OT_RemapMaterials
+from .materials.seut_ot_remapMaterials  import SEUT_OT_RemapMaterials
+from .seut_errors                       import report_error
 
 class SEUT_OT_Import(Operator):
     """Import FBX files and remap materials"""
@@ -60,7 +61,7 @@ class SEUT_OT_Import(Operator):
 
         # Sanity check to catch import failure
         if importedObjects == None:
-            self.report({'ERROR'}, "SEUT: Import error. Imported object not found. (001)")
+            report_error(self, context, True, '001')
             return
 
         # Convert empties to display type 'cube'

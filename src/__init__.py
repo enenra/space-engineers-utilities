@@ -217,7 +217,7 @@ def load_handler(dummy):
     try:
         bpy.ops.scene.refresh_matlibs()
     except RuntimeError:
-        print("SEUT Error: Available MatLibs could not be refreshed. (021)")
+        report_error(self, context, False, '021')
 
     checkUpdate(get_addon_version())
 

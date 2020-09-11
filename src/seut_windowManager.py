@@ -12,7 +12,7 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
-from .seut_errors  import showError
+from .seut_errors  import report_error
 
 
 def update_BBox(self, context):
@@ -30,7 +30,7 @@ def update_enabled(self, context):
     materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
 
     if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-        showError(context, "Report: Error", "SEUT Error: Path to Materials Folder (Addon Preferences) '" + materialsPath + "' not valid. (017)")
+        report_error(self, context, False, '017', materialsPath)
         return
 
     if self.enabled:

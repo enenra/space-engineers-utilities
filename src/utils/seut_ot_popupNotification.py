@@ -33,11 +33,6 @@ class SEUT_OT_PopupNotification(Operator):
             wm.seut.temp_link = self.p_link
             self.displaySEMREFLink(context, self.p_text)
 
-        #try:
-        #    self.report({self.p_type}, self.p_text)
-        #except RuntimeError:
-        #    pass
-
         return {'FINISHED'}
  
 #    def invoke(self, context, event):

@@ -7,7 +7,7 @@ from bpy.props  import (EnumProperty,
 
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from ..seut_utils                   import getParentCollection
-
+from ..seut_errors                  import report_error
 
 class SEUT_OT_AddHighlightEmpty(Operator):
     """Add highlight empty to selected object"""
@@ -50,13 +50,13 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
         if collections['main'] is None:
-            self.report({'ERROR'}, "SEUT: Cannot create empty without 'Main' collection existing. (024)")
+            report_error(self, context, True, '024')
             return {'CANCELLED'}
         
         targetObjects = bpy.context.view_layer.objects.selected
         
         if len(targetObjects) > 1:
-            self.report({'ERROR'}, "SEUT: Cannot create empties for more than one object at a time. (009)")
+            report_error(self, context, True, '009')
             return {'CANCELLED'}
         
         # I need to figure out how I can get the first in the list but so far idk, this works
@@ -65,7 +65,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         
         parentCollection = getParentCollection(context, targetObject)
         if parentCollection != collections['main']:
-            self.report({'ERROR'}, "SEUT: Cannot create highlight empty for object outside of 'Main' collection. (025)")
+            report_error(self, context, True, '025')
             return {'CANCELLED'}
 
 

@@ -4,6 +4,8 @@ from bpy.types  import Operator
 from bpy.props  import (EnumProperty,
                         IntProperty)
 
+from ..seut_errors  import report_error
+
 class SEUT_OT_MatCreate(Operator):
     """Create a SEUT material from the defined preset"""
     bl_idname = "object.mat_create"
@@ -31,7 +33,7 @@ class SEUT_OT_MatCreate(Operator):
                 presetMat = mat
         
         if presetMat is None:
-            self.report({'ERROR'}, "SEUT: Cannot find preset '%s' source material. Node Tree cannot be created. Re-link 'MatLib_Presets'! (016)" % (presetName))
+            report_error(self, context, True, '016', presetName)
             return {'CANCELLED'}
             
         newMat = presetMat.copy()
@@ -41,7 +43,7 @@ class SEUT_OT_MatCreate(Operator):
         activeMat = context.active_object.active_material
 
         if activeMat.node_tree is None:
-            self.report({'ERROR'}, "SEUT: Preset '%s' is invalid. Node Tree cannot be created. Re-link 'MatLib_Presets'! (040)" % (presetName))
+            report_error(self, context, True, '040', presetName)
             return {'CANCELLED'}
             
         else:

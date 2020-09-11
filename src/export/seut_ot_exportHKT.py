@@ -9,7 +9,7 @@ from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
 from .seut_export_utils             import ExportSettings, export_to_fbxfile
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded, errorToolPath
+from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded, errorToolPath, report_error
 
 
 class SEUT_OT_ExportHKT(Operator):
@@ -64,17 +64,14 @@ class SEUT_OT_ExportHKT(Operator):
         
         for obj in collections['hkt'].objects:
             if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
+                report_error(self, context, True, '032', obj.name)
                 return {'CANCELLED'}
             if len(obj.modifiers) > 0:
-                self.report({'ERROR'}, "SEUT: Collision object '%s' has unapplied modifiers. Collision model cannot be created. (034)" % (obj.name))
-                print("SEUT Error: Collision object '" + obj.name + "' has unapplied modifiers. Collision model cannot be created. (034)")
+                report_error(self, context, True, '034', obj.name)
                 return {'CANCELLED'}
         
         if len(collections['hkt'].objects) > 16:
-            self.report({'ERROR'}, "SEUT: Too many objects in Collision collection. Collection contains %s, but Space Engineers only supports a maximum of 16. (038)" % (len(collections['hkt'].objects)))
-            print("SEUT Error: Too many objects in Collision collection. Collection contains " + str(len(collections['hkt'].objects)) + ", but Space Engineers only supports a maximum of 16. (038)")
+            report_error(self, context, True, '038', len(collections['hkt'].objects))
             return {'CANCELLED'}
 
 

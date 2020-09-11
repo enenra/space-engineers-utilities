@@ -5,7 +5,7 @@ from bpy.types      import Operator
 from collections    import OrderedDict
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_errors                   import errorCollection, isCollectionExcluded, showError
+from .seut_errors                   import errorCollection, isCollectionExcluded, report_error
 from .seut_utils                    import getParentCollection, linkSubpartScene, unlinkSubpartScene
 
 mirroringPresets = OrderedDict([
@@ -85,13 +85,13 @@ class SEUT_OT_Mirroring(Operator):
             context.view_layer.objects.active = None
 
         if collections['seut'] is None:
-            showError(context, "Report: Error", "SEUT Error: Collection 'SEUT " + scene.name + "' not found. Action not possible. (002)")
+            report_error(self, context, False, '042', scene.name)
             scene.seut.mirroringToggle = 'off'
             return
 
         isExcluded = isCollectionExcluded(collections['seut'].name, allCurrentViewLayerCollections)
         if isExcluded or isExcluded is None:
-            showError(context, "Report: Error", "SEUT Error: Collection 'SEUT " + scene.name + "' excluded from view layer. Action not possible. (019)")
+            report_error(self, context, False, '019', scene.name)
             scene.seut.mirroringToggle = 'off'
             return
 
@@ -116,7 +116,7 @@ class SEUT_OT_Mirroring(Operator):
                 matZfound = True
         
         if not matXfound or not matYfound or not matZfound:
-            showError(context, "Report: Error", "SEUT Error: Cannot find mirror axis materials. Re-link 'MatLib_Presets'! (026)")
+            report_error(self, context, False, '026')
             scene.seut.mirroringToggle = 'off'
             return {'CANCELLED'}
             
@@ -323,7 +323,7 @@ class SEUT_OT_Mirroring(Operator):
                 print("SEUT Info: Empty '" + empty.name + "' rotation " + str(rotConverted) + " registered as: " + str(key))
         
         if not found:
-            showError(context, "Report: Error", "SEUT Error: Empty '" + empty.name + "' has incorrect rotation value: " + str(rotConverted) + " (023)")
+            report_error(self, context, False, '023', empty.name, str(rotConverted))
 
         return
 

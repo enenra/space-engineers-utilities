@@ -8,7 +8,7 @@ errors = {
     '003': "SEUT: Export path '{variable_1}' doesn't exist. (003)",
     '004': "SEUT: No SubtypeId set. (004)",
     '005': "SEUT: Collection '{variable_1}' is empty. Action not possible. (005)",
-    '006': "SEUT: LOD2 cannot be set if LOD1 is not. (006)",
+    '006': "SEUT: LOD2 cannot be set if LOD1 is not, or LOD3 if LOD2 is not. (006)",
     '007': "SEUT: '{variable_1}' texture filepath in local material '{variable_2}' does not contain 'Textures\\'. Cannot be transformed into relative path. (007)",
     '008': "SEUT: BLEND file must be saved before export. (008)",
     '009': "SEUT: Cannot create empties for more than one object at a time. (009)",
@@ -17,9 +17,9 @@ errors = {
     '012': "SEUT: Path to {variable_1} '{variable_2}' not valid. (012)",
     '013': "SEUT: Path to {variable_1} not valid - wrong target file: Expected '{variable_2}' but is set to '{variable_3}'. (013)",
     '014': "SEUT: Export path '{variable_1}' does not contain 'Models\\'. Cannot be transformed into relative path. (014)",
-    '015': "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)",
+    '015': "SEUT: Invalid {variable_1} setup. Cannot have {variable_1}2 but no {variable_1}1, or {variable_1}3 but no {variable_1}2. (015)",
     '016': "SEUT: Cannot find preset '{variable_1}' source material. Node Tree cannot be created. Re-link 'MatLib_Presets'! (016)",
-    '017': "SEUT: Path to Materials Folder '{variable_1}' not valid. (017)",
+    '017': "SEUT: Path to Materials Folder (Addon Preferences) '{variable_1}' not valid. (017)",
     '018': "SEUT: Cannot set SubtypeId to a SubtypeId that already exists in the file for another scene. (018)",
     '019': "SEUT: Collection '{variable_1}' excluded from view layer or cannot be found. Action not possible. (019)",
     '020': "SEUT: Deletion of loose files failed. (020)",
@@ -42,7 +42,13 @@ errors = {
     '037': "SEUT: Collection 'Mountpoints ({variable_1})' not found. Disable and then re-enable Mountpoint Mode to recreate! (037)",
     '038': "SEUT: Too many objects in Collision collection. Collection contains {variable_1}, but Space Engineers only supports a maximum of 16. (038)",
     '039': "SEUT: Path '{variable_1}' does not exist (039)",
-    '040': "SEUT: Preset '{variable_1}' is invalid. Node Tree cannot be created. Re-link 'MatLib_Presets'! (040)"
+    '040': "SEUT: Preset '{variable_1}' is invalid. Node Tree cannot be created. Re-link 'MatLib_Presets'! (040)",
+    '041': "SEUT: No export folder defined. (041)",
+    '042': "SEUT: Collection 'SEUT ({variable_1})' not found. Action not possible. (042)",
+    '043': "SEUT: Path ({variable_1}) does not point to a 'Materials'-folder. (043)",
+    '044': "SEUT: Incorrect file linked. Link '{variable_1}' (044)",
+    '045': "SEUT: Cannot run Simple Navigation if no SEUT collections are present. (045)",
+    '046': "SEUT: Linking to scene '{variable_1}' from '{variable_2}' would create a subpart instancing loop. (046)"
 }
 
 
@@ -59,28 +65,22 @@ def errorExportGeneral(self, context):
 
     # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
     if not bpy.data.is_saved:
-        report_error(self, context, False, '003', "asdasadas")
-        # self.report({'ERROR'}, "SEUT: BLEND file must be saved before export. (008)")
-        # print("SEUT Error: BLEND file must be saved before export. (008)")
+        report_error(self, context, True, '008')
         return {'CANCELLED'}
 
     if os.path.exists(exportPath) == False:
-        self.report({'ERROR'}, "SEUT: Export path '%s' doesn't exist. (003)" % (exportPath))
-        print("SEUT Error: Export path '" + exportPath + "' doesn't exist. (003)")
+        report_error(self, context, True, '003', exportPath)
         return {'CANCELLED'}
     elif scene.seut.export_exportPath == "":
-        self.report({'ERROR'}, "SEUT: No export folder defined. (003)")
-        print("SEUT Error: No export folder defined. (003)")
+        report_error(self, context, True, '041')
         return {'CANCELLED'}
 
     if scene.seut.export_exportPath.find("Models\\") == -1:
-        self.report({'ERROR'}, "SEUT: Export path '%s' does not contain 'Models\\'. Cannot be transformed into relative path. (014)" % (exportPath))
-        print("SEUT Error: Export path '" + exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
+        report_error(self, context, True, '014', exportPath)
         return {'CANCELLED'}
 
     if scene.seut.subtypeId == "":
-        self.report({'ERROR'}, "SEUT: No SubtypeId set. (004)")
-        print("SEUT Error: No SubtypeId set. (004)")
+        report_error(self, context, True, '004')
         return {'CANCELLED'}
 
     return {'CONTINUE'}
@@ -95,8 +95,7 @@ def errorCollection(self, scene, collection, partial):
             print("SEUT Warning: Collection not found. Action not possible.")
             return {'FINISHED'}
         else:
-            self.report({'ERROR'}, "SEUT: Collection not found. Action not possible. (002)")
-            print("SEUT Error: Collection not found. Action not possible. (002)")
+            report_error(self, context, True, '002')
             return {'CANCELLED'}
             
     isExcluded = isCollectionExcluded(collection.name, allCurrentViewLayerCollections)
@@ -106,8 +105,7 @@ def errorCollection(self, scene, collection, partial):
             print("SEUT Warning: Collection '" + collection.name + "' excluded from view layer or cannot be found. Action not possible.")
             return {'FINISHED'}
         else:
-            self.report({'ERROR'}, "SEUT: Collection '%s' excluded from view layer or cannot be found. Action not possible. (019)" % (collection.name))
-            print("SEUT Error: Collection '" + collection.name + "' excluded from view layer or cannot be found. Action not possible. (019)")
+            report_error(self, context, True, '019', collection.name)
             return {'CANCELLED'}
 
     if len(collection.objects) == 0:
@@ -115,8 +113,7 @@ def errorCollection(self, scene, collection, partial):
             print("SEUT Warning: Collection '" + collection.name + "' is empty. Action not possible.")
             return {'FINISHED'}
         else:
-            self.report({'ERROR'}, "SEUT: Collection '%s' is empty. Action not possible. (005)" % (collection.name))
-            print("SEUT Error: Collection '" + collection.name + "' is empty. Action not possible. (005)")
+            report_error(self, context, True, '005', collection.name)
             return {'CANCELLED'}
     
     return {'CONTINUE'}
@@ -125,14 +122,12 @@ def errorToolPath(self, toolPath, toolName, toolFileName):
     """Checks if external tool is correctly linked"""
 
     if toolPath == "" or toolPath == "." or os.path.exists(toolPath) is False:
-        self.report({'ERROR'}, "SEUT: Path to %s '%s' not valid. (012)" % (toolName, toolPath))
-        print("SEUT Error: Path to " + toolName + " '" + toolPath + "' not valid. (012)")
+        report_error(self, context, True, '012', toolName, toolPath)
         return {'CANCELLED'}
 
     fileName = os.path.basename(toolPath)
     if toolFileName != fileName:
-        self.report({'ERROR'}, "SEUT: Path to %s not valid - wrong target file: Expected '%s' but is set to '%s'. (013)" % (toolName, toolFileName, fileName))
-        print("SEUT Error: Path to " + toolName + " not valid - wrong target file: Expected '" + toolFileName + "' but is set to '" + fileName + "'. (013)")
+        report_error(self, context, True, '013', toolName, toolFileName, fileName)
         return {'CANCELLED'}
     
     return {'CONTINUE'}
@@ -160,7 +155,6 @@ def showError(context, title, message):
         self.layout.label(text=message)
 
     context.window_manager.popup_menu(draw, title=title, icon='ERROR')
-    print(message)
 
     return
 
@@ -184,8 +178,9 @@ def report_error(self, context, works, code, variable_1 = None, variable_2 = Non
 
     if works:
         self.report({'ERROR'}, text)
-        print("Error: " + text)
     else:
         showError(context, "Report: Error", text)
+
+    print("Error: " + text)
     
     return

@@ -14,7 +14,7 @@ from bpy.props  import (EnumProperty,
 
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_errors                   import showError
+from .seut_errors                   import report_error
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, toRadians
 
 
@@ -100,7 +100,7 @@ def update_subtypeId(self, context):
     for scn in bpy.data.scenes:
         if scn is not scene and scn.seut.subtypeId == scene.seut.subtypeId:
             scene.seut.subtypeId = scene.seut.subtypeBefore
-            showError(context, "Report: Error", "SEUT Error: Cannot set SubtypeId to a SubtypeId that already exists in the file for another scene. (018)")
+            report_error(self, context, False, '018')
             return
 
     if scene.seut.subtypeId != scene.seut.subtypeBefore and scene.seut.subtypeBefore is not "":
@@ -148,7 +148,7 @@ def update_export_exportPath(self, context):
 
     if os.path.isdir(bpy.path.abspath(self.export_exportPath)):
         if self.export_exportPath.find('Models\\') == -1:
-            showError(context, "Report: Error", "SEUT Error: Export path '" + self.export_exportPath + "' does not contain 'Models\\'. Cannot be transformed into relative path. (014)")
+            report_error(self, context, False, '014', self.export_exportPath)
             self.export_exportPath = ""
 
 

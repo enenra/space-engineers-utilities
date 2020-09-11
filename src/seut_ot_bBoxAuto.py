@@ -3,6 +3,7 @@ import math
 
 from bpy.types                      import Operator
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_errors                   import report_error
 
 class SEUT_OT_BBoxAuto(Operator):
     """Sets the bounding box automatically (not very accurate)"""
@@ -30,7 +31,7 @@ class SEUT_OT_BBoxAuto(Operator):
             return {'CANCELLED'}
 
         if collections['main'] == None or len(collections['main'].objects) == 0:
-            self.report({'ERROR'}, "SEUT: Collection 'Main' not found or empty. Not possible to set automatic bounding box. (010)")
+            report_error(self, context, True, '010')
             
             return {'CANCELLED'}
 
