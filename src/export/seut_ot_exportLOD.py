@@ -5,7 +5,7 @@ from bpy.types                      import Operator
 
 from .seut_export_utils             import export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, isCollectionExcluded, errorCollection, errorToolPath
+from ..seut_errors                  import errorExportGeneral, isCollectionExcluded, errorCollection, errorToolPath, report_error
 
 class SEUT_OT_ExportLOD(Operator):
     """Exports all LODs"""
@@ -45,22 +45,22 @@ class SEUT_OT_ExportLOD(Operator):
             return result
 
         colLOD1Good = False
-        result = errorCollection(self, scene, collections['lod1'], partial)
+        result = errorCollection(self, context, scene, collections['lod1'], partial)
         if result == {'CONTINUE'}:
             colLOD1Good = True
 
         colLOD2Good = False
-        result = errorCollection(self, scene, collections['lod2'], partial)
+        result = errorCollection(self, context, scene, collections['lod2'], partial)
         if result == {'CONTINUE'}:
             colLOD2Good = True
 
         colLOD3Good = False
-        result = errorCollection(self, scene, collections['lod3'], partial)
+        result = errorCollection(self, context, scene, collections['lod3'], partial)
         if result == {'CONTINUE'}:
             colLOD3Good = True
 
         colBSLODGood = False
-        result = errorCollection(self, scene, collections['bs_lod'], partial)
+        result = errorCollection(self, context, scene, collections['bs_lod'], partial)
         if result == {'CONTINUE'}:
             colBSLODGood = True
 
@@ -69,8 +69,7 @@ class SEUT_OT_ExportLOD(Operator):
                 print("SEUT Warning: Invalid LOD setup. Cannot have LOD2 but no LOD1, or LOD3 but no LOD2.")
                 return {'FINISHED'}
             else:
-                self.report({'ERROR'}, "SEUT: Invalid LOD setup. Cannot have LOD2 but no LOD1, or LOD3 but no LOD2. (015)")
-                print("SEUT Error: Invalid LOD setup. Cannot have LOD2 but no LOD1, or LOD3 but no LOD2. (015)")
+                report_error(self, context, True, 'E015', 'LOD')
                 return {'CANCELLED'}
 
         if scene.seut.export_lod1Distance > scene.seut.export_lod2Distance or scene.seut.export_lod2Distance > scene.seut.export_lod3Distance:
@@ -78,36 +77,31 @@ class SEUT_OT_ExportLOD(Operator):
                 print("SEUT Warning: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2.")
                 return {'FINISHED'}
             else:
-                self.report({'ERROR'}, "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
-                print("SEUT Error: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (011)")
+                report_error(self, context, True, 'E011')
                 return {'CANCELLED'}
         
         if colLOD1Good:
             for obj in collections['lod1'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colLOD2Good:
             for obj in collections['lod2'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colLOD3Good:
             for obj in collections['lod3'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colBSLODGood:
             for obj in collections['bs_lod'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
 
 

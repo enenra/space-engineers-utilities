@@ -3,6 +3,7 @@ import glob
 
 from .seut_export_utils         import ExportSettings
 from ..utils.called_tool_type   import ToolType
+from ..seut_errors              import report_error
 
 def mwmbuilder(self, context, path, mwmpath, settings: ExportSettings, mwmfile: str, materialspath):
     try:
@@ -22,7 +23,6 @@ def mwmbuilder(self, context, path, mwmpath, settings: ExportSettings, mwmfile: 
                 os.remove(fileName)
 
         except EnvironmentError:
-            self.report({'ERROR'}, "SEUT: Deletion of loose files failed. (020)")
-            print("SEUT Error: Deletion of loose files failed. (020)")
+            report_error(self, context, True, 'E020')
         
         self.report({'INFO'}, "SEUT: FBX and XML files of Scene '%s' have been compiled to MWM." % (scene.name))

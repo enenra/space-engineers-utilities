@@ -9,7 +9,7 @@ from collections    import OrderedDict
 from ..seut_ot_mirroring            import SEUT_OT_Mirroring
 from ..seut_ot_mountpoints          import SEUT_OT_Mountpoints
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection, showError
+from ..seut_errors                  import errorExportGeneral, errorCollection, report_error
 
 class SEUT_OT_ExportSBC(Operator):
     """Exports to SBC"""
@@ -51,18 +51,18 @@ class SEUT_OT_ExportSBC(Operator):
             return {'FINISHED'}
 
         # Checks whether collection exists, is excluded or is empty
-        result = errorCollection(self, scene, collections['main'], False)
+        result = errorCollection(self, context, scene, collections['main'], False)
         if not result == {'CONTINUE'}:
             return result
 
         if collections['bs1'] is not None and collections['bs2'] is not None:
             if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
-                self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1. (015)")
+                report_error(self, context, True, 'E015', 'BS')
                 return {'CANCELLED'}
 
         if collections['bs2'] is not None and collections['bs3'] is not None:
             if (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
-                self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS3 but no BS2. (015)")
+                report_error(self, context, True, 'E015', 'BS')
                 return {'CANCELLED'}
 
         # Create XML tree and add initial parameters.
@@ -136,7 +136,7 @@ class SEUT_OT_ExportSBC(Operator):
 
         def_CriticalComponent = ET.SubElement(def_definition, 'CriticalComponent')
         def_CriticalComponent.set('Subtype', 'SteelPlate')
-        def_CriticalComponent.set('Index', '0')
+        def_CriticalComponent.set('Index', 'E0')
 
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
@@ -299,7 +299,7 @@ class SEUT_OT_ExportSBC(Operator):
         try:
             tempString.decode('ascii')
         except UnicodeDecodeError:
-            showError(context, "Report: Error", "SEUT Error: Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, Material names or object names. (033)")
+            report_error(self, context, True, 'E033')
         xmlString = xml.dom.minidom.parseString(tempString)
         xmlFormatted = xmlString.toprettyxml()
 

@@ -5,7 +5,7 @@ from bpy.types                      import Operator
 
 from .seut_export_utils             import export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded, errorToolPath
+from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded, errorToolPath, report_error
 
 class SEUT_OT_ExportMain(Operator):
     """Exports the main model"""
@@ -40,7 +40,7 @@ class SEUT_OT_ExportMain(Operator):
         fbxImporterPath = os.path.abspath(bpy.path.abspath(preferences.fbxImporterPath))
 
         # Checks whether collection exists, is excluded or is empty
-        result = errorCollection(self, scene, collections['main'], False)
+        result = errorCollection(self, context, scene, collections['main'], False)
         if not result == {'CONTINUE'}:
             return result
 
@@ -64,14 +64,12 @@ class SEUT_OT_ExportMain(Operator):
                 unparentedObjects += 1
         
         if unparentedObjects > 1:
-            self.report({'ERROR'}, "SEUT: Cannot export collection if it has more than one top-level (unparented) object. (031)")
-            print("SEUT Error: Cannot export collection if it has more than one top-level (unparented) object. (031)")
+            report_error(self, context, True, 'E031')
             return {'CANCELLED'}
         
         for obj in collections['main'].objects:
             if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
+                report_error(self, context, True, 'E032', obj.name)
                 return {'CANCELLED'}
 
 

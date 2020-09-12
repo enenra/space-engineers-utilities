@@ -7,7 +7,7 @@ from bpy.types  import Operator
 from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, delete_loose_files
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorToolPath
+from ..seut_errors                  import errorExportGeneral, errorToolPath, report_error
 
 class SEUT_OT_ExportMWM(Operator):
     """Compiles the MWM from the previously exported loose files"""
@@ -45,8 +45,7 @@ class SEUT_OT_ExportMWM(Operator):
             return result
 
         if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-            self.report({'ERROR'}, "SEUT: Path to Materials Folder (Addon Preferences) '%s' not valid. (017)" % (materialsPath))
-            print("SEUT Error: Path to Materials Folder '" + materialsPath + "' not valid. (017)")
+            report_error(self, context, True, 'E012', "Materials Folder", materialsPath)
             return {'CANCELLED'}
 
         path = os.path.abspath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"

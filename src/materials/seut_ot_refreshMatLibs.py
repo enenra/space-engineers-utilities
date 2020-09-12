@@ -4,6 +4,8 @@ import re
 
 from bpy.types  import Operator
 
+from ..seut_errors  import report_error
+
 class SEUT_OT_RefreshMatLibs(Operator):
     """Refresh available MatLibs"""
     bl_idname = "scene.refresh_matlibs"
@@ -26,8 +28,7 @@ class SEUT_OT_RefreshMatLibs(Operator):
         materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
 
         if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-            self.report({'ERROR'}, "SEUT: Path to Materials Folder (Addon Preferences) '%s' not valid. (017)" % (materialsPath))
-            print("SEUT Error: Path to Materials Folder (Addon Preferences) '" + materialsPath + "' not valid. (017)")
+            report_error(self, context, True, 'E012', "Materials Folder", materialsPath)
             return {'CANCELLED'}
 
         # Find all MatLibs in directory, save to set, then add to matlibs list

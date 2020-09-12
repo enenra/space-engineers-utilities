@@ -5,7 +5,7 @@ from bpy.props  import StringProperty
 
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
 from ..seut_utils                   import getParentCollection
-
+from ..seut_errors                  import report_error
 
 class SEUT_OT_AddCustomSubpart(Operator):
     """Adds a custom subpart"""
@@ -24,7 +24,7 @@ class SEUT_OT_AddCustomSubpart(Operator):
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
         if collections['main'] is None:
-            self.report({'ERROR'}, "SEUT: Cannot create empty without 'Main' collection existing. (024)")
+            report_error(self, context, True, 'E002', "'Main'")
             return {'CANCELLED'}
             
         # Determine name strings.

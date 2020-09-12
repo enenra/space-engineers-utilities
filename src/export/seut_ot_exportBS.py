@@ -5,7 +5,7 @@ from bpy.types                      import Operator
 
 from .seut_export_utils             import export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, isCollectionExcluded, errorCollection, errorToolPath
+from ..seut_errors                  import errorExportGeneral, isCollectionExcluded, errorCollection, errorToolPath, report_error
 
 class SEUT_OT_ExportBS(Operator):
     """Exports Build Stages"""
@@ -45,17 +45,17 @@ class SEUT_OT_ExportBS(Operator):
             return result
 
         colBS1Good = False
-        result = errorCollection(self, scene, collections['bs1'], partial)
+        result = errorCollection(self, context, scene, collections['bs1'], partial)
         if result == {'CONTINUE'}:
             colBS1Good = True
 
         colBS2Good = False
-        result = errorCollection(self, scene, collections['bs2'], partial)
+        result = errorCollection(self, context, scene, collections['bs2'], partial)
         if result == {'CONTINUE'}:
             colBS2Good = True
 
         colBS3Good = False
-        result = errorCollection(self, scene, collections['bs3'], partial)
+        result = errorCollection(self, context, scene, collections['bs3'], partial)
         if result == {'CONTINUE'}:
             colBS3Good = True
 
@@ -64,29 +64,25 @@ class SEUT_OT_ExportBS(Operator):
                 print("SEUT Warning: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2.")
                 return {'FINISHED'}
             else:
-                self.report({'ERROR'}, "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
-                print("SEUT Error: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2. (015)")
+                report_error(self, context, True, 'E015', 'BS')
                 return {'CANCELLED'}
         
         if colBS1Good:
             for obj in collections['bs1'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colBS2Good:
             for obj in collections['bs2'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colBS3Good:
             for obj in collections['bs3'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    self.report({'ERROR'}, "SEUT: Object '%s' does not have any valid UV-Maps. This will crash Space Engineers. (032)" % (obj.name))
-                    print("SEUT Error: Object '" + obj.name + "' does not have any valid UV-Maps. This will crash Space Engineers. (032)")
+                    report_error(self, context, True, 'E032', obj.name)
                     return {'CANCELLED'}
 
 
