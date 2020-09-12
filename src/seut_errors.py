@@ -165,9 +165,9 @@ def report_error(self, context, works, code, variable_1 = None, variable_2 = Non
     if not variable_3 is None:
         text = text.format(variable_3=variable_3)
 
-    link = "https://space-engineers-modding.github.io/modding-reference/tools/3d-modelling/seut/troubleshooting.html#" + code
+    link = "https://space-engineers-modding.github.io/modding-reference/tools/3d-modelling/seut/troubleshooting.html#" + code.lower()
 
-    bpy.ops.message.popup_message(p_type='ERROR', p_text=text, p_link=link)
+    # bpy.ops.message.popup_message(p_type='ERROR', p_text=text, p_link=link)
 
     if works:
         self.report({'ERROR'}, text)

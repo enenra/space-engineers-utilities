@@ -34,7 +34,7 @@ def update_materialsPath(self, context):
 
     if os.path.isdir(os.path.abspath(bpy.path.abspath(self.materialsPath))):
         if not bpy.path.abspath(self.materialsPath[-10:-1]) == 'Materials':
-            report_error(self, context, False, 'E017', bpy.path.abspath(self.materialsPath[-10:-1]))
+            report_error(self, context, False, 'E017', self.materialsPath)
             self.materialsPath = ""
         else:
             bpy.ops.scene.refresh_matlibs()
