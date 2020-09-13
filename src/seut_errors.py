@@ -158,12 +158,13 @@ def report_error(self, context, works, code, variable_1 = None, variable_2 = Non
 
     text = errors[code]
 
-    if not variable_1 is None:
-        text = text.format(variable_1=variable_1)
-    if not variable_2 is None:
-        text = text.format(variable_2=variable_2)
-    if not variable_3 is None:
-        text = text.format(variable_3=variable_3)
+    try:
+        text = text.format(variable_1=variable_1, variable_2=variable_2, variable_3=variable_3)
+    except KeyError:
+        try:
+            text = text.format(variable_1=variable_1, variable_2=variable_2)
+        except KeyError:
+            text = text.format(variable_1=variable_1)
 
     link = "https://space-engineers-modding.github.io/modding-reference/tools/3d-modelling/seut/troubleshooting.html#" + code.lower()
 
