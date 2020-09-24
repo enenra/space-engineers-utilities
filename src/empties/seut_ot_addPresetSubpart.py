@@ -37,8 +37,8 @@ class SEUT_OT_AddPresetSubpart(Operator):
             ('PistonSubpart3', 'Piston Subpart 3', 'The piston subpart attached to its second subpart.\nWarning: Empty must also be present in BS collections or game will CTD on placement!'),
             ('TurbineRotor', 'Wind Turbine Rotor', 'The subpart containing the rotating blades of a wind turbine'),
             ('HangarDoor', 'Hangar Door Part', 'Subpart for a hangar door section. \nSupports index, and all of these subparts are placed within its base'),
-            ('LaserComTurret', 'Laser Antenna targeter azimuth', 'Subpart for a laser antenna turret'),
-            ('LaserCom', 'Laser Antenna targeter eleveation', 'Subpart for a laser antenna turret (attached to Laser Antenna azimuth subpart)')
+            ('LaserComTurret', 'Laser Antenna Targeter Azimuth', 'Subpart for a laser antenna turret'),
+            ('LaserCom', 'Laser Antenna Targeter Elevation', 'Subpart for a laser antenna turret (attached to Laser Antenna azimuth subpart)')
             ),
         default='DoorLeft'
     )
@@ -133,6 +133,14 @@ class SEUT_OT_AddPresetSubpart(Operator):
         if self.detectorType == 'HangarDoor':
             emptyName = "subpart_HangarDoor_door"
             usesIndex = True
+
+        if self.detectorType == 'LaserComTurret':
+            emptyName = "subpart_LaserComTurret"
+            usesIndex = False
+
+        if self.detectorType == 'LaserCom':
+            emptyName = "subpart_LaserCom"
+            usesIndex = False
 
         bpy.ops.object.add(type='EMPTY')
         empty = bpy.context.view_layer.objects.active
