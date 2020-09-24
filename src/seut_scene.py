@@ -15,7 +15,7 @@ from bpy.props  import (EnumProperty,
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_errors                   import report_error
-from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, toRadians
+from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, toRadians, getParentCollection
 
 
 # These update_* functions need to be above the class... for some reason.
@@ -113,15 +113,13 @@ def update_linkSubpartInstances(self, context):
     scene = context.scene
     collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
-    if collections['main'] is None:
-        return
-
-    for empty in collections['main'].objects:
+    for empty in bpy.data.objects:
         if empty is not None:
             # The check for the empty name prevents this from being run on empties that are linked to this scene.
             if empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
+                parentCollection = getParentCollection(context, empty)
                 if scene.seut.linkSubpartInstances:
-                    linkSubpartScene(self, scene, empty, None)
+                    linkSubpartScene(self, scene, empty, parentCollection)
                 else:
                     unlinkSubpartScene(empty)
 

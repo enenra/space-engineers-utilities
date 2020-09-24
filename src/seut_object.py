@@ -20,25 +20,21 @@ def update_linkedScene(self, context):
     empty = context.view_layer.objects.active
     collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
-    if collections['main'] is None:
-        return
-
     if empty is not None:
         
         parentCollection = getParentCollection(context, empty)
-        if parentCollection == collections['main']:
-            if 'file' in empty:
-                empty['file'] = ""
-            unlinkSubpartScene(empty)
+        if 'file' in empty:
+            empty['file'] = ""
+        unlinkSubpartScene(empty)
 
-            if empty.seut.linkedScene is not None:
-                empty['file'] = empty.seut.linkedScene.seut.subtypeId
-                if scene.seut.linkSubpartInstances:
-                    try:
-                        linkSubpartScene(self, scene, empty, None)
-                    except AttributeError:
-                        report_error(self, context, False, 'E002')
-                        empty.seut.linkedScene = None
+        if empty.seut.linkedScene is not None:
+            empty['file'] = empty.seut.linkedScene.seut.subtypeId
+            if scene.seut.linkSubpartInstances:
+                try:
+                    linkSubpartScene(self, scene, empty, parentCollection)
+                except AttributeError:
+                    report_error(self, context, False, 'E002')
+                    empty.seut.linkedScene = None
 
 
 def update_linkedObject(self, context):

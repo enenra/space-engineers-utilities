@@ -13,7 +13,7 @@ from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..export.seut_custom_fbx_exporter      import save_single
 from ..seut_ot_recreateCollections          import SEUT_OT_RecreateCollections
-from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene
+from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene, getParentCollection
 
 from ..seut_errors                          import report_error
 
@@ -359,7 +359,8 @@ def export_model_FBX(self, context, collection):
             
             if scene.seut.linkSubpartInstances:
                 if 'file' in emptyObj and emptyObj.seut.linkedScene is not None and emptyObj.seut.linkedScene.name in bpy.data.scenes:
-                    linkSubpartScene(self, scene, emptyObj, None)
+                    parentCollection = getParentCollection(context, emptyObj)
+                    linkSubpartScene(self, scene, emptyObj, parentCollection)
                     emptyObj['file'] = emptyObj.seut.linkedScene.seut.subtypeId
 
             # Resetting empty size
