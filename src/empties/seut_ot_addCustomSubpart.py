@@ -21,30 +21,19 @@ class SEUT_OT_AddCustomSubpart(Operator):
 
     def execute(self, context):
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
-
-        if collections['main'] is None:
-            report_error(self, context, True, 'E002', "'Main'")
-            return {'CANCELLED'}
             
         # Determine name strings.
         customPropName = "file"
 
+        selectedObject = context.view_layer.objects.active
+
         # Spawn empty
         bpy.ops.object.add(type='EMPTY')
-        empty = bpy.context.view_layer.objects.active
+        empty = context.view_layer.objects.active
         empty.name = self.name
 
-        parentCollection = getParentCollection(context, empty)
-
-        if parentCollection != collections['main']:
-            collections['main'].objects.link(empty)
-
-            if parentCollection is None:
-                scene.collection.objects.unlink(empty)
-            else:
-                parentCollection.objects.unlink(empty)
-
+        if not selectedObject is None:
+            empty.parent = selectedObject
 
         empty.empty_display_type = 'ARROWS'
 

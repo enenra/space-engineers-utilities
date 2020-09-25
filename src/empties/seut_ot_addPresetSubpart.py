@@ -51,11 +51,8 @@ class SEUT_OT_AddPresetSubpart(Operator):
 
     def execute(self, context):
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
-        if collections['main'] is None:
-            report_error(self, context, True, 'E002', "'Main'")
-            return {'CANCELLED'}
+        selectedObject = context.view_layer.objects.active
 
         # Determine name strings.
         emptyName = ""
@@ -143,7 +140,7 @@ class SEUT_OT_AddPresetSubpart(Operator):
             usesIndex = False
 
         bpy.ops.object.add(type='EMPTY')
-        empty = bpy.context.view_layer.objects.active
+        empty = context.view_layer.objects.active
         empty.empty_display_type = 'ARROWS'
 
         if usesIndex:
@@ -151,15 +148,8 @@ class SEUT_OT_AddPresetSubpart(Operator):
         else:
             empty.name = emptyName
 
-        parentCollection = getParentCollection(context, empty)
-
-        if parentCollection != collections['main']:
-            collections['main'].objects.link(empty)
-
-            if parentCollection is None:
-                scene.collection.objects.unlink(empty)
-            else:
-                parentCollection.objects.unlink(empty)
+        if not selectedObject is None:
+            empty.parent = selectedObject
 
         bpy.data.objects[empty.name][customPropName] = ""
         
