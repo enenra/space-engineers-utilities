@@ -13,9 +13,9 @@ class SEUT_OT_AddCustomSubpart(Operator):
     bl_label = "Add Custom Subpart"
     bl_options = {'REGISTER', 'UNDO'}
 
-    prefix: StringProperty(
-        name="Subpart Prefix",
-        description="The prefix with which to combine the selected object's name to create the name for the empty",
+    name: StringProperty(
+        name="Subpart Name",
+        description="The name of the custom subpart empty",
         default="subpart_",
     )
 
@@ -33,7 +33,7 @@ class SEUT_OT_AddCustomSubpart(Operator):
         # Spawn empty
         bpy.ops.object.add(type='EMPTY')
         empty = bpy.context.view_layer.objects.active
-        empty.name = 'subpart_' + empty.name
+        empty.name = self.name
 
         parentCollection = getParentCollection(context, empty)
 
