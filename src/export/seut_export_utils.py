@@ -360,7 +360,16 @@ def export_model_FBX(self, context, collection):
             if scene.seut.linkSubpartInstances:
                 if 'file' in emptyObj and emptyObj.seut.linkedScene is not None and emptyObj.seut.linkedScene.name in bpy.data.scenes:
                     parentCollection = getParentCollection(context, emptyObj)
-                    linkSubpartScene(self, scene, emptyObj, parentCollection)
+
+                    collectionType = 'main'
+                    if parentCollection == collections['bs1']:
+                        collectionType = 'bs1'
+                    elif parentCollection == collections['bs2']:
+                        collectionType = 'bs2'
+                    elif parentCollection == collections['bs3']:
+                        collectionType = 'bs3'
+                        
+                    linkSubpartScene(self, scene, emptyObj, parentCollection, collectionType)
                     emptyObj['file'] = emptyObj.seut.linkedScene.seut.subtypeId
 
             # Resetting empty size

@@ -2,8 +2,9 @@ import bpy
 
 from bpy.types import Operator
 
-from .seut_ot_mirroring     import SEUT_OT_Mirroring
-from .seut_utils            import linkSubpartScene
+from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_mirroring             import SEUT_OT_Mirroring
+from .seut_utils                    import linkSubpartScene, getParentCollection
 
 class SEUT_OT_StructureConversion(Operator):
     """Ports blend files created with the old plugin to the new structure"""
@@ -143,7 +144,19 @@ class SEUT_OT_StructureConversion(Operator):
         for scn2 in bpy.data.scenes:
             for emptyObj in scn2.objects:
                 if emptyObj.type == 'EMPTY' and 'file' in emptyObj and emptyObj['file'] in bpy.data.scenes:
-                    linkSubpartScene(self, scn2, emptyObj, None)
+
+                    parentCollection = getParentCollection(context, emptyObj)
+                    collections = SEUT_OT_RecreateCollections.getCollections(scn2)
+
+                    collectionType = 'main'
+                    if parentCollection == collections['bs1']:
+                        collectionType = 'bs1'
+                    elif parentCollection == collections['bs2']:
+                        collectionType = 'bs2'
+                    elif parentCollection == collections['bs3']:
+                        collectionType = 'bs3'
+                        
+                    linkSubpartScene(self, scn2, emptyObj, parentCollection, collectionType)
 
         # Set parent scenes from subparts
         # Needs to happen in second loop, because first loop needs to first run through all scenes to name them

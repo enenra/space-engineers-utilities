@@ -118,8 +118,17 @@ def update_linkSubpartInstances(self, context):
             # The check for the empty name prevents this from being run on empties that are linked to this scene.
             if empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
                 parentCollection = getParentCollection(context, empty)
+
+                collectionType = 'main'
+                if parentCollection == collections['bs1']:
+                    collectionType = 'bs1'
+                elif parentCollection == collections['bs2']:
+                    collectionType = 'bs2'
+                elif parentCollection == collections['bs3']:
+                    collectionType = 'bs3'
+                
                 if scene.seut.linkSubpartInstances:
-                    linkSubpartScene(self, scene, empty, parentCollection)
+                    linkSubpartScene(self, scene, empty, parentCollection, collectionType)
                 else:
                     unlinkSubpartScene(empty)
 

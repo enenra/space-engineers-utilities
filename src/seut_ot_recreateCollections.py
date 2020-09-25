@@ -21,7 +21,11 @@ class SEUT_OT_RecreateCollections(Operator):
         """Scans existing collections to find the SEUT ones"""
 
         if not 'SEUT' in scene.view_layers:
-            scene.view_layers[0].name = 'SEUT'
+            # This errors sometimes if it's triggered from draw in the toolbar
+            try:
+                scene.view_layers[0].name = 'SEUT'
+            except:
+                pass
 
         tag = ' (' + scene.seut.subtypeId + ')'
 

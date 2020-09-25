@@ -5,7 +5,7 @@ from math   import pi
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
 from .seut_errors                   import errorCollection, report_error
 
-def linkSubpartScene(self, originScene, empty, targetCollection):
+def linkSubpartScene(self, originScene, empty, targetCollection, collectionType = 'main'):
     """Link instances of subpart scene objects as children to empty"""
 
     context = bpy.context
@@ -16,14 +16,14 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
 
     subpartCollections = SEUT_OT_RecreateCollections.getCollections(subpartScene)
     # Checks whether collection exists, is excluded or is empty
-    result = errorCollection(self, context, subpartScene, subpartCollections['main'], False)
+    result = errorCollection(self, context, subpartScene, subpartCollections[collectionType], False)
     if not result == {'CONTINUE'}:
         empty.seut.linkedScene = None
         empty['file'] = None
         return result
     
     # This prevents instancing loops.
-    for o in subpartCollections['main'].objects:
+    for o in subpartCollections[collectionType].objects:
         if o is not None and o.type == 'EMPTY' and o.seut.linkedScene == originScene:
             report_error(self, context, False, 'E005', subpartScene.name, currentScene.name)
             empty.seut.linkedScene = None
@@ -44,7 +44,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
         context.object.select_set(False)
         context.view_layer.objects.active = None
 
-    objectsToIterate = set(subpartCollections['main'].objects)
+    objectsToIterate = set(subpartCollections[collectionType].objects)
 
     for obj in objectsToIterate:
 
@@ -55,7 +55,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
 
             obj.hide_viewport = False
 
-            existingObjects = set(subpartCollections['main'].objects)
+            existingObjects = set(subpartCollections[collectionType].objects)
             
             # Create instance of object
             try:
@@ -67,7 +67,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
 
             bpy.ops.object.duplicate(linked=True)
         
-            newObjects = set(subpartCollections['main'].objects)
+            newObjects = set(subpartCollections[collectionType].objects)
             createdObjects = newObjects.copy()
             deleteObjects = set()
 
@@ -92,12 +92,12 @@ def linkSubpartScene(self, originScene, empty, targetCollection):
                 # Link instance to empty
                 try:
                     if targetCollection is None:
-                        parentCollections['main'].objects.link(linkedObject)
+                        parentCollections[collectionType].objects.link(linkedObject)
                     else:
                         targetCollection.objects.link(linkedObject)
                 except RuntimeError:
                     pass
-                subpartCollections['main'].objects.unlink(linkedObject)
+                subpartCollections[collectionType].objects.unlink(linkedObject)
                 linkedObject.parent = empty
 
                 if linkedObject.type == 'EMPTY' and linkedObject.seut.linkedScene is not None and linkedObject.seut.linkedScene.name in bpy.data.scenes and originScene.seut.linkSubpartInstances:
