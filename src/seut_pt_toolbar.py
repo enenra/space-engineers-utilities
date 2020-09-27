@@ -264,7 +264,6 @@ class SEUT_PT_Panel_Export(Panel):
                 row = box2.row()
                 row.prop(scene.seut, "export_largeGrid", icon='MESH_CUBE')
                 row.prop(scene.seut, "export_smallGrid", icon='META_CUBE')
-                box.prop(scene.seut, "export_rescaleFactor")
             
             split = box.split(factor=0.85)
             col = split.column()
