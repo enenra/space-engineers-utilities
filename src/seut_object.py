@@ -24,19 +24,23 @@ def update_linkedScene(self, context):
         
         parentCollection = getParentCollection(context, empty)
         collectionType = 'main'
+        extension = ""
         if parentCollection == collections['bs1']:
             collectionType = 'bs1'
+            extension = "_BS1"
         elif parentCollection == collections['bs2']:
             collectionType = 'bs2'
+            extension = "_BS2"
         elif parentCollection == collections['bs3']:
             collectionType = 'bs3'
+            extension = "_BS3"
 
         if 'file' in empty:
             empty['file'] = ""
         unlinkSubpartScene(empty)
 
         if empty.seut.linkedScene is not None:
-            empty['file'] = empty.seut.linkedScene.seut.subtypeId
+            empty['file'] = empty.seut.linkedScene.seut.subtypeId + extension
             if scene.seut.linkSubpartInstances:
                 try:
                     linkSubpartScene(self, scene, empty, parentCollection, collectionType)

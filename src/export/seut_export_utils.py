@@ -315,7 +315,22 @@ def export_model_FBX(self, context, collection):
                 if emptyObj.parent is not None and emptyObj.seut.linkedObject.parent is not None and emptyObj.parent != emptyObj.seut.linkedObject.parent:
                     print("SEUT Warning: Highlight empty '" + emptyObj.name + "' and its linked object '" + emptyObj.seut.linkedObject.name + "' have different parent objects. This may prevent it from working properly ingame.")
             elif 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
-                reference = emptyObj.seut.linkedScene.seut.subtypeId
+
+                parentCollection = getParentCollection(context, emptyObj)
+                
+                collectionType = 'main'
+                extension = ""
+                if parentCollection == collections['bs1']:
+                    collectionType = 'bs1'
+                    extension = "_BS1"
+                elif parentCollection == collections['bs2']:
+                    collectionType = 'bs2'
+                    extension = "_BS2"
+                elif parentCollection == collections['bs3']:
+                    collectionType = 'bs3'
+                    extension = "_BS3"
+
+                reference = emptyObj.seut.linkedScene.seut.subtypeId + extension
 
                 # Account for simultaneous export
                 if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
@@ -365,15 +380,19 @@ def export_model_FBX(self, context, collection):
                     parentCollection = getParentCollection(context, emptyObj)
 
                     collectionType = 'main'
+                    extension = ""
                     if parentCollection == collections['bs1']:
                         collectionType = 'bs1'
+                        extension = "_BS1"
                     elif parentCollection == collections['bs2']:
                         collectionType = 'bs2'
+                        extension = "_BS2"
                     elif parentCollection == collections['bs3']:
                         collectionType = 'bs3'
+                        extension = "_BS3"
                         
                     linkSubpartScene(self, scene, emptyObj, parentCollection, collectionType)
-                    emptyObj['file'] = emptyObj.seut.linkedScene.seut.subtypeId
+                    emptyObj['file'] = emptyObj.seut.linkedScene.seut.subtypeId + extension
 
             # Resetting empty size
             if 'MaxHandle' not in emptyObj and 'file' not in emptyObj:
