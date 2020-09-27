@@ -26,9 +26,11 @@ def checkUpdate(currentVersion):
 
             currentVersionName = 'v' + str(currentVersion).replace("(", "").replace(")", "").replace(", ", ".")
             
-            if str(currentVersionName) != str(latestVersionName):
+            if tuple(currentVersionName[1:]) < tuple(str(latestVersionName)[1:]):
                 needsUpdate = f"SEUT {latestVersionName[1:]} available!"
                 wm.seut.needs_update = needsUpdate
+            elif tuple(currentVersionName[1:]) > tuple(str(latestVersionName)[1:]):
+                wm.seut.needs_update = "Development Build"
             else:
                 wm.seut.needs_update = "SEUT is up to date."
         

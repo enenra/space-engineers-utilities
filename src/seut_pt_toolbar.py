@@ -20,7 +20,7 @@ class SEUT_PT_Panel(Panel):
 
         currentVersionName = 'v' + str(get_addon_version()).replace("(", "").replace(")", "").replace(", ", ".")
 
-        if str(currentVersionName) != str(wm.seut.latest_version) and wm.seut.needs_update != "":
+        if tuple(currentVersionName[1:]) < tuple(str(wm.seut.latest_version)[1:]) and wm.seut.needs_update != "":
             row = layout.row()
             row.alert = True
             row.label(text=wm.seut.needs_update, icon='ERROR')

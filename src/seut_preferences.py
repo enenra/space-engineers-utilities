@@ -204,7 +204,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         row = layout.row()
         row.label(text="Update Status:")
 
-        if str(currentVersionName) != str(wm.seut.latest_version):
+        if tuple(currentVersionName[1:]) < tuple(wm.seut.latest_version[1:]):
             row.alert = True
             row.label(text=wm.seut.needs_update, icon='ERROR')
         else:
