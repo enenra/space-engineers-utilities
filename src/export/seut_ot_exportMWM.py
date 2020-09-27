@@ -40,7 +40,7 @@ class SEUT_OT_ExportMWM(Operator):
         materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
-        result = errorToolPath(self, mwmbPath, "MWM Builder", "MwmBuilder.exe")
+        result = errorToolPath(self, context, mwmbPath, "MWM Builder", "MwmBuilder.exe")
         if not result == {'CONTINUE'}:
             return result
 

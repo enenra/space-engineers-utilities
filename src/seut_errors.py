@@ -111,7 +111,7 @@ def errorCollection(self, context, scene, collection, partial):
     
     return {'CONTINUE'}
 
-def errorToolPath(self, toolPath, toolName, toolFileName):
+def errorToolPath(self, context, toolPath, toolName, toolFileName):
     """Checks if external tool is correctly linked"""
 
     if toolPath == "" or toolPath == "." or os.path.exists(toolPath) is False:

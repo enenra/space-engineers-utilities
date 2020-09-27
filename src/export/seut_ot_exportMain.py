@@ -44,7 +44,7 @@ class SEUT_OT_ExportMain(Operator):
         if not result == {'CONTINUE'}:
             return result
 
-        result = errorToolPath(self, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
+        result = errorToolPath(self, context, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:
             return result
         

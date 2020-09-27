@@ -40,7 +40,7 @@ class SEUT_OT_ExportLOD(Operator):
         fbxImporterPath = os.path.abspath(bpy.path.abspath(preferences.fbxImporterPath))
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
-        result = errorToolPath(self, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
+        result = errorToolPath(self, context, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:
             return result
 
