@@ -301,6 +301,9 @@ def export_model_FBX(self, context, collection):
             # To ensure they work ingame (where duplicate names are no issue) this will remove the ".001" etc. from the name (and cause another empty to get this numbering)
             if re.search("\.[0-9]{3}", emptyObj.name[-4:]) != None and emptyObj.name.find("(L)") == -1:
                 emptyObj.name = emptyObj.name[:-4]
+                # For some godforsaken reason, sometimes the name just isn't shortened. But trying it again seems to do the trick...
+                if re.search("\.[0-9]{3}", emptyObj.name[-4:]) != None:
+                    emptyObj.name = emptyObj.name[:-4]
 
             if emptyObj.parent is None:
                 print("SEUT Warning: Empty '" + emptyObj.name + "' has no parent object. This may prevent it from working properly ingame.")
