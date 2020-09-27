@@ -136,7 +136,7 @@ class SEUT_OT_ExportSBC(Operator):
 
         def_CriticalComponent = ET.SubElement(def_definition, 'CriticalComponent')
         def_CriticalComponent.set('Subtype', 'SteelPlate')
-        def_CriticalComponent.set('Index', 'E0')
+        def_CriticalComponent.set('Index', '0')
 
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
