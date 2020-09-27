@@ -38,6 +38,7 @@ errors = {
     'E033': "SEUT: Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, Material names or object names. (E033)",
     'E034': "SEUT: Collision object '{variable_1}' has unapplied modifiers. Collision model cannot be created. (E034)",
     'E035': "SEUT: There was an error during export caused by {variable_1}. Please refer to the logs in your export folder for details. (E035)",
+    'E036': "SEUT: An error has occurred in the FBX exporter. Try exiting Edit-Mode before exporting. (E036)",
 }
 
 warnings = {

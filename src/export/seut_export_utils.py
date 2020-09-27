@@ -365,7 +365,12 @@ def export_model_FBX(self, context, collection):
 
     # This is the actual call to make an FBX file.
     fbxfile = join(path, filename + ".fbx")
-    export_to_fbxfile(settings, scene, fbxfile, collection.objects, ishavokfbxfile=False)
+    errorDuringExport = False
+    try:
+        export_to_fbxfile(settings, scene, fbxfile, collection.objects, ishavokfbxfile=False)
+    except RuntimeError as error:
+        report_error(self, context, False, 'E036')
+        errorDuringExport = True
 
     for objMat in bpy.data.materials:
         if objMat is not None and objMat.node_tree is not None:
@@ -401,7 +406,8 @@ def export_model_FBX(self, context, collection):
                 emptyObj.scale.z *= 0.5
 
     bpy.context.scene.collection.children.unlink(collection)
-    print("SEUT Info: '%s.fbx' has been created." % (path + filename))
+    if not errorDuringExport:
+        print("SEUT Info: '%s.fbx' has been created." % (path + filename))
 
     return {'FINISHED'}
 
