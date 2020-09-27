@@ -24,7 +24,7 @@ class SEUT_OT_StructureConversion(Operator):
 
         # For some reason it breaks if you don't run it starting from the scene at index 0
         currentScene = bpy.context.window.scene
-        bpy.context.window.scene = bpy.data.scenes[0]
+        context.window.scene = bpy.data.scenes[0]
 
         # Set scene indexes and SubtypeIds
         for scn in bpy.data.scenes:
@@ -34,10 +34,11 @@ class SEUT_OT_StructureConversion(Operator):
             # Create main SEUT collection for each scene
             seutExists = False
             for collection in scn.collection.children:
-                if collection.name[:4] == 'SEUT':
+                if collection.name == 'SEUT' + tag:
                     seutExists = True
 
             if not seutExists:
+                scn.view_layers[0].name = 'SEUT'
                 seut = bpy.data.collections.new('SEUT' + tag)
                 scn.collection.children.link(seut)
             
@@ -45,33 +46,53 @@ class SEUT_OT_StructureConversion(Operator):
             for collection in scn.collection.children:
 
                 if collection.name == 'Collection 1' or collection.name[:13] == 'Collection 1.':
+                    if 'Main' + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections['Main' + tag])
                     collection.name = 'Main' + tag
                     
                 elif collection.name == 'Collection 2' or collection.name[:13] == 'Collection 2.':
+                    if 'Collision' + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections['Collision' + tag])
                     collection.name = 'Collision' + tag
                     
                 elif collection.name == 'Collection 3' or collection.name[:13] == 'Collection 3.':
+                    if 'Mountpoints' + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections['Mountpoints' + tag])
                     collection.name = 'Mountpoints' + tag
                     
                 elif collection.name == 'Collection 4' or collection.name[:13] == 'Collection 4.':
+                    if 'Mirroring' + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections['Mirroring' + tag])
                     collection.name = 'Mirroring' + tag
                     
                 elif collection.name == 'Collection 6' or collection.name[:13] == 'Collection 6.':
+                    if 'LOD1' + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections['LOD1' + tag])
                     collection.name = 'LOD1' + tag
                     
                 elif collection.name == 'Collection 7' or collection.name[:13] == 'Collection 7.':
+                    if 'LOD2' + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections['LOD2' + tag])
                     collection.name = 'LOD2' + tag
                     
                 elif collection.name == 'Collection 8' or collection.name[:13] == 'Collection 8.':
+                    if 'LOD3' + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections['LOD3' + tag])
                     collection.name = 'LOD3' + tag
                     
                 elif collection.name == 'Collection 11' or collection.name[:14] == 'Collection 11.':
+                    if 'BS1' + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections['BS1' + tag])
                     collection.name = 'BS1' + tag
                     
                 elif collection.name == 'Collection 12' or collection.name[:14] == 'Collection 12.':
+                    if 'BS2' + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections['BS2' + tag])
                     collection.name = 'BS2' + tag
                     
                 elif collection.name == 'Collection 13' or collection.name[:14] == 'Collection 13.':
+                    if 'BS3' + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections['BS3' + tag])
                     collection.name = 'BS3' + tag
                 
                 if not collection.name[:4] == 'SEUT':
@@ -83,7 +104,7 @@ class SEUT_OT_StructureConversion(Operator):
             # Convert custom properties of empties from harag's to the default blender method.
             for obj in scn.objects:
                 if obj.type == 'EMPTY':
-                    obj.empty_display_type = "CUBE"
+                    obj.empty_display_type = 'CUBE'
 
                     if 'space_engineers' in bpy.data.objects[obj.name] and bpy.data.objects[obj.name]['space_engineers'] is not None:
                         haragProp = bpy.data.objects[obj.name]['space_engineers']
@@ -99,6 +120,7 @@ class SEUT_OT_StructureConversion(Operator):
                         elif haragProp.get('file') is not None:
                             customPropName = 'file'
                             customPropValue = haragProp.get('file')
+                            obj.empty_display_type = 'ARROWS'
 
                             if customPropValue.find('_Large') != -1:
                                 targetObjectName = customPropValue[:customPropValue.find('_Large')]
@@ -149,11 +171,11 @@ class SEUT_OT_StructureConversion(Operator):
                     collections = SEUT_OT_RecreateCollections.getCollections(scn2)
 
                     collectionType = 'main'
-                    if parentCollection == collections['bs1']:
+                    if parentCollection == bpy.data.collections['BS1' + tag]:
                         collectionType = 'bs1'
-                    elif parentCollection == collections['bs2']:
+                    elif parentCollection == bpy.data.collections['BS2' + tag]:
                         collectionType = 'bs2'
-                    elif parentCollection == collections['bs3']:
+                    elif parentCollection == bpy.data.collections['BS3' + tag]:
                         collectionType = 'bs3'
                         
                     linkSubpartScene(self, scn2, emptyObj, parentCollection, collectionType)
