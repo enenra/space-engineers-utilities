@@ -65,6 +65,11 @@ class SEUT_OT_IconRender(Operator):
             report_error(self, context, False, 'E002', '"' + scene.name + '"')
             scene.seut.renderToggle = 'off'
             return {'CANCELLED'}
+
+        if not bpy.data.is_saved:
+            report_error(self, context, False, 'E008')
+            scene.seut.renderToggle = 'off'
+            return {'CANCELLED'}
             
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
@@ -80,6 +85,9 @@ class SEUT_OT_IconRender(Operator):
                 collections['seut'].children.link(collection)
             except:
                 pass
+        
+        if scene.render.filepath == '/tmp\\':
+            scene.render.filepath = '//'
 
 
         # Spawn holder empty
