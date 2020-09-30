@@ -215,7 +215,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         else:
             row.operator('wm.get_update', text="Releases", icon='IMPORT')
 
-        layout.prop(self, "set_dev_tools_paths")
+        # layout.prop(self, "set_dev_tools_paths")
 
         layout.prop(self, "materialsPath", expand=True)
         box = layout.box()
