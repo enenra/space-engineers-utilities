@@ -41,7 +41,7 @@ class SEUT_PT_Panel(Panel):
                 box.prop(scene.seut,'linkSubpartInstances')
             
             box = layout.box()
-            if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'mirror':
+            if scene.seut.sceneType == 'mainScene':
                 box.label(text="SubtypeId (File Name)", icon='COPY_ID')
             elif scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
                 box.label(text="File Name", icon='FILE')

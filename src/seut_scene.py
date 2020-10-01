@@ -27,6 +27,21 @@ def update_MirroringToggle(self, context):
     bpy.ops.scene.mirroring()
 
 def update_mirroringScene(self, context):
+    scene = context.scene
+    targetScene = scene.seut.mirroringScene
+
+    print("origin: " + scene.name)
+    if targetScene != None:
+        print("target: " + targetScene.name)
+
+    if targetScene is None:
+        for scn in bpy.data.scenes:
+            if scn.seut.mirroringScene == scene:
+                scn.seut.mirroringScene = None
+
+    elif targetScene is not None and targetScene.seut.mirroringScene is None or targetScene.seut.mirroringScene is not scene:
+        self.mirroringScene.seut.mirroringScene = scene
+
     bpy.ops.scene.mirroring()
 
 def update_MountpointToggle(self, context):
@@ -160,7 +175,7 @@ def update_export_exportPath(self, context):
 
 
 def poll_linkedScene(self, object):
-    return object != bpy.context.scene and object.seut.sceneType == 'mirror'
+    return object != bpy.context.scene and object.seut.sceneType == 'mainScene'
 
 class SEUT_MountpointAreas(PropertyGroup):
     
@@ -209,7 +224,6 @@ class SEUT_Scene(PropertyGroup):
         items=(
             ('mainScene', 'Main', 'This scene is a main scene'),
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene'),
-            ('mirror', 'Mirroring', 'This scene contains the mirror model of another scene'),
             ('character', 'Character ', 'This scene contains a character model'),
             ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
             ),

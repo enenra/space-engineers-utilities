@@ -287,13 +287,6 @@ class SEUT_OT_ExportSBC(Operator):
             def_MirroringBlock = ET.SubElement(def_definition, 'MirroringBlock')
             def_MirroringBlock.text = scene.seut.mirroringScene.seut.subtypeId
 
-        elif scene.seut.sceneType == 'mirror':
-            for scn in bpy.data.scenes:
-                if scn.seut.mirroringScene == scene:
-                    def_MirroringBlock = ET.SubElement(def_definition, 'MirroringBlock')
-                    def_MirroringBlock.text = scn.seut.subtypeId
-
-
         # Write to file, place in export folder
         tempString = ET.tostring(definitions, 'utf-8')
         try:
