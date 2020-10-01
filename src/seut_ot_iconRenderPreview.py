@@ -24,7 +24,7 @@ class SEUT_OT_IconRenderPreview(Operator):
         scene = context.scene
         wm = context.window_manager
 
-        if scene.render.filepath == "" or scene.render.filepath == "." or os.path.exists(scene.render.filepath) is False:
+        if not os.path.isdir(os.path.abspath(bpy.path.abspath(scene.render.filepath))):
             report_error(self, context, False, 'E003', 'Render', os.path.abspath(bpy.path.abspath(scene.render.filepath)))
             return {'CANCELLED'}
             
