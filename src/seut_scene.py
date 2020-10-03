@@ -128,24 +128,23 @@ def update_linkSubpartInstances(self, context):
     scene = context.scene
     collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
-    for empty in bpy.data.objects:
-        if empty is not None:
-            # The check for the empty name prevents this from being run on empties that are linked to this scene.
-            if empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
-                parentCollection = getParentCollection(context, empty)
+    for col in collections.values():
+        if col is not None:
+            for empty in col.objects:
+                if empty is not None and empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
+                    
+                    collectionType = 'main'
+                    if col == collections['bs1']:
+                        collectionType = 'bs1'
+                    elif col == collections['bs2']:
+                        collectionType = 'bs2'
+                    elif col == collections['bs3']:
+                        collectionType = 'bs3'
 
-                collectionType = 'main'
-                if parentCollection == collections['bs1']:
-                    collectionType = 'bs1'
-                elif parentCollection == collections['bs2']:
-                    collectionType = 'bs2'
-                elif parentCollection == collections['bs3']:
-                    collectionType = 'bs3'
-                
-                if scene.seut.linkSubpartInstances:
-                    linkSubpartScene(self, scene, empty, parentCollection, collectionType)
-                else:
-                    unlinkSubpartScene(empty)
+                    if scene.seut.linkSubpartInstances:
+                        linkSubpartScene(self, scene, empty, col, collectionType)
+                    else:
+                        unlinkSubpartScene(empty)
 
 
 def update_export_largeGrid(self, context):
