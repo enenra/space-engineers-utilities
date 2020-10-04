@@ -201,18 +201,21 @@ class SEUT_AddonPreferences(AddonPreferences):
 
         currentVersionName = 'v' + str(get_addon_version()).replace("(", "").replace(")", "").replace(", ", ".")
 
+        split = layout.split(factor=0.95)
+        split.label(text="")
+        link = split.operator('wm.semref_link', text="", icon='INFO')
+        link.section = 'reference'
+        link.page = 'preferences'
+
         row = layout.row()
         row.label(text="Update Status:")
 
         if tuple(currentVersionName[1:]) < tuple(wm.seut.latest_version[1:]):
             row.alert = True
             row.label(text=wm.seut.needs_update, icon='ERROR')
-        else:
-            row.label(text=wm.seut.needs_update, icon='CHECKMARK')
-
-        if wm.seut.latest_version != "" and wm.seut.latest_version != currentVersionName:
             row.operator('wm.get_update', icon='IMPORT')
         else:
+            row.label(text=wm.seut.needs_update, icon='CHECKMARK')
             row.operator('wm.get_update', text="Releases", icon='IMPORT')
 
         layout.prop(self, "set_dev_tools_paths")

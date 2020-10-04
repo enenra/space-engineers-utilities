@@ -73,6 +73,7 @@ from .utils.seut_updater                        import checkUpdate
 from .utils.seut_ot_getUpdate                   import SEUT_OT_GetUpdate
 from .utils.seut_ot_popupNotification           import SEUT_OT_PopupNotification
 from .utils.seut_ot_tempLinkButton              import SEUT_OT_TempLinkButton
+from .utils.seut_ot_SEMREFLink                  import SEUT_OT_SEMREFLink
 
 from .seut_preferences                  import SEUT_AddonPreferences
 from .seut_preferences                  import get_addon_version
@@ -120,6 +121,7 @@ classes = (
     SEUT_OT_GetUpdate,
     SEUT_OT_PopupNotification,
     SEUT_OT_TempLinkButton,
+    SEUT_OT_SEMREFLink,
     SEUT_OT_AddHighlightEmpty,
     SEUT_OT_AddDummy,
     SEUT_OT_AddPresetSubpart,

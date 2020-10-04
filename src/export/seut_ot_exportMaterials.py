@@ -10,7 +10,7 @@ from ..seut_errors  import report_error
 class SEUT_OT_ExportMaterials(Operator):
     """Export local materials to Materials.xml file"""
     bl_idname = "scene.export_materials"
-    bl_label = "Export Materials to Library"
+    bl_label = "Export Materials"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):

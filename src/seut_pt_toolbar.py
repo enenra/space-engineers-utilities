@@ -35,7 +35,12 @@ class SEUT_PT_Panel(Panel):
 
             # SubtypeId
             box = layout.box()
-            box.label(text=scene.name, icon_value=layout.icon(scene))
+            split = box.split(factor=0.85)
+            split.label(text=scene.name, icon_value=layout.icon(scene))
+            link = split.operator('wm.semref_link', text="", icon='INFO')
+            link.section = 'reference'
+            link.page = 'main-panel'
+
             box.prop(scene.seut, 'sceneType')
             if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_anmiation':
                 box.prop(scene.seut,'linkSubpartInstances')
@@ -52,7 +57,11 @@ class SEUT_PT_Panel(Panel):
             row = box.row()
             row.prop(scene.seut,'gridScale', expand=True)
             
-            layout.operator('object.recreate_collections', icon='COLLECTION_NEW')
+            split = layout.split(factor=0.85)
+            split.operator('object.recreate_collections', icon='COLLECTION_NEW')
+            link = split.operator('wm.semref_link', text="", icon='INFO')
+            link.section = 'reference'
+            link.page = 'outliner'
             
             layout.prop(wm.seut, 'simpleNavigationToggle')
 
@@ -112,11 +121,18 @@ class SEUT_PT_Panel_Mirroring(Panel):
         wm = context.window_manager
 
         if 'SEUT' in scene.view_layers:
-        
-            layout.prop(scene.seut, 'mirroringToggle', expand=True)
 
             if scene.seut.mirroringToggle == 'on':
+                split = layout.split(factor=0.85)
+                row = split.row()
+                row.prop(scene.seut, 'mirroringToggle', expand=True)
+                link = split.operator('wm.semref_link', text="", icon='INFO')
+                link.section = 'tutorials'
+                link.page = 'mirroring'
+                
                 layout.prop(scene.seut, 'mirroringScene', text="Model", icon='MOD_MIRROR')
+            else:
+                layout.prop(scene.seut, 'mirroringToggle', expand=True)
 
 
 class SEUT_PT_Panel_Mountpoints(Panel):
@@ -139,10 +155,15 @@ class SEUT_PT_Panel_Mountpoints(Panel):
         wm = context.window_manager
 
         if 'SEUT' in scene.view_layers:
-        
-            layout.prop(scene.seut, 'mountpointToggle', expand=True)
 
             if scene.seut.mountpointToggle == 'on':
+                split = layout.split(factor=0.85)
+                row = split.row()
+                row.prop(scene.seut, 'mountpointToggle', expand=True)
+                link = split.operator('wm.semref_link', text="", icon='INFO')
+                link.section = 'tutorials'
+                link.page = 'mountpoints'
+
                 box = layout.box()
                 box.label(text="Areas", icon='MESH_PLANE')
                 box.prop(wm.seut, 'mountpointSide', icon='AXIS_SIDE')
@@ -153,6 +174,8 @@ class SEUT_PT_Panel_Mountpoints(Panel):
                     row.prop(context.active_object.seut, 'pressurized', icon='LOCKED', text="Pressurized")
                     
                 box.operator('scene.add_mountpoint_area', icon='ADD')
+            else:
+                layout.prop(scene.seut, 'mountpointToggle', expand=True)
         
 
 class SEUT_PT_Panel_IconRender(Panel):

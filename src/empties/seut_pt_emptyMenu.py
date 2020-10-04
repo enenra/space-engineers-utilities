@@ -24,8 +24,16 @@ class SEUT_PT_EmptyLink(Panel):
 
         if 'file' in empty:
             layout.label(text="Subpart Scene:")
-            layout.prop(empty.seut, 'linkedScene', text="",)
+            split = layout.split(factor=0.92)
+            split.prop(empty.seut, 'linkedScene', text="",)
+            link = split.operator('wm.semref_link', text="", icon='INFO')
+            link.section = 'tutorials'
+            link.page = 'subparts'
 
         elif 'highlight' in empty:
             layout.label(text="Highlight Object:")
-            layout.prop(empty.seut, 'linkedObject', text="",)
+            split = layout.split(factor=0.92)
+            split.prop(empty.seut, 'linkedObject', text="",)
+            link = split.operator('wm.semref_link', text="", icon='INFO')
+            link.section = 'tutorials'
+            link.page = 'interaction-highlights'
