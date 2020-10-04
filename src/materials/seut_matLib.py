@@ -16,5 +16,7 @@ class SEUT_UL_MatLib(UIList):
             split.label(text=item.name[:-6], icon='UNLINKED')
         split.prop(item, "enabled", text="", index=index)
 
+        self.use_filter_sort_alpha = True
+
     def invoke(self, context, event):
         pass 
