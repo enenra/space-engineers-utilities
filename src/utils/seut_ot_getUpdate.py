@@ -13,7 +13,7 @@ class SEUT_OT_GetUpdate(Operator):
 
         wm = context.window_manager
 
-        if wm.seut.latest_version is "":
+        if wm.seut.latest_version == "":
             webbrowser.open("https://github.com/enenra/space-engineers-utilities/releases/")
 
         else:
