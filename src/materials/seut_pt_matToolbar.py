@@ -23,7 +23,9 @@ class SEUT_PT_Panel_Materials(Panel):
             box = layout.box()
             split = box.split(factor=0.85)
             split.label(text=material.name, icon_value=layout.icon(material))
-            split.operator('wm.semref_link', text="", icon='INFO').action = 'reference/tools/3d-modelling/seut/shader-editor-panel'
+            link = split.operator('wm.semref_link', text="", icon='INFO')
+            link.section = 'reference'
+            link.page = 'shader-editor-panel'
 
             if material.node_tree is not None and material.node_tree.nodes is not None:
                 for node in material.node_tree.nodes:
@@ -39,9 +41,13 @@ class SEUT_PT_Panel_Materials(Panel):
             box.prop(material.seut, 'windFrequency', icon='GROUP')
 
         box = layout.box()
+
         split = box.split(factor=0.85)
         split.label(text="Create SEUT Material", icon='MATERIAL')
-        split.operator('wm.semref_link', text="", icon='INFO').action = 'tutorials/tools/3d-modelling/seut/create-material'
+        link = split.operator('wm.semref_link', text="", icon='INFO')
+        link.section = 'tutorials'
+        link.page = 'create-material'
+
         box.prop(wm.seut, 'matPreset', icon='PRESET')
         box.operator('object.mat_create', icon='ADD')
 
@@ -66,4 +72,6 @@ class SEUT_PT_Panel_MatLib(Panel):
         layout.separator()
         split = layout.split(factor=0.85)
         split.operator('scene.export_materials', icon='EXPORT')
-        split.operator('wm.semref_link', text="", icon='INFO').action = 'tutorials/tools/3d-modelling/seut/create-matlib'
+        link = split.operator('wm.semref_link', text="", icon='INFO')
+        link.section = 'tutorials'
+        link.page = 'create-matlib'
