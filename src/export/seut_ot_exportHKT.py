@@ -9,7 +9,7 @@ from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
 from .seut_export_utils             import ExportSettings, export_to_fbxfile
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded, errorToolPath, report_error
+from ..seut_errors                  import check_export, check_collection, check_collection_excluded, check_toolpath, report_error
 
 
 class SEUT_OT_ExportHKT(Operator):
@@ -28,7 +28,7 @@ class SEUT_OT_ExportHKT(Operator):
         """Exports collision to HKT"""
 
         # Checks export path and whether SubtypeId exists
-        result = errorExportGeneral(self, context)
+        result = check_export(self, context)
         if not result == {'CONTINUE'}:
             return result
         
@@ -50,15 +50,15 @@ class SEUT_OT_ExportHKT(Operator):
         havokPath = os.path.abspath(bpy.path.abspath(preferences.havokPath))
 
         # Checks whether collection exists, is excluded or is empty
-        result = errorCollection(self, context, scene, collections['hkt'], partial)
+        result = check_collection(self, context, scene, collections['hkt'], partial)
         if not result == {'CONTINUE'}:
             return result
 
-        result = errorToolPath(self, context, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
+        result = check_toolpath(self, context, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:
             return result
 
-        result = errorToolPath(self, context, havokPath, "Havok Standalone Filter Manager", "hctStandAloneFilterManager.exe")
+        result = check_toolpath(self, context, havokPath, "Havok Standalone Filter Manager", "hctStandAloneFilterManager.exe")
         if not result == {'CONTINUE'}:
             return result
         

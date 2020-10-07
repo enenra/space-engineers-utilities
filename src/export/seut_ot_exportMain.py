@@ -5,7 +5,7 @@ from bpy.types                      import Operator
 
 from .seut_export_utils             import export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection, isCollectionExcluded, errorToolPath, report_error
+from ..seut_errors                  import check_export, check_collection, check_collection_excluded, check_toolpath, report_error
 
 class SEUT_OT_ExportMain(Operator):
     """Exports the main model"""
@@ -22,7 +22,7 @@ class SEUT_OT_ExportMain(Operator):
         """Exports the 'Main' collection"""
 
         # Checks export path and whether SubtypeId exists
-        result = errorExportGeneral(self, context)
+        result = check_export(self, context)
         if not result == {'CONTINUE'}:
             return result
 
@@ -40,11 +40,11 @@ class SEUT_OT_ExportMain(Operator):
         fbxImporterPath = os.path.abspath(bpy.path.abspath(preferences.fbxImporterPath))
 
         # Checks whether collection exists, is excluded or is empty
-        result = errorCollection(self, context, scene, collections['main'], False)
+        result = check_collection(self, context, scene, collections['main'], False)
         if not result == {'CONTINUE'}:
             return result
 
-        result = errorToolPath(self, context, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
+        result = check_toolpath(self, context, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:
             return result
         

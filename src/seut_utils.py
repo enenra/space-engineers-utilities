@@ -1,9 +1,10 @@
 import bpy
+import os
 
 from math   import pi
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_errors                   import errorCollection, report_error
+from .seut_errors                   import check_collection, report_error
 
 def linkSubpartScene(self, originScene, empty, targetCollection, collectionType = 'main'):
     """Link instances of subpart scene objects as children to empty"""
@@ -16,7 +17,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection, collectionType 
 
     subpartCollections = SEUT_OT_RecreateCollections.getCollections(subpartScene)
     # Checks whether collection exists, is excluded or is empty
-    result = errorCollection(self, context, subpartScene, subpartCollections[collectionType], False)
+    result = check_collection(self, context, subpartScene, subpartCollections[collectionType], False)
     if not result == {'CONTINUE'}:
         empty.seut.linkedScene = None
         empty['file'] = None
@@ -145,3 +146,14 @@ def toRadians(number):
     """Converts degrees to radians"""
 
     return pi * number / 180
+
+
+def get_preferences():
+    """Returns the preferences of the addon"""
+
+    if __package__.find(".") == -1:
+        addon = __package__
+    else:
+        addon = __package__[:__package__.find(".")]
+
+    return bpy.context.preferences.addons.get(addon).preferences

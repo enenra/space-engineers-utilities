@@ -5,7 +5,7 @@ from bpy.types                      import Operator
 
 from .seut_export_utils             import export_XML, export_model_FBX
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, isCollectionExcluded, errorCollection, errorToolPath, report_error
+from ..seut_errors                  import check_export, check_collection_excluded, check_collection, check_toolpath, report_error
 
 class SEUT_OT_ExportLOD(Operator):
     """Exports all LODs"""
@@ -23,7 +23,7 @@ class SEUT_OT_ExportLOD(Operator):
         """Exports the 'LOD' collections"""
 
         # Checks export path and whether SubtypeId exists
-        result = errorExportGeneral(self, context)
+        result = check_export(self, context)
         if not result == {'CONTINUE'}:
             return result
         
@@ -40,27 +40,27 @@ class SEUT_OT_ExportLOD(Operator):
         fbxImporterPath = os.path.abspath(bpy.path.abspath(preferences.fbxImporterPath))
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
-        result = errorToolPath(self, context, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
+        result = check_toolpath(self, context, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:
             return result
 
         colLOD1Good = False
-        result = errorCollection(self, context, scene, collections['lod1'], partial)
+        result = check_collection(self, context, scene, collections['lod1'], partial)
         if result == {'CONTINUE'}:
             colLOD1Good = True
 
         colLOD2Good = False
-        result = errorCollection(self, context, scene, collections['lod2'], partial)
+        result = check_collection(self, context, scene, collections['lod2'], partial)
         if result == {'CONTINUE'}:
             colLOD2Good = True
 
         colLOD3Good = False
-        result = errorCollection(self, context, scene, collections['lod3'], partial)
+        result = check_collection(self, context, scene, collections['lod3'], partial)
         if result == {'CONTINUE'}:
             colLOD3Good = True
 
         colBSLODGood = False
-        result = errorCollection(self, context, scene, collections['bs_lod'], partial)
+        result = check_collection(self, context, scene, collections['bs_lod'], partial)
         if result == {'CONTINUE'}:
             colBSLODGood = True
 

@@ -7,7 +7,7 @@ from bpy.types  import Operator
 from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, delete_loose_files
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorToolPath, report_error
+from ..seut_errors                  import check_export, check_toolpath, report_error
 
 class SEUT_OT_ExportMWM(Operator):
     """Compiles the MWM from the previously exported loose files"""
@@ -20,7 +20,7 @@ class SEUT_OT_ExportMWM(Operator):
         """Compiles all loose files into a MWM"""
 
         # Checks export path and whether SubtypeId exists
-        result = errorExportGeneral(self, context)
+        result = check_export(self, context)
         if not result == {'CONTINUE'}:
             return result
 
@@ -40,7 +40,7 @@ class SEUT_OT_ExportMWM(Operator):
         materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
         collections = SEUT_OT_RecreateCollections.getCollections(scene)
 
-        result = errorToolPath(self, context, mwmbPath, "MWM Builder", "MwmBuilder.exe")
+        result = check_toolpath(self, context, mwmbPath, "MWM Builder", "MwmBuilder.exe")
         if not result == {'CONTINUE'}:
             return result
 

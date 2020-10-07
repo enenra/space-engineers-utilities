@@ -218,10 +218,14 @@ def load_handler(dummy):
 
         bpy.ops.object.gridscale()
         
+    # This nightmare exists to avoid errors on startup
     try:
         bpy.ops.scene.refresh_matlibs()
-    except RuntimeError:
-        report_error(self, context, False, 'E021')
+    except:
+        try:
+            report_error(self, context, False, 'E021')
+        except:
+            pass
 
     checkUpdate(get_addon_version())
 

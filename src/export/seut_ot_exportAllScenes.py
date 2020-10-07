@@ -2,7 +2,7 @@ import bpy
 
 from bpy.types      import Operator
 
-from ..seut_errors                  import errorExportGeneral
+from ..seut_errors                  import check_export
 
 
 class SEUT_OT_ExportAllScenes(Operator):
@@ -26,7 +26,7 @@ class SEUT_OT_ExportAllScenes(Operator):
             context.view_layer.objects.active = None
 
         # Checks export path and whether SubtypeId exists
-        result = errorExportGeneral(self, context)
+        result = check_export(self, context)
         if not result == {'CONTINUE'}:
             return result
 

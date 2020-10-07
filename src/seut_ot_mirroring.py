@@ -5,7 +5,7 @@ from bpy.types      import Operator
 from collections    import OrderedDict
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_errors                   import errorCollection, isCollectionExcluded, report_error
+from .seut_errors                   import check_collection, check_collection_excluded, report_error
 from .seut_utils                    import getParentCollection, linkSubpartScene, unlinkSubpartScene
 
 mirroringPresets = OrderedDict([
@@ -89,13 +89,13 @@ class SEUT_OT_Mirroring(Operator):
             scene.seut.mirroringToggle = 'off'
             return {'CANCELLED'}
 
-        isExcluded = isCollectionExcluded(collections['seut'].name, allCurrentViewLayerCollections)
+        isExcluded = check_collection_excluded(scene, collections['seut'])
         if isExcluded or isExcluded is None:
             report_error(self, context, False, 'E002', '"' + scene.name + '"')
             scene.seut.mirroringToggle = 'off'
             return {'CANCELLED'}
 
-        result = errorCollection(self, context, scene, collections['main'], False)
+        result = check_collection(self, context, scene, collections['main'], False)
         if not result == {'CONTINUE'}:
             scene.seut.mirroringToggle = 'off'
             return {'CANCELLED'}

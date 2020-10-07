@@ -9,7 +9,7 @@ from collections    import OrderedDict
 from ..seut_ot_mirroring            import SEUT_OT_Mirroring
 from ..seut_ot_mountpoints          import SEUT_OT_Mountpoints
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral, errorCollection, report_error
+from ..seut_errors                  import check_export, check_collection, report_error
 
 class SEUT_OT_ExportSBC(Operator):
     """Exports to SBC"""
@@ -26,7 +26,7 @@ class SEUT_OT_ExportSBC(Operator):
         """Exports the SBC file for a defined collection"""
 
         # Checks export path and whether SubtypeId exists
-        result = errorExportGeneral(self, context)
+        result = check_export(self, context)
         if not result == {'CONTINUE'}:
             return result
         
@@ -51,7 +51,7 @@ class SEUT_OT_ExportSBC(Operator):
             return {'FINISHED'}
 
         # Checks whether collection exists, is excluded or is empty
-        result = errorCollection(self, context, scene, collections['main'], False)
+        result = check_collection(self, context, scene, collections['main'], False)
         if not result == {'CONTINUE'}:
             return result
 

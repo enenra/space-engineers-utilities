@@ -15,7 +15,7 @@ from .seut_ot_exportMWM             import SEUT_OT_ExportMWM
 from .seut_ot_exportSBC             import SEUT_OT_ExportSBC
 from ..seut_preferences             import get_addon_version
 from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
-from ..seut_errors                  import errorExportGeneral
+from ..seut_errors                  import check_export
 
 class SEUT_OT_Export(Operator):
     """Exports all collections in the current scene and compresses them to MWM"""
@@ -43,7 +43,7 @@ class SEUT_OT_Export(Operator):
             context.view_layer.objects.active = None
 
         # Checks export path and whether SubtypeId exists
-        result = errorExportGeneral(self, context)
+        result = check_export(self, context)
         if not result == {'CONTINUE'}:
             return result
         

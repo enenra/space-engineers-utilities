@@ -2,6 +2,8 @@ import bpy
 import os
 import collections
 
+from .libraries.easybpy import *
+
 errors = {
     'E001': "SEUT: Import error. Imported object not found. (E001)",
     'E002': "SEUT: Collection {variable_1} not found, excluded from view layer or empty. Action not possible. (E002)",
@@ -42,69 +44,83 @@ errors = {
 }
 
 warnings = {
-    'W001': ""
+    'W001': "Collection not found. Action not possible.",
+    'W002': "Collection '{variable_1}' excluded from view layer or cannot be found. Action not possible.",
+    'W003': "Collection '{variable_1}' is empty. Action not possible.",
+    'W004': "",
+    'W005': "",
+    'W006': "",
+    'W007': "",
+    'W008': "",
+    'W009': "",
+    'W010': "",
+    'W011': "",
+    'W012': "",
+    'W013': "",
+    'W014': "",
+    'W015': "",
+    'W016': "",
+    'W017': "",
+    'W018': "",
+    'W019': "",
+    'W020': "",
 }
 
 
-def errorExportGeneral(self, context):
+def check_export(self, context, can_report=True):
     """Basic check for export path and SubtypeId existing"""
 
     scene = context.scene
-    if __package__.find(".") == -1:
-        addon = __package__
-    else:
-        addon = __package__[:__package__.find(".")]
-    preferences = bpy.context.preferences.addons.get(addon).preferences
-    exportPath = os.path.abspath(bpy.path.abspath(scene.seut.export_exportPath))
+    path = get_abs_path(scene.seut.export_exportPath)
 
     # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
     if not bpy.data.is_saved:
-        report_error(self, context, True, 'E008')
+        report_error(self, context, can_report, 'E008')
         return {'CANCELLED'}
 
-    if os.path.exists(exportPath) == False:
-        report_error(self, context, True, 'E003', "Export", exportPath)
+    if os.path.exists(path) == False:
+        report_error(self, context, can_report, 'E003', "Export", path)
         return {'CANCELLED'}
-    elif scene.seut.export_exportPath == "":
-        report_error(self, context, True, 'E019')
+    elif path == "":
+        report_error(self, context, can_report, 'E019')
         return {'CANCELLED'}
 
-    if scene.seut.export_exportPath.find("Models\\") == -1:
-        report_error(self, context, True, 'E014', exportPath)
+    if path.find("Models\\") != -1 or (path + "\\").find("Models\\") != -1:
+        return {'CONTINUE'}
+    else:
+        report_error(self, context, can_report, 'E014', path)
         return {'CANCELLED'}
 
     if scene.seut.subtypeId == "":
-        report_error(self, context, True, 'E004')
+        report_error(self, context, can_report, 'E004')
         return {'CANCELLED'}
 
     return {'CONTINUE'}
 
-def errorCollection(self, context, scene, collection, partial):
+
+def check_collection(self, context, scene, collection, partial_check=True):
     """Check if collection exists, is not excluded and is not empty"""
 
-    allCurrentViewLayerCollections = scene.view_layers[0].layer_collection.children
-
     if collection is None:
-        if partial:
-            print("SEUT Warning: Collection not found. Action not possible.")
+        if partial_check:
+            report_warning(self, context, False, 'W001')
             return {'FINISHED'}
         else:
             report_error(self, context, False, 'E002')
             return {'CANCELLED'}
             
-    isExcluded = isCollectionExcluded(collection.name, allCurrentViewLayerCollections)
-
-    if isExcluded or isExcluded is None:
-        if partial:
-            print("SEUT Warning: Collection '" + collection.name + "' excluded from view layer or cannot be found. Action not possible.")
+    is_excluded = check_collection_excluded(scene, collection)
+    if is_excluded or is_excluded is None:
+        if partial_check:
+            report_warning(self, context, False, 'W002', collection.name)
             return {'FINISHED'}
         else:
             report_error(self, context, False, 'E019', collection.name)
             return {'CANCELLED'}
 
-    if len(collection.objects) == 0:
-        if partial:
-            print("SEUT Warning: Collection '" + collection.name + "' is empty. Action not possible.")
+    if len(get_objects_from_collection(collection)) == 0:
+        if partial_check:
+            report_warning(self, context, False, 'W003', collection.name)
             return {'FINISHED'}
         else:
             report_error(self, context, False, 'E002', '"' + collection.name + '"')
@@ -112,47 +128,49 @@ def errorCollection(self, context, scene, collection, partial):
     
     return {'CONTINUE'}
 
-def errorToolPath(self, context, toolPath, toolName, toolFileName):
+
+def check_toolpath(self, context, tool_path: str, tool_name: str, tool_filename: str):
     """Checks if external tool is correctly linked"""
 
-    if toolPath == "" or toolPath == "." or os.path.exists(toolPath) is False:
-        report_error(self, context, True, 'E012', toolName, toolPath)
+    if not os.path.exists(tool_path):
+        report_error(self, context, True, 'E012', tool_name, tool_path)
         return {'CANCELLED'}
 
-    fileName = os.path.basename(toolPath)
-    if toolFileName != fileName:
-        report_error(self, context, True, 'E013', toolName, toolFileName, fileName)
+    file_name = os.path.basename(tool_path)
+    if tool_filename != tool_name:
+        report_error(self, context, True, 'E013', tool_name, tool_filename, file_name)
         return {'CANCELLED'}
     
     return {'CONTINUE'}
 
 
-def isCollectionExcluded(collectionName, allCurrentViewLayerCollections):
-    for topLevelCollection in allCurrentViewLayerCollections:
-        if topLevelCollection.name == collectionName:
-            if topLevelCollection.exclude:
-                return True
-            else:
-                return False
-        if collectionName in topLevelCollection.children.keys():
-            for collection in topLevelCollection.children:
-                if collection.name == collectionName:
-                    if collection.exclude:
-                        return True
-                    else:
-                        return False
+def check_collection_excluded(scene, collection) -> bool:
+    """Returns True if the collection is excluded in the view layer"""
+
+    for col in scene.view_layers['SEUT'].layer_collection.children:
+        if col.name == collection.name:
+            return col.exclude
+            
+        if collection.name in col.children.keys():
+            for child in col.children:
+                if child.name == collection.name:
+                    return child.exclude
+    
+    return False
                         
 
-def showError(context, title, message):
+def show_popup_report(context, title, text):
+    """Displays a popup message that looks like an error report"""
 
     def draw(self, context):
-        self.layout.label(text=message)
+        self.layout.label(text=text)
 
     context.window_manager.popup_menu(draw, title=title, icon='ERROR')
 
     return
 
-def report_error(self, context, works, code, variable_1 = None, variable_2 = None, variable_3 = None):
+def report_error(self, context, can_report=True, code='E001', variable_1=None, variable_2=None, variable_3=None):
+    """Shows a popup error message to the user"""
 
     if not code in errors:
         return
@@ -171,11 +189,40 @@ def report_error(self, context, works, code, variable_1 = None, variable_2 = Non
 
     # bpy.ops.message.popup_message(p_type='ERROR', p_text=text, p_link=link)
 
-    if works:
+    if can_report:
         self.report({'ERROR'}, text)
     else:
-        showError(context, "Report: Error", text)
+        show_popup_report(context, "Report: Error", text)
 
     print("Error: " + text)
     
     return
+
+
+def report_warning(self, context, can_report=True, code='W001', variable_1=None, variable_2=None, variable_3=None):
+    """Prints a warning to INFO if possible, else prints to console"""
+
+    if not code in errors:
+        return
+
+    text = warnings[code]
+
+    try:
+        text = text.format(variable_1=variable_1, variable_2=variable_2, variable_3=variable_3)
+    except KeyError:
+        try:
+            text = text.format(variable_1=variable_1, variable_2=variable_2)
+        except KeyError:
+            text = text.format(variable_1=variable_1)
+
+    if can_report:
+        self.report({'WARNING'}, text)
+
+    print("Warning: " + text)
+    
+    return
+
+
+def get_abs_path(path: str) -> str:
+    """Returns the absolute path"""
+    return os.path.abspath(bpy.path.abspath(path))

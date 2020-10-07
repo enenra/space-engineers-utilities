@@ -4,7 +4,7 @@ from math           import pi
 from bpy.types      import Operator
 
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_errors                   import errorCollection, isCollectionExcluded, report_error
+from .seut_errors                   import check_collection, check_collection_excluded, report_error
 from .seut_utils                    import getParentCollection
 
 class SEUT_OT_Mountpoints(Operator):
@@ -60,7 +60,7 @@ class SEUT_OT_Mountpoints(Operator):
             scene.seut.mountpointToggle = 'off'
             return {'CANCELLED'}
 
-        isExcluded = isCollectionExcluded(collections['seut'].name, allCurrentViewLayerCollections)
+        isExcluded = check_collection_excluded(scene, collections['seut'])
         if isExcluded or isExcluded is None:
             report_error(self, context, False, 'E002', '"' + scene.name + '"')
             scene.seut.mountpointToggle = 'off'

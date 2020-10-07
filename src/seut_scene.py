@@ -14,7 +14,7 @@ from bpy.props  import (EnumProperty,
 
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_errors                   import report_error
+from .seut_errors                   import report_error, check_export
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, toRadians, getParentCollection
 
 
@@ -168,8 +168,7 @@ def update_export_exportPath(self, context):
         return
 
     if os.path.isdir(bpy.path.abspath(self.export_exportPath)):
-        if self.export_exportPath.find('Models\\') == -1:
-            report_error(self, context, False, 'E014', self.export_exportPath)
+        if check_export(self, context, False) == {'CANCELLED'}:
             self.export_exportPath = ""
 
 
