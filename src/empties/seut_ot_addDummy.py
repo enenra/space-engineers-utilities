@@ -131,7 +131,7 @@ class SEUT_OT_AddDummy(Operator):
             usesIndex = True
 
         if self.detectorType == 'vent':
-            emptyName = "detector_merge_"
+            emptyName = "vent_"
             usesIndex = True
 
         if self.detectorType == 'gear_lock':
