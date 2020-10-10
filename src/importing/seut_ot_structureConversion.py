@@ -2,9 +2,9 @@ import bpy
 
 from bpy.types import Operator
 
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
-from .seut_ot_mirroring             import SEUT_OT_Mirroring
-from .seut_utils                    import linkSubpartScene, getParentCollection
+from ..seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from ..seut_ot_mirroring             import SEUT_OT_Mirroring
+from ..seut_utils                    import linkSubpartScene, getParentCollection
 
 class SEUT_OT_StructureConversion(Operator):
     """Ports blend files created with the old plugin to the new structure"""

@@ -60,6 +60,9 @@ from .export.seut_ot_export                     import SEUT_OT_Export
 from .export.seut_ot_exportAllScenes            import SEUT_OT_ExportAllScenes
 from .export.seut_ot_exportMaterials            import SEUT_OT_ExportMaterials
 from .export.seut_ot_copyExportFolder           import SEUT_OT_CopyExportFolder
+from .importing.seut_ot_import                  import SEUT_OT_Import
+from .importing.seut_ot_attemptToFixPositioning import SEUT_OT_AttemptToFixPositioning
+from .importing.seut_ot_structureConversion     import SEUT_OT_StructureConversion
 from .materials.seut_materials                  import SEUT_Materials
 from .materials.seut_pt_matToolbar              import SEUT_PT_Panel_Materials
 from .materials.seut_pt_matToolbar              import SEUT_PT_Panel_MatLib
@@ -84,9 +87,6 @@ from .seut_pt_toolbar                   import SEUT_PT_Panel_Mountpoints
 from .seut_pt_toolbar                   import SEUT_PT_Panel_IconRender
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Export
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Import
-from .seut_ot_import                    import SEUT_OT_Import
-from .seut_ot_structureConversion       import SEUT_OT_StructureConversion
-from .seut_ot_attemptToFixPositioning   import SEUT_OT_AttemptToFixPositioning
 from .seut_ot_gridScale                 import SEUT_OT_GridScale
 from .seut_ot_bBox                      import SEUT_OT_BBox
 from .seut_ot_bBoxAuto                  import SEUT_OT_BBoxAuto
@@ -212,11 +212,6 @@ def menu_draw(self, context):
 
 @persistent
 def load_handler(dummy):
-
-    if not 'SEUT' in bpy.context.scene.view_layers:
-        bpy.ops.object.recreate_collections()
-
-        bpy.ops.object.gridscale()
         
     # This nightmare exists to avoid errors on startup
     try:

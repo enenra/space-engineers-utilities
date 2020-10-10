@@ -68,7 +68,7 @@ warnings = {
 
 
 def check_export(self, context, can_report=True):
-    """Basic check for export path and SubtypeId existing"""
+    """Basic check for export path and SubtypeId existing."""
 
     scene = context.scene
     path = get_abs_path(scene.seut.export_exportPath)
@@ -99,7 +99,7 @@ def check_export(self, context, can_report=True):
 
 
 def check_collection(self, context, scene, collection, partial_check=True):
-    """Check if collection exists, is not excluded and is not empty"""
+    """Check if collection exists, is not excluded and is not empty."""
 
     if collection is None:
         if partial_check:
@@ -130,7 +130,7 @@ def check_collection(self, context, scene, collection, partial_check=True):
 
 
 def check_toolpath(self, context, tool_path: str, tool_name: str, tool_filename: str):
-    """Checks if external tool is correctly linked"""
+    """Checks if external tool is correctly linked."""
 
     if not os.path.exists(tool_path):
         report_error(self, context, True, 'E012', tool_name, tool_path)
@@ -145,7 +145,7 @@ def check_toolpath(self, context, tool_path: str, tool_name: str, tool_filename:
 
 
 def check_collection_excluded(scene, collection) -> bool:
-    """Returns True if the collection is excluded in the view layer"""
+    """Returns True if the collection is excluded in the view layer."""
 
     for col in scene.view_layers['SEUT'].layer_collection.children:
         if col.name == collection.name:
@@ -157,10 +157,15 @@ def check_collection_excluded(scene, collection) -> bool:
                     return child.exclude
     
     return False
+
+
+def get_abs_path(path: str) -> str:
+    """Returns the absolute path"""
+    return os.path.abspath(bpy.path.abspath(path))
                         
 
 def show_popup_report(context, title, text):
-    """Displays a popup message that looks like an error report"""
+    """Displays a popup message that looks like an error report."""
 
     def draw(self, context):
         self.layout.label(text=text)
@@ -169,8 +174,9 @@ def show_popup_report(context, title, text):
 
     return
 
-def report_error(self, context, can_report=True, code='E001', variable_1=None, variable_2=None, variable_3=None):
-    """Shows a popup error message to the user"""
+
+def report_error(self, context, can_report: bool, code: str, variable_1=None, variable_2=None, variable_3=None):
+    """Shows a popup error message to the user."""
 
     if not code in errors:
         return
@@ -199,8 +205,8 @@ def report_error(self, context, can_report=True, code='E001', variable_1=None, v
     return
 
 
-def report_warning(self, context, can_report=True, code='W001', variable_1=None, variable_2=None, variable_3=None):
-    """Prints a warning to INFO if possible, else prints to console"""
+def report_warning(self, context, can_report: bool, code: str, variable_1=None, variable_2=None, variable_3=None):
+    """Prints a warning to INFO if possible, else prints to console."""
 
     if not code in errors:
         return
@@ -221,8 +227,3 @@ def report_warning(self, context, can_report=True, code='W001', variable_1=None,
     print("Warning: " + text)
     
     return
-
-
-def get_abs_path(path: str) -> str:
-    """Returns the absolute path"""
-    return os.path.abspath(bpy.path.abspath(path))

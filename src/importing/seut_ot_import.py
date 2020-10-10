@@ -16,8 +16,8 @@ from bpy.types import (Panel,
 
 from bpy.types                  import Operator
 
-from .materials.seut_ot_remapMaterials  import SEUT_OT_RemapMaterials
-from .seut_errors                       import report_error
+from ..materials.seut_ot_remapMaterials  import SEUT_OT_RemapMaterials
+from ..seut_errors                       import report_error
 
 class SEUT_OT_Import(Operator):
     """Import FBX files and remap materials"""
