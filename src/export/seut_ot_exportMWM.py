@@ -6,7 +6,7 @@ from bpy.types  import Operator
 
 from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, delete_loose_files
-from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export, check_toolpath, report_error
 
 class SEUT_OT_ExportMWM(Operator):
@@ -38,7 +38,7 @@ class SEUT_OT_ExportMWM(Operator):
         settings = ExportSettings(scene, depsgraph)
         mwmbPath = os.path.abspath(bpy.path.abspath(preferences.mwmbPath))
         materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
 
         result = check_toolpath(self, context, mwmbPath, "MWM Builder", "MwmBuilder.exe")
         if not result == {'CONTINUE'}:

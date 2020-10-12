@@ -2,7 +2,7 @@ import bpy
 
 from bpy.types  import Panel
 
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_recreate_collections  import get_collections
 from .seut_preferences              import get_addon_version
 
 class SEUT_PT_Panel(Panel):
@@ -260,7 +260,7 @@ class SEUT_PT_Panel_Export(Panel):
         scene = context.scene
 
         if 'SEUT' in scene.view_layers:
-            collections = SEUT_OT_RecreateCollections.getCollections(scene)
+            collections = get_collections(scene)
 
             # Export
             row = layout.row()

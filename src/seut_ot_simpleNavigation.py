@@ -2,7 +2,7 @@ import bpy
 
 from bpy.types import Operator
 
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_recreate_collections  import get_collections
 from .seut_errors                   import report_error
 
 class SEUT_OT_SimpleNavigation(Operator):
@@ -17,7 +17,7 @@ class SEUT_OT_SimpleNavigation(Operator):
         scene = context.scene
         wm = context.window_manager
 
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
 
         if not wm.seut.simpleNavigationToggle:
             for col in collections.values():
@@ -44,7 +44,7 @@ class SEUT_OT_SimpleNavigation(Operator):
 
         scene = context.scene
         wm = context.window_manager
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
         collection = context.view_layer.active_layer_collection.collection
 
         if not wm.seut.simpleNavigationToggle:

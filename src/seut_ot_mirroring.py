@@ -4,7 +4,7 @@ from math           import pi
 from bpy.types      import Operator
 from collections    import OrderedDict
 
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_recreate_collections  import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, report_error
 from .seut_utils                    import getParentCollection, linkSubpartScene, unlinkSubpartScene
 
@@ -70,7 +70,7 @@ class SEUT_OT_Mirroring(Operator):
         """Sets up mirroring utilities"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
 
         try:
@@ -233,7 +233,7 @@ class SEUT_OT_Mirroring(Operator):
         """Cleans up mirroring utilities"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
 
         # If mode is not object mode, export fails horribly.
         try:

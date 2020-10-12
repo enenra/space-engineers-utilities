@@ -12,7 +12,7 @@ from mathutils                              import Matrix
 from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..export.seut_custom_fbx_exporter      import save_single
-from ..seut_ot_recreateCollections          import SEUT_OT_RecreateCollections
+from ..seut_ot_recreate_collections         import get_collections
 from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene, getParentCollection
 
 from ..seut_errors                          import report_error
@@ -21,7 +21,7 @@ def export_XML(self, context, collection):
     """Exports the XML file for a defined collection"""
 
     scene = context.scene
-    collections = SEUT_OT_RecreateCollections.getCollections(scene)
+    collections = get_collections(scene)
     addon = __package__[:__package__.find(".")]
     preferences = bpy.context.preferences.addons.get(addon).preferences
 
@@ -271,7 +271,7 @@ def export_model_FBX(self, context, collection):
     depsgraph = context.evaluated_depsgraph_get()
     addon = __package__[:__package__.find(".")]
     preferences = bpy.context.preferences.addons.get(addon).preferences
-    collections = SEUT_OT_RecreateCollections.getCollections(scene)
+    collections = get_collections(scene)
     settings = ExportSettings(scene, depsgraph)
 
     # Determining the directory to export to.

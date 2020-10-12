@@ -8,7 +8,7 @@ from bpy.types      import Operator
 from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
 from .seut_export_utils             import ExportSettings, export_to_fbxfile
-from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export, check_collection, check_collection_excluded, check_toolpath, report_error
 
 
@@ -20,7 +20,7 @@ class SEUT_OT_ExportHKT(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.getCollections(context.scene)
+        collections = get_collections(context.scene)
         return collections['hkt'] is not None
 
 
@@ -41,7 +41,7 @@ class SEUT_OT_ExportHKT(Operator):
 
         scene = context.scene
         depsgraph = None
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
         settings = ExportSettings(scene, depsgraph)

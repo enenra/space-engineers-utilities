@@ -3,19 +3,19 @@ import os
 
 from math   import pi
 
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_recreate_collections  import get_collections
 from .seut_errors                   import check_collection, report_error
 
 def linkSubpartScene(self, originScene, empty, targetCollection, collectionType = 'main'):
     """Link instances of subpart scene objects as children to empty"""
 
     context = bpy.context
-    parentCollections = SEUT_OT_RecreateCollections.getCollections(originScene)
+    parentCollections = get_collections(originScene)
 
     currentScene = bpy.context.window.scene
     subpartScene = empty.seut.linkedScene
 
-    subpartCollections = SEUT_OT_RecreateCollections.getCollections(subpartScene)
+    subpartCollections = get_collections(subpartScene)
     # Checks whether collection exists, is excluded or is empty
     result = check_collection(self, context, subpartScene, subpartCollections[collectionType], False)
     if not result == {'CONTINUE'}:
@@ -132,7 +132,7 @@ def unlinkObjectsInHierarchy(obj):
 def getParentCollection(context, childObject):
     scene = context.scene
 
-    collections = SEUT_OT_RecreateCollections.getCollections(scene)
+    collections = get_collections(scene)
     
     for key, value in collections.items():
         if value is not None:

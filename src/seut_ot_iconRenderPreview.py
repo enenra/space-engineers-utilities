@@ -3,7 +3,7 @@ import os
 
 from bpy.types      import Operator
 
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_recreate_collections  import get_collections
 from .seut_errors                   import report_error
 
 
@@ -39,7 +39,7 @@ class SEUT_OT_IconRenderPreview(Operator):
         simpleNav = wm.seut.simpleNavigationToggle
         wm.seut.simpleNavigationToggle = False
 
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
 
         for col in collections.values():
             if col is not None:

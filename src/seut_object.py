@@ -10,7 +10,7 @@ from bpy.props  import (EnumProperty,
                         PointerProperty
                         )
 
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_recreate_collections  import get_collections
 from .seut_errors                   import report_error
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, getParentCollection
 
@@ -18,7 +18,7 @@ from .seut_utils                    import linkSubpartScene, unlinkSubpartScene,
 def update_linkedScene(self, context):
     scene = context.scene
     empty = context.view_layer.objects.active
-    collections = SEUT_OT_RecreateCollections.getCollections(scene)
+    collections = get_collections(scene)
 
     if empty is not None:
         

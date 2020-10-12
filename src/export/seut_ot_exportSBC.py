@@ -8,7 +8,7 @@ from collections    import OrderedDict
 
 from ..seut_ot_mirroring            import SEUT_OT_Mirroring
 from ..seut_ot_mountpoints          import SEUT_OT_Mountpoints
-from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export, check_collection, report_error
 
 class SEUT_OT_ExportSBC(Operator):
@@ -19,7 +19,7 @@ class SEUT_OT_ExportSBC(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.getCollections(context.scene)
+        collections = get_collections(context.scene)
         return collections['main'] is not None
 
     def execute(self, context):
@@ -38,7 +38,7 @@ class SEUT_OT_ExportSBC(Operator):
         """Exports the SBC file for a defined collection"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
 

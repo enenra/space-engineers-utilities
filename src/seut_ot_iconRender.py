@@ -3,7 +3,7 @@ import bpy
 from math           import pi
 from bpy.types      import Operator
 
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_recreate_collections  import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, report_error
 from .seut_utils                    import getParentCollection, toRadians
 
@@ -41,7 +41,7 @@ class SEUT_OT_IconRender(Operator):
         """Sets up render utilities"""
 
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
         allCurrentViewLayerCollections = context.window.view_layer.layer_collection.children
 
         try:

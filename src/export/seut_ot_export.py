@@ -14,7 +14,7 @@ from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
 from .seut_ot_exportMWM             import SEUT_OT_ExportMWM
 from .seut_ot_exportSBC             import SEUT_OT_ExportSBC
 from ..seut_preferences             import get_addon_version
-from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export
 
 class SEUT_OT_Export(Operator):
@@ -26,7 +26,7 @@ class SEUT_OT_Export(Operator):
     def execute(self, context):
         
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
 
         print("\n============================================================ Exporting Scene '" + scene.name + "' with SEUT " + str(get_addon_version()) + ".")
 

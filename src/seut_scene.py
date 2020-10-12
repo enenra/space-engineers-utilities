@@ -13,7 +13,7 @@ from bpy.props  import (EnumProperty,
                         )
 
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_recreate_collections  import get_collections, rename_collections
 from .seut_errors                   import report_error, check_export
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, toRadians, getParentCollection
 
@@ -119,14 +119,14 @@ def update_subtypeId(self, context):
             return
 
     if scene.seut.subtypeId != scene.seut.subtypeBefore and scene.seut.subtypeBefore is not "":
-        SEUT_OT_RecreateCollections.rename_Collections(scene)
+        rename_collections(scene)
         scene.seut.subtypeBefore = scene.seut.subtypeId
         
     scene.name = scene.seut.subtypeId
 
 def update_linkSubpartInstances(self, context):
     scene = context.scene
-    collections = SEUT_OT_RecreateCollections.getCollections(scene)
+    collections = get_collections(scene)
 
     for col in collections.values():
         if col is not None:

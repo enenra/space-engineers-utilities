@@ -4,7 +4,7 @@ import os
 from bpy.types                      import Operator
 
 from .seut_export_utils             import export_XML, export_model_FBX
-from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export, check_collection_excluded, check_collection, check_toolpath, report_error
 
 class SEUT_OT_ExportLOD(Operator):
@@ -15,7 +15,7 @@ class SEUT_OT_ExportLOD(Operator):
 
     @classmethod
     def poll(cls, context):
-        collections = SEUT_OT_RecreateCollections.getCollections(context.scene)
+        collections = get_collections(context.scene)
         return collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None or collections['bs_lod'] is not None
 
 
@@ -38,7 +38,7 @@ class SEUT_OT_ExportLOD(Operator):
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
         fbxImporterPath = os.path.abspath(bpy.path.abspath(preferences.fbxImporterPath))
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
 
         result = check_toolpath(self, context, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:

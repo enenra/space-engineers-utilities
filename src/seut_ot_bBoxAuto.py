@@ -2,7 +2,7 @@ import bpy
 import math
 
 from bpy.types                      import Operator
-from .seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from .seut_ot_recreate_collections  import get_collections
 from .seut_errors                   import report_error
 
 class SEUT_OT_BBoxAuto(Operator):
@@ -23,7 +23,7 @@ class SEUT_OT_BBoxAuto(Operator):
 
         scene = context.scene
         wm = context.window_manager
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
 
         if wm.seut.bBoxToggle == 'off':
             self.report({'INFO'}, "SEUT: Triggered auto BBox even though BBox is turned off. This should never happen.")

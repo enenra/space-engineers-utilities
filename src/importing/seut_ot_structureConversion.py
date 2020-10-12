@@ -2,7 +2,7 @@ import bpy
 
 from bpy.types import Operator
 
-from ..seut_ot_recreateCollections   import SEUT_OT_RecreateCollections
+from ..seut_ot_recreate_collections  import get_collections
 from ..seut_ot_mirroring             import SEUT_OT_Mirroring
 from ..seut_utils                    import linkSubpartScene, getParentCollection
 
@@ -168,7 +168,7 @@ class SEUT_OT_StructureConversion(Operator):
                 if emptyObj.type == 'EMPTY' and 'file' in emptyObj and emptyObj['file'] in bpy.data.scenes:
 
                     parentCollection = getParentCollection(context, emptyObj)
-                    collections = SEUT_OT_RecreateCollections.getCollections(scn2)
+                    collections = get_collections(scn2)
 
                     collectionType = 'main'
                     if parentCollection == bpy.data.collections['BS1' + tag]:

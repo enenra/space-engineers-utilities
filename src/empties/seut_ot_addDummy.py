@@ -4,7 +4,7 @@ from bpy.types  import Operator
 from bpy.props  import (EnumProperty,
                         IntProperty)
 
-from ..seut_ot_recreateCollections  import SEUT_OT_RecreateCollections
+from ..seut_ot_recreate_collections import get_collections
 from ..seut_utils                   import getParentCollection
 from ..seut_errors                  import report_error
 
@@ -55,7 +55,7 @@ class SEUT_OT_AddDummy(Operator):
 
     def execute(self, context):
         scene = context.scene
-        collections = SEUT_OT_RecreateCollections.getCollections(scene)
+        collections = get_collections(scene)
 
         if collections['main'] is None:
             report_error(self, context, True, 'E002', "'Main'")
