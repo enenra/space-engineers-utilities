@@ -78,7 +78,6 @@ def rename_collections(scene):
 
     tag = ' (' + scene.seut.subtypeId + ')'
     tag_before = ' (' + scene.seut.subtypeBefore + ')'
-
     children = scene.view_layers['SEUT'].layer_collection.children
 
     for child in children:
@@ -107,9 +106,7 @@ def create_collections(context):
     """Recreates the collections SEUT requires"""
 
     scene = context.scene
-        
     tag = ' (' + scene.seut.subtypeId + ')'
-
     collections = get_collections(scene)
 
     for key in collections.keys():

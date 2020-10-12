@@ -59,7 +59,7 @@ from .export.seut_ot_exportMWM                  import SEUT_OT_ExportMWM
 from .export.seut_ot_export                     import SEUT_OT_Export
 from .export.seut_ot_exportAllScenes            import SEUT_OT_ExportAllScenes
 from .export.seut_ot_exportMaterials            import SEUT_OT_ExportMaterials
-from .export.seut_ot_copyExportFolder           import SEUT_OT_CopyExportFolder
+from .export.seut_ot_copyExportOptions          import SEUT_OT_CopyExportOptions
 from .importing.seut_ot_import                  import SEUT_OT_Import
 from .importing.seut_ot_attemptToFixPositioning import SEUT_OT_AttemptToFixPositioning
 from .importing.seut_ot_structureConversion     import SEUT_OT_StructureConversion
@@ -134,7 +134,7 @@ classes = (
     SEUT_OT_ExportHKT,
     SEUT_OT_ExportSBC,
     SEUT_OT_ExportMWM,
-    SEUT_OT_CopyExportFolder,
+    SEUT_OT_CopyExportOptions,
     SEUT_OT_Import,
     SEUT_OT_StructureConversion,
     SEUT_OT_AttemptToFixPositioning,

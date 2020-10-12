@@ -5,10 +5,10 @@ from bpy.types      import Operator
 from ..seut_errors                  import check_export
 
 
-class SEUT_OT_CopyExportFolder(Operator):
-    """Copies the export folder of the current scene to all other scenes"""
-    bl_idname = "scene.copy_export_folder"
-    bl_label = "Copy Export Folder"
+class SEUT_OT_CopyExportOptions(Operator):
+    """Copies the export options of the current scene to all other scenes"""
+    bl_idname = "scene.copy_export_options"
+    bl_label = "Copy Export Options"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -21,6 +21,10 @@ class SEUT_OT_CopyExportFolder(Operator):
             return result
         
         for scn in bpy.data.scenes:
+            scn.seut.export_deleteLooseFiles = scene.seut.export_deleteLooseFiles
+            scn.seut.export_largeGrid = scene.seut.export_largeGrid
+            scn.seut.export_smallGrid = scene.seut.export_smallGrid
+            scn.seut.export_sbc = scene.seut.export_sbc
             scn.seut.export_exportPath = scene.seut.export_exportPath
         
         self.report({'INFO'}, "SEUT: Export Folder path '%s' successfully copied to all scenes." % (scene.seut.export_exportPath))

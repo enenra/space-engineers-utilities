@@ -218,7 +218,7 @@ class SEUT_AddonPreferences(AddonPreferences):
             row.label(text=wm.seut.needs_update, icon='CHECKMARK')
             row.operator('wm.get_update', text="Releases", icon='IMPORT')
 
-        layout.prop(self, "set_dev_tools_paths")
+        layout.prop(self, "set_dev_tools_paths", icon='FILEBROWSER')
 
         layout.prop(self, "materialsPath", expand=True)
         box = layout.box()
