@@ -3,7 +3,7 @@ import os
 
 from bpy.types                      import Operator
 
-from .seut_export_utils             import export_XML, export_model_FBX
+from .seut_export_utils             import export_xml, export_model_FBX
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export, check_collection_excluded, check_collection, check_toolpath, report_error
 
@@ -107,25 +107,25 @@ class SEUT_OT_ExportLOD(Operator):
 
         if colLOD1Good:
             print("\n------------------------------ Exporting Collection '" + collections['lod1'].name + "'.")
-            export_XML(self, context, collections['lod1'])
+            export_xml(self, context, collections['lod1'])
             export_model_FBX(self, context, collections['lod1'])
             print("------------------------------ Finished exporting Collection '" + collections['lod1'].name + "'.")
         
         if colLOD2Good:
             print("\n------------------------------ Exporting Collection '" + collections['lod2'].name + "'.")
-            export_XML(self, context, collections['lod2'])
+            export_xml(self, context, collections['lod2'])
             export_model_FBX(self, context, collections['lod2'])
             print("------------------------------ Finished exporting Collection '" + collections['lod2'].name + "'.")
 
         if colLOD3Good:
             print("\n------------------------------ Exporting Collection '" + collections['lod3'].name + "'.")
-            export_XML(self, context, collections['lod3'])
+            export_xml(self, context, collections['lod3'])
             export_model_FBX(self, context, collections['lod3'])
             print("------------------------------ Finished exporting Collection '" + collections['lod3'].name + "'.")
 
         if colBSLODGood:
             print("\n------------------------------ Exporting Collection '" + collections['bs_lod'].name + "'.")
-            export_XML(self, context, collections['bs_lod'])
+            export_xml(self, context, collections['bs_lod'])
             export_model_FBX(self, context, collections['bs_lod'])
             print("------------------------------ Finished exporting Collection '" + collections['bs_lod'].name + "'.")
         

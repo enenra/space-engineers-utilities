@@ -47,7 +47,7 @@ warnings = {
     'W001': "Collection not found. Action not possible.",
     'W002': "Collection '{variable_1}' excluded from view layer or cannot be found. Action not possible.",
     'W003': "Collection '{variable_1}' is empty. Action not possible.",
-    'W004': "",
+    'W004': "'{variable_1}' texture of local material '{variable_2}' is not of a valid resolution ({variable_3}). May not display correctly ingame.",
     'W005': "",
     'W006': "",
     'W007': "",
@@ -137,7 +137,7 @@ def check_toolpath(self, context, tool_path: str, tool_name: str, tool_filename:
         return {'CANCELLED'}
 
     file_name = os.path.basename(tool_path)
-    if tool_filename != tool_name:
+    if tool_filename != file_name:
         report_error(self, context, True, 'E013', tool_name, tool_filename, file_name)
         return {'CANCELLED'}
     

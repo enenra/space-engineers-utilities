@@ -3,7 +3,7 @@ import os
 
 from bpy.types                      import Operator
 
-from .seut_export_utils             import export_XML, export_model_FBX
+from .seut_export_utils             import export_xml, export_model_FBX
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export, check_collection_excluded, check_collection, check_toolpath, report_error
 
@@ -88,19 +88,19 @@ class SEUT_OT_ExportBS(Operator):
 
         if colBS1Good:
             print("\n------------------------------ Exporting Collection '" + collections['bs1'].name + "'.")
-            export_XML(self, context, collections['bs1'])
+            export_xml(self, context, collections['bs1'])
             export_model_FBX(self, context, collections['bs1'])
             print("------------------------------ Finished exporting Collection '" + collections['bs1'].name + "'.\n")
         
         if colBS2Good:
             print("\n------------------------------ Exporting Collection '" + collections['bs2'].name + "'.")
-            export_XML(self, context, collections['bs2'])
+            export_xml(self, context, collections['bs2'])
             export_model_FBX(self, context, collections['bs2'])
             print("------------------------------ Finished exporting Collection '" + collections['bs2'].name + "'.\n")
 
         if colBS3Good:
             print("\n------------------------------ Exporting Collection '" + collections['bs3'].name + "'.")
-            export_XML(self, context, collections['bs3'])
+            export_xml(self, context, collections['bs3'])
             export_model_FBX(self, context, collections['bs3'])
             print("------------------------------ Finished exporting Collection '" + collections['bs3'].name + "'.\n")
         

@@ -13,108 +13,81 @@ from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..export.seut_custom_fbx_exporter      import save_single
 from ..seut_ot_recreate_collections         import get_collections
-from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene, getParentCollection
+from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene, getParentCollection, get_preferences
 
-from ..seut_errors                          import report_error
+from ..seut_errors                          import report_error, report_warning, get_abs_path
 
-def export_XML(self, context, collection):
-    """Exports the XML file for a defined collection"""
+def export_xml(self, context, collection):
+    """Exports the XML definition for a collection"""
 
     scene = context.scene
     collections = get_collections(scene)
-    addon = __package__[:__package__.find(".")]
-    preferences = bpy.context.preferences.addons.get(addon).preferences
+    preferences = get_preferences()
 
     # Create XML tree and add initial parameters.
     model = ET.Element('Model')
     model.set('Name', scene.seut.subtypeId)
 
     if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
-        paramRescaleFactor = ET.SubElement(model, 'Parameter')
-        paramRescaleFactor.set('Name', 'RescaleFactor')
-        paramRescaleFactor.text = '1.0'
-        
-        paramCentered = ET.SubElement(model, 'Parameter')
-        paramCentered.set('Name', 'Centered')
-        paramCentered.text = 'false'
-
-        paramRescaleToLengthInMeters = ET.SubElement(model, 'Parameter')
-        paramRescaleToLengthInMeters.set('Name', 'RescaleToLengthInMeters')
-        paramRescaleToLengthInMeters.text = 'false'
-    
+        add_subelement(model, 'RescaleFactor', '1.0')
+        add_subelement(model, 'Centered', 'false')
+        add_subelement(model, 'RescaleToLengthInMeters', 'false')
+            
     elif scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
-        paramRescaleFactor = ET.SubElement(model, 'Parameter')
-        paramRescaleFactor.set('Name', 'RescaleFactor')
-        paramRescaleFactor.text = '0.01'
+        add_subelement(model, 'RescaleFactor', '0.01')
 
     if scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
-        paramRotationY = ET.SubElement(model, 'Parameter')
-        paramRotationY.set('Name', 'RotationY')
-        paramRotationY.text = '180'
+        add_subelement(model, 'RotationY', '180')
     
-    path = os.path.abspath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
+    path = get_abs_path(scene.seut.export_exportPath) + "\\"
 
-    # Currently no support for the other material parameters - are those even needed anymore?
-
-    # Iterate through all materials in the file
+    # Write local materials as material entries into XML, write library materials as matrefs into XML
     for mat in bpy.data.materials:
+
         if mat == None:
             continue
         if mat.users == 0 or mat.users == 1 and mat.use_fake_user:
             continue
-        
-        # This ensures that the material presets used internally are not written to the XML.
         if mat.name[:5] == 'SMAT_':
             continue
         
-        # mat is a local material.
         elif mat.library == None:
-
             # If the material is not part of a linked library, I have to account for the possibility that it is a leftover material from import.
             # Those do get cleaned up, but only after the BLEND file is saved, closed and reopened. That may not have happened.
-            isUnique = False
-            for mtl in bpy.data.materials:
-                # There is a material with its name in a linked library but override is turned on.
-                if mtl.library != None and mtl.name == mat.name and mat.seut.overrideMatLib == True:
-                    isUnique = True
-                # There is a material with its name in a linked library and override is turned off.
-                if mtl.library != None and mtl.name == mat.name and mat.seut.overrideMatLib == False:
-                    isUnique = False
-                # There is no material with its name in a linked library.
-                elif mtl.library == None and mat.library == None and mtl.name == mat.name:
-                    isUnique = True
-            
-            if isUnique:
-                matEntry = ET.SubElement(model, 'Material')
-                matEntry.set('Name', mat.name)
+            is_unique = True
 
-                matTechnique = ET.SubElement(matEntry, 'Parameter')
-                matTechnique.set('Name', 'Technique')
-                matTechnique.text = mat.seut.technique
+            for mtl in bpy.data.materials:
+                if mtl.library != None:
+                    # There is a material with its name in a linked library but override is turned on.
+                    if mtl.name == mat.name and mat.seut.overrideMatLib == True:
+                        is_unique = True
+                    # There is a material with its name in a linked library and override is turned off.
+                    if mtl.name == mat.name and mat.seut.overrideMatLib == False:
+                        is_unique = False
+                    # There is no material with its name in a linked library.
+                    elif mat.library == None and mtl.name == mat.name:
+                        is_unique = True
+            
+            # Material is a local material
+            if is_unique:
+                mat_entry = ET.SubElement(model, 'Material')
+                mat_entry.set('Name', mat.name)
+
+                add_subelement(mat_entry, 'Technique', mat.seut.technique)
 
                 if mat.seut.facing != 'None':
-                    matFacing = ET.SubElement(matEntry, 'Parameter')
-                    matFacing.set('Name', 'Facing')
-                    matFacing.text = mat.seut.facing
-                    
+                    add_subelement(mat_entry, 'Facing', mat.seut.facing)
                 if mat.seut.windScale != 0:
-                    matWindScale = ET.SubElement(matEntry, 'Parameter')
-                    matWindScale.set('Name', 'WindScale')
-                    matWindScale.text = str(mat.seut.windScale)
-                    
+                    add_subelement(mat_entry, 'WindScale', mat.seut.windScale)
                 if mat.seut.windFrequency != 0:
-                    matWindFrequency = ET.SubElement(matEntry, 'Parameter')
-                    matWindFrequency.set('Name', 'WindFrequency')
-                    matWindFrequency.text = str(mat.seut.windFrequency)
+                    add_subelement(mat_entry, 'WindFrequency', mat.seut.windFrequency)
                 
-                # Iterate through all image textures in material and register relevant ones to dictionary.
                 images = {
                     'cm': None,
                     'ng': None,
                     'add': None,
                     'am': None
                     }
-
                 if mat.node_tree is not None:
                     for node in mat.node_tree.nodes:
                         if node.type == 'TEX_IMAGE':
@@ -127,74 +100,30 @@ def export_XML(self, context, collection):
                             if node.name == 'ALPHAMASK':
                                 images['am'] = node.image
 
-                # Used to create the relative paths for the textures.
-                offset = 0
-
-                # _cm ColorMask texture
-                if not images['cm'] == None:
-                    offset = images['cm'].filepath.find("Textures\\")
-                    if offset == -1:
-                        report_error(self, context, True, 'E007', 'CM', mat.name)
-                    else:
-                        matCM = ET.SubElement(matEntry, 'Parameter')
-                        matCM.set('Name', 'ColorMetalTexture')
-                        matCM.text = os.path.splitext(images['cm'].filepath[offset:])[0] + ".dds"
-                    
-                    if not isValidResolution(images['cm'].size[0]) or not isValidResolution(images['cm'].size[1]):
-                        self.report({'WARNING'}, "SEUT: 'CM' texture of local material '%s' is not of a valid resolution (%sx%s). May not display correctly ingame." % (mat.name, str(images['cm'].size[0]), str(images['cm'].size[1])))
-                
-                # _ng NormalGloss texture
-                if not images['ng'] == None:
-                    offset = images['ng'].filepath.find("Textures\\")
-                    if offset == -1:
-                        report_error(self, context, True, 'E007', 'NG', mat.name)
-                    else:
-                        matNG = ET.SubElement(matEntry, 'Parameter')
-                        matNG.set('Name', 'NormalGlossTexture')
-                        matNG.text = os.path.splitext(images['ng'].filepath[offset:])[0] + ".dds"
-                    
-                    if not isValidResolution(images['ng'].size[0]) or not isValidResolution(images['ng'].size[1]):
-                        self.report({'WARNING'}, "SEUT: 'NG' texture of local material '%s' is not of a valid resolution (%sx%s). May not display correctly ingame." % (mat.name, str(images['ng'].size[0]), str(images['ng'].size[1])))
-                
-                # _add AddMaps texture
-                if not images['add'] == None:
-                    offset = images['add'].filepath.find("Textures\\")
-                    if offset == -1:
-                        report_error(self, context, True, 'E007', 'ADD', mat.name)
-                    else:
-                        matADD = ET.SubElement(matEntry, 'Parameter')
-                        matADD.set('Name', 'AddMapsTexture')
-                        matADD.text = os.path.splitext(images['add'].filepath[offset:])[0] + ".dds"
-                    
-                    if not isValidResolution(images['add'].size[0]) or not isValidResolution(images['add'].size[1]):
-                        self.report({'WARNING'}, "SEUT: 'ADD' texture of local material '%s' is not of a valid resolution (%sx%s). May not display correctly ingame." % (mat.name, str(images['add'].size[0]), str(images['add'].size[1])))
-                
-                # _alphamask Alphamask texture
-                if not images['am'] == None:
-                    offset = images['am'].filepath.find("Textures\\")
-                    if offset == -1:
-                        report_error(self, context, True, 'E007', 'ALPHAMASK', mat.name)
-                    else:
-                        matAM = ET.SubElement(matEntry, 'Parameter')
-                        matAM.set('Name', 'AlphamaskTexture')
-                        matAM.text = os.path.splitext(images['am'].filepath[offset:])[0] + ".dds"
-                    
-                    if not isValidResolution(images['am'].size[0]) or not isValidResolution(images['am'].size[1]):
-                        self.report({'WARNING'}, "SEUT: 'ALPHAMASK' texture of local material '%s' is not of a valid resolution (%sx%s). May not display correctly ingame." % (mat.name, str(images['am'].size[0]), str(images['am'].size[1])))
-
-                # If no textures are added to the material, remove the entry again.
                 if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
                     print("SEUT Info: Local material '%s' does not contain any valid textures. Skipping." % (mat.name))
-                    model.remove(matEntry)
+
                 else:
+                    if not images['cm'] == None:
+                        create_texture_entry(mat_entry, mat.name, images, 'cm', 'CM', 'ColorMetalTexture')
+                    if not images['ng'] == None:
+                        create_texture_entry(mat_entry, mat.name, images, 'ng', 'NG', 'NormalGlossTexture')
+                    if not images['add'] == None:
+                        create_texture_entry(mat_entry, mat.name, images, 'add', 'ADD', 'AddMapsTexture')
+                    if not images['am'] == None:
+                        create_texture_entry(mat_entry, mat.name, images, 'am', 'ALPHAMASK', 'AlphamaskTexture')
+                    
                     print("SEUT Info: Local material '%s' saved. Don't forget to include relevant DDS texture files in mod!" % (mat.name))
+            
+            else:
+                matRef = ET.SubElement(model, 'MaterialRef')
+                matRef.set('Name', mat.name)
 
         elif mat.library != None:
             matRef = ET.SubElement(model, 'MaterialRef')
             matRef.set('Name', mat.name)
             
-    
-    # Only add LODs to XML if exporting the main collection, the LOD collections exist and are not empty.
+    # Write LOD references into the XML, if applicable
     if collection == collections['main']:
         
         lod1Printed = False
@@ -203,20 +132,14 @@ def export_XML(self, context, collection):
         if collections['lod1'] == None or len(collections['lod1'].objects) == 0:
             print("SEUT Info: Collection 'LOD1' not found or empty. Skipping XML entry.")
         else:
-            lod1 = ET.SubElement(model, 'LOD')
-            lod1.set('Distance', str(scene.seut.export_lod1Distance))
-            lod1Model = ET.SubElement(lod1, 'Model')
-            lod1Model.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '_LOD1'
+            create_lod_entry(scene, model, scene.seut.export_lod1Distance, path, '_LOD1')
             lod1Printed = True
 
         if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
             print("SEUT Info: Collection 'LOD2' not found or empty. Skipping XML entry.")
         else:
-            if lod1Printed: 
-                lod2 = ET.SubElement(model, 'LOD')
-                lod2.set('Distance', str(scene.seut.export_lod2Distance))
-                lod2Model = ET.SubElement(lod2, 'Model')
-                lod2Model.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '_LOD2'
+            if lod1Printed:
+                create_lod_entry(scene, model, scene.seut.export_lod2Distance, path, '_LOD2')
                 lod2Printed = True
             else:
                 report_error(self, context, True, 'E006')
@@ -224,44 +147,77 @@ def export_XML(self, context, collection):
         if collections['lod3'] == None or len(collections['lod3'].objects) == 0:
             print("SEUT Info: Collection 'LOD3' not found or empty. Skipping XML entry.")
         else:
-            if lod1Printed and lod2Printed:
-                lod3 = ET.SubElement(model, 'LOD')
-                lod3.set('Distance', str(scene.seut.export_lod3Distance))
-                lod3Model = ET.SubElement(lod3, 'Model')
-                lod3Model.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '_LOD3'
+            if lod2Printed:
+                create_lod_entry(scene, model, scene.seut.export_lod3Distance, path, '_LOD3')
             else:
                 report_error(self, context, True, 'E006')
 
     if collection == collections['bs1'] or collection == collections['bs2'] or collection == collections['bs3']:
         if collections['bs_lod'] == None or len(collections['bs_lod'].objects) == 0:
-            self.report({'INFO'}, "SEUT: Collection 'BS_LOD' not found or empty. Skipping XML entry.")
+            print("SEUT Info: Collection 'BS_LOD' not found or empty. Skipping XML entry.")
         else:
-            bs_lod = ET.SubElement(model, 'LOD')
-            bs_lod.set('Distance', str(scene.seut.export_bs_lodDistance))
-            bs_lodModel = ET.SubElement(bs_lod, 'Model')
-            bs_lodModel.text = path[path.find("Models\\"):] + scene.seut.subtypeId + '_BS_LOD'
+            create_lod_entry(scene, model, scene.seut.export_bs_lodDistance, path, '_BS_LOD')
 
     # Create file with subtypename + collection name and write string to it
-    tempString = ET.tostring(model, 'utf-8')
+    temp_string = ET.tostring(model, 'utf-8')
     try:
-        tempString.decode('ascii')
+        temp_string.decode('ascii')
     except UnicodeDecodeError:
         report_error(self, context, False, 'E033')
-    xmlString = xml.dom.minidom.parseString(tempString)
-    xmlFormatted = xmlString.toprettyxml()
+    xml_string = xml.dom.minidom.parseString(temp_string)
+    xml_formatted = xml_string.toprettyxml()
     
-    fileType = collection.name[:collection.name.find(" (")]
+    filetype = collection.name[:collection.name.find(" (")]
     
     if collection == collections['main']:
         filename = scene.seut.subtypeId
     else:
-        filename = scene.seut.subtypeId + '_' + fileType
+        filename = scene.seut.subtypeId + '_' + filetype
 
-    exportedXML = open(path + filename + ".xml", "w")
-    exportedXML.write(xmlFormatted)
+    exported_xml = open(path + filename + ".xml", "w")
+    exported_xml.write(xml_formatted)
     print("SEUT Info: '%s.xml' has been created." % (path + filename))
 
-    return {'FINISHED'}
+
+def add_subelement(parent, name: str, value):
+    """Adds a subelement to XML definition"""
+    
+    param = ET.SubElement(parent, 'Parameter')
+    param.set('Name', name)
+    param.text = str(value)
+
+
+def create_texture_entry(mat_entry, mat_name: str, images: dict, tex_type: str, tex_name: str, tex_name_long: str, ):
+    """Creates a texture entry for a texture type into the XML tree"""
+    
+    offset = 0
+    offset = images[tex_type].filepath.find("Textures\\")
+    
+    if offset == -1:
+        report_error(self, context, True, 'E007', tex_name, mat_name)
+    else:
+        add_subelement(mat_entry, tex_name_long, os.path.splitext(images[tex_type].filepath[offset:])[0] + ".dds")
+    
+    if not is_valid_resolution(images[tex_type].size[0]) or not is_valid_resolution(images[tex_type].size[1]):
+        report_warning(self, context, True, 'W004', tex_name, mat_name, str(images[tex_type].size[0]) + "x" + str(images[tex_type].size[1]))
+
+
+def is_valid_resolution(number: int) -> bool:
+    """Returns True if number is a valid resolution (a square of 2)"""
+    
+    if number <= 0:
+        return False
+
+    return math.log(number, 2).is_integer()
+
+
+def create_lod_entry(scene, tree, distance: int, path: str, lod_type: str):
+    """Creates a LOD entry into the XML tree"""
+    
+    lod = ET.SubElement(tree, 'LOD')
+    lod.set('Distance', str(distance))
+    lodModel = ET.SubElement(lod, 'Model')
+    lodModel.text = path[path.find("Models\\"):] + scene.seut.subtypeId + lod_type
 
 
 def export_model_FBX(self, context, collection):
@@ -275,12 +231,12 @@ def export_model_FBX(self, context, collection):
     settings = ExportSettings(scene, depsgraph)
 
     # Determining the directory to export to.
-    fileType = collection.name[:collection.name.find(" (")]
+    filetype = collection.name[:collection.name.find(" (")]
 
     if collection == collections['main']:
         filename = scene.seut.subtypeId
     else:
-        filename = scene.seut.subtypeId + '_' + fileType
+        filename = scene.seut.subtypeId + '_' + filetype
 
     path = os.path.abspath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
     
@@ -494,13 +450,6 @@ def removeExportDummiesFromMat(self, context, material):
 
     return
 
-def isValidResolution(number):
-    """Returns True if number is a valid resolution (a square of 2)"""
-    
-    if number <= 0:
-        return False
-
-    return math.log(number, 2).is_integer()
 
 # STOLLIE: Standard output error operator class for catching error return codes.
 class StdoutOperator():
