@@ -12,7 +12,7 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
-from .seut_errors  import report_error
+from .seut_errors  import seut_report
 
 
 def update_BBox(self, context):
@@ -30,7 +30,7 @@ def update_enabled(self, context):
     materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
 
     if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-        report_error(self, context, False, 'E012', "Materials Folder", materialsPath)
+        seut_report(self, context, 'ERROR', False, 'E012', "Materials Folder", materialsPath)
         return
 
     if self.enabled:

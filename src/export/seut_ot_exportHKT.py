@@ -9,7 +9,7 @@ from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
 from .seut_export_utils             import ExportSettings, export_to_fbxfile
 from ..seut_ot_recreate_collections import get_collections
-from ..seut_errors                  import check_export, check_collection, check_collection_excluded, check_toolpath, report_error
+from ..seut_errors                  import check_export, check_collection, check_collection_excluded, check_toolpath, seut_report
 
 
 class SEUT_OT_ExportHKT(Operator):
@@ -64,14 +64,14 @@ class SEUT_OT_ExportHKT(Operator):
         
         for obj in collections['hkt'].objects:
             if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                report_error(self, context, True, 'E032', obj.name)
+                seut_report(self, context, 'ERROR', True, 'E032', obj.name)
                 return {'CANCELLED'}
             if len(obj.modifiers) > 0:
-                report_error(self, context, True, 'E034', obj.name)
+                seut_report(self, context, 'ERROR', True, 'E034', obj.name)
                 return {'CANCELLED'}
         
         if len(collections['hkt'].objects) > 16:
-            report_error(self, context, True, 'E022', len(collections['hkt'].objects))
+            seut_report(self, context, 'ERROR', True, 'E022', len(collections['hkt'].objects))
             return {'CANCELLED'}
 
 

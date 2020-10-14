@@ -4,7 +4,7 @@ from math           import pi
 from bpy.types      import Operator
 
 from .seut_ot_recreate_collections  import get_collections
-from .seut_errors                   import check_collection, check_collection_excluded, report_error
+from .seut_errors                   import check_collection, check_collection_excluded, seut_report
 from .seut_utils                    import getParentCollection
 
 class SEUT_OT_Mountpoints(Operator):
@@ -56,13 +56,13 @@ class SEUT_OT_Mountpoints(Operator):
             context.view_layer.objects.active = None
 
         if collections['seut'] is None:
-            report_error(self, context, False, 'E002', "'SEUT (" + scene.name + ")'")
+            seut_report(self, context, 'ERROR', False, 'E002', "'SEUT (" + scene.name + ")'")
             scene.seut.mountpointToggle = 'off'
             return {'CANCELLED'}
 
         isExcluded = check_collection_excluded(scene, collections['seut'])
         if isExcluded or isExcluded is None:
-            report_error(self, context, False, 'E002', '"' + scene.name + '"')
+            seut_report(self, context, 'ERROR', False, 'E002', '"' + scene.name + '"')
             scene.seut.mountpointToggle = 'off'
             return {'CANCELLED'}
 
@@ -72,7 +72,7 @@ class SEUT_OT_Mountpoints(Operator):
                 mpMat = mat
         
         if mpMat is None:
-            report_error(self, context, False, 'E026', "Mountpoint Material")
+            seut_report(self, context, 'ERROR', False, 'E026', "Mountpoint Material")
             scene.seut.mountpointToggle = 'off'
             return {'CANCELLED'}
             

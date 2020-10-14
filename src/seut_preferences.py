@@ -4,7 +4,7 @@ import os
 from bpy.types  import Operator, AddonPreferences
 from bpy.props  import BoolProperty, StringProperty, EnumProperty
 
-from .seut_errors   import report_error
+from .seut_errors   import seut_report
 
 def set_dev_tools_paths(self, context):
     scene = context.scene
@@ -34,12 +34,12 @@ def update_materialsPath(self, context):
 
     if os.path.isdir(os.path.abspath(bpy.path.abspath(self.materialsPath))):
         if not bpy.path.abspath(self.materialsPath[-10:-1]) == 'Materials':
-            report_error(self, context, False, 'E017', self.materialsPath)
+            seut_report(self, context, 'ERROR', False, 'E017', self.materialsPath)
             self.materialsPath = ""
         else:
             bpy.ops.scene.refresh_matlibs()
     else:
-        report_error(self, context, False, 'E003', 'Materials', os.path.abspath(bpy.path.abspath(self.materialsPath)))
+        seut_report(self, context, 'ERROR', False, 'E003', 'Materials', os.path.abspath(bpy.path.abspath(self.materialsPath)))
         self.materialsPath = ""
     
 
@@ -59,14 +59,14 @@ def update_fbxImporterPath(self, context):
             self.fbxImporterPath_Before = path + "\\" + name
             self.fbxImporterPath = path + "\\" + name
         else:
-            report_error(self, context, False, 'E030')
+            seut_report(self, context, 'ERROR', False, 'E030')
             self.fbxImporterPath = ""
 
     # If it's not a directory and the path doesn't exist, error. If the basename is equal to the name, use the path. If the basename is not equal, error.
     elif not os.path.isdir(path):
         
         if not os.path.exists(path):
-            report_error(self, context, False, 'E003', 'Custom FBX Importer', os.path.abspath(bpy.path.abspath(self.fbxImporterPath)))
+            seut_report(self, context, 'ERROR', False, 'E003', 'Custom FBX Importer', os.path.abspath(bpy.path.abspath(self.fbxImporterPath)))
             self.havokPfbxImporterPathath = ""
 
         else:
@@ -74,7 +74,7 @@ def update_fbxImporterPath(self, context):
                 self.fbxImporterPath_Before = path
                 self.fbxImporterPath = path
             else:
-                report_error(self, context, False, 'E013', 'Custom FBX Importer', name, os.path.basename(self.fbxImporterPath))
+                seut_report(self, context, 'ERROR', False, 'E013', 'Custom FBX Importer', name, os.path.basename(self.fbxImporterPath))
                 self.fbxImporterPath = ""
 
 
@@ -94,14 +94,14 @@ def update_havokPath(self, context):
             self.havokPath_Before = path + "\\" + name
             self.havokPath = path + "\\" + name
         else:
-            report_error(self, context, False, 'E030')
+            seut_report(self, context, 'ERROR', False, 'E030')
             self.havokPath = ""
 
     # If it's not a directory and the path doesn't exist, error. If the basename is equal to the name, use the path. If the basename is not equal, error.
     elif not os.path.isdir(path):
         
         if not os.path.exists(path):
-            report_error(self, context, False, 'E003', 'Havok Stand Alone Filter Manager', os.path.abspath(bpy.path.abspath(self.havokPath)))
+            seut_report(self, context, 'ERROR', False, 'E003', 'Havok Stand Alone Filter Manager', os.path.abspath(bpy.path.abspath(self.havokPath)))
             self.havokPath = ""
 
         else:
@@ -109,7 +109,7 @@ def update_havokPath(self, context):
                 self.havokPath_Before = path
                 self.havokPath = path
             else:
-                report_error(self, context, False, 'E013', 'Havok Stand Alone Filter Manager', name, os.path.basename(self.havokPath))
+                seut_report(self, context, 'ERROR', False, 'E013', 'Havok Stand Alone Filter Manager', name, os.path.basename(self.havokPath))
                 self.havokPath = ""
 
 
@@ -129,14 +129,14 @@ def update_mwmbPath(self, context):
             self.mwmbPath_Before = path + "\\" + name
             self.mwmbPath = path + "\\" + name
         else:
-            report_error(self, context, False, 'E030')
+            seut_report(self, context, 'ERROR', False, 'E030')
             self.mwmbPath = ""
 
     # If it's not a directory and the path doesn't exist, error. If the basename is equal to the name, use the path. If the basename is not equal, error.
     elif not os.path.isdir(path):
 
         if not os.path.exists(path):
-            report_error(self, context, False, 'E003', 'MWM Builder', os.path.abspath(bpy.path.abspath(self.mwmbPath)))
+            seut_report(self, context, 'ERROR', False, 'E003', 'MWM Builder', os.path.abspath(bpy.path.abspath(self.mwmbPath)))
             self.mwmbPath = ""
 
         else:
@@ -144,7 +144,7 @@ def update_mwmbPath(self, context):
                 self.mwmbPath_Before = path
                 self.mwmbPath = path
             else:
-                report_error(self, context, False, 'E013', 'MWM Builder', name, os.path.basename(self.mwmbPath))
+                seut_report(self, context, 'ERROR', False, 'E013', 'MWM Builder', name, os.path.basename(self.mwmbPath))
                 self.mwmbPath = ""
 
 

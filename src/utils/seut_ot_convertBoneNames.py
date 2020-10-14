@@ -4,7 +4,7 @@ import os
 
 from bpy.types import Operator
 
-from ..seut_errors  import report_error
+from ..seut_errors  import seut_report
 
 class SEUT_OT_ConvertBonesToBlenderFormat(Operator):
     """Make Bone names Blender compatible"""
@@ -28,11 +28,11 @@ class SEUT_OT_ConvertBonesToBlenderFormat(Operator):
         armature = context.object
         
         if armature == None or armature.type is None or not armature:
-            report_error(self, context, True, 'E028')
+            seut_report(self, context, 'ERROR', True, 'E028')
             return {'CANCELLED'}
         
         if armature.type == None or armature.type is None or armature.type != 'ARMATURE':
-            report_error(self, context, True, 'E029')
+            seut_report(self, context, 'ERROR', True, 'E029')
             return {'CANCELLED'}
         
         # Renaming patterns

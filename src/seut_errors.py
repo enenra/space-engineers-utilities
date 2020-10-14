@@ -44,10 +44,10 @@ errors = {
 }
 
 warnings = {
-    'W001': "Collection not found. Action not possible.",
-    'W002': "Collection '{variable_1}' excluded from view layer or cannot be found. Action not possible.",
-    'W003': "Collection '{variable_1}' is empty. Action not possible.",
-    'W004': "'{variable_1}' texture of local material '{variable_2}' is not of a valid resolution ({variable_3}). May not display correctly ingame.",
+    'W001': "SEUT: Collection not found. Action not possible.",
+    'W002': "SEUT: Collection '{variable_1}' excluded from view layer or cannot be found. Action not possible.",
+    'W003': "SEUT: Collection '{variable_1}' is empty. Action not possible.",
+    'W004': "SEUT: '{variable_1}' texture of local material '{variable_2}' is not of a valid resolution ({variable_3}). May not display correctly ingame.",
     'W005': "",
     'W006': "",
     'W007': "",
@@ -75,24 +75,24 @@ def check_export(self, context, can_report=True):
 
     # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
     if not bpy.data.is_saved:
-        report_error(self, context, can_report, 'E008')
+        seut_report(self, context, 'ERROR', can_report, 'E008')
         return {'CANCELLED'}
 
     if os.path.exists(path) == False:
-        report_error(self, context, can_report, 'E003', "Export", path)
+        seut_report(self, context, 'ERROR', can_report, 'E003', "Export", path)
         return {'CANCELLED'}
     elif path == "":
-        report_error(self, context, can_report, 'E019')
+        seut_report(self, context, 'ERROR', can_report, 'E019')
         return {'CANCELLED'}
 
     if path.find("Models\\") != -1 or (path + "\\").find("Models\\") != -1:
         return {'CONTINUE'}
     else:
-        report_error(self, context, can_report, 'E014', path)
+        seut_report(self, context, 'ERROR', can_report, 'E014', path)
         return {'CANCELLED'}
 
     if scene.seut.subtypeId == "":
-        report_error(self, context, can_report, 'E004')
+        seut_report(self, context, 'ERROR', can_report, 'E004')
         return {'CANCELLED'}
 
     return {'CONTINUE'}
@@ -103,27 +103,27 @@ def check_collection(self, context, scene, collection, partial_check=True):
 
     if collection is None:
         if partial_check:
-            report_warning(self, context, False, 'W001')
+            seut_report(self, context, 'WARNING', False, 'W001')
             return {'FINISHED'}
         else:
-            report_error(self, context, False, 'E002')
+            seut_report(self, context, 'ERROR', False, 'E002')
             return {'CANCELLED'}
             
     is_excluded = check_collection_excluded(scene, collection)
     if is_excluded or is_excluded is None:
         if partial_check:
-            report_warning(self, context, False, 'W002', collection.name)
+            seut_report(self, context, 'WARNING', False, 'W002', collection.name)
             return {'FINISHED'}
         else:
-            report_error(self, context, False, 'E019', collection.name)
+            seut_report(self, context, 'ERROR', False, 'E019', collection.name)
             return {'CANCELLED'}
 
     if len(get_objects_from_collection(collection)) == 0:
         if partial_check:
-            report_warning(self, context, False, 'W003', collection.name)
+            seut_report(self, context, 'WARNING', False, 'W003', collection.name)
             return {'FINISHED'}
         else:
-            report_error(self, context, False, 'E002', '"' + collection.name + '"')
+            seut_report(self, context, 'ERROR', False, 'E002', '"' + collection.name + '"')
             return {'CANCELLED'}
     
     return {'CONTINUE'}
@@ -133,12 +133,12 @@ def check_toolpath(self, context, tool_path: str, tool_name: str, tool_filename:
     """Checks if external tool is correctly linked."""
 
     if not os.path.exists(tool_path):
-        report_error(self, context, True, 'E012', tool_name, tool_path)
+        seut_report(self, context, 'ERROR', True, 'E012', tool_name, tool_path)
         return {'CANCELLED'}
 
     file_name = os.path.basename(tool_path)
     if tool_filename != file_name:
-        report_error(self, context, True, 'E013', tool_name, tool_filename, file_name)
+        seut_report(self, context, 'ERROR', True, 'E013', tool_name, tool_filename, file_name)
         return {'CANCELLED'}
     
     return {'CONTINUE'}
@@ -175,13 +175,23 @@ def show_popup_report(context, title, text):
     return
 
 
-def report_error(self, context, can_report: bool, code: str, variable_1=None, variable_2=None, variable_3=None):
-    """Shows a popup error message to the user."""
+def seut_report(self, context, report_type: str, can_report: bool, code: str, variable_1=None, variable_2=None, variable_3=None):
+    """Displays a report as a popup message and / or writes it into INFO, if possible."""
 
-    if not code in errors:
-        return
+    if report_type == 'ERROR':
+        if not code in errors:
+            return
+        text = errors[code]
 
-    text = errors[code]
+    elif report_type == 'WARNING':
+        if not code in warnings:
+            return
+        text = warnings[code]
+
+    elif report_type == 'INFO':
+        if not code in infos:
+            return
+        text = infos[code]
 
     try:
         text = text.format(variable_1=variable_1, variable_2=variable_2, variable_3=variable_3)
@@ -196,34 +206,15 @@ def report_error(self, context, can_report: bool, code: str, variable_1=None, va
     # bpy.ops.message.popup_message(p_type='ERROR', p_text=text, p_link=link)
 
     if can_report:
-        self.report({'ERROR'}, text)
+        self.report({report_type}, text)
+
     else:
-        show_popup_report(context, "Report: Error", text)
+        if report_type == 'ERROR':
+            show_popup_report(context, "Report: Error", text)
+            print("Error: " + text)
 
-    print("Error: " + text)
-    
-    return
+        elif report_type == 'WARNING':
+            print("Warning: " + text)
 
-
-def report_warning(self, context, can_report: bool, code: str, variable_1=None, variable_2=None, variable_3=None):
-    """Prints a warning to INFO if possible, else prints to console."""
-
-    if not code in errors:
-        return
-
-    text = warnings[code]
-
-    try:
-        text = text.format(variable_1=variable_1, variable_2=variable_2, variable_3=variable_3)
-    except KeyError:
-        try:
-            text = text.format(variable_1=variable_1, variable_2=variable_2)
-        except KeyError:
-            text = text.format(variable_1=variable_1)
-
-    if can_report:
-        self.report({'WARNING'}, text)
-
-    print("Warning: " + text)
-    
-    return
+        elif report_type == 'INFO':
+            print("Info: " + text)

@@ -5,7 +5,7 @@ from bpy.types                      import Operator
 
 from .seut_export_utils             import export_xml, export_model_FBX
 from ..seut_ot_recreate_collections import get_collections
-from ..seut_errors                  import check_export, check_collection, check_collection_excluded, check_toolpath, report_error
+from ..seut_errors                  import check_export, check_collection, check_collection_excluded, check_toolpath, seut_report
 
 class SEUT_OT_ExportMain(Operator):
     """Exports the main model"""
@@ -64,12 +64,12 @@ class SEUT_OT_ExportMain(Operator):
                 unparentedObjects += 1
         
         if unparentedObjects > 1:
-            report_error(self, context, True, 'E031')
+            seut_report(self, context, 'ERROR', True, 'E031')
             return {'CANCELLED'}
         
         for obj in collections['main'].objects:
             if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                report_error(self, context, True, 'E032', obj.name)
+                seut_report(self, context, 'ERROR', True, 'E032', obj.name)
                 return {'CANCELLED'}
 
 

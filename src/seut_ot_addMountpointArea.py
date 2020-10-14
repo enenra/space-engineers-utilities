@@ -3,7 +3,7 @@ import bpy
 from bpy.types      import Operator
 
 from .seut_ot_mountpoints   import SEUT_OT_Mountpoints
-from .seut_errors           import report_error
+from .seut_errors           import seut_report
 
 
 class SEUT_OT_AddMountpointArea(Operator):
@@ -29,7 +29,7 @@ class SEUT_OT_AddMountpointArea(Operator):
                 mpMat = mat
         
         if mpMat is None:
-            report_error(self, context, True, 'E026', "Mountpoint Material")
+            seut_report(self, context, 'ERROR', True, 'E026', "Mountpoint Material")
             return {'CANCELLED'}
 
         # The 3D cursor is used as the origin. If it's not on center, everything is misaligned ingame.
@@ -51,7 +51,7 @@ class SEUT_OT_AddMountpointArea(Operator):
         try:
             collection = bpy.data.collections['Mountpoints' + tag]
         except KeyError:
-            report_error(self, context, True, 'E024')
+            seut_report(self, context, 'ERROR', True, 'E024')
             return {'CANCELLED'}
 
         if side == 'front' or side == 'back':
@@ -68,7 +68,7 @@ class SEUT_OT_AddMountpointArea(Operator):
         try:
             area = SEUT_OT_Mountpoints.createArea(context, 'Mountpoint Area ' + side.capitalize(), 1, scale, scale, None, None, collection, bpy.data.objects['Mountpoints ' + side.capitalize()])
         except KeyError:
-            report_error(self, context, True, 'E027')
+            seut_report(self, context, 'ERROR', True, 'E027')
             return {'CANCELLED'}
 
         area.active_material = mpMat

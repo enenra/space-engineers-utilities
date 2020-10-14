@@ -9,7 +9,7 @@ from collections    import OrderedDict
 from ..seut_ot_mirroring            import SEUT_OT_Mirroring
 from ..seut_ot_mountpoints          import SEUT_OT_Mountpoints
 from ..seut_ot_recreate_collections import get_collections
-from ..seut_errors                  import check_export, check_collection, report_error
+from ..seut_errors                  import check_export, check_collection, seut_report
 
 class SEUT_OT_ExportSBC(Operator):
     """Exports to SBC"""
@@ -57,12 +57,12 @@ class SEUT_OT_ExportSBC(Operator):
 
         if collections['bs1'] is not None and collections['bs2'] is not None:
             if (len(collections['bs1'].objects) == 0 and len(collections['bs2'].objects) != 0) or (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
-                report_error(self, context, True, 'E015', 'BS')
+                seut_report(self, context, 'ERROR', True, 'E015', 'BS')
                 return {'CANCELLED'}
 
         if collections['bs2'] is not None and collections['bs3'] is not None:
             if (len(collections['bs2'].objects) == 0 and len(collections['bs3'].objects) != 0):
-                report_error(self, context, True, 'E015', 'BS')
+                seut_report(self, context, 'ERROR', True, 'E015', 'BS')
                 return {'CANCELLED'}
 
         # Create XML tree and add initial parameters.
@@ -292,7 +292,7 @@ class SEUT_OT_ExportSBC(Operator):
         try:
             tempString.decode('ascii')
         except UnicodeDecodeError:
-            report_error(self, context, True, 'E033')
+            seut_report(self, context, 'ERROR', True, 'E033')
         xmlString = xml.dom.minidom.parseString(tempString)
         xmlFormatted = xmlString.toprettyxml()
 

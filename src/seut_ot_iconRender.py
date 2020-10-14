@@ -4,7 +4,7 @@ from math           import pi
 from bpy.types      import Operator
 
 from .seut_ot_recreate_collections  import get_collections
-from .seut_errors                   import check_collection, check_collection_excluded, report_error
+from .seut_errors                   import check_collection, check_collection_excluded, seut_report
 from .seut_utils                    import getParentCollection, toRadians
 
 class SEUT_OT_IconRender(Operator):
@@ -56,18 +56,18 @@ class SEUT_OT_IconRender(Operator):
             context.view_layer.objects.active = None
 
         if collections['seut'] is None:
-            report_error(self, context, False, 'E002', "'SEUT (" + scene.name + ")'")
+            seut_report(self, context, 'ERROR', False, 'E002', "'SEUT (" + scene.name + ")'")
             scene.seut.renderToggle = 'off'
             return {'CANCELLED'}
 
         isExcluded = check_collection_excluded(scene, collections['seut'])
         if isExcluded or isExcluded is None:
-            report_error(self, context, False, 'E002', '"' + scene.name + '"')
+            seut_report(self, context, 'ERROR', False, 'E002', '"' + scene.name + '"')
             scene.seut.renderToggle = 'off'
             return {'CANCELLED'}
 
         if not bpy.data.is_saved:
-            report_error(self, context, False, 'E008')
+            seut_report(self, context, 'ERROR', False, 'E008')
             scene.seut.renderToggle = 'off'
             return {'CANCELLED'}
             

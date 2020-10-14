@@ -6,7 +6,7 @@ from bpy.props  import (EnumProperty,
 
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_utils                   import getParentCollection
-from ..seut_errors                  import report_error
+from ..seut_errors                  import seut_report
 
 class SEUT_OT_AddDummy(Operator):
     """Adds a Space Engineers dummy"""
@@ -58,7 +58,7 @@ class SEUT_OT_AddDummy(Operator):
         collections = get_collections(scene)
 
         if collections['main'] is None:
-            report_error(self, context, True, 'E002', "'Main'")
+            seut_report(self, context, 'ERROR', True, 'E002', "'Main'")
             return {'CANCELLED'}
         
         # Determine name strings.

@@ -4,7 +4,7 @@ from bpy.types  import Operator
 from bpy.props  import (EnumProperty,
                         IntProperty)
 
-from ..seut_errors  import report_error
+from ..seut_errors  import seut_report
 
 class SEUT_OT_MatCreate(Operator):
     """Create a SEUT material from the defined preset"""
@@ -33,7 +33,7 @@ class SEUT_OT_MatCreate(Operator):
                 presetMat = mat
         
         if presetMat is None:
-            report_error(self, context, True, 'E016', presetName)
+            seut_report(self, context, 'ERROR', True, 'E016', presetName)
             return {'CANCELLED'}
             
         newMat = presetMat.copy()
@@ -43,7 +43,7 @@ class SEUT_OT_MatCreate(Operator):
         activeMat = context.active_object.active_material
 
         if activeMat.node_tree is None:
-            report_error(self, context, True, 'E016', presetName)
+            seut_report(self, context, 'ERROR', True, 'E016', presetName)
             return {'CANCELLED'}
             
         else:

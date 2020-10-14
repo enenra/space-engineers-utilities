@@ -5,7 +5,7 @@ from bpy.types                      import Operator
 
 from .seut_export_utils             import export_xml, export_model_FBX
 from ..seut_ot_recreate_collections import get_collections
-from ..seut_errors                  import check_export, check_collection_excluded, check_collection, check_toolpath, report_error
+from ..seut_errors                  import check_export, check_collection_excluded, check_collection, check_toolpath, seut_report
 
 class SEUT_OT_ExportBS(Operator):
     """Exports Build Stages"""
@@ -64,25 +64,25 @@ class SEUT_OT_ExportBS(Operator):
                 print("SEUT Warning: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2.")
                 return {'FINISHED'}
             else:
-                report_error(self, context, True, 'E015', 'BS')
+                seut_report(self, context, 'ERROR', True, 'E015', 'BS')
                 return {'CANCELLED'}
         
         if colBS1Good:
             for obj in collections['bs1'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    report_error(self, context, True, 'E032', obj.name)
+                    seut_report(self, context, 'ERROR', True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colBS2Good:
             for obj in collections['bs2'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    report_error(self, context, True, 'E032', obj.name)
+                    seut_report(self, context, 'ERROR', True, 'E032', obj.name)
                     return {'CANCELLED'}
         
         if colBS3Good:
             for obj in collections['bs3'].objects:
                 if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-                    report_error(self, context, True, 'E032', obj.name)
+                    seut_report(self, context, 'ERROR', True, 'E032', obj.name)
                     return {'CANCELLED'}
 
 

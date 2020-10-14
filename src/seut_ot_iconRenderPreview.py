@@ -4,7 +4,7 @@ import os
 from bpy.types      import Operator
 
 from .seut_ot_recreate_collections  import get_collections
-from .seut_errors                   import report_error
+from .seut_errors                   import seut_report
 
 
 class SEUT_OT_IconRenderPreview(Operator):
@@ -25,7 +25,7 @@ class SEUT_OT_IconRenderPreview(Operator):
         wm = context.window_manager
 
         if not os.path.isdir(os.path.abspath(bpy.path.abspath(scene.render.filepath))):
-            report_error(self, context, False, 'E003', 'Render', os.path.abspath(bpy.path.abspath(scene.render.filepath)))
+            seut_report(self, context, 'ERROR', False, 'E003', 'Render', os.path.abspath(bpy.path.abspath(scene.render.filepath)))
             return {'CANCELLED'}
             
         if scene.seut.subtypeId == "":

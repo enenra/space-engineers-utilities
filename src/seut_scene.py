@@ -14,7 +14,7 @@ from bpy.props  import (EnumProperty,
 
 from .seut_ot_mirroring             import SEUT_OT_Mirroring
 from .seut_ot_recreate_collections  import get_collections, rename_collections
-from .seut_errors                   import report_error, check_export
+from .seut_errors                   import seut_report, check_export
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, toRadians, getParentCollection
 
 
@@ -115,7 +115,7 @@ def update_subtypeId(self, context):
     for scn in bpy.data.scenes:
         if scn is not scene and scn.seut.subtypeId == scene.seut.subtypeId:
             scene.seut.subtypeId = scene.seut.subtypeBefore
-            report_error(self, context, False, 'E018')
+            seut_report(self, context, 'ERROR', False, 'E018')
             return
 
     if scene.seut.subtypeId != scene.seut.subtypeBefore and scene.seut.subtypeBefore is not "":

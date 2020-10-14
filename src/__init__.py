@@ -218,7 +218,7 @@ def load_handler(dummy):
         bpy.ops.scene.refresh_matlibs()
     except:
         try:
-            report_error(self, context, False, 'E021')
+            seut_report(self, context, 'ERROR', False, 'E021')
         except:
             pass
 

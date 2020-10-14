@@ -3,7 +3,7 @@ import glob
 
 from .seut_export_utils         import ExportSettings
 from ..utils.called_tool_type   import ToolType
-from ..seut_errors              import report_error
+from ..seut_errors              import seut_report
 
 def mwmbuilder(self, context, path, mwmpath, settings: ExportSettings, mwmfile: str, materialspath):
     try:
@@ -23,6 +23,6 @@ def mwmbuilder(self, context, path, mwmpath, settings: ExportSettings, mwmfile: 
                 os.remove(fileName)
 
         except EnvironmentError:
-            report_error(self, context, True, 'E020')
+            seut_report(self, context, 'ERROR', True, 'E020')
         
         self.report({'INFO'}, "SEUT: FBX and XML files of Scene '%s' have been compiled to MWM." % (scene.name))

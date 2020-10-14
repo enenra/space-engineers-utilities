@@ -15,7 +15,7 @@ from ..export.seut_custom_fbx_exporter      import save_single
 from ..seut_ot_recreate_collections         import get_collections
 from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene, getParentCollection, get_preferences
 
-from ..seut_errors                          import report_error, report_warning, get_abs_path
+from ..seut_errors                          import seut_report, get_abs_path
 
 def export_xml(self, context, collection):
     """Exports the XML definition for a collection"""
@@ -101,7 +101,7 @@ def export_xml(self, context, collection):
                                 images['am'] = node.image
 
                 if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
-                    print("SEUT Info: Local material '%s' does not contain any valid textures. Skipping." % (mat.name))
+                    print("SEUT Info: Local material '%s' does not contain any valid textures. Skipping XML entry." % (mat.name))
 
                 else:
                     if not images['cm'] == None:
@@ -142,7 +142,7 @@ def export_xml(self, context, collection):
                 create_lod_entry(scene, model, scene.seut.export_lod2Distance, path, '_LOD2')
                 lod2Printed = True
             else:
-                report_error(self, context, True, 'E006')
+                seut_report(self, context, 'ERROR', True, 'E006')
 
         if collections['lod3'] == None or len(collections['lod3'].objects) == 0:
             print("SEUT Info: Collection 'LOD3' not found or empty. Skipping XML entry.")
@@ -150,7 +150,7 @@ def export_xml(self, context, collection):
             if lod2Printed:
                 create_lod_entry(scene, model, scene.seut.export_lod3Distance, path, '_LOD3')
             else:
-                report_error(self, context, True, 'E006')
+                seut_report(self, context, 'ERROR', True, 'E006')
 
     if collection == collections['bs1'] or collection == collections['bs2'] or collection == collections['bs3']:
         if collections['bs_lod'] == None or len(collections['bs_lod'].objects) == 0:
@@ -163,7 +163,7 @@ def export_xml(self, context, collection):
     try:
         temp_string.decode('ascii')
     except UnicodeDecodeError:
-        report_error(self, context, False, 'E033')
+        seut_report(self, context, 'ERROR', False, 'E033')
     xml_string = xml.dom.minidom.parseString(temp_string)
     xml_formatted = xml_string.toprettyxml()
     
@@ -194,12 +194,12 @@ def create_texture_entry(mat_entry, mat_name: str, images: dict, tex_type: str, 
     offset = images[tex_type].filepath.find("Textures\\")
     
     if offset == -1:
-        report_error(self, context, True, 'E007', tex_name, mat_name)
+        seut_report(self, context, 'ERROR', True, 'E007', tex_name, mat_name)
     else:
         add_subelement(mat_entry, tex_name_long, os.path.splitext(images[tex_type].filepath[offset:])[0] + ".dds")
     
     if not is_valid_resolution(images[tex_type].size[0]) or not is_valid_resolution(images[tex_type].size[1]):
-        report_warning(self, context, True, 'W004', tex_name, mat_name, str(images[tex_type].size[0]) + "x" + str(images[tex_type].size[1]))
+        seut_report(self, context, 'WARNING', True, 'W004', tex_name, mat_name, str(images[tex_type].size[0]) + "x" + str(images[tex_type].size[1]))
 
 
 def is_valid_resolution(number: int) -> bool:
@@ -325,7 +325,7 @@ def export_model_FBX(self, context, collection):
     try:
         export_to_fbxfile(settings, scene, fbxfile, collection.objects, ishavokfbxfile=False)
     except RuntimeError as error:
-        report_error(self, context, False, 'E036')
+        seut_report(self, context, 'ERROR', False, 'E036')
         errorDuringExport = True
 
     for objMat in bpy.data.materials:
@@ -514,7 +514,7 @@ def delete_loose_files(path):
             os.remove(fileName)
 
     except EnvironmentError:
-        report_error(self, context, False, 'E020')
+        seut_report(self, context, 'ERROR', False, 'E020')
 
 class ExportSettings:
     def __init__(self, scene, depsgraph, mwmDir=None):
@@ -559,7 +559,7 @@ class ExportSettings:
             if self.isLogToolOutput and logfile:
                 write_to_log(logfile, e.output, cmdline=cmdline, cwd=cwd, loglines=loglines)
             if e.returncode not in successfulExitCodes:
-                report_error(self, context, False, 'E035', str(tooltype))
+                seut_report(self, context, 'ERROR', False, 'E035', str(tooltype))
                 raise
     
     def __getitem__(self, key): # makes all attributes available for parameter substitution

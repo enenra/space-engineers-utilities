@@ -4,7 +4,7 @@ import re
 
 from bpy.types  import Operator
 
-from ..seut_errors  import report_error
+from ..seut_errors  import seut_report
 
 class SEUT_OT_RefreshMatLibs(Operator):
     """Refresh available MatLibs"""
@@ -28,7 +28,7 @@ class SEUT_OT_RefreshMatLibs(Operator):
         materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
 
         if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-            report_error(self, context, True, 'E012', "Materials Folder", materialsPath)
+            seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materialsPath)
             return {'CANCELLED'}
 
         # Find all MatLibs in directory, save to set, then add to matlibs list

@@ -5,7 +5,7 @@ import xml.dom.minidom
 
 from bpy.types  import Operator
 
-from ..seut_errors  import report_error
+from ..seut_errors  import seut_report
 
 class SEUT_OT_ExportMaterials(Operator):
     """Export local materials to Materials.xml file"""
@@ -16,7 +16,7 @@ class SEUT_OT_ExportMaterials(Operator):
     def execute(self, context):
         
         if not bpy.data.is_saved:
-            report_error(self, context, True, 'E008')
+            seut_report(self, context, 'ERROR', True, 'E008')
             return {'CANCELLED'}
 
         return SEUT_OT_ExportMaterials.exportMaterials(self, context)
@@ -83,7 +83,7 @@ class SEUT_OT_ExportMaterials(Operator):
                 else:
                     offset = images['cm'].filepath.find("Textures\\")
                     if offset == -1:
-                        report_error(self, context, True, 'E007', 'CM', mat.name)
+                        seut_report(self, context, 'ERROR', True, 'E007', 'CM', mat.name)
                     else:
                         matCM = ET.SubElement(matEntry, 'Parameter')
                         matCM.set('Name', 'ColorMetalTexture')
@@ -95,7 +95,7 @@ class SEUT_OT_ExportMaterials(Operator):
                 else:
                     offset = images['ng'].filepath.find("Textures\\")
                     if offset == -1:
-                        report_error(self, context, True, 'E007', 'NG', mat.name)
+                        seut_report(self, context, 'ERROR', True, 'E007', 'NG', mat.name)
                     else:
                         matNG = ET.SubElement(matEntry, 'Parameter')
                         matNG.set('Name', 'NormalGlossTexture')
@@ -107,7 +107,7 @@ class SEUT_OT_ExportMaterials(Operator):
                 else:
                     offset = images['add'].filepath.find("Textures\\")
                     if offset == -1:
-                        report_error(self, context, True, 'E007', 'ADD', mat.name)
+                        seut_report(self, context, 'ERROR', True, 'E007', 'ADD', mat.name)
                     else:
                         matADD = ET.SubElement(matEntry, 'Parameter')
                         matADD.set('Name', 'AddMapsTexture')
@@ -119,7 +119,7 @@ class SEUT_OT_ExportMaterials(Operator):
                 else:
                     offset = images['am'].filepath.find("Textures\\")
                     if offset == -1:
-                        report_error(self, context, True, 'E007', 'ALPHAMASK', mat.name)
+                        seut_report(self, context, 'ERROR', True, 'E007', 'ALPHAMASK', mat.name)
                     else:
                         matAM = ET.SubElement(matEntry, 'Parameter')
                         matAM.set('Name', 'AlphamaskTexture')
@@ -135,7 +135,7 @@ class SEUT_OT_ExportMaterials(Operator):
         try:
             tempString.decode('ascii')
         except UnicodeDecodeError:
-            report_error(self, context, False, 'E033')
+            seut_report(self, context, 'ERROR', False, 'E033')
         xmlString = xml.dom.minidom.parseString(tempString)
         xmlFormatted = xmlString.toprettyxml()
         

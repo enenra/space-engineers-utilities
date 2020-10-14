@@ -5,7 +5,7 @@ from bpy.types      import Operator
 from collections    import OrderedDict
 
 from .seut_ot_recreate_collections  import get_collections
-from .seut_errors                   import check_collection, check_collection_excluded, report_error
+from .seut_errors                   import check_collection, check_collection_excluded, seut_report
 from .seut_utils                    import getParentCollection, linkSubpartScene, unlinkSubpartScene
 
 mirroringPresets = OrderedDict([
@@ -85,13 +85,13 @@ class SEUT_OT_Mirroring(Operator):
             context.view_layer.objects.active = None
 
         if collections['seut'] is None:
-            report_error(self, context, False, 'E002', "'SEUT (" + scene.name + ")'")
+            seut_report(self, context, 'ERROR', False, 'E002', "'SEUT (" + scene.name + ")'")
             scene.seut.mirroringToggle = 'off'
             return {'CANCELLED'}
 
         isExcluded = check_collection_excluded(scene, collections['seut'])
         if isExcluded or isExcluded is None:
-            report_error(self, context, False, 'E002', '"' + scene.name + '"')
+            seut_report(self, context, 'ERROR', False, 'E002', '"' + scene.name + '"')
             scene.seut.mirroringToggle = 'off'
             return {'CANCELLED'}
 
@@ -116,7 +116,7 @@ class SEUT_OT_Mirroring(Operator):
                 matZfound = True
         
         if not matXfound or not matYfound or not matZfound:
-            report_error(self, context, False, 'E026', "Mirror Axis Materials")
+            seut_report(self, context, 'ERROR', False, 'E026', "Mirror Axis Materials")
             scene.seut.mirroringToggle = 'off'
             return {'CANCELLED'}
             
@@ -323,7 +323,7 @@ class SEUT_OT_Mirroring(Operator):
                 print("SEUT Info: Empty '" + empty.name + "' rotation " + str(rotConverted) + " registered as: " + str(key))
         
         if not found:
-            report_error(self, context, False, 'E023', empty.name, str(rotConverted))
+            seut_report(self, context, 'ERROR', False, 'E023', empty.name, str(rotConverted))
 
         return
 

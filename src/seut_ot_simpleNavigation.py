@@ -3,7 +3,7 @@ import bpy
 from bpy.types import Operator
 
 from .seut_ot_recreate_collections  import get_collections
-from .seut_errors                   import report_error
+from .seut_errors                   import seut_report
 
 class SEUT_OT_SimpleNavigation(Operator):
     """Makes navigation through SEUT collections simpler by hiding all non-active collections"""
@@ -31,7 +31,7 @@ class SEUT_OT_SimpleNavigation(Operator):
                 check = True
 
         if not check:
-            report_error(self, context, False, 'E010')
+            seut_report(self, context, 'ERROR', False, 'E010')
             wm.seut.simpleNavigationToggle = False
             return {'CANCELLED'}
 

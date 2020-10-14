@@ -5,7 +5,7 @@ from bpy.props  import StringProperty
 
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_utils                   import getParentCollection
-from ..seut_errors                  import report_error
+from ..seut_errors                  import seut_report
 
 class SEUT_OT_AddCustomSubpart(Operator):
     """Adds a custom subpart"""

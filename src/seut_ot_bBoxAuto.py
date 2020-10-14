@@ -3,7 +3,7 @@ import math
 
 from bpy.types                      import Operator
 from .seut_ot_recreate_collections  import get_collections
-from .seut_errors                   import report_error
+from .seut_errors                   import seut_report
 
 class SEUT_OT_BBoxAuto(Operator):
     """Sets the bounding box automatically (not very accurate)"""
@@ -31,7 +31,7 @@ class SEUT_OT_BBoxAuto(Operator):
             return {'CANCELLED'}
 
         if collections['main'] == None or len(collections['main'].objects) == 0:
-            report_error(self, context, True, 'E002', "'Main'")
+            seut_report(self, context, 'ERROR', True, 'E002', "'Main'")
             
             return {'CANCELLED'}
 
