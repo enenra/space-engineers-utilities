@@ -12,12 +12,12 @@ from mathutils                              import Matrix
 from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..export.seut_custom_fbx_exporter      import save_single
-from ..seut_ot_recreate_collections         import get_collections
+from ..seut_ot_recreate_collections         import get_collections, names
 from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene, getParentCollection, get_preferences
 
 from ..seut_errors                          import seut_report, get_abs_path
 
-def export_xml(self, context, collection):
+def export_xml(self, context, collection) -> str:
     """Exports the XML definition for a collection"""
 
     scene = context.scene
@@ -101,7 +101,7 @@ def export_xml(self, context, collection):
                                 images['am'] = node.image
 
                 if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
-                    print("SEUT Info: Local material '%s' does not contain any valid textures. Skipping XML entry." % (mat.name))
+                    seut_report(self, context, 'INFO', False, 'I001', mat.name)
 
                 else:
                     if not images['cm'] == None:
@@ -113,7 +113,7 @@ def export_xml(self, context, collection):
                     if not images['am'] == None:
                         create_texture_entry(mat_entry, mat.name, images, 'am', 'ALPHAMASK', 'AlphamaskTexture')
                     
-                    print("SEUT Info: Local material '%s' saved. Don't forget to include relevant DDS texture files in mod!" % (mat.name))
+                    seut_report(self, context, 'INFO', False, 'I002', mat.name)
             
             else:
                 matRef = ET.SubElement(model, 'MaterialRef')
@@ -130,13 +130,13 @@ def export_xml(self, context, collection):
         lod2Printed = False
 
         if collections['lod1'] == None or len(collections['lod1'].objects) == 0:
-            print("SEUT Info: Collection 'LOD1' not found or empty. Skipping XML entry.")
+            seut_report(self, context, 'INFO', False, 'I003', 'LOD1')
         else:
             create_lod_entry(scene, model, scene.seut.export_lod1Distance, path, '_LOD1')
             lod1Printed = True
 
         if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
-            print("SEUT Info: Collection 'LOD2' not found or empty. Skipping XML entry.")
+            seut_report(self, context, 'INFO', False, 'I003', 'LOD2')
         else:
             if lod1Printed:
                 create_lod_entry(scene, model, scene.seut.export_lod2Distance, path, '_LOD2')
@@ -145,7 +145,7 @@ def export_xml(self, context, collection):
                 seut_report(self, context, 'ERROR', True, 'E006')
 
         if collections['lod3'] == None or len(collections['lod3'].objects) == 0:
-            print("SEUT Info: Collection 'LOD3' not found or empty. Skipping XML entry.")
+            seut_report(self, context, 'INFO', False, 'I003', 'LOD3')
         else:
             if lod2Printed:
                 create_lod_entry(scene, model, scene.seut.export_lod3Distance, path, '_LOD3')
@@ -154,7 +154,7 @@ def export_xml(self, context, collection):
 
     if collection == collections['bs1'] or collection == collections['bs2'] or collection == collections['bs3']:
         if collections['bs_lod'] == None or len(collections['bs_lod'].objects) == 0:
-            print("SEUT Info: Collection 'BS_LOD' not found or empty. Skipping XML entry.")
+            seut_report(self, context, 'INFO', False, 'I003', 'BS_LOD')
         else:
             create_lod_entry(scene, model, scene.seut.export_bs_lodDistance, path, '_BS_LOD')
 
@@ -176,7 +176,9 @@ def export_xml(self, context, collection):
 
     exported_xml = open(path + filename + ".xml", "w")
     exported_xml.write(xml_formatted)
-    print("SEUT Info: '%s.xml' has been created." % (path + filename))
+    seut_report(self, context, 'INFO', True, 'I004', path + filename + ".xml")
+
+    return {'FINISHED'}
 
 
 def add_subelement(parent, name: str, value):
@@ -220,29 +222,18 @@ def create_lod_entry(scene, tree, distance: int, path: str, lod_type: str):
     lodModel.text = path[path.find("Models\\"):] + scene.seut.subtypeId + lod_type
 
 
-def export_model_FBX(self, context, collection):
+def export_fbx(self, context, collection) -> str:
     """Exports the FBX file for a defined collection"""
 
     scene = context.scene
-    depsgraph = context.evaluated_depsgraph_get()
-    addon = __package__[:__package__.find(".")]
-    preferences = bpy.context.preferences.addons.get(addon).preferences
+    preferences = get_preferences()
     collections = get_collections(scene)
+    depsgraph = context.evaluated_depsgraph_get()
     settings = ExportSettings(scene, depsgraph)
 
-    # Determining the directory to export to.
-    filetype = collection.name[:collection.name.find(" (")]
-
-    if collection == collections['main']:
-        filename = scene.seut.subtypeId
-    else:
-        filename = scene.seut.subtypeId + '_' + filetype
-
-    path = os.path.abspath(bpy.path.abspath(scene.seut.export_exportPath)) + "\\"
+    path = get_abs_path(scene.seut.export_exportPath) + "\\"
     
-    # Exporting the collection.
-    # I can only export the currently active collection, so I need to set the target collection to active (for which I have to link it for some reason),
-    # then export, then unlink. User won't see it and it shouldn't make a difference.
+    # Export exports the active layer_collection so the collection's layer_collection needs to be set as the active one
     try:
         bpy.context.scene.collection.children.link(collection)
     except:
@@ -250,183 +241,191 @@ def export_model_FBX(self, context, collection):
     layer_collection = bpy.context.view_layer.layer_collection.children[collection.name]
     bpy.context.view_layer.active_layer_collection = layer_collection
     
-    # Unlink all subparts parented to an empty
-    for emptyObj in collection.objects:
-        if emptyObj is not None and emptyObj.type == 'EMPTY':
+    # Prepare empties for export
+    for empty in collection.objects:
+        if empty is not None and empty.type == 'EMPTY':
             
+            # Remove numbers
             # To ensure they work ingame (where duplicate names are no issue) this will remove the ".001" etc. from the name (and cause another empty to get this numbering)
-            if re.search("\.[0-9]{3}", emptyObj.name[-4:]) != None and emptyObj.name.find("(L)") == -1:
-                emptyObj.name = emptyObj.name[:-4]
+            if re.search("\.[0-9]{3}", empty.name[-4:]) != None and empty.name.find("(L)") == -1:
+                empty.name = empty.name[:-4]
                 # For some godforsaken reason, sometimes the name just isn't shortened. But trying it again seems to do the trick...
-                if re.search("\.[0-9]{3}", emptyObj.name[-4:]) != None:
-                    emptyObj.name = emptyObj.name[:-4]
+                if re.search("\.[0-9]{3}", empty.name[-4:]) != None:
+                    empty.name = empty.name[:-4]
 
-            if emptyObj.parent is None:
-                print("SEUT Warning: Empty '" + emptyObj.name + "' has no parent object. This may prevent it from working properly ingame.")
-            elif emptyObj.parent.parent is not None:
-                print("SEUT Warning: Parent of empty '" + emptyObj.name + "' ('" + emptyObj.parent.name + "') has a parent object. This may prevent the empty from working properly ingame.")
+            # Check parenting
+            if empty.parent is None:
+                seut_report(self, context, 'WARNING', True, 'W005', empty.name, collection.name)
+            elif empty.parent.parent is not None:
+                seut_report(self, context, 'WARNING', True, 'W006', empty.name, empty.parent.name, collection.name)
 
-            if 'highlight' in emptyObj and emptyObj.seut.linkedObject is not None:
-                emptyObj['highlight'] = emptyObj.seut.linkedObject.name
-                if emptyObj.parent is not None and emptyObj.seut.linkedObject.parent is not None and emptyObj.parent != emptyObj.seut.linkedObject.parent:
-                    print("SEUT Warning: Highlight empty '" + emptyObj.name + "' and its linked object '" + emptyObj.seut.linkedObject.name + "' have different parent objects. This may prevent it from working properly ingame.")
-            elif 'file' in emptyObj and emptyObj.seut.linkedScene is not None:
-
-                parentCollection = getParentCollection(context, emptyObj)
-                
-                collectionType = 'main'
-                extension = ""
-                if parentCollection == collections['bs1']:
-                    collectionType = 'bs1'
-                    extension = "_BS1"
-                elif parentCollection == collections['bs2']:
-                    collectionType = 'bs2'
-                    extension = "_BS2"
-                elif parentCollection == collections['bs3']:
-                    collectionType = 'bs3'
-                    extension = "_BS3"
-
-                reference = emptyObj.seut.linkedScene.seut.subtypeId + extension
-
-                # Account for simultaneous export
-                if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
-                    if scene.seut.subtypeId.find("LG_") != None:
-                        if reference.find("LG_") != None:
-                            pass
-                        elif reference.find("SG_") != None:
-                            reference = reference.replace("SG_", "LG_")
-                        else:
-                            reference = "LG_" + reference
-
-                    elif scene.seut.subtypeId.find("SG_") != None:
-                        if reference.find("SG_") != None:
-                            pass
-                        elif reference.find("LG_") != None:
-                            reference = reference.replace("LG_", "SG_")
-                        else:
-                            reference = "SG_" + reference
-                    
-                emptyObj['file'] = reference
-                unlinkSubpartScene(emptyObj)
+            # Additional parenting checks
+            if 'highlight' in empty and empty.seut.linkedObject is not None:
+                empty['highlight'] = empty.seut.linkedObject.name
+                if empty.parent is not None and empty.seut.linkedObject.parent is not None and empty.parent != empty.seut.linkedObject.parent:
+                    seut_report(self, context, 'WARNING', True, 'W007', empty.name, empty.seut.linkedObject.name)
+            
+            # Remove subpart instances
+            elif 'file' in empty and empty.seut.linkedScene is not None:
+                reference = get_subpart_reference(empty, collections)
+                reference = correct_for_export_type(scene, reference)
+                empty['file'] = reference
+                unlinkSubpartScene(empty)
             
             # Blender FBX export halves empty size on export, this works around it
-            if 'MaxHandle' not in emptyObj and 'file' not in emptyObj:
-                emptyObj.scale.x *= 2
-                emptyObj.scale.y *= 2
-                emptyObj.scale.z *= 2
+            if 'MaxHandle' not in empty and 'file' not in empty:
+                empty.scale.x *= 2
+                empty.scale.y *= 2
+                empty.scale.z *= 2
 
-    for objMat in bpy.data.materials:
-        if objMat is not None and objMat.node_tree is not None:
-            prepMatForExport(self, context, objMat)
+    # Prepare materials for export
+    for mat in bpy.data.materials:
+        if mat is not None and mat.node_tree is not None:
+            prepare_mat_for_export(self, context, mat)
 
-    # This is the actual call to make an FBX file.
-    fbxfile = join(path, filename + ".fbx")
-    errorDuringExport = False
+    # Export the collection to FBX
+    filetype = collection.name[:collection.name.find(" (")]
+    if collection == collections['main']:
+        filename = scene.seut.subtypeId
+    else:
+        filename = scene.seut.subtypeId + '_' + filetype
+
+    fbx_file = join(path, filename + ".fbx")
+    error_during_export = False
     try:
-        export_to_fbxfile(settings, scene, fbxfile, collection.objects, ishavokfbxfile=False)
+        export_to_fbxfile(settings, scene, fbx_file, collection.objects, ishavokfbxfile=False)
     except RuntimeError as error:
         seut_report(self, context, 'ERROR', False, 'E036')
-        errorDuringExport = True
+        error_during_export = True
 
-    for objMat in bpy.data.materials:
-        if objMat is not None and objMat.node_tree is not None:
-            removeExportDummiesFromMat(self, context, objMat)
+    # Revert materials back to original form
+    for mat in bpy.data.materials:
+        if mat is not None and mat.node_tree is not None:
+            revert_mat_after_export(self, context, mat)
     
     # Relink all subparts to empties
-    for emptyObj in collection.objects:
-        if emptyObj is not None and emptyObj.type == 'EMPTY':
+    for empty in collection.objects:
+        if empty is not None and empty.type == 'EMPTY':
             
             if scene.seut.linkSubpartInstances:
-                if 'file' in emptyObj and emptyObj.seut.linkedScene is not None and emptyObj.seut.linkedScene.name in bpy.data.scenes:
-                    parentCollection = getParentCollection(context, emptyObj)
+                if 'file' in empty and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:                    
+                    reference = get_subpart_reference(empty, collections)
 
-                    collectionType = 'main'
-                    extension = ""
-                    if parentCollection == collections['bs1']:
-                        collectionType = 'bs1'
-                        extension = "_BS1"
-                    elif parentCollection == collections['bs2']:
-                        collectionType = 'bs2'
-                        extension = "_BS2"
-                    elif parentCollection == collections['bs3']:
-                        collectionType = 'bs3'
-                        extension = "_BS3"
+                    collection_type = 'main'
+                    for key in names.keys():
+                        if collection == collections[key]:
+                            collection_type = key
+                            break
                         
-                    linkSubpartScene(self, scene, emptyObj, parentCollection, collectionType)
-                    emptyObj['file'] = emptyObj.seut.linkedScene.seut.subtypeId + extension
+                    linkSubpartScene(self, scene, empty, empty.users_collection[0], collection_type)
+                    empty['file'] = empty.seut.linkedScene.seut.subtypeId + extension
 
             # Resetting empty size
-            if 'MaxHandle' not in emptyObj and 'file' not in emptyObj:
-                emptyObj.scale.x *= 0.5
-                emptyObj.scale.y *= 0.5
-                emptyObj.scale.z *= 0.5
+            if 'MaxHandle' not in empty and 'file' not in empty:
+                empty.scale.x *= 0.5
+                empty.scale.y *= 0.5
+                empty.scale.z *= 0.5
 
     bpy.context.scene.collection.children.unlink(collection)
-    if not errorDuringExport:
-        print("SEUT Info: '%s.fbx' has been created." % (path + filename))
+
+    if not error_during_export:
+        seut_report(self, context, 'INFO', True, 'I004', path + filename + ".fbx")
+        return {'CANCELLED'}
 
     return {'FINISHED'}
 
 
-def prepMatForExport(self, context, material):
+def get_subpart_reference(empty, collections: dict) -> str:
+    """Returns the corrected subpart reference."""
+
+    parent_collection = empty.users_collection[0]
+
+    for key in names.keys():
+        if parent_collection.name[:2] == 'BS' and parent_collection == collections[key]:
+            return empty.seut.linkedScene.seut.subtypeId + "_" + names[key]
+
+
+def correct_for_export_type(scene, reference: str) -> str:
+    """Corrects subpart reference depending on export type (large / small) selected."""
+
+    if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+        if scene.seut.subtypeId.find("LG_") != None:
+            if reference.find("LG_") != None:
+                pass
+            elif reference.find("SG_") != None:
+                reference = reference.replace("SG_", "LG_")
+            else:
+                reference = "LG_" + reference
+
+        elif scene.seut.subtypeId.find("SG_") != None:
+            if reference.find("SG_") != None:
+                pass
+            elif reference.find("LG_") != None:
+                reference = reference.replace("LG_", "SG_")
+            else:
+                reference = "SG_" + reference
+    
+    return reference
+
+
+def prepare_mat_for_export(self, context, material):
     """Switches material around so that SE can properly read it"""
     
     # See if relevant nodes already exist
-    dummyShaderNode = None
-    dummyImageNode = None
-    dummyImage = None
-    materialOutput = None
+    dummy_shader_node = None
+    dummy_image_node = None
+    dummy_image = None
+    material_output = None
 
     for node in material.node_tree.nodes:
         if node.type == 'BSDF_PRINCIPLED' and node.name == 'EXPORT_DUMMY':
-            dummyShaderNode = node
+            dummy_shader_node = node
         elif node.type == 'TEX_IMAGE' and node.name == 'DUMMY_IMAGE':
-            dummyImageNode = node
+            dummy_image_node = node
         elif node.type == 'OUTPUT_MATERIAL':
-            materialOutput = node
+            material_output = node
 
     # Iterate through images to find the dummy image
     for img in bpy.data.images:
         if img.name == 'DUMMY':
-            dummyImage = img
+            dummy_image = img
 
-    # If no, create it and DUMMY image node, and link them up
-    if dummyImageNode is None:
-        dummyImageNode = material.node_tree.nodes.new('ShaderNodeTexImage')
-        dummyImageNode.name = 'DUMMY_IMAGE'
-        dummyImageNode.label = 'DUMMY_IMAGE'
+    # If it doesn't exist, create it and a DUMMY image node, and link them up
+    if dummy_image_node is None:
+        dummy_image_node = material.node_tree.nodes.new('ShaderNodeTexImage')
+        dummy_image_node.name = 'DUMMY_IMAGE'
+        dummy_image_node.label = 'DUMMY_IMAGE'
 
-    if dummyImage is None:
-        dummyImage = bpy.data.images.new('DUMMY', 1, 1)
+    if dummy_image is None:
+        dummy_image = bpy.data.images.new('DUMMY', 1, 1)
 
-    if dummyShaderNode is None:
-        dummyShaderNode = material.node_tree.nodes.new('ShaderNodeBsdfPrincipled')
-        dummyShaderNode.name = 'EXPORT_DUMMY'
-        dummyShaderNode.label = 'EXPORT_DUMMY'
+    if dummy_shader_node is None:
+        dummy_shader_node = material.node_tree.nodes.new('ShaderNodeBsdfPrincipled')
+        dummy_shader_node.name = 'EXPORT_DUMMY'
+        dummy_shader_node.label = 'EXPORT_DUMMY'
     
-    if materialOutput is None:
-        materialOutput = material.node_tree.nodes.new('ShaderNodeOutputMaterial')
+    if material_output is None:
+        material_output = material.node_tree.nodes.new('ShaderNodeOutputMaterial')
         material.seut.nodeLinkedToOutputName = ""
+
     # This allows the reestablishment of connections after the export is complete.
     else:
         try:
-            material.seut.nodeLinkedToOutputName = materialOutput.inputs[0].links[0].from_node.name
+            material.seut.nodeLinkedToOutputName = material_output.inputs[0].links[0].from_node.name
         except IndexError:
-            print("SEUT Info: IndexError at material '" + material.name + "'.")
+            seut_report(self, context, 'INFO', False, 'I005', material.name)
 
     # link nodes, add image to node
-    material.node_tree.links.new(dummyImageNode.outputs[0], dummyShaderNode.inputs[0])
-    material.node_tree.links.new(dummyShaderNode.outputs[0], materialOutput.inputs[0])
-    dummyImageNode.image = dummyImage
-
-    return
+    material.node_tree.links.new(dummy_image_node.outputs[0], dummy_shader_node.inputs[0])
+    material.node_tree.links.new(dummy_shader_node.outputs[0], material_output.inputs[0])
+    dummy_image_node.image = dummy_image
 
 
-def removeExportDummiesFromMat(self, context, material):
+def revert_mat_after_export(self, context, material):
     """Removes the dummy nodes from the material again after export"""
 
-    materialOutput = None
-    nodeLinkedToOutput = None
+    material_output = None
+    node_linked_to_output = None
 
     # Remove dummy nodes - do I need to remove the links too?
     # Image can stay, it's 1x1 px so nbd
@@ -435,20 +434,17 @@ def removeExportDummiesFromMat(self, context, material):
             material.node_tree.nodes.remove(node)
         elif node.type == 'BSDF_PRINCIPLED' and node.name == 'EXPORT_DUMMY':
             material.node_tree.nodes.remove(node)
-
         elif node.type == 'OUTPUT_MATERIAL':
-            materialOutput = node
+            material_output = node
         elif node.name == material.seut.nodeLinkedToOutputName:
-            nodeLinkedToOutput = node
+            node_linked_to_output = node
     
     # link the node group back to output
-    if nodeLinkedToOutput is not None:
+    if node_linked_to_output is not None:
         try:
-            material.node_tree.links.new(nodeLinkedToOutput.outputs[0], materialOutput.inputs[0])
+            material.node_tree.links.new(node_linked_to_output.outputs[0], material_output.inputs[0])
         except IndexError:
-            print("SEUT Info: IndexError at material '" + material.name + "'.")
-
-    return
+            seut_report(self, context, 'INFO', False, 'I005', material.name)
 
 
 # STOLLIE: Standard output error operator class for catching error return codes.

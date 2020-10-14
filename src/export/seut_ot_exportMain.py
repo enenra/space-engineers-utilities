@@ -3,7 +3,7 @@ import os
 
 from bpy.types                      import Operator
 
-from .seut_export_utils             import export_xml, export_model_FBX
+from .seut_export_utils             import export_xml, export_fbx
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export, check_collection, check_collection_excluded, check_toolpath, seut_report
 
@@ -75,7 +75,7 @@ class SEUT_OT_ExportMain(Operator):
 
         print("\n------------------------------ Exporting Collection '" + collections['main'].name + "'.")
         export_xml(self, context, collections['main'])
-        export_model_FBX(self, context, collections['main'])
+        export_fbx(self, context, collections['main'])
         print("------------------------------ Finished exporting Collection '" + collections['main'].name + "'.\n")
         
         return {'FINISHED'}
