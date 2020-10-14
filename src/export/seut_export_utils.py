@@ -318,7 +318,7 @@ def export_fbx(self, context, collection) -> str:
                             break
                         
                     linkSubpartScene(self, scene, empty, empty.users_collection[0], collection_type)
-                    empty['file'] = empty.seut.linkedScene.seut.subtypeId + extension
+                    empty['file'] = reference
 
             # Resetting empty size
             if 'MaxHandle' not in empty and 'file' not in empty:
