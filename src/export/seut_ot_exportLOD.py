@@ -37,10 +37,9 @@ class SEUT_OT_ExportLOD(Operator):
         scene = context.scene
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
-        fbxImporterPath = os.path.abspath(bpy.path.abspath(preferences.fbxImporterPath))
         collections = get_collections(scene)
 
-        result = check_toolpath(self, context, fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
+        result = check_toolpath(self, context, preferences.fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:
             return result
 

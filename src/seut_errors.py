@@ -48,12 +48,12 @@ warnings = {
     'W002': "SEUT: Collection '{variable_1}' excluded from view layer or cannot be found. Action not possible.",
     'W003': "SEUT: Collection '{variable_1}' is empty. Action not possible.",
     'W004': "SEUT: '{variable_1}' texture of local material '{variable_2}' is not of a valid resolution ({variable_3}). May not display correctly ingame.",
-    'W005': "SEUT: Empty '{variable_1}' in collection '{variable_2}' has no parent object. This may prevent it from working properly ingame.",
-    'W006': "SEUT: Parent of empty '{variable_1}' ('{variable_2}') in collection '{variable_3}' has a parent object. This may prevent the empty from working properly ingame.",
+    'W005': "SEUT: Empty '{variable_1}' (numbering might differ) in collection '{variable_2}' has no parent object. This may prevent it from working properly ingame.",
+    'W006': "SEUT: Parent of empty '{variable_1}' (numbering might differ), '{variable_2}', in collection '{variable_3}' has a parent object. This may prevent the empty from working properly ingame.",
     'W007': "SEUT: Highlight empty '{variable_1}' and its linked object '{variable_2}' have different parent objects. This may prevent the empty from working properly ingame.",
-    'W008': "SEUT: ",
-    'W009': "SEUT: ",
-    'W010': "SEUT: ",
+    'W008': "SEUT: Scene is of type '{variable_1}' but does not contain any armatures.",
+    'W009': "SEUT: Scene is of type '{variable_1}' but contains armatures.",
+    'W010': "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2.",
     'W011': "SEUT: ",
     'W012': "SEUT: ",
     'W013': "SEUT: ",
@@ -72,7 +72,7 @@ infos = {
     'I003': "SEUT: Collection '{variable_1}' not found or empty. Skipping XML entry.",
     'I004': "SEUT: '{variable_1}' has been created.",
     'I005': "SEUT: IndexError at material '{variable_1}'.",
-    'I006': "SEUT: ",
+    'I006': "SEUT: Export Options successfully copied to all scenes.",
     'I007': "SEUT: ",
     'I008': "SEUT: ",
     'I009': "SEUT: ",
@@ -99,24 +99,24 @@ def check_export(self, context, can_report=True):
     # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
     if not bpy.data.is_saved:
         seut_report(self, context, 'ERROR', can_report, 'E008')
-        return {'CANCELLED'}
+        return {'FILE_NOT_SAVED'}
 
     if os.path.exists(path) == False:
         seut_report(self, context, 'ERROR', can_report, 'E003', "Export", path)
-        return {'CANCELLED'}
+        return {'PATH_NOT_FOUND'}
     elif path == "":
         seut_report(self, context, 'ERROR', can_report, 'E019')
-        return {'CANCELLED'}
+        return {'PATH_EMPTY'}
 
     if path.find("Models\\") != -1 or (path + "\\").find("Models\\") != -1:
-        return {'CONTINUE'}
+        pass
     else:
         seut_report(self, context, 'ERROR', can_report, 'E014', path)
-        return {'CANCELLED'}
+        return {'PATH_MISSING_MODELS'}
 
     if scene.seut.subtypeId == "":
         seut_report(self, context, 'ERROR', can_report, 'E004')
-        return {'CANCELLED'}
+        return {'NO_SUBTYPEID'}
 
     return {'CONTINUE'}
 
@@ -155,14 +155,15 @@ def check_collection(self, context, scene, collection, partial_check=True):
 def check_toolpath(self, context, tool_path: str, tool_name: str, tool_filename: str):
     """Checks if external tool is correctly linked."""
 
-    if not os.path.exists(tool_path):
-        seut_report(self, context, 'ERROR', True, 'E012', tool_name, tool_path)
-        return {'CANCELLED'}
+    path = get_abs_path(tool_path)
+    if not os.path.exists(path):
+        seut_report(self, context, 'ERROR', True, 'E012', tool_name, path)
+        return {'PATH_NOT_FOUND'}
 
     file_name = os.path.basename(tool_path)
     if tool_filename != file_name:
         seut_report(self, context, 'ERROR', True, 'E013', tool_name, tool_filename, file_name)
-        return {'CANCELLED'}
+        return {'FILE_NOT_FOUND'}
     
     return {'CONTINUE'}
 
@@ -180,6 +181,16 @@ def check_collection_excluded(scene, collection) -> bool:
                     return child.exclude
     
     return False
+
+
+def check_uvms(obj):
+    """Checks whether object has UV layers"""
+
+    if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
+        seut_report(self, context, 'ERROR', True, 'E032', obj.name)
+        return {'MISSING_UVMS'}
+    
+    return {'CONTINUE'}
 
 
 def get_abs_path(path: str) -> str:

@@ -447,6 +447,17 @@ def revert_mat_after_export(self, context, material):
             seut_report(self, context, 'INFO', False, 'I005', material.name)
 
 
+def export_collection(self, context, collection):
+    """Exports the collection to XML and FBX"""
+
+    print("\n------------------------------ Exporting Collection '" + collection.name + "'.")
+    result_xml = export_xml(self, context, collection)
+    result_fbx = export_fbx(self, context, collection)
+    print("------------------------------ Finished exporting Collection '" + collection.name + "'.\n")
+
+    return result_xml, result_fbx
+
+
 # STOLLIE: Standard output error operator class for catching error return codes.
 class StdoutOperator():
     def report(self, type, message):
@@ -587,7 +598,7 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
 
         # Transform settings.
         'global_scale': 0.1, # STOLLIE: Is 1.0 in Blender Source
-        'apply_scale_options': 'FBX_SCALE_NONE',        
+        'apply_scale_options': 'FBX_SCALE_NONE',
         'axis_forward': 'Z', # STOLLIE: Normally a Y in Blender source. -Z is correct forward.
         'axis_up': 'Y',	 # STOLLIE: Normally a Z in Blender source.	Y aligns correctly in SE.
         

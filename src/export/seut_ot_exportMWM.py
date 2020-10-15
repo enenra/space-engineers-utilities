@@ -36,11 +36,10 @@ class SEUT_OT_ExportMWM(Operator):
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
         settings = ExportSettings(scene, depsgraph)
-        mwmbPath = os.path.abspath(bpy.path.abspath(preferences.mwmbPath))
         materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
         collections = get_collections(scene)
 
-        result = check_toolpath(self, context, mwmbPath, "MWM Builder", "MwmBuilder.exe")
+        result = check_toolpath(self, context, preferences.mwmbPath, "MWM Builder", "MwmBuilder.exe")
         if not result == {'CONTINUE'}:
             return result
 

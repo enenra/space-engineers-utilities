@@ -1,8 +1,8 @@
 import bpy
 
-from bpy.types      import Operator
+from bpy.types  import Operator
 
-from ..seut_errors                  import check_export
+from ..seut_errors  import check_export
 
 
 class SEUT_OT_ExportAllScenes(Operator):

@@ -7,9 +7,9 @@ import xml.dom.minidom
 
 from bpy.types      import Operator
 
-from .seut_ot_exportMain            import SEUT_OT_ExportMain
-from .seut_ot_exportBS              import SEUT_OT_ExportBS
-from .seut_ot_exportHKT             import SEUT_OT_ExportHKT
+from .seut_ot_export_main           import export_main
+from .seut_ot_export_bs             import export_bs
+from .seut_ot_export_hkt            import export_hkt
 from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
 from .seut_ot_exportMWM             import SEUT_OT_ExportMWM
 from .seut_ot_exportSBC             import SEUT_OT_ExportSBC
@@ -84,12 +84,12 @@ class SEUT_OT_Export(Operator):
             
 
             # Call all the individual export operators
-            SEUT_OT_ExportBS.export_BS(self, context, True)
+            export_bs(self, context)
             SEUT_OT_ExportLOD.export_LOD(self, context, True)
-            result_main = SEUT_OT_ExportMain.export_Main(self, context, True)
+            result_main = export_main(self, context)
 
             # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
-            SEUT_OT_ExportHKT.export_HKT(self, context, True)
+            export_hkt(self, context)
 
             if scene.seut.export_sbc:
                 SEUT_OT_ExportSBC.export_SBC(self, context)
@@ -138,12 +138,12 @@ class SEUT_OT_Export(Operator):
             
 
             # Call all the individual export operators
-            SEUT_OT_ExportBS.export_BS(self, context, True)
+            export_bs(self, context)
             SEUT_OT_ExportLOD.export_LOD(self, context, True)
-            result_main = SEUT_OT_ExportMain.export_Main(self, context, True)
+            result_main = export_main(self, context)
 
             # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
-            SEUT_OT_ExportHKT.export_HKT(self, context, True)
+            export_hkt(self, context)
 
             if scene.seut.export_sbc:
                 SEUT_OT_ExportSBC.export_SBC(self, context)
