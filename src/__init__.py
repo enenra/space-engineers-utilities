@@ -52,10 +52,10 @@ from .empties.seut_ot_addCustomSubpart          import SEUT_OT_AddCustomSubpart
 from .empties.seut_ot_emptyToCubeType           import SEUT_OT_EmptiesToCubeType
 from .export.seut_ot_export_main                import SEUT_OT_ExportMain
 from .export.seut_ot_export_bs                  import SEUT_OT_ExportBS
-from .export.seut_ot_exportLOD                  import SEUT_OT_ExportLOD
+from .export.seut_ot_export_lod                 import SEUT_OT_ExportLOD
 from .export.seut_ot_export_hkt                 import SEUT_OT_ExportHKT
-from .export.seut_ot_exportSBC                  import SEUT_OT_ExportSBC
-from .export.seut_ot_exportMWM                  import SEUT_OT_ExportMWM
+from .export.seut_ot_export_sbc                 import SEUT_OT_ExportSBC
+from .export.seut_ot_export_mwm                 import SEUT_OT_ExportMWM
 from .export.seut_ot_export                     import SEUT_OT_Export
 from .export.seut_ot_exportAllScenes            import SEUT_OT_ExportAllScenes
 from .export.seut_ot_exportMaterials            import SEUT_OT_ExportMaterials

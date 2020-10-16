@@ -10,15 +10,17 @@ from bpy.types      import Operator
 from .seut_ot_export_main           import export_main
 from .seut_ot_export_bs             import export_bs
 from .seut_ot_export_hkt            import export_hkt
-from .seut_ot_exportLOD             import SEUT_OT_ExportLOD
-from .seut_ot_exportMWM             import SEUT_OT_ExportMWM
-from .seut_ot_exportSBC             import SEUT_OT_ExportSBC
+from .seut_ot_export_lod            import export_lod
+from .seut_ot_export_mwm            import export_mwm
+from .seut_ot_export_sbc            import export_sbc
+from .seut_export_utils             import correct_for_export_type
 from ..seut_preferences             import get_addon_version
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export
 
+
 class SEUT_OT_Export(Operator):
-    """Exports all collections in the current scene and compresses them to MWM"""
+    """Exports all collections in the current scene and compiles them to MWM"""
     bl_idname = "scene.export"
     bl_label = "Export Current Scene"
     bl_options = {'REGISTER', 'UNDO'}
@@ -32,11 +34,11 @@ class SEUT_OT_Export(Operator):
 
         # If mode is not object mode, export fails horribly.
         try:
-            currentArea = context.area.type
+            current_area = context.area.type
             context.area.type = 'VIEW_3D'
         except AttributeError:
             context.area.type = 'VIEW_3D'
-            currentArea = context.area.type
+            current_area = context.area.type
             
         if context.object is not None:
             context.object.select_set(False)
@@ -50,115 +52,65 @@ class SEUT_OT_Export(Operator):
         # Character animations need at least one keyframe
         if scene.seut.sceneType == 'character_animation' and len(scene.timeline_markers) <= 0:
             scene.timeline_markers.new('F_00', frame=0)
-        
-        # This exports to large grid, if selected, but also exports character-type scenes
-        if scene.seut.export_largeGrid or scene.seut.sceneType == 'character_animation' or scene.seut.sceneType == 'character':
             
-            if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
-                subtypeId = str(scene.seut.subtypeId)
-                if scene.seut.subtypeId.find("_SG_") != -1:
-                    scene.seut.subtypeId = scene.seut.subtypeId.replace("_SG_", "_LG_")
-
-                elif scene.seut.subtypeId[:3] == "SG_":
-                    scene.seut.subtypeId = scene.seut.subtypeId.replace("SG_", "LG_")
-
-                elif scene.seut.subtypeId[:3] == "LG_":
-                    pass
-
-                elif scene.seut.subtypeId.find("_LG_") == -1:
-                    scene.seut.subtypeId = "LG_" + scene.seut.subtypeId
-
-            gridScale = str(scene.seut.gridScale)
+        grid_scale = str(scene.seut.gridScale)
+        subtype_id = str(scene.seut.subtypeId)
+        rescale_factor = int(scene.seut.export_rescaleFactor)
+        path = str(scene.seut.export_exportPath)
+        
+        # Exports large grid and character-type scenes
+        if scene.seut.export_largeGrid or scene.seut.sceneType == 'character_animation' or scene.seut.sceneType == 'character':
             scene.seut.gridScale = 'large'
+            scene.seut.subtypeId = correct_for_export_type(scene, scene.seut.subtypeId)
 
-            # Set rescaleFactor only if grid wasn't previously large already (in which case the assumption is that it was modelled on a large grid and already the right size)
-            rescaleFactor = int(scene.seut.export_rescaleFactor)
-            if gridScale == 'small':
+            if grid_scale == 'small':
                 scene.seut.export_rescaleFactor = 5.0
             else:
                 scene.seut.export_rescaleFactor = 1.0
 
-            exportPath = scene.seut.export_exportPath
             if scene.seut.export_exportPath.find("/small/") != -1:
                 scene.seut.export_exportPath = scene.seut.export_exportPath.replace("/small/", "/large/")
             
-
-            # Call all the individual export operators
-            export_bs(self, context)
-            SEUT_OT_ExportLOD.export_LOD(self, context, True)
-            result_main = export_main(self, context)
-
-            # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
-            export_hkt(self, context)
-
-            if scene.seut.export_sbc:
-                SEUT_OT_ExportSBC.export_SBC(self, context)
-            
-            # Finally, compile everything to MWM
-            if result_main == {'FINISHED'}:
-                SEUT_OT_ExportMWM.export_MWM(self, context)
-
-            # Resetting the variables
-            if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
-                scene.seut.subtypeId = subtypeId
-                scene.seut.gridScale = gridScale
-                scene.seut.export_rescaleFactor = rescaleFactor
-                scene.seut.export_exportPath = exportPath
+            export_all(self, context)
         
-        # This exports to large grid, if selected, but also exports character-type scenes
+        # Exports small grid scenes
         if scene.seut.export_smallGrid:
-
-            if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
-                subtypeId = str(scene.seut.subtypeId)
-                if scene.seut.subtypeId.find("_LG_") != -1:
-                    scene.seut.subtypeId = scene.seut.subtypeId.replace("_LG_", "_SG_")
-
-                elif scene.seut.subtypeId[:3] == "LG_":
-                    scene.seut.subtypeId = scene.seut.subtypeId.replace("LG_", "SG_")
-
-                elif scene.seut.subtypeId[:3] == "SG_":
-                    pass
-                
-                elif scene.seut.subtypeId.find("_SG_") == -1:
-                    scene.seut.subtypeId = "SG_" + scene.seut.subtypeId
-
-            gridScale = str(scene.seut.gridScale)
             scene.seut.gridScale = 'small'
+            scene.seut.subtypeId = correct_for_export_type(scene, scene.seut.subtypeId)
 
-            # Set rescaleFactor only if grid wasn't previously small already (in which case the assumption is that it was modelled on a small grid and already the right size)
-            rescaleFactor = int(scene.seut.export_rescaleFactor)
-            if gridScale == 'large':
+            if grid_scale == 'large':
                 scene.seut.export_rescaleFactor = 0.2
             else:
                 scene.seut.export_rescaleFactor = 1.0
 
-            exportPath = scene.seut.export_exportPath
             if scene.seut.export_exportPath.find("/large/") != -1:
                 scene.seut.export_exportPath = scene.seut.export_exportPath.replace("/large/", "/small/")
             
+            export_all(self, context)
 
-            # Call all the individual export operators
-            export_bs(self, context)
-            SEUT_OT_ExportLOD.export_LOD(self, context, True)
-            result_main = export_main(self, context)
-
-            # HKT and SBC export are the only two filetypes those operators handle so I check for enabled here.
-            export_hkt(self, context)
-
-            if scene.seut.export_sbc:
-                SEUT_OT_ExportSBC.export_SBC(self, context)
+        # Resetting the variables
+        if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+            scene.seut.subtypeId = subtype_id
+            scene.seut.gridScale = grid_scale
+            scene.seut.export_rescaleFactor = rescale_factor
+            scene.seut.export_exportPath = path
             
-            # Finally, compile everything to MWM
-            if result_main == {'FINISHED'}:
-                SEUT_OT_ExportMWM.export_MWM(self, context)
-
-            # Resetting the variables
-            if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
-                scene.seut.subtypeId = subtypeId
-                scene.seut.gridScale = gridScale
-                scene.seut.export_rescaleFactor = rescaleFactor
-                scene.seut.export_exportPath = exportPath
-            
-        context.area.type = currentArea
+        context.area.type = current_area
 
         return {'FINISHED'}
+
+def export_all(self, context):
+    """Exports all collections"""
+
+    scene = context.scene
+
+    export_bs(self, context)
+    export_lod(self, context)
+    result_main = export_main(self, context)
+    export_hkt(self, context)
+
+    if scene.seut.export_sbc and scene.seut.sceneType == 'mainScene':
+        export_sbc(self, context)
+    
+    if result_main == {'FINISHED'}:
+        export_mwm(self, context)

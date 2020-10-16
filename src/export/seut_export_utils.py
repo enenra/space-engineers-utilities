@@ -346,25 +346,34 @@ def get_subpart_reference(empty, collections: dict) -> str:
 
 
 def correct_for_export_type(scene, reference: str) -> str:
-    """Corrects subpart reference depending on export type (large / small) selected."""
+    """Corrects reference depending on export type (large / small) selected."""
 
-    if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+    if scene.seut.gridScale == 'large':
         if scene.seut.subtypeId.find("LG_") != None:
-            if reference.find("LG_") != None:
+            if reference.startswith("LG_") != None or reference.find("_LG_") != None or reference.endswith("_LG") != None:
                 pass
-            elif reference.find("SG_") != None:
-                reference = reference.replace("SG_", "LG_")
+            if reference.startswith("SG_") != None:
+                reference.replace("SG_", "LG_")
+            elif reference.find("_SG_") != None:
+                reference.replace("_SG_", "_LG_")
+            elif reference.endswith("_SG") != None:
+                reference.replace("_SG", "_LG")
             else:
                 reference = "LG_" + reference
 
-        elif scene.seut.subtypeId.find("SG_") != None:
-            if reference.find("SG_") != None:
+    elif scene.seut.gridScale == 'small':
+        if scene.seut.subtypeId.find("SG_") != None:
+            if reference.startswith("SG_") != None or reference.find("_SG_") != None or reference.endswith("_SG") != None:
                 pass
-            elif reference.find("LG_") != None:
-                reference = reference.replace("LG_", "SG_")
+            if reference.startswith("LG_") != None:
+                reference.replace("LG_", "SG_")
+            elif reference.find("_LG_") != None:
+                reference.replace("_LG_", "_SG_")
+            elif reference.endswith("_LG") != None:
+                reference.replace("_LG", "_SG")
             else:
                 reference = "SG_" + reference
-    
+
     return reference
 
 

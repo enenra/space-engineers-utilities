@@ -198,15 +198,13 @@ def get_abs_path(path: str) -> str:
     return os.path.abspath(bpy.path.abspath(path))
                         
 
-def show_popup_report(context, title, text):
+def show_popup_report(context, title, text: str):
     """Displays a popup message that looks like an error report."""
 
     def draw(self, context):
         self.layout.label(text=text)
 
     context.window_manager.popup_menu(draw, title=title, icon='ERROR')
-
-    return
 
 
 def seut_report(self, context, report_type: str, can_report: bool, code: str, variable_1=None, variable_2=None, variable_3=None):
@@ -216,12 +214,10 @@ def seut_report(self, context, report_type: str, can_report: bool, code: str, va
         if not code in errors:
             return
         text = errors[code]
-
     elif report_type == 'WARNING':
         if not code in warnings:
             return
         text = warnings[code]
-
     elif report_type == 'INFO':
         if not code in infos:
             return
@@ -246,9 +242,7 @@ def seut_report(self, context, report_type: str, can_report: bool, code: str, va
         if report_type == 'ERROR':
             show_popup_report(context, "Report: Error", text)
             print("Error: " + text)
-
         elif report_type == 'WARNING':
             print("Warning: " + text)
-
         elif report_type == 'INFO':
             print("Info: " + text)

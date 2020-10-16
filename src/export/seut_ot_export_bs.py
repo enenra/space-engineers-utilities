@@ -47,46 +47,46 @@ def export_bs(self, context):
         return result
 
     # Checks whether collections exists, are excluded or are empty
-    colBS1Good = False
+    bs1_valid = False
     result = check_collection(self, context, scene, collections['bs1'], True)
     if result == {'CONTINUE'}:
-        colBS1Good = True
+        bs1_valid = True
 
-    colBS2Good = False
+    bs2_valid = False
     result = check_collection(self, context, scene, collections['bs2'], True)
     if result == {'CONTINUE'}:
-        colBS2Good = True
+        bs2_valid = True
 
-    colBS3Good = False
+    bs3_valid = False
     result = check_collection(self, context, scene, collections['bs3'], True)
     if result == {'CONTINUE'}:
-        colBS3Good = True
+        bs3_valid = True
 
-    if (not colBS1Good and colBS2Good) or (not colBS2Good and colBS3Good):
+    if (not bs1_valid and bs2_valid) or (not bs2_valid and bs3_valid):
         seut_report(self, context, 'ERROR', True, 'E015', 'BS')
         return {'INVALID_BS_SETUP'}
     
     # Check for missing UVMs (this might not be 100% reliable)
-    if colBS1Good:
+    if bs1_valid:
         for obj in collections['bs1'].objects:
             if check_uvms(obj) != {'CONTINUE'}:
                 return {'MISSING_UVMS'}
     
-    if colBS2Good:
+    if bs2_valid:
         for obj in collections['bs2'].objects:
             if check_uvms(obj) != {'CONTINUE'}:
                 return {'MISSING_UVMS'}
     
-    if colBS3Good:
+    if bs3_valid:
         for obj in collections['bs3'].objects:
             if check_uvms(obj) != {'CONTINUE'}:
                 return {'MISSING_UVMS'}
 
-    if colBS1Good:
+    if bs1_valid:
         export_collection(self, context, collections['bs1'])
-    if colBS2Good:
+    if bs2_valid:
         export_collection(self, context, collections['bs2'])
-    if colBS3Good:
+    if bs3_valid:
         export_collection(self, context, collections['bs3'])
     
     return {'FINISHED'}
