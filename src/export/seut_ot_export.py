@@ -45,6 +45,7 @@ def export(self, context):
     
     scene = context.scene
     collections = get_collections(scene)
+    preferences = get_preferences()
 
     print("\n============================================================ Exporting Scene '" + scene.name + "' with SEUT " + str(get_addon_version()) + ".")
 
@@ -54,6 +55,22 @@ def export(self, context):
     result = check_export(self, context)
     if not result == {'CONTINUE'}:
         return result
+
+    # Check for availability of FBX Importer
+    result = check_toolpath(self, context, preferences.fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
+    if not result == {'CONTINUE'}:
+        return result
+
+    # Check for availability of MWM Builder
+    result = check_toolpath(self, context, preferences.mwmbPath, "MWM Builder", "MwmBuilder.exe")
+    if not result == {'CONTINUE'}:
+        return result
+
+    # Check materials path
+    materials_path = get_abs_path(preferences.materialsPath)
+    if materials_path == "" or os.path.isdir(materials_path) == False:
+        seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
+        return {'CANCELLED'}
     
     # Character animations need at least one keyframe
     if scene.seut.sceneType == 'character_animation' and len(scene.timeline_markers) <= 0:
@@ -135,11 +152,6 @@ def export_main(self, context):
     if not result == {'CONTINUE'}:
         return result
 
-    # Check for availability of FBX Importer
-    result = check_toolpath(self, context, preferences.fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
-    if not result == {'CONTINUE'}:
-        return result
-
     found_armatures = False
     unparented_objects = 0
     for obj in collections['main'].objects:
@@ -181,11 +193,6 @@ def export_hkt(self, context):
 
     # Checks whether collection exists, is excluded or is empty
     result = check_collection(self, context, scene, collections['hkt'], True)
-    if not result == {'CONTINUE'}:
-        return result
-
-    # Check for availability of FBX Importer
-    result = check_toolpath(self, context, preferences.fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
     if not result == {'CONTINUE'}:
         return result
 
@@ -234,11 +241,6 @@ def export_bs(self, context):
     scene = context.scene
     collections = get_collections(scene)
     preferences = get_preferences()
-
-    # Check for availability of FBX Importer
-    result = check_toolpath(self, context, preferences.fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
-    if not result == {'CONTINUE'}:
-        return result
 
     # Checks whether collections exists, are excluded or are empty
     bs1_valid = False
@@ -292,11 +294,6 @@ def export_lod(self, context):
     scene = context.scene
     collections = get_collections(scene)
     preferences = get_preferences()
-
-    # Check for availability of FBX Importer
-    result = check_toolpath(self, context, preferences.fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
-    if not result == {'CONTINUE'}:
-        return result
 
     # Checks whether collections exists, are excluded or are empty
     lod1_valid = False
@@ -370,16 +367,6 @@ def export_mwm(self, context):
     path = get_abs_path(scene.seut.export_exportPath) + "\\"
     materials_path = get_abs_path(preferences.materialsPath)
     settings = ExportSettings(scene, None)
-
-    # Check for availability of MWM Builder
-    result = check_toolpath(self, context, preferences.mwmbPath, "MWM Builder", "MwmBuilder.exe")
-    if not result == {'CONTINUE'}:
-        return result
-
-    # Check materials path
-    if materials_path == "" or os.path.isdir(materials_path) == False:
-        seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
-        return {'CANCELLED'}
         
     mwmfile = join(path, scene.seut.subtypeId + ".mwm")
     
