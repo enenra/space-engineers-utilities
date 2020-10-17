@@ -10,6 +10,7 @@ from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, pro
 from .seut_export_utils             import ExportSettings, export_to_fbxfile
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export, check_collection, check_collection_excluded, check_toolpath, seut_report, get_abs_path, check_uvms
+from ..seut_utils                   import get_preferences
 
 
 class SEUT_OT_ExportHKT(Operator):

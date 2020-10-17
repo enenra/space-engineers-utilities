@@ -6,6 +6,7 @@ from bpy.types                      import Operator
 from .seut_export_utils             import export_xml, export_fbx, export_collection
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export, check_collection_excluded, check_collection, check_toolpath, seut_report, check_uvms
+from ..seut_utils                   import get_preferences
 
 
 class SEUT_OT_ExportBS(Operator):

@@ -8,6 +8,7 @@ from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, delete_loose_files
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export, check_toolpath, seut_report, get_abs_path
+from ..seut_utils                   import get_preferences
 
 
 class SEUT_OT_ExportMWM(Operator):

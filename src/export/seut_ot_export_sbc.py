@@ -8,6 +8,7 @@ from collections    import OrderedDict
 
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_errors                  import check_export, check_collection, seut_report, get_abs_path
+from ..seut_utils                   import get_preferences
 
 
 class SEUT_OT_ExportSBC(Operator):
