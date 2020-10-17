@@ -70,50 +70,7 @@ def export_xml(self, context, collection) -> str:
             
             # Material is a local material
             if is_unique:
-                mat_entry = ET.SubElement(model, 'Material')
-                mat_entry.set('Name', mat.name)
-
-                add_subelement(mat_entry, 'Technique', mat.seut.technique)
-
-                if mat.seut.facing != 'None':
-                    add_subelement(mat_entry, 'Facing', mat.seut.facing)
-                if mat.seut.windScale != 0:
-                    add_subelement(mat_entry, 'WindScale', mat.seut.windScale)
-                if mat.seut.windFrequency != 0:
-                    add_subelement(mat_entry, 'WindFrequency', mat.seut.windFrequency)
-                
-                images = {
-                    'cm': None,
-                    'ng': None,
-                    'add': None,
-                    'am': None
-                    }
-                if mat.node_tree is not None:
-                    for node in mat.node_tree.nodes:
-                        if node.type == 'TEX_IMAGE':
-                            if node.name == 'CM':
-                                images['cm'] = node.image
-                            if node.name == 'NG':
-                                images['ng'] = node.image
-                            if node.name == 'ADD':
-                                images['add'] = node.image
-                            if node.name == 'ALPHAMASK':
-                                images['am'] = node.image
-
-                if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
-                    seut_report(self, context, 'INFO', False, 'I001', mat.name)
-
-                else:
-                    if not images['cm'] == None:
-                        create_texture_entry(mat_entry, mat.name, images, 'cm', 'CM', 'ColorMetalTexture')
-                    if not images['ng'] == None:
-                        create_texture_entry(mat_entry, mat.name, images, 'ng', 'NG', 'NormalGlossTexture')
-                    if not images['add'] == None:
-                        create_texture_entry(mat_entry, mat.name, images, 'add', 'ADD', 'AddMapsTexture')
-                    if not images['am'] == None:
-                        create_texture_entry(mat_entry, mat.name, images, 'am', 'ALPHAMASK', 'AlphamaskTexture')
-                    
-                    seut_report(self, context, 'INFO', False, 'I002', mat.name)
+                create_mat_entry(self, context, model, mat)
             
             else:
                 matRef = ET.SubElement(model, 'MaterialRef')
@@ -159,13 +116,7 @@ def export_xml(self, context, collection) -> str:
             create_lod_entry(scene, model, scene.seut.export_bs_lodDistance, path, '_BS_LOD')
 
     # Create file with subtypename + collection name and write string to it
-    temp_string = ET.tostring(model, 'utf-8')
-    try:
-        temp_string.decode('ascii')
-    except UnicodeDecodeError:
-        seut_report(self, context, 'ERROR', False, 'E033')
-    xml_string = xml.dom.minidom.parseString(temp_string)
-    xml_formatted = xml_string.toprettyxml()
+    xml_formatted = format_xml(self, context, model)
     
     filetype = collection.name[:collection.name.find(" (")]
     
@@ -213,6 +164,55 @@ def is_valid_resolution(number: int) -> bool:
     return math.log(number, 2).is_integer()
 
 
+def create_mat_entry(self, context, tree, mat):
+    """Creates a material entry in the given tree for a given material"""
+
+    mat_entry = ET.SubElement(tree, 'Material')
+    mat_entry.set('Name', mat.name)
+
+    add_subelement(mat_entry, 'Technique', mat.seut.technique)
+
+    if mat.seut.facing != 'None':
+        add_subelement(mat_entry, 'Facing', mat.seut.facing)
+    if mat.seut.windScale != 0:
+        add_subelement(mat_entry, 'WindScale', mat.seut.windScale)
+    if mat.seut.windFrequency != 0:
+        add_subelement(mat_entry, 'WindFrequency', mat.seut.windFrequency)
+    
+    images = {
+        'cm': None,
+        'ng': None,
+        'add': None,
+        'am': None
+        }
+    if mat.node_tree is not None:
+        for node in mat.node_tree.nodes:
+            if node.type == 'TEX_IMAGE':
+                if node.name == 'CM':
+                    images['cm'] = node.image
+                if node.name == 'NG':
+                    images['ng'] = node.image
+                if node.name == 'ADD':
+                    images['add'] = node.image
+                if node.name == 'ALPHAMASK':
+                    images['am'] = node.image
+
+    if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
+        seut_report(self, context, 'INFO', False, 'I001', mat.name)
+
+    else:
+        if not images['cm'] == None:
+            create_texture_entry(mat_entry, mat.name, images, 'cm', 'CM', 'ColorMetalTexture')
+        if not images['ng'] == None:
+            create_texture_entry(mat_entry, mat.name, images, 'ng', 'NG', 'NormalGlossTexture')
+        if not images['add'] == None:
+            create_texture_entry(mat_entry, mat.name, images, 'add', 'ADD', 'AddMapsTexture')
+        if not images['am'] == None:
+            create_texture_entry(mat_entry, mat.name, images, 'am', 'ALPHAMASK', 'AlphamaskTexture')
+        
+        seut_report(self, context, 'INFO', False, 'I002', mat.name)
+
+
 def create_lod_entry(scene, tree, distance: int, path: str, lod_type: str):
     """Creates a LOD entry into the XML tree"""
     
@@ -220,6 +220,22 @@ def create_lod_entry(scene, tree, distance: int, path: str, lod_type: str):
     lod.set('Distance', str(distance))
     lodModel = ET.SubElement(lod, 'Model')
     lodModel.text = path[path.find("Models\\"):] + scene.seut.subtypeId + lod_type
+
+
+def format_xml(self, context, tree) -> str:
+    """Converts XML Tree to a formatted XML string"""
+
+    temp_string = ET.tostring(tree, 'utf-8')
+
+    try:
+        temp_string.decode('ascii')
+
+    except UnicodeDecodeError:
+        seut_report(self, context, 'ERROR', False, 'E033')
+
+    xml_string = xml.dom.minidom.parseString(temp_string)
+    
+    return xml_string.toprettyxml()
 
 
 def export_fbx(self, context, collection) -> str:

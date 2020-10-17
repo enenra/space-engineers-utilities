@@ -57,8 +57,8 @@ from .export.seut_ot_export_hkt                 import SEUT_OT_ExportHKT
 from .export.seut_ot_export_sbc                 import SEUT_OT_ExportSBC
 from .export.seut_ot_export_mwm                 import SEUT_OT_ExportMWM
 from .export.seut_ot_export                     import SEUT_OT_Export
-from .export.seut_ot_exportAllScenes            import SEUT_OT_ExportAllScenes
-from .export.seut_ot_exportMaterials            import SEUT_OT_ExportMaterials
+from .export.seut_ot_export_all_scenes          import SEUT_OT_ExportAllScenes
+from .export.seut_ot_export_materials           import SEUT_OT_ExportMaterials
 from .export.seut_ot_copy_export_options        import SEUT_OT_CopyExportOptions
 from .importing.seut_ot_import                  import SEUT_OT_Import
 from .importing.seut_ot_attemptToFixPositioning import SEUT_OT_AttemptToFixPositioning

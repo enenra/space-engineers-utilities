@@ -157,3 +157,20 @@ def get_preferences():
         addon = __package__[:__package__.find(".")]
 
     return bpy.context.preferences.addons.get(addon).preferences
+
+
+def prep_context(context):
+    """Prep context for doing larger alterations"""
+
+    try:
+        current_area = context.area.type
+        context.area.type = 'VIEW_3D'
+    except AttributeError:
+        context.area.type = 'VIEW_3D'
+        current_area = context.area.type
+        
+    if context.object is not None:
+        context.object.select_set(False)
+        context.view_layer.objects.active = None
+    
+    return current_area

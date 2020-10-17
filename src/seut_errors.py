@@ -41,6 +41,8 @@ errors = {
     'E034': "SEUT: Collision object '{variable_1}' has unapplied modifiers. Collision model cannot be created. (E034)",
     'E035': "SEUT: There was an error during export caused by {variable_1}. Please refer to the logs in your export folder for details. (E035)",
     'E036': "SEUT: An error has occurred in the FBX exporter. Try exiting Edit-Mode before exporting. (E036)",
+    'E037': "SEUT: Scene '{variable_1}' could not be exported. (E037)",
+    'E038': "SEUT: Filename incorrect: BLEND-filename must start with 'MatLib_' to create a valid MatLib. (E038)",
 }
 
 warnings = {
@@ -73,8 +75,8 @@ infos = {
     'I004': "SEUT: '{variable_1}' has been created.",
     'I005': "SEUT: IndexError at material '{variable_1}'.",
     'I006': "SEUT: Export Options successfully copied to all scenes.",
-    'I007': "SEUT: ",
-    'I008': "SEUT: ",
+    'I007': "SEUT: FBX and XML files of Scene '{variable_1}' have been compiled to MWM.",
+    'I008': "SEUT: {variable_1} of {variable_2} scenes successfully exported. Refer to Blender System Console for details.",
     'I009': "SEUT: ",
     'I010': "SEUT: ",
     'I011': "SEUT: ",
