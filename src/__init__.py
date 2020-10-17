@@ -50,12 +50,6 @@ from .empties.seut_ot_addDummy                  import SEUT_OT_AddDummy
 from .empties.seut_ot_addPresetSubpart          import SEUT_OT_AddPresetSubpart
 from .empties.seut_ot_addCustomSubpart          import SEUT_OT_AddCustomSubpart
 from .empties.seut_ot_emptyToCubeType           import SEUT_OT_EmptiesToCubeType
-from .export.seut_ot_export_main                import SEUT_OT_ExportMain
-from .export.seut_ot_export_bs                  import SEUT_OT_ExportBS
-from .export.seut_ot_export_lod                 import SEUT_OT_ExportLOD
-from .export.seut_ot_export_hkt                 import SEUT_OT_ExportHKT
-from .export.seut_ot_export_sbc                 import SEUT_OT_ExportSBC
-from .export.seut_ot_export_mwm                 import SEUT_OT_ExportMWM
 from .export.seut_ot_export                     import SEUT_OT_Export
 from .export.seut_ot_export_all_scenes          import SEUT_OT_ExportAllScenes
 from .export.seut_ot_export_materials           import SEUT_OT_ExportMaterials
@@ -116,7 +110,6 @@ classes = (
     SEUT_PT_Panel_Materials,
     SEUT_PT_Panel_MatLib,
     SEUT_PT_EmptyLink,
-    SEUT_OT_ExportMaterials,
     SEUT_MT_ContextMenu,
     SEUT_OT_GetUpdate,
     SEUT_OT_PopupNotification,
@@ -128,13 +121,8 @@ classes = (
     SEUT_OT_AddCustomSubpart,
     SEUT_OT_Export,
     SEUT_OT_ExportAllScenes,
-    SEUT_OT_ExportMain,
-    SEUT_OT_ExportBS,
-    SEUT_OT_ExportLOD,
-    SEUT_OT_ExportHKT,
-    SEUT_OT_ExportSBC,
-    SEUT_OT_ExportMWM,
     SEUT_OT_CopyExportOptions,
+    SEUT_OT_ExportMaterials,
     SEUT_OT_Import,
     SEUT_OT_StructureConversion,
     SEUT_OT_AttemptToFixPositioning,
