@@ -18,7 +18,7 @@ errors = {
     'E011': "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (E011)",
     'E012': "SEUT: Path to {variable_1} (Addon Preferences) '{variable_2}' not valid. (E012)",
     'E013': "SEUT: Path to {variable_1} (Addon Preferences) not valid - wrong target file: Expected '{variable_2}' but is set to '{variable_3}'. (E013)",
-    'E014': "SEUT: Export path '{variable_1}' does not contain 'Models\\'. Cannot be transformed into relative path. (E014)",
+    'E014': "SEUT: Export path '{variable_1}' in scene '{variable_2}' does not contain 'Models\\'. Cannot be transformed into relative path. (E014)",
     'E015': "SEUT: Invalid {variable_1} setup. Cannot have {variable_1}2 but no {variable_1}1, or {variable_1}3 but no {variable_1}2. (E015)",
     'E016': "SEUT: Preset '{variable_1}' is invalid or cannot be found. Node Tree cannot be created. Re-link 'MatLib_Presets'! (E016)",
     'E017': "SEUT: Path ({variable_1}) does not point to a 'Materials'-folder. (E017)",
@@ -75,7 +75,7 @@ infos = {
     'I004': "SEUT: '{variable_1}' has been created.",
     'I005': "SEUT: IndexError at material '{variable_1}'.",
     'I006': "SEUT: Export Options successfully copied to all scenes.",
-    'I007': "SEUT: FBX and XML files of Scene '{variable_1}' have been compiled to MWM.",
+    'I007': "SEUT: FBX and XML files of scene '{variable_1}' have been compiled to MWM.",
     'I008': "SEUT: {variable_1} of {variable_2} scenes successfully exported. Refer to Blender System Console for details.",
     'I009': "SEUT: ",
     'I010': "SEUT: ",
@@ -113,7 +113,7 @@ def check_export(self, context, can_report=True):
     if path.find("Models\\") != -1 or (path + "\\").find("Models\\") != -1:
         pass
     else:
-        seut_report(self, context, 'ERROR', can_report, 'E014', path)
+        seut_report(self, context, 'ERROR', can_report, 'E014', path, scene.name)
         return {'PATH_MISSING_MODELS'}
 
     if scene.seut.subtypeId == "":

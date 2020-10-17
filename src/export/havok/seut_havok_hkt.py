@@ -49,7 +49,6 @@ def process_fbximporterhkt_to_final_hkt_for_mwm(self, context, scene, path, sett
             for collection in scene.collection.children:
                 for childcollection in collection.children:
                     if "BS" in str(childcollection.name) and "LOD" not in str(childcollection.name) and len(childcollection.objects) > 0:
-                        print(childcollection.name)
                         hktBSfile = join(path, scene.seut.subtypeId + '_' + str(childcollection.name)[:3] + ".hkt")
                         copy(srcfile, hktBSfile)
                         

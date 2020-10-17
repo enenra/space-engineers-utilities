@@ -23,12 +23,6 @@ class SEUT_OT_ExportAllScenes(Operator):
         """Exports all collections in all scenes and compresses them to MWM."""
 
         current_area = prep_context(context)
-
-        # Checks export path and whether SubtypeId exists
-        result = check_export(self, context)
-        if not check_export(self, context) == {'CONTINUE'}:
-            return result
-
         original_scene = context.window.scene
 
         scene_counter = 0
@@ -39,12 +33,16 @@ class SEUT_OT_ExportAllScenes(Operator):
             context.window.scene = scn
 
             try:
-                export(self, context)
+                result = export(self, context)
+
+                if not result == {'FINISHED'}:
+                    failed_counter += 1
+                    seut_report(self, context, 'ERROR', True, 'E037', scn.name)
 
             except RuntimeError:
                 failed_counter += 1
                 seut_report(self, context, 'ERROR', True, 'E037', scn.name)
-
+        
         context.window.scene = original_scene
         context.area.type = current_area
         
