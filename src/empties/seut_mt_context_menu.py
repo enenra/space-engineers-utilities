@@ -8,6 +8,7 @@ class SEUT_MT_ContextMenu(Menu):
     bl_idname = "SEUT_MT_ContextMenu"
     bl_label = "    Create Empty"
 
+
     def draw(self, context):
         layout = self.layout
 

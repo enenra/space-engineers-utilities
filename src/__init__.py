@@ -43,13 +43,12 @@ from bpy.types import (Panel,
                        PropertyGroup,
                        )
 
-from .empties.seut_mt_contextMenu               import SEUT_MT_ContextMenu
-from .empties.seut_pt_emptyMenu                 import SEUT_PT_EmptyLink
-from .empties.seut_ot_addHighlightEmpty         import SEUT_OT_AddHighlightEmpty
-from .empties.seut_ot_addDummy                  import SEUT_OT_AddDummy
-from .empties.seut_ot_addPresetSubpart          import SEUT_OT_AddPresetSubpart
-from .empties.seut_ot_addCustomSubpart          import SEUT_OT_AddCustomSubpart
-from .empties.seut_ot_emptyToCubeType           import SEUT_OT_EmptiesToCubeType
+from .empties.seut_mt_context_menu              import SEUT_MT_ContextMenu
+from .empties.seut_pt_empty_menu                import SEUT_PT_EmptyLink
+from .empties.seut_ot_add_highlight_empty       import SEUT_OT_AddHighlightEmpty
+from .empties.seut_ot_add_dummy                 import SEUT_OT_AddDummy
+from .empties.seut_ot_add_preset_subpart        import SEUT_OT_AddPresetSubpart
+from .empties.seut_ot_add_custom_subpart        import SEUT_OT_AddCustomSubpart
 from .export.seut_ot_export                     import SEUT_OT_Export
 from .export.seut_ot_export_all_scenes          import SEUT_OT_ExportAllScenes
 from .export.seut_ot_export_materials           import SEUT_OT_ExportMaterials
@@ -127,7 +126,6 @@ classes = (
     SEUT_OT_StructureConversion,
     SEUT_OT_AttemptToFixPositioning,
     SEUT_OT_RemapMaterials,
-    SEUT_OT_EmptiesToCubeType,
     SEUT_OT_ConvertBonesToBlenderFormat,
     SEUT_OT_ConvertBonesToSEFormat,
     SEUT_OT_GridScale,

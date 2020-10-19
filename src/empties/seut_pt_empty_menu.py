@@ -2,6 +2,7 @@ import bpy
 
 from bpy.types  import Panel
 
+
 class SEUT_PT_EmptyLink(Panel):
     """Creates the Empty Properties menu"""
     bl_idname = "SEUT_PT_EmptyLink"
@@ -10,6 +11,7 @@ class SEUT_PT_EmptyLink(Panel):
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = 'data'
+
 
     # Only display this panel if active object is of type empty and has either 'file' or 'highlight' as a custom property
     @classmethod

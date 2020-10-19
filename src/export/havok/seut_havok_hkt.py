@@ -12,6 +12,8 @@ from xml.etree              import ElementTree
 from .seut_havok_options        import HAVOK_OPTION_FILE_CONTENT
 from ..seut_export_utils        import ExportSettings, StdoutOperator, MissbehavingToolError, tool_path, write_to_log
 from ...utils.called_tool_type  import ToolType
+from ...seut_errors             import seut_report
+
 
 def process_hktfbx_to_fbximporterhkt(context, settings: ExportSettings, srcfile, dstfile):	
     settings.callTool(	
@@ -53,4 +55,4 @@ def process_fbximporterhkt_to_final_hkt_for_mwm(self, context, scene, path, sett
                         copy(srcfile, hktBSfile)
                         
         
-        self.report({'INFO'}, "SEUT: Collision files have been created.") 
+        seut_report(self, context, 'INFO', True, 'I009')

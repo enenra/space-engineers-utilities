@@ -4,9 +4,11 @@ from bpy.types  import Operator
 from bpy.props  import (EnumProperty,
                         IntProperty)
 
+from .seut_empty_utils              import empty_types
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_utils                   import getParentCollection
 from ..seut_errors                  import seut_report
+
 
 class SEUT_OT_AddDummy(Operator):
     """Adds a Space Engineers dummy"""
@@ -14,8 +16,8 @@ class SEUT_OT_AddDummy(Operator):
     bl_label = "Add Dummy"
     bl_options = {'REGISTER', 'UNDO'}
 
-    # Some dummies aparently use different default rotations. Include in descriptions once I know which.
-    detectorType: EnumProperty(
+
+    detector_type: EnumProperty(
         name='Dummy Type',
         items=(
             ('conveyorline', 'Conveyorline', 'Conveyor connection point without direct access. Does not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
@@ -53,6 +55,7 @@ class SEUT_OT_AddDummy(Operator):
         max=100
     )
 
+
     def execute(self, context):
         scene = context.scene
         collections = get_collections(scene)
@@ -62,135 +65,110 @@ class SEUT_OT_AddDummy(Operator):
             return {'CANCELLED'}
         
         # Determine name strings.
-        emptyName = ""
-        usesIndex = False
-        displayType = 'CUBE'
-
-        if self.detectorType == 'conveyorline':
-            emptyName = "dummy_detector_conveyorline_"
-            usesIndex = True
-
-        if self.detectorType == 'conveyorline_small':
-            emptyName = "dummy_detector_conveyorline_small_"
-            usesIndex = True
-
-        if self.detectorType == 'conveyorline_in':
-            emptyName = "dummy_detector_conveyorline_in_"
-            usesIndex = True
-
-        if self.detectorType == 'conveyorline_out':
-            emptyName = "dummy_detector_conveyorline_out_"
-            usesIndex = True
-
-        if self.detectorType == 'Connector':
-            emptyName = "dummy_detector_Connector_"
-            usesIndex = True
-
-        if self.detectorType == 'ejector':
-            emptyName = "dummy_detector_ejector_"
-            usesIndex = True
-
-        if self.detectorType == 'collector':
-            emptyName = "dummy_detector_collector_"
-            usesIndex = True
-
-        if self.detectorType == 'merge':
-            emptyName = "detector_merge_"
-            usesIndex = True
-
-        if self.detectorType == 'thruster_flame':
-            emptyName = "thruster_flame_"
-            usesIndex = True
-            displayType = 'CONE'
-
-        if self.detectorType == 'muzzle_missile':
-            emptyName = "muzzle_missile_"
-            usesIndex = True
-            displayType = 'CONE'
-
-        if self.detectorType == 'muzzle_projectile':
-            emptyName = "muzzle_projectile_"
-            usesIndex = True
-            displayType = 'CONE'
-
-        if self.detectorType == 'respawn':
-            emptyName = "dummy_detector_respawn"
-            usesIndex = False
-
-        if self.detectorType == 'light':
-            emptyName = "light_"
-            usesIndex = True
-
-        if self.detectorType == 'camera':
-            emptyName = "dummy_camera"
-            usesIndex = False
-            displayType = 'CONE'
-
-        if self.detectorType == 'upgrade':
-            emptyName = "detector_upgrade_"
-            usesIndex = True
-
-        if self.detectorType == 'vent':
-            emptyName = "vent_"
-            usesIndex = True
-
-        if self.detectorType == 'gear_lock':
-            emptyName = "gear_lock_"
-            usesIndex = True
-
-        if self.detectorType == 'shiptool':
-            emptyName = "dummy_detector_shiptool_"
-            usesIndex = True
-
-        if self.detectorType == 'electric_motor':
-            emptyName = "dummy_electric_motor"
-            usesIndex = False
-
-        if self.detectorType == 'character':
-            emptyName = "dummy_character"
-            usesIndex = False
-
-        if self.detectorType == 'particles1':
-            emptyName = "dummy_particles1"
-            usesIndex = False
-
-        if self.detectorType == 'particles2':
-            emptyName = "dummy_particles2"
-            usesIndex = False
-
-        if self.detectorType == 'TopBlock':
-            emptyName = "dummy_TopBlock"
-            usesIndex = False
-
-        if self.detectorType == 'wheel':
-            emptyName = "dummy_wheel"
-            usesIndex = False
-
-        if self.detectorType == 'center':
-            emptyName = "Center"
-            usesIndex = False
+        empty_name = ""
+        uses_index = False
+        display_type = 'CUBE'
         
-        # Spawn empty
+        if self.detector_type == 'conveyorline':
+            empty_name = "dummy_detector_conveyorline_"
+            uses_index = True
+        elif self.detector_type == 'conveyorline_small':
+            empty_name = "dummy_detector_conveyorline_small_"
+            uses_index = True
+        elif self.detector_type == 'conveyorline_in':
+            empty_name = "dummy_detector_conveyorline_in_"
+            uses_index = True
+        elif self.detector_type == 'conveyorline_out':
+            empty_name = "dummy_detector_conveyorline_out_"
+            uses_index = True
+        elif self.detector_type == 'Connector':
+            empty_name = "dummy_detector_Connector_"
+            uses_index = True
+        elif self.detector_type == 'ejector':
+            empty_name = "dummy_detector_ejector_"
+            uses_index = True
+        elif self.detector_type == 'collector':
+            empty_name = "dummy_detector_collector_"
+            uses_index = True
+        elif self.detector_type == 'merge':
+            empty_name = "detector_merge_"
+            uses_index = True
+        elif self.detector_type == 'thruster_flame':
+            empty_name = "thruster_flame_"
+            uses_index = True
+        elif self.detector_type == 'muzzle_missile':
+            empty_name = "muzzle_missile_"
+            uses_index = True
+        elif self.detector_type == 'muzzle_projectile':
+            empty_name = "muzzle_projectile_"
+            uses_index = True
+        elif self.detector_type == 'respawn':
+            empty_name = "dummy_detector_respawn"
+            uses_index = False
+        elif self.detector_type == 'light':
+            empty_name = "light_"
+            uses_index = True
+        elif self.detector_type == 'camera':
+            empty_name = "dummy_camera"
+            uses_index = False
+        elif self.detector_type == 'upgrade':
+            empty_name = "detector_upgrade_"
+            uses_index = True
+        elif self.detector_type == 'vent':
+            empty_name = "vent_"
+            uses_index = True
+        elif self.detector_type == 'gear_lock':
+            empty_name = "gear_lock_"
+            uses_index = True
+        elif self.detector_type == 'shiptool':
+            empty_name = "dummy_detector_shiptool_"
+            uses_index = True
+        elif self.detector_type == 'electric_motor':
+            empty_name = "dummy_electric_motor"
+            uses_index = False
+        elif self.detector_type == 'character':
+            empty_name = "dummy_character"
+            uses_index = False
+        elif self.detector_type == 'particles1':
+            empty_name = "dummy_particles1"
+            uses_index = False
+        elif self.detector_type == 'particles2':
+            empty_name = "dummy_particles2"
+            uses_index = False
+        elif self.detector_type == 'TopBlock':
+            empty_name = "dummy_TopBlock"
+            uses_index = False
+        elif self.detector_type == 'wheel':
+            empty_name = "dummy_wheel"
+            uses_index = False
+        elif self.detector_type == 'center':
+            empty_name = "Center"
+            uses_index = False
+        
         bpy.ops.object.add(type='EMPTY')
         empty = bpy.context.view_layer.objects.active
 
-        empty.empty_display_type = displayType
+        for key in empty_types.keys():
+            if self.detector_type == key:
+                display_type = empty_types[key]
+                break
 
-        if usesIndex:
-            empty.name = emptyName + str(self.index)
+        empty.empty_display_type = display_type
+
+        if uses_index:
+            empty.name = empty_name + str(self.index)
         else:
-            empty.name = emptyName
+            empty.name = empty_name
 
-        parentCollection = getParentCollection(context, empty)
-
-        if parentCollection != collections['main']:
+        parent_collection = getParentCollection(context, empty)
+        if parent_collection != collections['main']:
             collections['main'].objects.link(empty)
 
-            if parentCollection is None:
+            if parent_collection is None:
                 scene.collection.objects.unlink(empty)
             else:
-                parentCollection.objects.unlink(empty)
+                parent_collection.objects.unlink(empty)
         
-        self.report({'INFO'}, "SEUT: Dummy '%s' created." % (empty.name))
+        seut_report(self, context, 'INFO', True, 'I010', "Dummy", empty.name)
         
         return {'FINISHED'}

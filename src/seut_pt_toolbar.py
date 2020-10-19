@@ -331,7 +331,6 @@ class SEUT_PT_Panel_Import(Panel):
             # Repair
             box = layout.box()
             box.label(text="Repair", icon='TOOL_SETTINGS')
-            box.operator('object.emptytocubetype', icon='EMPTY_DATA')
             box.operator('object.remapmaterials', icon='MATERIAL')
             box.operator('object.structure_conversion', icon='OUTLINER')
             box.operator('object.attempt_to_fix_positioning', icon='EMPTY_AXIS')

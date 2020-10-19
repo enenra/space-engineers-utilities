@@ -7,11 +7,13 @@ from ..seut_ot_recreate_collections import get_collections
 from ..seut_utils                   import getParentCollection
 from ..seut_errors                  import seut_report
 
+
 class SEUT_OT_AddCustomSubpart(Operator):
     """Adds a custom subpart"""
     bl_idname = "object.add_custom_subpart"
     bl_label = "Add Custom Subpart"
     bl_options = {'REGISTER', 'UNDO'}
+
 
     name: StringProperty(
         name="Subpart Name",
@@ -19,26 +21,23 @@ class SEUT_OT_AddCustomSubpart(Operator):
         default="subpart_",
     )
 
+
     def execute(self, context):
         scene = context.scene
             
-        # Determine name strings.
-        customPropName = "file"
+        custom_prop_name = "file"
+        selected_object = context.view_layer.objects.active
 
-        selectedObject = context.view_layer.objects.active
-
-        # Spawn empty
         bpy.ops.object.add(type='EMPTY')
         empty = context.view_layer.objects.active
         empty.name = self.name
 
-        if not selectedObject is None:
-            empty.parent = selectedObject
+        if not selected_object is None:
+            empty.parent = selected_object
 
         empty.empty_display_type = 'ARROWS'
-
-        bpy.data.objects[empty.name][customPropName] = ""
+        bpy.data.objects[empty.name][custom_prop_name] = ""
         
-        self.report({'INFO'}, "SEUT: Subpart '%s' created." % (empty.name))
+        seut_report(self, context, 'INFO', True, 'I010', "Subpart", empty.name)
         
         return {'FINISHED'}

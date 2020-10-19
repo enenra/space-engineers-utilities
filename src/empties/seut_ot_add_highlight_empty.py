@@ -9,18 +9,21 @@ from ..seut_ot_recreate_collections import get_collections
 from ..seut_utils                   import getParentCollection
 from ..seut_errors                  import seut_report
 
+
 class SEUT_OT_AddHighlightEmpty(Operator):
     """Add highlight empty to selected object"""
     bl_idname = "object.add_highlight_empty"
     bl_label = "Add Highlight"
     bl_options = {'REGISTER', 'UNDO'}
 
+
     # Greys the button out if there is no active object.
     @classmethod
     def poll(cls, context):
-        return len(context.selected_objects) != 0 and context.selected_objects[0].type != 'EMPTY'
+        return len(context.selected_objects) != 0
 
-    detectorType: EnumProperty(
+
+    detector_type: EnumProperty(
         name='Highlight Type',
         items=(
             ('conveyor', 'Conveyor', 'Defines large conveyor access point.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
@@ -45,6 +48,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         max=100
     )
 
+
     def execute(self, context):
         scene = context.scene
         collections = get_collections(scene)
@@ -53,107 +57,92 @@ class SEUT_OT_AddHighlightEmpty(Operator):
             seut_report(self, context, 'ERROR', True, 'E002', "'Main'")
             return {'CANCELLED'}
         
-        targetObjects = bpy.context.view_layer.objects.selected
+        target_objects = bpy.context.view_layer.objects.selected
         
-        if len(targetObjects) > 1:
+        if len(target_objects) > 1:
             seut_report(self, context, 'ERROR', True, 'E009')
             return {'CANCELLED'}
         
-        # I need to figure out how I can get the first in the list but so far idk, this works
-        for obj in targetObjects:
-            targetObject = obj
+        target_object = target_objects[0]
         
-        parentCollection = getParentCollection(context, targetObject)
-        if parentCollection != collections['main']:
+        parent_collection = getParentCollection(context, target_object)
+        if parent_collection != collections['main']:
             seut_report(self, context, 'ERROR', True, 'E025')
             return {'CANCELLED'}
 
 
         # Determine name strings.
-        emptyName = ""
-        objectNameAddition = "_section_"
-        customPropName = "highlight"
-        usesIndex = False
-
-        if self.detectorType == 'conveyor':
-            emptyName = "detector_conveyor_"
-            usesIndex = True
-
-        if self.detectorType == 'conveyor_small':
-            emptyName = "detector_conveyor_small_"
-            usesIndex = True
-
-        if self.detectorType == 'terminal':
-            emptyName = "detector_terminal_"
-            usesIndex = True
-
-        if self.detectorType == 'textpanel':
-            emptyName = "detector_textpanel"
-            usesIndex = False
-
-        if self.detectorType == 'button':
-            emptyName = "dummy_detector_panel_button_"
-            usesIndex = True
-
-        if self.detectorType == 'cockpit':
-            emptyName = "detector_cockpit_"
-            usesIndex = True
-
-        if self.detectorType == 'door':
-            emptyName = "detector_door_"
-            usesIndex = True
-
-        if self.detectorType == 'advanceddoor':
-            emptyName = "detector_advanceddoor_"
-            usesIndex = True
-
-        if self.detectorType == 'block':
-            emptyName = "detector_block_"
-            usesIndex = True
-
-        if self.detectorType == 'wardrobe':
-            emptyName = "detector_wardrobe"
-            usesIndex = False
-
-        if self.detectorType == 'cryopod':
-            emptyName = "detector_cryopod_"
-            usesIndex = True
-
-        if self.detectorType == 'inventory':
-            emptyName = "detector_inventory_"
-            usesIndex = True
+        empty_name = ""
+        object_name_addition = "_section_"
+        custom_prop_name = "highlight"
+        uses_index = False
+        
+        if self.detector_type == 'conveyor':
+            empty_name = "detector_conveyor_"
+            uses_index = True
+        elif self.detector_type == 'conveyor_small':
+            empty_name = "detector_conveyor_small_"
+            uses_index = True
+        elif self.detector_type == 'terminal':
+            empty_name = "detector_terminal_"
+            uses_index = True
+        elif self.detector_type == 'textpanel':
+            empty_name = "detector_textpanel"
+            uses_index = False
+        elif self.detector_type == 'button':
+            empty_name = "dummy_detector_panel_button_"
+            uses_index = True
+        elif self.detector_type == 'cockpit':
+            empty_name = "detector_cockpit_"
+            uses_index = True
+        elif self.detector_type == 'door':
+            empty_name = "detector_door_"
+            uses_index = True
+        elif self.detector_type == 'advanceddoor':
+            empty_name = "detector_advanceddoor_"
+            uses_index = True
+        elif self.detector_type == 'block':
+            empty_name = "detector_block_"
+            uses_index = True
+        elif self.detector_type == 'wardrobe':
+            empty_name = "detector_wardrobe"
+            uses_index = False
+        elif self.detector_type == 'cryopod':
+            empty_name = "detector_cryopod_"
+            uses_index = True
+        elif self.detector_type == 'inventory':
+            empty_name = "detector_inventory_"
+            uses_index = True
         
         # Spawn empty on world origin
         # Ideally I'd move it to the geometry of the selected object, but I cannot figure out how to place it while considering the origin
-        location = bpy.data.objects[targetObject.name].location
-        rotation = bpy.data.objects[targetObject.name].rotation_euler
+        location = bpy.data.objects[target_object.name].location
+        rotation = bpy.data.objects[target_object.name].rotation_euler
 
         bpy.ops.object.add(type='EMPTY', location=location, rotation=rotation)
         empty = bpy.context.view_layer.objects.active
+        empty.parent = target_object.parent
 
-        empty.parent = targetObject.parent
-
-        parentCollection = getParentCollection(context, empty)
-
-        if parentCollection != collections['main']:
+        parent_collection = getParentCollection(context, empty)
+        if parent_collection != collections['main']:
             collections['main'].objects.link(empty)
 
-            if parentCollection is None:
+            if parent_collection is None:
                 scene.collection.objects.unlink(empty)
             else:
-                parentCollection.objects.unlink(empty)
+                parent_collection.objects.unlink(empty)
 
-        empty.empty_display_type = "CUBE"
+        empty.empty_display_type = 'CUBE'
 
-        if usesIndex:
-            empty.name = emptyName + str(self.index)
-            targetObject.name = targetObject.name + objectNameAddition + str(self.index)
+        if uses_index:
+            empty.name = empty_name + str(self.index)
+            target_object.name = target_object.name + object_name_addition + str(self.index)
         else:
-            empty.name = emptyName
+            empty.name = empty_name
 
-        bpy.data.objects[empty.name][customPropName] = targetObject.name
-        empty.seut.linkedObject = targetObject
+        bpy.data.objects[empty.name][custom_prop_name] = target_object.name
+        empty.seut.linkedObject = target_object
         
-        self.report({'INFO'}, "SEUT: Highlight '%s' created for object: '%s'" % (empty.name,targetObject.name))
+        seut_report(self, context, 'INFO', True, 'I011', empty.name, target_object.name)
         
         return {'FINISHED'}

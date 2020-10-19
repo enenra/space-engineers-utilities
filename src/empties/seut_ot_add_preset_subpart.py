@@ -8,14 +8,16 @@ from ..seut_ot_recreate_collections import get_collections
 from ..seut_utils                   import getParentCollection
 from ..seut_errors                  import seut_report
 
+
 class SEUT_OT_AddPresetSubpart(Operator):
     """Adds a preset subpart"""
     bl_idname = "object.add_preset_subpart"
     bl_label = "Add Preset Subpart"
     bl_options = {'REGISTER', 'UNDO'}
 
+
     # pistons probably missing, hangar doors too
-    detectorType: EnumProperty(
+    detector_type: EnumProperty(
         name='Subpart Type',
         items=(
             ('DoorLeft', 'Door Left', 'The subpart for the left side of a sliding door'),
@@ -49,110 +51,92 @@ class SEUT_OT_AddPresetSubpart(Operator):
         max=100
     )
 
+
     def execute(self, context):
         scene = context.scene
 
-        selectedObject = context.view_layer.objects.active
+        target_objects = bpy.context.view_layer.objects.selected
 
         # Determine name strings.
-        emptyName = ""
-        customPropName = "file"
-        usesIndex = False
-
-        if self.detectorType == 'DoorLeft':
-            emptyName = "subpart_DoorLeft"
-            usesIndex = False
-
-        if self.detectorType == 'DoorRight':
-            emptyName = "subpart_DoorRight"
-            usesIndex = False
-
-        if self.detectorType == 'DrillHead':
-            emptyName = "subpart_DrillHead"
-            usesIndex = False
-
-        if self.detectorType == 'grinder1':
-            emptyName = "subpart_grinder1"
-            usesIndex = False
-
-        if self.detectorType == 'grinder2':
-            emptyName = "subpart_grinder2"
-            usesIndex = False
-
-        if self.detectorType == 'Propeller':
-            emptyName = "subpart_Propeller"
-            usesIndex = False
-
-        if self.detectorType == 'InteriorTurretBase1':
-            emptyName = "subpart_InteriorTurretBase1"
-            usesIndex = False
-
-        if self.detectorType == 'InteriorTurretBase2':
-            emptyName = "subpart_InteriorTurretBase2"
-            usesIndex = False
-
-        if self.detectorType == 'MissileTurretBase1':
-            emptyName = "subpart_MissileTurretBase1"
-            usesIndex = False
-
-        if self.detectorType == 'MissileTurretBarrels':
-            emptyName = "subpart_MissileTurretBarrels"
-            usesIndex = False
-
-        if self.detectorType == 'GatlingTurretBase1':
-            emptyName = "subpart_GatlingTurretBase1"
-            usesIndex = False
-
-        if self.detectorType == 'GatlingTurretBase2':
-            emptyName = "subpart_GatlingTurretBase2"
-            usesIndex = False
-
-        if self.detectorType == 'GatlingBarrel':
-            emptyName = "subpart_GatlingBarrel"
-            usesIndex = False
-
-        if self.detectorType == 'Barrel':
-            emptyName = "subpart_Barrel"
-            usesIndex = False
-
-        if self.detectorType == 'PistonSubpart1':
-            emptyName = "subpart_PistonSubpart1"
-            usesIndex = False
-
-        if self.detectorType == 'PistonSubpart2':
-            emptyName = "subpart_PistonSubpart2"
-            usesIndex = False
-
-        if self.detectorType == 'PistonSubpart3':
-            emptyName = "subpart_PistonSubpart3"
-            usesIndex = False
-
-        if self.detectorType == 'HangarDoor':
-            emptyName = "subpart_HangarDoor_door"
-            usesIndex = True
-
-        if self.detectorType == 'LaserComTurret':
-            emptyName = "subpart_LaserComTurret"
-            usesIndex = False
-
-        if self.detectorType == 'LaserCom':
-            emptyName = "subpart_LaserCom"
-            usesIndex = False
+        empty_name = ""
+        custom_prop_name = "file"
+        uses_index = False
+        
+        if self.detector_type == 'DoorLeft':
+            empty_name = "subpart_DoorLeft"
+            uses_index = False
+        elif self.detector_type == 'DoorRight':
+            empty_name = "subpart_DoorRight"
+            uses_index = False
+        elif self.detector_type == 'DrillHead':
+            empty_name = "subpart_DrillHead"
+            uses_index = False
+        elif self.detector_type == 'grinder1':
+            empty_name = "subpart_grinder1"
+            uses_index = False
+        elif self.detector_type == 'grinder2':
+            empty_name = "subpart_grinder2"
+            uses_index = False
+        elif self.detector_type == 'Propeller':
+            empty_name = "subpart_Propeller"
+            uses_index = False
+        elif self.detector_type == 'InteriorTurretBase1':
+            empty_name = "subpart_InteriorTurretBase1"
+            uses_index = False
+        elif self.detector_type == 'InteriorTurretBase2':
+            empty_name = "subpart_InteriorTurretBase2"
+            uses_index = False
+        elif self.detector_type == 'MissileTurretBase1':
+            empty_name = "subpart_MissileTurretBase1"
+            uses_index = False
+        elif self.detector_type == 'MissileTurretBarrels':
+            empty_name = "subpart_MissileTurretBarrels"
+            uses_index = False
+        elif self.detector_type == 'GatlingTurretBase1':
+            empty_name = "subpart_GatlingTurretBase1"
+            uses_index = False
+        elif self.detector_type == 'GatlingTurretBase2':
+            empty_name = "subpart_GatlingTurretBase2"
+            uses_index = False
+        elif self.detector_type == 'GatlingBarrel':
+            empty_name = "subpart_GatlingBarrel"
+            uses_index = False
+        elif self.detector_type == 'Barrel':
+            empty_name = "subpart_Barrel"
+            uses_index = False
+        elif self.detector_type == 'PistonSubpart1':
+            empty_name = "subpart_PistonSubpart1"
+            uses_index = False
+        elif self.detector_type == 'PistonSubpart2':
+            empty_name = "subpart_PistonSubpart2"
+            uses_index = False
+        elif self.detector_type == 'PistonSubpart3':
+            empty_name = "subpart_PistonSubpart3"
+            uses_index = False
+        elif self.detector_type == 'HangarDoor':
+            empty_name = "subpart_HangarDoor_door"
+            uses_index = True
+        elif self.detector_type == 'LaserComTurret':
+            empty_name = "subpart_LaserComTurret"
+            uses_index = False
+        elif self.detector_type == 'LaserCom':
+            empty_name = "subpart_LaserCom"
+            uses_index = False
 
         bpy.ops.object.add(type='EMPTY')
         empty = context.view_layer.objects.active
         empty.empty_display_type = 'ARROWS'
 
-        if usesIndex:
-            empty.name = emptyName + str(self.index)
+        if uses_index:
+            empty.name = empty_name + str(self.index)
         else:
-            empty.name = emptyName
+            empty.name = empty_name
 
-        if not selectedObject is None:
-            empty.parent = selectedObject
+        if len(target_objects) > 0:
+            empty.parent = target_objects[0]
 
-        bpy.data.objects[empty.name][customPropName] = ""
+        bpy.data.objects[empty.name][custom_prop_name] = ""
         
-        self.report({'INFO'}, "SEUT: Subpart '%s' created for file: '%s'" % (empty.name,""))
+        seut_report(self, context, 'INFO', True, 'I010', "Subpart", empty.name)
         
         return {'FINISHED'}
