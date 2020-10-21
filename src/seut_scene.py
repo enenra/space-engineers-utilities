@@ -20,7 +20,26 @@ from .seut_utils                    import linkSubpartScene, unlinkSubpartScene,
 
 # These update_* functions need to be above the class... for some reason.
 def update_GridScale(self, context):
-    bpy.ops.object.gridscale()
+    
+    scene = context.scene
+
+    # Grid scale is SE block size divided by 2 because else the lines don't line up with the block edges.
+    if scene.seut.gridScale == 'small':
+        scale = 0.25
+    else:
+        scale = 1.25
+
+    # It needs to be set for all viewports in all workspaces.
+    for area in context.screen.areas:
+        if not area.type == 'VIEW_3D':
+            continue
+        
+        else:
+            for space in area.spaces:
+                if space.type == 'VIEW_3D':
+                    space.overlay.grid_scale = scale
+                    break
+
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_MirroringToggle(self, context):

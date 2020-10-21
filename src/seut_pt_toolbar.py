@@ -29,7 +29,7 @@ class SEUT_PT_Panel(Panel):
         if not 'SEUT' in scene.view_layers:
             row = layout.row()
             row.scale_y = 2.0
-            row.operator('object.recreate_collections', text="Initialize SEUT Scene", icon='OUTLINER')
+            row.operator('scene.recreate_collections', text="Initialize SEUT Scene", icon='OUTLINER')
 
         else:
 
@@ -58,7 +58,7 @@ class SEUT_PT_Panel(Panel):
             row.prop(scene.seut,'gridScale', expand=True)
             
             split = layout.split(factor=0.85)
-            split.operator('object.recreate_collections', icon='COLLECTION_NEW')
+            split.operator('scene.recreate_collections', icon='COLLECTION_NEW')
             link = split.operator('wm.semref_link', text="", icon='INFO')
             link.section = 'reference'
             link.page = 'outliner'

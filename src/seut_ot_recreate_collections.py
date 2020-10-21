@@ -21,7 +21,7 @@ names = {
 
 class SEUT_OT_RecreateCollections(Operator):
     """Recreates the collections"""
-    bl_idname = "object.recreate_collections"
+    bl_idname = "scene.recreate_collections"
     bl_label = "Recreate Collections"
     bl_options = {'REGISTER', 'UNDO'}
 

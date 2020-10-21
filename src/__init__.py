@@ -55,7 +55,7 @@ from .export.seut_ot_export_materials           import SEUT_OT_ExportMaterials
 from .export.seut_ot_copy_export_options        import SEUT_OT_CopyExportOptions
 from .importing.seut_ot_import                  import SEUT_OT_Import
 from .importing.seut_ot_fix_positioning         import SEUT_OT_FixPositioning
-from .importing.seut_ot_structureConversion     import SEUT_OT_StructureConversion
+from .importing.seut_ot_structure_conversion    import SEUT_OT_StructureConversion
 from .materials.seut_materials                  import SEUT_Materials
 from .materials.seut_pt_matToolbar              import SEUT_PT_Panel_Materials
 from .materials.seut_pt_matToolbar              import SEUT_PT_Panel_MatLib
@@ -78,7 +78,6 @@ from .seut_pt_toolbar                   import SEUT_PT_Panel_Mountpoints
 from .seut_pt_toolbar                   import SEUT_PT_Panel_IconRender
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Export
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Import
-from .seut_ot_set_grid_scale            import SEUT_OT_SetGridScale
 from .seut_ot_bBox                      import SEUT_OT_BBox
 from .seut_ot_bBoxAuto                  import SEUT_OT_BBoxAuto
 from .seut_ot_mirroring                 import SEUT_OT_Mirroring
@@ -124,7 +123,6 @@ classes = (
     SEUT_OT_RemapMaterials,
     SEUT_OT_ConvertBonesToBlenderFormat,
     SEUT_OT_ConvertBonesToSEFormat,
-    SEUT_OT_SetGridScale,
     SEUT_OT_BBox,
     SEUT_OT_BBoxAuto,
     SEUT_OT_Mirroring,
