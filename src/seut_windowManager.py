@@ -135,10 +135,6 @@ class SEUT_WindowManager(PropertyGroup):
         default=0
     )
 
-    temp_link: StringProperty(
-        name="A temporary link"
-    )
-
     # Updater
     needs_update: StringProperty(
         name="Needs Update"

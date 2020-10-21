@@ -54,7 +54,7 @@ from .export.seut_ot_export_all_scenes          import SEUT_OT_ExportAllScenes
 from .export.seut_ot_export_materials           import SEUT_OT_ExportMaterials
 from .export.seut_ot_copy_export_options        import SEUT_OT_CopyExportOptions
 from .importing.seut_ot_import                  import SEUT_OT_Import
-from .importing.seut_ot_attemptToFixPositioning import SEUT_OT_AttemptToFixPositioning
+from .importing.seut_ot_fix_positioning         import SEUT_OT_FixPositioning
 from .importing.seut_ot_structureConversion     import SEUT_OT_StructureConversion
 from .materials.seut_materials                  import SEUT_Materials
 from .materials.seut_pt_matToolbar              import SEUT_PT_Panel_Materials
@@ -67,8 +67,6 @@ from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBle
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
 from .utils.seut_updater                        import checkUpdate
 from .utils.seut_ot_get_update                  import SEUT_OT_GetUpdate
-from .utils.seut_ot_popupNotification           import SEUT_OT_PopupNotification
-from .utils.seut_ot_tempLinkButton              import SEUT_OT_TempLinkButton
 from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
 
 from .seut_preferences                  import SEUT_AddonPreferences
@@ -111,8 +109,6 @@ classes = (
     SEUT_PT_EmptyLink,
     SEUT_MT_ContextMenu,
     SEUT_OT_GetUpdate,
-    SEUT_OT_PopupNotification,
-    SEUT_OT_TempLinkButton,
     SEUT_OT_SEMREFLink,
     SEUT_OT_AddHighlightEmpty,
     SEUT_OT_AddDummy,
@@ -124,7 +120,7 @@ classes = (
     SEUT_OT_ExportMaterials,
     SEUT_OT_Import,
     SEUT_OT_StructureConversion,
-    SEUT_OT_AttemptToFixPositioning,
+    SEUT_OT_FixPositioning,
     SEUT_OT_RemapMaterials,
     SEUT_OT_ConvertBonesToBlenderFormat,
     SEUT_OT_ConvertBonesToSEFormat,

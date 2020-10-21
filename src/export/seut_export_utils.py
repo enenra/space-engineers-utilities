@@ -143,16 +143,26 @@ def add_subelement(parent, name: str, value):
 def create_texture_entry(mat_entry, mat_name: str, images: dict, tex_type: str, tex_name: str, tex_name_long: str, ):
     """Creates a texture entry for a texture type into the XML tree"""
     
-    offset = 0
-    offset = images[tex_type].filepath.find("Textures\\")
+    rel_path = create_relative_path(images[tex_type].filepath, "Textures")
     
-    if offset == -1:
+    if not rel_path:
         seut_report(self, context, 'ERROR', True, 'E007', tex_name, mat_name)
     else:
-        add_subelement(mat_entry, tex_name_long, os.path.splitext(images[tex_type].filepath[offset:])[0] + ".dds")
+        add_subelement(mat_entry, tex_name_long, os.path.splitext(rel_path)[0] + ".dds")
     
     if not is_valid_resolution(images[tex_type].size[0]) or not is_valid_resolution(images[tex_type].size[1]):
         seut_report(self, context, 'WARNING', True, 'W004', tex_name, mat_name, str(images[tex_type].size[0]) + "x" + str(images[tex_type].size[1]))
+
+
+def create_relative_path(path: str, foldername: str):
+    """Returns the path capped off before the last occurrence of the foldername, returns False if foldername is not found in path"""
+    
+    offset = path.rfind(foldername + "\\")
+
+    if offset == -1:
+        return False
+    else:
+        return path[path.rfind(foldername + "\\"):]
 
 
 def is_valid_resolution(number: int) -> bool:
@@ -220,7 +230,7 @@ def create_lod_entry(scene, tree, distance: int, path: str, lod_type: str):
     lod = ET.SubElement(tree, 'LOD')
     lod.set('Distance', str(distance))
     lodModel = ET.SubElement(lod, 'Model')
-    lodModel.text = path[path.find("Models\\"):] + scene.seut.subtypeId + lod_type
+    lodModel.text = create_relative_path(path, "Models") + scene.seut.subtypeId + lod_type
 
 
 def format_xml(self, context, tree) -> str:

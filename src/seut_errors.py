@@ -80,9 +80,9 @@ infos = {
     'I009': "SEUT: Collision files have been created.",
     'I010': "SEUT: {variable_1} '{variable_2}' created.",
     'I011': "SEUT: Highlight '{variable_1}' created for object '{variable_2}'.",
-    'I012': "SEUT: ",
-    'I013': "SEUT: ",
-    'I014': "SEUT: ",
+    'I012': "SEUT: Structure conversion successfully completed.",
+    'I013': "SEUT: Attempt to Fix Positioning completed.",
+    'I014': "SEUT: Import successfully completed.",
     'I015': "SEUT: ",
     'I016': "SEUT: ",
     'I017': "SEUT: ",
@@ -101,24 +101,24 @@ def check_export(self, context, can_report=True):
     # If file is still startup file (hasn't been saved yet), it's not possible to derive a path from it.
     if not bpy.data.is_saved:
         seut_report(self, context, 'ERROR', can_report, 'E008')
-        return {'FILE_NOT_SAVED'}
+        return {'CANCELLED'}
 
     if os.path.exists(path) == False:
         seut_report(self, context, 'ERROR', can_report, 'E003', "Export", path)
-        return {'PATH_NOT_FOUND'}
+        return {'CANCELLED'}
     elif path == "":
         seut_report(self, context, 'ERROR', can_report, 'E019')
-        return {'PATH_EMPTY'}
+        return {'CANCELLED'}
 
     if path.find("Models\\") != -1 or (path + "\\").find("Models\\") != -1:
         pass
     else:
         seut_report(self, context, 'ERROR', can_report, 'E014', path, scene.name)
-        return {'PATH_MISSING_MODELS'}
+        return {'CANCELLED'}
 
     if scene.seut.subtypeId == "":
         seut_report(self, context, 'ERROR', can_report, 'E004')
-        return {'NO_SUBTYPEID'}
+        return {'CANCELLED'}
 
     return {'CONTINUE'}
 
@@ -160,12 +160,12 @@ def check_toolpath(self, context, tool_path: str, tool_name: str, tool_filename:
     path = get_abs_path(tool_path)
     if not os.path.exists(path):
         seut_report(self, context, 'ERROR', True, 'E012', tool_name, path)
-        return {'PATH_NOT_FOUND'}
+        return {'CANCELLED'}
 
     file_name = os.path.basename(tool_path)
     if tool_filename != file_name:
         seut_report(self, context, 'ERROR', True, 'E013', tool_name, tool_filename, file_name)
-        return {'FILE_NOT_FOUND'}
+        return {'CANCELLED'}
     
     return {'CONTINUE'}
 
@@ -190,7 +190,7 @@ def check_uvms(obj):
 
     if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
         seut_report(self, context, 'ERROR', True, 'E032', obj.name)
-        return {'MISSING_UVMS'}
+        return {'CANCELLED'}
     
     return {'CONTINUE'}
 

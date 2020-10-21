@@ -7,5 +7,4 @@ empty_types = {
     'muzzle_missile': 'CONE',
     'muzzle_projectile': 'CONE',
     'camera': 'CONE',
-    '': '',
 }

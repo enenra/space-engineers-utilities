@@ -12,7 +12,7 @@ from bpy.types      import Operator
 from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
 from .seut_mwmbuilder               import mwmbuilder
-from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_loose_files
+from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_loose_files, create_relative_path
 from .seut_export_utils             import correct_for_export_type, export_xml, export_fbx, export_collection
 from ..seut_preferences             import get_addon_version
 from ..seut_ot_recreate_collections import get_collections
@@ -164,7 +164,7 @@ def export_main(self, context):
         
         # Check for missing UVMs (this might not be 100% reliable)
         if check_uvms(obj) != {'CONTINUE'}:
-            return {'MISSING_UVMS'}  
+            return {'CANCELLED'}  
     
     # Check for armatures being present in collection
     if not found_armatures and (scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'):
@@ -175,7 +175,7 @@ def export_main(self, context):
     # Check for unparented objects
     if unparented_objects > 1:
         seut_report(self, context, 'ERROR', True, 'E031')
-        return {'UNPARENTED_OBJECTS'}
+        return {'CANCELLED'}
 
     export_collection(self, context, collections['main'])
     
@@ -205,12 +205,12 @@ def export_hkt(self, context):
 
         # Check for missing UVMs (this might not be 100% reliable)
         if check_uvms(obj) != {'CONTINUE'}:
-            return {'MISSING_UVMS'}
+            return {'CANCELLED'}
 
         # Check for unapplied modifiers
         if len(obj.modifiers) > 0:
             seut_report(self, context, 'ERROR', True, 'E034', obj.name)
-            return {'UNAPPLIED_MODIFIERS'}
+            return {'CANCELLED'}
         
         # Apply Rigid Body
         context.view_layer.objects.active = obj
@@ -220,7 +220,7 @@ def export_hkt(self, context):
     # Check if max amount of collision objects is exceeded
     if len(collections['hkt'].objects) > 16:
         seut_report(self, context, 'ERROR', True, 'E022', len(collections['hkt'].objects))
-        return {'TOO_MANY_COLLISION_OBJECTS'}
+        return {'CANCELLED'}
 
     # FBX export via Custom FBX Importer
     fbx_hkt_file = join(path, scene.seut.subtypeId + ".hkt.fbx")
@@ -260,23 +260,23 @@ def export_bs(self, context):
 
     if (not bs1_valid and bs2_valid) or (not bs2_valid and bs3_valid):
         seut_report(self, context, 'ERROR', True, 'E015', 'BS')
-        return {'INVALID_BS_SETUP'}
+        return {'CANCELLED'}
     
     # Check for missing UVMs (this might not be 100% reliable)
     if bs1_valid:
         for obj in collections['bs1'].objects:
             if check_uvms(obj) != {'CONTINUE'}:
-                return {'MISSING_UVMS'}
+                return {'CANCELLED'}
     
     if bs2_valid:
         for obj in collections['bs2'].objects:
             if check_uvms(obj) != {'CONTINUE'}:
-                return {'MISSING_UVMS'}
+                return {'CANCELLED'}
     
     if bs3_valid:
         for obj in collections['bs3'].objects:
             if check_uvms(obj) != {'CONTINUE'}:
-                return {'MISSING_UVMS'}
+                return {'CANCELLED'}
 
     if bs1_valid:
         export_collection(self, context, collections['bs1'])
@@ -318,33 +318,33 @@ def export_lod(self, context):
 
     if (not lod1_valid and lod2_valid) or (not lod2_valid and lod3_valid):
         seut_report(self, context, 'ERROR', True, 'E015', 'LOD')
-        return {'INVALID_LOD_SETUP'}
+        return {'CANCELLED'}
 
     # Checks whether LOD distances are valid
     if scene.seut.export_lod1Distance > scene.seut.export_lod2Distance or scene.seut.export_lod2Distance > scene.seut.export_lod3Distance:
         seut_report(self, context, 'ERROR', True, 'E011')
-        return {'INVALID_LOD_DISTANCES'}
+        return {'CANCELLED'}
     
     # Check for missing UVMs (this might not be 100% reliable)
     if lod1_valid:
         for obj in collections['lod1'].objects:
             if check_uvms(obj) != {'CONTINUE'}:
-                return {'MISSING_UVMS'}
+                return {'CANCELLED'}
 
     if lod2_valid:
         for obj in collections['lod2'].objects:
             if check_uvms(obj) != {'CONTINUE'}:
-                return {'MISSING_UVMS'}
+                return {'CANCELLED'}
     
     if lod3_valid:
         for obj in collections['lod3'].objects:
             if check_uvms(obj) != {'CONTINUE'}:
-                return {'MISSING_UVMS'}
+                return {'CANCELLED'}
     
     if bs_lod_valid:
         for obj in collections['bs_lod'].objects:
             if check_uvms(obj) != {'CONTINUE'}:
-                return {'MISSING_UVMS'}
+                return {'CANCELLED'}
 
     if lod1_valid:
         export_collection(self, context, collections['lod1'])  
@@ -410,7 +410,7 @@ def export_sbc(self, context):
 
     if (not bs1_valid and bs2_valid) or (not bs2_valid and bs3_valid):
         seut_report(self, context, 'ERROR', True, 'E015', 'BS')
-        return {'INVALID_BS_SETUP'}
+        return {'CANCELLED'}
 
     # Create XML tree and add initial parameters.
     definitions = ET.Element('Definitions')
@@ -468,10 +468,9 @@ def export_sbc(self, context):
     def_ModelOffset.set('y', '0')
     def_ModelOffset.set('z', '0')
 
-    # Model  
-    offset = path.find("Models\\")
+    # Model
     def_Model = ET.SubElement(def_definition, 'Model')
-    def_Model.text=path[offset:] + scene.seut.subtypeId + '.mwm'
+    def_Model.text = create_relative_path(path, "Models") + scene.seut.subtypeId + '.mwm'
 
     # Components
     def_Components = ET.SubElement(def_definition, 'Components')
@@ -601,7 +600,7 @@ def export_sbc(self, context):
                 else:
                     def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage)[:4])
 
-                def_BS_Model.set('File', path[offset:] + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
+                def_BS_Model.set('File', create_relative_path(path, "Models") + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
 
     # BlockPairName
     def_BlockPairName = ET.SubElement(def_definition, 'BlockPairName')
