@@ -3,11 +3,13 @@ import webbrowser
 
 from bpy.types              import Operator
 
+
 class SEUT_OT_GetUpdate(Operator):
     """Opens the webpage of the latest SEUT release"""
     bl_idname = "wm.get_update"
     bl_label = "Get Update"
     bl_options = {'REGISTER', 'UNDO'}
+
 
     def execute(self, context):
 

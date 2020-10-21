@@ -2,11 +2,14 @@ import bpy
 
 from bpy.types          import Operator
 
-class SEUT_OT_GridScale(Operator):
+
+class SEUT_OT_SetGridScale(Operator):
     """Sets the grid scale"""
-    bl_idname = "object.gridscale"
-    bl_label = "Grid Scale"
+
+    bl_idname = "wm.set_grid_scale"
+    bl_label = "Set Grid Scale"
     bl_options = {'REGISTER', 'UNDO'}
+
 
     def execute(self, context):
 
@@ -25,9 +28,9 @@ class SEUT_OT_GridScale(Operator):
                     if not area.type == 'VIEW_3D':
                         continue
 
-                    for s in area.spaces:
-                        if s.type == 'VIEW_3D':
-                            s.overlay.grid_scale = scale
+                    for space in area.spaces:
+                        if space.type == 'VIEW_3D':
+                            space.overlay.grid_scale = scale
                             break
         
         return {'FINISHED'}

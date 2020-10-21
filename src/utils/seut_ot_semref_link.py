@@ -4,6 +4,7 @@ import webbrowser
 from bpy.types              import Operator
 from bpy.props              import StringProperty
 
+
 class SEUT_OT_SEMREFLink(Operator):
     """Opens the relevant Space Engineers Modding Reference page, containing more usage information and / or tutorials"""
     bl_idname = "wm.semref_link"
@@ -13,6 +14,7 @@ class SEUT_OT_SEMREFLink(Operator):
     section: StringProperty()
 
     page: StringProperty()
+
 
     def execute(self, context):
 

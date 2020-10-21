@@ -66,10 +66,10 @@ from .materials.seut_matLib                     import SEUT_UL_MatLib
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
 from .utils.seut_updater                        import checkUpdate
-from .utils.seut_ot_getUpdate                   import SEUT_OT_GetUpdate
+from .utils.seut_ot_get_update                  import SEUT_OT_GetUpdate
 from .utils.seut_ot_popupNotification           import SEUT_OT_PopupNotification
 from .utils.seut_ot_tempLinkButton              import SEUT_OT_TempLinkButton
-from .utils.seut_ot_SEMREFLink                  import SEUT_OT_SEMREFLink
+from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
 
 from .seut_preferences                  import SEUT_AddonPreferences
 from .seut_preferences                  import get_addon_version
@@ -80,7 +80,7 @@ from .seut_pt_toolbar                   import SEUT_PT_Panel_Mountpoints
 from .seut_pt_toolbar                   import SEUT_PT_Panel_IconRender
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Export
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Import
-from .seut_ot_gridScale                 import SEUT_OT_GridScale
+from .seut_ot_set_grid_scale            import SEUT_OT_SetGridScale
 from .seut_ot_bBox                      import SEUT_OT_BBox
 from .seut_ot_bBoxAuto                  import SEUT_OT_BBoxAuto
 from .seut_ot_mirroring                 import SEUT_OT_Mirroring
@@ -128,7 +128,7 @@ classes = (
     SEUT_OT_RemapMaterials,
     SEUT_OT_ConvertBonesToBlenderFormat,
     SEUT_OT_ConvertBonesToSEFormat,
-    SEUT_OT_GridScale,
+    SEUT_OT_SetGridScale,
     SEUT_OT_BBox,
     SEUT_OT_BBoxAuto,
     SEUT_OT_Mirroring,
