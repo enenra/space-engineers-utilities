@@ -57,17 +57,17 @@ def export(self, context):
         return result
 
     # Check for availability of FBX Importer
-    result = check_toolpath(self, context, preferences.fbxImporterPath, "Custom FBX Importer", "FBXImporter.exe")
+    result = check_toolpath(self, context, preferences.fbx_importer_path, "Custom FBX Importer", "FBXImporter.exe")
     if not result == {'CONTINUE'}:
         return result
 
     # Check for availability of MWM Builder
-    result = check_toolpath(self, context, preferences.mwmbPath, "MWM Builder", "MwmBuilder.exe")
+    result = check_toolpath(self, context, preferences.mwmb_path, "MWM Builder", "MwmBuilder.exe")
     if not result == {'CONTINUE'}:
         return result
 
     # Check materials path
-    materials_path = get_abs_path(preferences.materialsPath)
+    materials_path = get_abs_path(preferences.materials_path)
     if materials_path == "" or os.path.isdir(materials_path) == False:
         seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
         return {'CANCELLED'}
@@ -197,7 +197,7 @@ def export_hkt(self, context):
         return result
 
     # Check for availability of Havok SFM
-    result = check_toolpath(self, context, preferences.havokPath, "Havok Standalone Filter Manager", "hctStandAloneFilterManager.exe")
+    result = check_toolpath(self, context, preferences.havok_path, "Havok Standalone Filter Manager", "hctStandAloneFilterManager.exe")
     if not result == {'CONTINUE'}:
         return result
     
@@ -365,7 +365,7 @@ def export_mwm(self, context):
     collections = get_collections(scene)
     preferences = get_preferences()
     path = get_abs_path(scene.seut.export_exportPath) + "\\"
-    materials_path = get_abs_path(preferences.materialsPath)
+    materials_path = get_abs_path(preferences.materials_path)
     settings = ExportSettings(scene, None)
         
     mwmfile = join(path, scene.seut.subtypeId + ".mwm")

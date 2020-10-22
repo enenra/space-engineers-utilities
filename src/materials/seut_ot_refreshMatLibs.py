@@ -25,14 +25,14 @@ class SEUT_OT_RefreshMatLibs(Operator):
 
         addon = __package__[:__package__.find(".")]
         preferences = bpy.context.preferences.addons.get(addon).preferences
-        materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
+        materials_path = os.path.abspath(bpy.path.abspath(preferences.materials_path))
 
-        if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-            seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materialsPath)
+        if preferences.materials_path == "" or preferences.materials_path == "." or os.path.isdir(materials_path) == False:
+            seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
             return {'CANCELLED'}
 
         # Find all MatLibs in directory, save to set, then add to matlibs list
-        path = bpy.path.abspath(preferences.materialsPath)
+        path = bpy.path.abspath(preferences.materials_path)
         newSet = set()
 
         for file in os.listdir(path):

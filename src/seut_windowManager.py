@@ -27,18 +27,18 @@ def update_enabled(self, context):
 
     addon = __package__
     preferences = bpy.context.preferences.addons.get(addon).preferences
-    materialsPath = os.path.abspath(bpy.path.abspath(preferences.materialsPath))
+    materials_path = os.path.abspath(bpy.path.abspath(preferences.materials_path))
 
-    if preferences.materialsPath == "" or preferences.materialsPath == "." or os.path.isdir(materialsPath) == False:
-        seut_report(self, context, 'ERROR', False, 'E012', "Materials Folder", materialsPath)
+    if preferences.materials_path == "" or preferences.materials_path == "." or os.path.isdir(materials_path) == False:
+        seut_report(self, context, 'ERROR', False, 'E012', "Materials Folder", materials_path)
         return
 
     if self.enabled:
-        with bpy.data.libraries.load(materialsPath + "\\" + self.name, link=True) as (data_from, data_to):
+        with bpy.data.libraries.load(materials_path + "\\" + self.name, link=True) as (data_from, data_to):
             data_to.materials=data_from.materials
 
     else:
-        with bpy.data.libraries.load(materialsPath + "\\" + self.name, link=True) as (data_from, data_to):
+        with bpy.data.libraries.load(materials_path + "\\" + self.name, link=True) as (data_from, data_to):
                 for mat in data_from.materials:
                     if mat in bpy.data.materials and bpy.data.materials[mat].library is not None and bpy.data.materials[mat].library.name == self.name:
                         bpy.data.materials.remove(bpy.data.materials[mat], do_unlink=True)

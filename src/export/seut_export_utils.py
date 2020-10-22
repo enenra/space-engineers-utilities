@@ -575,19 +575,19 @@ class ExportSettings:
     @property
     def fbximporter(self):
         if self._fbximporter == None:
-            self._fbximporter = tool_path('fbxImporterPath', 'Custom FBX Importer')
+            self._fbximporter = tool_path('fbx_importer_path', 'Custom FBX Importer')
         return self._fbximporter
 
     @property
     def havokfilter(self):
         if self._havokfilter == None:
-            self._havokfilter = tool_path('havokPath', 'Havok Standalone Filter Tool')
+            self._havokfilter = tool_path('havok_path', 'Havok Standalone Filter Tool')
         return self._havokfilter
 
     @property
     def mwmbuilder(self):
         if self._mwmbuilder == None:
-            self._mwmbuilder = tool_path('mwmbPath', 'MWM Builder')
+            self._mwmbuilder = tool_path('mwmb_path', 'MWM Builder')
         return self._mwmbuilder
 
     def callTool(self, context, cmdline, tooltype, logfile=None, cwd=None, successfulExitCodes=[0], loglines=[], logtextInspector=None):

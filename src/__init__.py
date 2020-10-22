@@ -78,8 +78,8 @@ from .seut_pt_toolbar                   import SEUT_PT_Panel_Mountpoints
 from .seut_pt_toolbar                   import SEUT_PT_Panel_IconRender
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Export
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Import
-from .seut_ot_bBox                      import SEUT_OT_BBox
-from .seut_ot_bBoxAuto                  import SEUT_OT_BBoxAuto
+from .seut_bbox                         import SEUT_OT_BBox
+from .seut_bbox                         import SEUT_OT_BBoxAuto
 from .seut_ot_mirroring                 import SEUT_OT_Mirroring
 from .seut_ot_mountpoints               import SEUT_OT_Mountpoints
 from .seut_ot_addMountpointArea         import SEUT_OT_AddMountpointArea

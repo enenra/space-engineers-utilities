@@ -1,9 +1,14 @@
 import bpy
 import gpu
+import math
 
 from bgl                import *
 from gpu_extras.batch   import batch_for_shader
 from bpy.types          import Operator
+
+from .seut_ot_recreate_collections  import get_collections
+from .seut_errors                   import seut_report
+
 
 # Most of the code used in this class is **heavily** based on Jayanam's "Blender 2.8 Python GPU : Draw Lines"-video:
 # https://www.youtube.com/watch?v=EgrgEoNFNsA
@@ -127,3 +132,60 @@ class SEUT_OT_BBox(Operator):
             glDisable(GL_BLEND)
         except:
             return
+
+
+class SEUT_OT_BBoxAuto(Operator):
+    """Sets the bounding box automatically (not very accurate)"""
+    bl_idname = "object.bbox_auto"
+    bl_label = "Automatic"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    
+    # Button is unavailable when bounding box is turned off.
+    @classmethod
+    def poll(cls, context):
+        return context.window_manager.seut.bBoxToggle == 'on'
+
+    
+    # This is what is executed if "Automatic" is pressed.
+    def execute(self, context):
+
+        scene = context.scene
+        collections = get_collections(scene)
+
+        if collections['main'] == None or len(collections['main'].objects) == 0:
+            seut_report(self, context, 'ERROR', True, 'E002', "'Main'")
+            return {'CANCELLED'}
+
+        dimension_x = 0
+        dimension_y = 0
+        dimension_z = 0
+
+        # this currently does not take the object's children's dimensions into account 
+        for obj in collections['main'].all_objects:
+            if obj.location.x + obj.dimensions.x > dimension_x:
+                dimension_x = obj.location.x + obj.dimensions.x
+            if obj.location.y + obj.dimensions.y > dimension_y:
+                dimension_y = obj.location.y + obj.dimensions.y
+            if obj.location.z + obj.dimensions.z > dimension_z:
+                dimension_z = obj.location.z + obj.dimensions.z
+        
+        factor = 1
+
+        if scene.seut.gridScale == 'large': factor = 2.5
+        if scene.seut.gridScale == 'small': factor = 0.5
+
+        # This should technically be math.ceil(D / factor) * factor but when drawing the bounding box it's already being multiplied by the factor.
+        size_x = math.ceil(dimension_x / factor)
+        size_y = math.ceil(dimension_y / factor)
+        size_z = math.ceil(dimension_z / factor)
+        
+        scene.seut.bBox_X = size_x
+        scene.seut.bBox_Y = size_y
+        scene.seut.bBox_Z = size_z
+
+        bpy.ops.object.bbox('INVOKE_DEFAULT')
+
+        seut_report(self, context, 'INFO', True, 'I015', dimension_x, dimension_y, dimension_z)
+        
+        return {'FINISHED'}

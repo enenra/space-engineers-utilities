@@ -83,7 +83,7 @@ infos = {
     'I012': "SEUT: Structure conversion successfully completed.",
     'I013': "SEUT: Attempt to Fix Positioning completed.",
     'I014': "SEUT: Import successfully completed.",
-    'I015': "SEUT: ",
+    'I015': "SEUT: Bounding Box set for dimensions X: {variable_1} Y: {variable_2} Z: {variable_3}",
     'I016': "SEUT: ",
     'I017': "SEUT: ",
     'I018': "SEUT: ",
