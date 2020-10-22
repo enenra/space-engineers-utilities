@@ -3,7 +3,7 @@ import bpy
 from math           import pi
 from bpy.types      import Operator
 
-from .seut_ot_recreate_collections  import get_collections
+from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
 from .seut_utils                    import getParentCollection
 

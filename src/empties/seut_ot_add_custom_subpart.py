@@ -3,7 +3,7 @@ import bpy
 from bpy.types  import Operator
 from bpy.props  import StringProperty
 
-from ..seut_ot_recreate_collections import get_collections
+from ..seut_collections             import get_collections
 from ..seut_utils                   import getParentCollection
 from ..seut_errors                  import seut_report
 

@@ -2,7 +2,7 @@ import bpy
 
 from bpy.types  import Panel
 
-from .seut_ot_recreate_collections  import get_collections
+from .seut_collections              import get_collections
 from .seut_preferences              import get_addon_version
 
 class SEUT_PT_Panel(Panel):

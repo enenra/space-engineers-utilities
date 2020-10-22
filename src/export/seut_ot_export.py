@@ -15,7 +15,7 @@ from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_loose_files, create_relative_path
 from .seut_export_utils             import correct_for_export_type, export_xml, export_fbx, export_collection
 from ..seut_preferences             import get_addon_version
-from ..seut_ot_recreate_collections import get_collections
+from ..seut_collections             import get_collections
 from ..seut_errors                  import *
 from ..seut_utils                   import prep_context, get_preferences
 

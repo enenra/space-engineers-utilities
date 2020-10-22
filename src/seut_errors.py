@@ -84,7 +84,7 @@ infos = {
     'I013': "SEUT: Attempt to Fix Positioning completed.",
     'I014': "SEUT: Import successfully completed.",
     'I015': "SEUT: Bounding Box set for dimensions X: {variable_1} Y: {variable_2} Z: {variable_3}",
-    'I016': "SEUT: ",
+    'I016': "SEUT: Empty '{variable_1}' rotation {variable_2} registered as: {variable_3}",
     'I017': "SEUT: ",
     'I018': "SEUT: ",
     'I019': "SEUT: ",
@@ -143,7 +143,7 @@ def check_collection(self, context, scene, collection, partial_check=True):
             seut_report(self, context, 'ERROR', False, 'E019', collection.name)
             return {'CANCELLED'}
 
-    if len(get_objects_from_collection(collection)) == 0:
+    if len(get_objects_from_collection(collection)) == 0 and collection.name[:4] != 'SEUT':
         if partial_check:
             seut_report(self, context, 'WARNING', False, 'W003', collection.name)
             return {'FINISHED'}

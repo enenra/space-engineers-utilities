@@ -12,8 +12,8 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
-from .seut_ot_mirroring             import SEUT_OT_Mirroring
-from .seut_ot_recreate_collections  import get_collections, rename_collections
+from .seut_mirroring                import clean_mirroring, setup_mirroring
+from .seut_collections              import get_collections, rename_collections
 from .seut_errors                   import seut_report, check_export
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, toRadians, getParentCollection
 
@@ -33,7 +33,7 @@ def update_GridScale(self, context):
     for area in context.screen.areas:
         if not area.type == 'VIEW_3D':
             continue
-        
+
         else:
             for space in area.spaces:
                 if space.type == 'VIEW_3D':
@@ -43,7 +43,24 @@ def update_GridScale(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 def update_MirroringToggle(self, context):
-    bpy.ops.scene.mirroring()
+    scene = context.scene
+
+    if self.mirroringToggle == 'off':
+        clean_mirroring(self, context)
+
+    elif self.mirroringToggle == 'on':
+        clean_mirroring(self, context)
+
+        for scn in bpy.data.scenes:
+            context.window.scene = scn
+            if scn.seut.mountpointToggle == 'on' or scn.seut.renderToggle == 'on':
+                scn.seut.mountpointToggle = 'off'
+                scn.seut.renderToggle = 'off'
+            if scn != scene:
+                self.mirroringToggle = 'off'
+
+        context.window.scene = scene
+        setup_mirroring(self, context)
 
 def update_mirroringScene(self, context):
     scene = context.scene

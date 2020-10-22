@@ -5,7 +5,7 @@ from bpy.props  import (EnumProperty,
                         IntProperty)
 
 from .seut_empties                  import empty_types
-from ..seut_ot_recreate_collections import get_collections
+from ..seut_collections             import get_collections
 from ..seut_utils                   import getParentCollection
 from ..seut_errors                  import seut_report
 

@@ -2,7 +2,7 @@ import bpy
 
 from bpy.types import Operator
 
-from .seut_ot_recreate_collections  import get_collections
+from .seut_collections              import get_collections
 from .seut_errors                   import seut_report
 
 class SEUT_OT_SimpleNavigation(Operator):

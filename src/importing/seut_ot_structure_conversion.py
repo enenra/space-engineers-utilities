@@ -4,8 +4,8 @@ from bpy.types import Operator
 
 from ..empties.seut_empties          import empty_types
 from ..export.seut_export_utils      import get_subpart_reference
-from ..seut_ot_recreate_collections  import get_collections
-from ..seut_ot_mirroring             import SEUT_OT_Mirroring
+from ..seut_collections              import get_collections
+from ..seut_mirroring                import save_rotation
 from ..seut_errors                   import seut_report
 from ..seut_utils                    import linkSubpartScene, getParentCollection
 
@@ -124,13 +124,13 @@ def convert_structure(self, context):
                 if mirror_empty.type == 'EMPTY':
                     if mirror_empty.name == 'MirrorFrontBack':
                         mirror_empty.name = 'Mirroring X'
-                        SEUT_OT_Mirroring.saveRotationToProps(self, context, mirror_empty)
+                        save_rotation(self, context, mirror_empty)
                     elif mirror_empty.name == 'MirrorLeftRight':
                         mirror_empty.name = 'Mirroring Y'
-                        SEUT_OT_Mirroring.saveRotationToProps(self, context, mirror_empty)
+                        save_rotation(self, context, mirror_empty)
                     elif mirror_empty.name == 'MirrorTopBottom':
                         mirror_empty.name = 'Mirroring Z'
-                        SEUT_OT_Mirroring.saveRotationToProps(self, context, mirror_empty)
+                        save_rotation(self, context, mirror_empty)
                 
             scn.seut.mirroringToggle = 'off'
         

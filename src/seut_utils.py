@@ -3,7 +3,7 @@ import os
 
 from math   import pi
 
-from .seut_ot_recreate_collections  import get_collections
+from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, seut_report
 
 def linkSubpartScene(self, originScene, empty, targetCollection, collectionType = 'main'):

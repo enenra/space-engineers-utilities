@@ -10,7 +10,7 @@ from bpy.props  import (EnumProperty,
                         PointerProperty
                         )
 
-from .seut_ot_recreate_collections  import get_collections
+from .seut_collections              import get_collections
 from .seut_errors                   import seut_report
 from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, getParentCollection
 

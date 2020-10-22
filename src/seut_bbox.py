@@ -6,7 +6,7 @@ from bgl                import *
 from gpu_extras.batch   import batch_for_shader
 from bpy.types          import Operator
 
-from .seut_ot_recreate_collections  import get_collections
+from .seut_collections              import get_collections
 from .seut_errors                   import seut_report
 
 
