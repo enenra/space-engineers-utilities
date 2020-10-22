@@ -11,7 +11,7 @@ from ..seut_errors                  import seut_report
 
 class SEUT_OT_AddPresetSubpart(Operator):
     """Adds a preset subpart"""
-    bl_idname = "object.add_preset_subpart"
+    bl_idname = "scene.add_preset_subpart"
     bl_label = "Add Preset Subpart"
     bl_options = {'REGISTER', 'UNDO'}
 

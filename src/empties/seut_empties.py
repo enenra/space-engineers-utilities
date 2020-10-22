@@ -1,10 +1,36 @@
 import bpy
 
+from bpy.types  import Operator, Menu
 from bpy.types  import Panel
+
+
+empty_types = {
+    'subpart_': 'ARROWS',
+    'thruster_flame': 'CONE',
+    'muzzle_missile': 'CONE',
+    'muzzle_projectile': 'CONE',
+    'camera': 'CONE',
+}
+
+
+class SEUT_MT_ContextMenu(Menu):
+    """Creates the 'Create Emtpy' context menu"""
+    bl_idname = "SEUT_MT_ContextMenu"
+    bl_label = "    Create Empty"
+
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout.operator('object.add_highlight_empty', text="Add Highlight Empty")
+        layout.operator('scene.add_dummy', text="Add Dummy")
+        layout.operator('scene.add_preset_subpart', text="Add Preset Subpart")
+        layout.operator('scene.add_custom_subpart', text="Add Custom Subpart")
 
 
 class SEUT_PT_EmptyLink(Panel):
     """Creates the Empty Properties menu"""
+
     bl_idname = "SEUT_PT_EmptyLink"
     bl_label = "Space Engineers Utilities"
     bl_category = "SEUT"

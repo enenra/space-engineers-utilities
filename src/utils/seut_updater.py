@@ -1,14 +1,36 @@
 import bpy
 import re
 import requests
+import webbrowser
 
+from bpy.types              import Operator
 
 url = "http://api.github.com/repos/enenra/space-engineers-utilities/tags"
 
 version = re.compile(r"v[0-9] + \.[0-9] + \.[0-9] + ")
 
 
-def checkUpdate(current_version):
+class SEUT_OT_GetUpdate(Operator):
+    """Opens the webpage of the latest SEUT release"""
+    bl_idname = "wm.get_update"
+    bl_label = "Get Update"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    def execute(self, context):
+
+        wm = context.window_manager
+
+        if wm.seut.latest_version == "":
+            webbrowser.open("https://github.com/enenra/space-engineers-utilities/releases/")
+
+        else:
+            webbrowser.open("https://github.com/enenra/space-engineers-utilities/releases/tag/" + wm.seut.latest_version)
+        
+        return {'FINISHED'}
+
+
+def check_update(current_version):
     """Checks the GitHub API for the latest SEUT release"""
 
     wm = bpy.context.window_manager

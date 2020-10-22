@@ -43,8 +43,8 @@ from bpy.types import (Panel,
                        PropertyGroup,
                        )
 
-from .empties.seut_mt_context_menu              import SEUT_MT_ContextMenu
-from .empties.seut_pt_empty_menu                import SEUT_PT_EmptyLink
+from .empties.seut_empties                      import SEUT_MT_ContextMenu
+from .empties.seut_empties                      import SEUT_PT_EmptyLink
 from .empties.seut_ot_add_highlight_empty       import SEUT_OT_AddHighlightEmpty
 from .empties.seut_ot_add_dummy                 import SEUT_OT_AddDummy
 from .empties.seut_ot_add_preset_subpart        import SEUT_OT_AddPresetSubpart
@@ -65,8 +65,8 @@ from .materials.seut_ot_matCreate               import SEUT_OT_MatCreate
 from .materials.seut_matLib                     import SEUT_UL_MatLib
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
-from .utils.seut_updater                        import checkUpdate
-from .utils.seut_ot_get_update                  import SEUT_OT_GetUpdate
+from .utils.seut_updater                        import check_update
+from .utils.seut_updater                        import SEUT_OT_GetUpdate
 from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
 
 from .seut_preferences                  import SEUT_AddonPreferences
@@ -202,7 +202,7 @@ def load_handler(dummy):
         except:
             pass
 
-    checkUpdate(get_addon_version())
+    check_update(get_addon_version())
 
 addon_keymaps = []
 

@@ -4,7 +4,7 @@ from bpy.types  import Operator
 from bpy.props  import (EnumProperty,
                         IntProperty)
 
-from .seut_empty_utils              import empty_types
+from .seut_empties                  import empty_types
 from ..seut_ot_recreate_collections import get_collections
 from ..seut_utils                   import getParentCollection
 from ..seut_errors                  import seut_report
@@ -12,7 +12,7 @@ from ..seut_errors                  import seut_report
 
 class SEUT_OT_AddDummy(Operator):
     """Adds a Space Engineers dummy"""
-    bl_idname = "object.add_dummy"
+    bl_idname = "scene.add_dummy"
     bl_label = "Add Dummy"
     bl_options = {'REGISTER', 'UNDO'}
 

@@ -2,7 +2,7 @@ import bpy
 
 from bpy.types import Operator
 
-from ..empties.seut_empty_utils      import empty_types
+from ..empties.seut_empties          import empty_types
 from ..export.seut_export_utils      import get_subpart_reference
 from ..seut_ot_recreate_collections  import get_collections
 from ..seut_ot_mirroring             import SEUT_OT_Mirroring

@@ -16,7 +16,7 @@ from bpy.types import (Panel,
 
 from bpy.types                  import Operator
 
-from ..empties.seut_empty_utils         import empty_types
+from ..empties.seut_empties             import empty_types
 from ..materials.seut_ot_remapMaterials import SEUT_OT_RemapMaterials
 from ..seut_errors                      import seut_report
 

@@ -10,7 +10,7 @@ from ..seut_errors                  import seut_report
 
 class SEUT_OT_AddCustomSubpart(Operator):
     """Adds a custom subpart"""
-    bl_idname = "object.add_custom_subpart"
+    bl_idname = "scene.add_custom_subpart"
     bl_label = "Add Custom Subpart"
     bl_options = {'REGISTER', 'UNDO'}
 
