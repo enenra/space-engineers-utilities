@@ -152,7 +152,7 @@ def convert_structure(self, context):
         for key in collections.keys():
             if collections[key] != None:
                 for empty in collections[key].objects:
-                    if empty.type == 'EMPTY' and 'file' in empty and empty['file'] in bpy.data.scenes:
+                    if empty.type == 'EMPTY' and 'file' in empty and str(empty['file']) in bpy.data.scenes:
                         reference = get_subpart_reference(empty, collections)                        
                         link_subpart_scene(self, scn, empty, collections[key], key)
                         empty['file'] = reference

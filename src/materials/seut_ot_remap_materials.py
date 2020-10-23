@@ -32,7 +32,7 @@ def remap_materials(self, context):
     for scn in bpy.data.scenes:
         context.window.scene = scn
 
-        for obj in bpy.data.objects:
+        for obj in context.view_layer.objects:
 
             if obj.type != 'MESH':
                 continue
