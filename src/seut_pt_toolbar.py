@@ -164,16 +164,14 @@ class SEUT_PT_Panel_Mountpoints(Panel):
                 link.section = 'tutorials'
                 link.page = 'mountpoints'
 
-                box = layout.box()
-                box.label(text="Areas", icon='MESH_PLANE')
-                box.prop(wm.seut, 'mountpointSide', icon='AXIS_SIDE')
-
                 if not context.active_object is None and context.active_object.name in bpy.data.collections['Mountpoints (' + scene.seut.subtypeId + ')'].objects and not context.active_object.type == 'EMPTY':
+                    box = layout.box()
+                    box.label(text="Area", icon='MESH_PLANE')
                     row = box.row()
                     row.prop(context.active_object.seut, 'default', icon='PINNED', text="Default")
                     row.prop(context.active_object.seut, 'pressurized', icon='LOCKED', text="Pressurized")
                     
-                box.operator('scene.add_mountpoint_area', icon='ADD')
+                layout.operator('scene.add_mountpoint_area', icon='ADD')
             else:
                 layout.prop(scene.seut, 'mountpointToggle', expand=True)
         

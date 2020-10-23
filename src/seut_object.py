@@ -12,7 +12,7 @@ from bpy.props  import (EnumProperty,
 
 from .seut_collections              import get_collections
 from .seut_errors                   import seut_report
-from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, getParentCollection
+from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, get_parent_collection
 
 
 def update_linkedScene(self, context):
@@ -22,7 +22,7 @@ def update_linkedScene(self, context):
 
     if empty is not None:
         
-        parentCollection = getParentCollection(context, empty)
+        parentCollection = get_parent_collection(context, empty)
         collectionType = 'main'
         extension = ""
         if parentCollection == collections['bs1']:

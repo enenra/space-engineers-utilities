@@ -6,7 +6,7 @@ from bpy.props  import (EnumProperty,
 
 from .seut_empties                  import empty_types
 from ..seut_collections             import get_collections
-from ..seut_utils                   import getParentCollection
+from ..seut_utils                   import get_parent_collection
 from ..seut_errors                  import seut_report
 
 
@@ -160,7 +160,7 @@ class SEUT_OT_AddDummy(Operator):
         else:
             empty.name = empty_name
 
-        parent_collection = getParentCollection(context, empty)
+        parent_collection = get_parent_collection(context, empty)
         if parent_collection != collections['main']:
             collections['main'].objects.link(empty)
 

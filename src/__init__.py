@@ -80,8 +80,7 @@ from .seut_pt_toolbar                   import SEUT_PT_Panel_Export
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Import
 from .seut_bbox                         import SEUT_OT_BBox
 from .seut_bbox                         import SEUT_OT_BBoxAuto
-from .seut_ot_mountpoints               import SEUT_OT_Mountpoints
-from .seut_ot_addMountpointArea         import SEUT_OT_AddMountpointArea
+from .seut_mountpoints                  import SEUT_OT_AddMountpointArea
 from .seut_collections                  import SEUT_OT_RecreateCollections
 from .seut_ot_simpleNavigation          import SEUT_OT_SimpleNavigation
 from .seut_ot_iconRender                import SEUT_OT_IconRender
@@ -124,7 +123,6 @@ classes = (
     SEUT_OT_ConvertBonesToSEFormat,
     SEUT_OT_BBox,
     SEUT_OT_BBoxAuto,
-    SEUT_OT_Mountpoints,
     SEUT_OT_AddMountpointArea,
     SEUT_OT_RecreateCollections,
     SEUT_OT_SimpleNavigation,

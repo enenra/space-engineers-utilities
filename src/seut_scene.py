@@ -13,9 +13,10 @@ from bpy.props  import (EnumProperty,
                         )
 
 from .seut_mirroring                import clean_mirroring, setup_mirroring
+from .seut_mountpoints              import clean_mountpoints, setup_mountpoints
 from .seut_collections              import get_collections, rename_collections
 from .seut_errors                   import seut_report, check_export
-from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, toRadians, getParentCollection
+from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, to_radians, get_parent_collection
 
 
 # These update_* functions need to be above the class... for some reason.
@@ -66,10 +67,6 @@ def update_mirroringScene(self, context):
     scene = context.scene
     targetScene = scene.seut.mirroringScene
 
-    print("origin: " + scene.name)
-    if targetScene != None:
-        print("target: " + targetScene.name)
-
     if targetScene is None:
         for scn in bpy.data.scenes:
             if scn.seut.mirroringScene == scene:
@@ -80,8 +77,25 @@ def update_mirroringScene(self, context):
 
     bpy.ops.scene.mirroring()
 
-def update_MountpointToggle(self, context):
-    bpy.ops.scene.mountpoints()
+def update_MountpointToggle(self, context):  
+    scene = context.scene
+
+    if self.mountpointToggle == 'off':
+        clean_mountpoints(self, context)
+
+    elif self.mountpointToggle == 'on':
+        clean_mountpoints(self, context)
+
+        for scn in bpy.data.scenes:
+            context.window.scene = scn
+            if scn.seut.mirroringToggle == 'on' or scn.seut.renderToggle == 'on':
+                scn.seut.mirroringToggle = 'off'
+                scn.seut.renderToggle = 'off'
+            if scn != scene:
+                self.mountpointToggle = 'off'
+
+        context.window.scene = scene
+        setup_mountpoints(self, context)
 
 def update_RenderToggle(self, context):
     bpy.ops.scene.icon_render()
@@ -556,7 +570,7 @@ class SEUT_Scene(PropertyGroup):
         name="Rotation",
         description="The rotation of the empty holding the render setup",
         subtype='EULER',
-        default=(toRadians(-20), 0.0, toRadians(45)),
+        default=(to_radians(-20), 0.0, to_radians(45)),
         update=update_renderEmptyRotation
     )
     renderEmptyLocation: FloatVectorProperty(

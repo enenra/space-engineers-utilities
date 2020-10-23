@@ -6,7 +6,7 @@ from collections    import OrderedDict
 
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import getParentCollection, linkSubpartScene, unlinkSubpartScene, prep_context, toRadians
+from .seut_utils                    import get_parent_collection, linkSubpartScene, unlinkSubpartScene, prep_context, to_radians, clear_selection
 
 
 mirroring_presets = OrderedDict([
@@ -44,19 +44,15 @@ def setup_mirroring(self, context):
     collections = get_collections(scene)
     current_area = prep_context(context)
 
-    if context.object is not None:
-        context.object.select_set(False)
-        context.view_layer.objects.active = None
-
     result = check_collection(self, context, scene, collections['seut'], False)
     if not result == {'CONTINUE'}:
         scene.seut.mirroringToggle = 'off'
-        return {'CANCELLED'}
+        return
 
     result = check_collection(self, context, scene, collections['main'], False)
     if not result == {'CONTINUE'}:
         scene.seut.mirroringToggle = 'off'
-        return {'CANCELLED'}
+        return
 
     mats = 0
     for mat in bpy.data.materials:
@@ -73,7 +69,7 @@ def setup_mirroring(self, context):
     if mats != 3:
         seut_report(self, context, 'ERROR', False, 'E026', "Mirror Axis Materials")
         scene.seut.mirroringToggle = 'off'
-        return {'CANCELLED'}
+        return
         
     tag = ' (' + scene.seut.subtypeId + ')'
 
@@ -92,9 +88,9 @@ def setup_mirroring(self, context):
     empty_x_rot_raw = mirroring_presets[scene.seut.mirroring_X]
     empty_y_rot_raw = mirroring_presets[scene.seut.mirroring_Y]
     empty_z_rot_raw = mirroring_presets[scene.seut.mirroring_Z]
-    empty_x_rotation = (toRadians(empty_x_rot_raw[0]), toRadians(empty_x_rot_raw[1]), toRadians(empty_x_rot_raw[2]))
-    empty_y_rotation = (toRadians(empty_y_rot_raw[0]), toRadians(empty_y_rot_raw[1]), toRadians(empty_y_rot_raw[2]))
-    empty_z_rotation = (toRadians(empty_z_rot_raw[0]), toRadians(empty_z_rot_raw[1]), toRadians(empty_z_rot_raw[2]))
+    empty_x_rotation = (to_radians(empty_x_rot_raw[0]), to_radians(empty_x_rot_raw[1]), to_radians(empty_x_rot_raw[2]))
+    empty_y_rotation = (to_radians(empty_y_rot_raw[0]), to_radians(empty_y_rot_raw[1]), to_radians(empty_y_rot_raw[2]))
+    empty_z_rotation = (to_radians(empty_z_rot_raw[0]), to_radians(empty_z_rot_raw[1]), to_radians(empty_z_rot_raw[2]))
 
     factor = 1
     if scene.seut.gridScale == 'large': factor = 2.5
@@ -114,7 +110,7 @@ def setup_mirroring(self, context):
     empty_x.name = 'Mirror LeftRight'
     empty_x.empty_display_type = 'ARROWS'
     empty_x.empty_display_size = empty_size
-    bpy.ops.mesh.primitive_plane_add(size=empty_size * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(offset / 2, 0.0, 0.0), rotation=(0.0, toRadians(90), 0.0))
+    bpy.ops.mesh.primitive_plane_add(size=empty_size * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(offset / 2, 0.0, 0.0), rotation=(0.0, to_radians(90), 0.0))
     plane_x = bpy.context.view_layer.objects.active
     plane_x.name = 'X Axis Mirror Plane'
     plane_x.active_material = smat_x
@@ -124,7 +120,7 @@ def setup_mirroring(self, context):
     empty_y.name = 'Mirror FrontBack'
     empty_y.empty_display_type = 'ARROWS'
     empty_y.empty_display_size = empty_size
-    bpy.ops.mesh.primitive_plane_add(size=empty_size * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(0.0, offset / 2, 0.0), rotation=(toRadians(90), 0.0, 0.0))
+    bpy.ops.mesh.primitive_plane_add(size=empty_size * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(0.0, offset / 2, 0.0), rotation=(to_radians(90), 0.0, 0.0))
     plane_y = bpy.context.view_layer.objects.active
     plane_y.name = 'Y Axis Mirror Plane'
     plane_y.active_material = smat_y
@@ -134,12 +130,12 @@ def setup_mirroring(self, context):
     empty_z.name = 'Mirror TopBottom'
     empty_z.empty_display_type = 'ARROWS'
     empty_z.empty_display_size = empty_size
-    bpy.ops.mesh.primitive_plane_add(size=empty_size * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(0.0, 0.0, offset / 2), rotation=(0.0, 0.0, toRadians(90)))
+    bpy.ops.mesh.primitive_plane_add(size=empty_size * 2, calc_uvs=True, enter_editmode=False, align='WORLD', location=(0.0, 0.0, offset / 2), rotation=(0.0, 0.0, to_radians(90)))
     plane_z = bpy.context.view_layer.objects.active
     plane_z.name = 'Z Axis Mirror Plane'
     plane_z.active_material = smat_z
 
-    parentCollection = getParentCollection(context, empty_x)
+    parentCollection = get_parent_collection(context, empty_x)
     if parentCollection != collection:
         collection.objects.link(empty_x)
         collection.objects.link(empty_y)
@@ -175,6 +171,7 @@ def setup_mirroring(self, context):
     empty_z.seut.linkedScene = source_scene
     linkSubpartScene(self, scene, empty_z, collection)
 
+    clear_selection(context)
     context.area.type = current_area
 
 
@@ -184,10 +181,6 @@ def clean_mirroring(self, context):
     scene = context.scene
     collections = get_collections(scene)
     current_area = prep_context(context)
-        
-    if context.object is not None:
-        context.object.select_set(False)
-        context.view_layer.objects.active = None
 
     tag = ' (' + scene.seut.subtypeId + ')'
 
@@ -245,6 +238,7 @@ def save_rotation(self, context, empty):
     
     if not found:
         seut_report(self, context, 'ERROR', False, 'E023', empty.name, str(rot_converted))
+
 
 def sanitize_rotation(rotation: int) -> int:
     """Returns compatible equivalent rotation values"""

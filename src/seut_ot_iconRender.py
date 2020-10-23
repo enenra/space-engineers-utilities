@@ -5,7 +5,7 @@ from bpy.types      import Operator
 
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import getParentCollection, toRadians
+from .seut_utils                    import get_parent_collection, to_radians
 
 class SEUT_OT_IconRender(Operator):
     """Handles functionality regarding icon rendering"""
@@ -100,7 +100,7 @@ class SEUT_OT_IconRender(Operator):
         empty.empty_display_type = 'SPHERE'
         
         # Spawn camera
-        bpy.ops.object.camera_add(location=(0.0, -15, 0.0), rotation=(toRadians(90), 0.0, 0.0))
+        bpy.ops.object.camera_add(location=(0.0, -15, 0.0), rotation=(to_radians(90), 0.0, 0.0))
         camera = bpy.context.view_layer.objects.active
         camera.parent = empty
         scene.camera = camera
@@ -121,13 +121,13 @@ class SEUT_OT_IconRender(Operator):
         fillLight.name = 'Fill Light'
         fillLight.data.energy = 5000.0 * scene.seut.renderDistance
         
-        bpy.ops.object.light_add(type='SPOT', location=(0.0, 15.0, 0.0), rotation=(toRadians(-90), 0.0, 0.0))
+        bpy.ops.object.light_add(type='SPOT', location=(0.0, 15.0, 0.0), rotation=(to_radians(-90), 0.0, 0.0))
         rimLight = bpy.context.view_layer.objects.active
         rimLight.parent = empty
         rimLight.name = 'Rim Light'
         rimLight.data.energy = 10000.0 * scene.seut.renderDistance
         
-        parentCollection = getParentCollection(context, empty)
+        parentCollection = get_parent_collection(context, empty)
         if parentCollection != collection:
             collection.objects.link(empty)
             collection.objects.link(camera)

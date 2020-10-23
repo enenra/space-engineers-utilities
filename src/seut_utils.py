@@ -33,17 +33,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection, collectionType 
     
     # Switch to subpartScene to get collections
     context.window.scene = subpartScene
-
-    try:
-        currentArea = context.area.type
-        context.area.type = 'VIEW_3D'
-    except AttributeError:
-        context.area.type = 'VIEW_3D'
-        currentArea = context.area.type
-        
-    if context.object is not None:
-        context.object.select_set(False)
-        context.view_layer.objects.active = None
+    current_area = prep_context(context)
 
     objectsToIterate = set(subpartCollections[collectionType].objects)
 
@@ -129,7 +119,7 @@ def unlinkObjectsInHierarchy(obj):
     bpy.data.objects.remove(obj, do_unlink=True)
 
 
-def getParentCollection(context, childObject):
+def get_parent_collection(context, child):
     scene = context.scene
 
     collections = get_collections(scene)
@@ -137,12 +127,12 @@ def getParentCollection(context, childObject):
     for key, value in collections.items():
         if value is not None:
             for obj in value.objects:
-                if obj is not None and obj == childObject:
+                if obj is not None and obj == child:
                     return value
     
     return None
 
-def toRadians(number):
+def to_radians(number):
     """Converts degrees to radians"""
 
     return pi * number / 180
@@ -168,9 +158,15 @@ def prep_context(context):
     except AttributeError:
         context.area.type = 'VIEW_3D'
         current_area = context.area.type
-        
+
+    clear_selection(context)
+    
+    return current_area
+
+
+def clear_selection(context):
+    """Deselects object and sets active object to None."""
+
     if context.object is not None:
         context.object.select_set(False)
         context.view_layer.objects.active = None
-    
-    return current_area

@@ -13,7 +13,7 @@ from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..export.seut_custom_fbx_exporter      import save_single
 from ..seut_collections                     import get_collections, names
-from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene, getParentCollection, get_preferences
+from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene, get_parent_collection, get_preferences
 
 from ..seut_errors                          import seut_report, get_abs_path
 

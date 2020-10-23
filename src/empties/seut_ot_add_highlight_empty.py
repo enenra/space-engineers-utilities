@@ -6,7 +6,7 @@ from bpy.props  import (EnumProperty,
 
 
 from ..seut_collections             import get_collections
-from ..seut_utils                   import getParentCollection
+from ..seut_utils                   import get_parent_collection
 from ..seut_errors                  import seut_report
 
 
@@ -65,7 +65,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         
         target_object = target_objects[0]
         
-        parent_collection = getParentCollection(context, target_object)
+        parent_collection = get_parent_collection(context, target_object)
         if parent_collection != collections['main']:
             seut_report(self, context, 'ERROR', True, 'E025')
             return {'CANCELLED'}
@@ -123,7 +123,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         empty = bpy.context.view_layer.objects.active
         empty.parent = target_object.parent
 
-        parent_collection = getParentCollection(context, empty)
+        parent_collection = get_parent_collection(context, empty)
         if parent_collection != collections['main']:
             collections['main'].objects.link(empty)
 

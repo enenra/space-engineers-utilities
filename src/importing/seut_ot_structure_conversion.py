@@ -7,7 +7,7 @@ from ..export.seut_export_utils      import get_subpart_reference
 from ..seut_collections              import get_collections
 from ..seut_mirroring                import save_rotation
 from ..seut_errors                   import seut_report
-from ..seut_utils                    import linkSubpartScene, getParentCollection
+from ..seut_utils                    import linkSubpartScene, get_parent_collection
 
 
 class SEUT_OT_StructureConversion(Operator):
