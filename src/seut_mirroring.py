@@ -6,7 +6,7 @@ from collections    import OrderedDict
 
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import get_parent_collection, linkSubpartScene, unlinkSubpartScene, prep_context, to_radians, clear_selection
+from .seut_utils                    import get_parent_collection, linkSubpartScene, unlinkSubpartScene, prep_context, to_radians, clear_selection, create_seut_collection
 
 
 mirroring_presets = OrderedDict([
@@ -73,16 +73,7 @@ def setup_mirroring(self, context):
         
     tag = ' (' + scene.seut.subtypeId + ')'
 
-    # Create collection if it doesn't exist already
-    if not 'Mirroring' + tag in bpy.data.collections:
-        collection = bpy.data.collections.new('Mirroring' + tag)
-        collections['seut'].children.link(collection)
-    else:
-        collection = bpy.data.collections['Mirroring' + tag]
-        try:
-            collections['seut'].children.link(collection)
-        except:
-            pass
+    collection = create_seut_collection(collections['seut'], 'Mirroring' + tag)
     
     # Compile rotation / position / size information
     empty_x_rot_raw = mirroring_presets[scene.seut.mirroring_X]

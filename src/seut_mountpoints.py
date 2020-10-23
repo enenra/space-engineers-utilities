@@ -6,7 +6,7 @@ from bpy.props      import EnumProperty
 
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import get_parent_collection, prep_context, to_radians, clear_selection
+from .seut_utils                    import get_parent_collection, prep_context, to_radians, clear_selection, create_seut_collection
 
 
 def setup_mountpoints(self, context):
@@ -33,16 +33,7 @@ def setup_mountpoints(self, context):
         
     tag = ' (' + scene.seut.subtypeId + ')'
 
-    # Create collection if it doesn't exist already
-    if not 'Mountpoints' + tag in bpy.data.collections:
-        collection = bpy.data.collections.new('Mountpoints' + tag)
-        collections['seut'].children.link(collection)
-    else:
-        collection = bpy.data.collections['Mountpoints' + tag]
-        try:
-            collections['seut'].children.link(collection)
-        except:
-            pass
+    collection = create_seut_collection(collections['seut'], 'Mountpoints' + tag)
 
     # Create empty tree for sides
     if scene.seut.gridScale == 'small':

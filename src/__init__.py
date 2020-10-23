@@ -83,8 +83,7 @@ from .seut_bbox                         import SEUT_OT_BBoxAuto
 from .seut_mountpoints                  import SEUT_OT_AddMountpointArea
 from .seut_collections                  import SEUT_OT_RecreateCollections
 from .seut_ot_simpleNavigation          import SEUT_OT_SimpleNavigation
-from .seut_ot_iconRender                import SEUT_OT_IconRender
-from .seut_ot_iconRenderPreview         import SEUT_OT_IconRenderPreview
+from .seut_icon_render                  import SEUT_OT_IconRenderPreview
 from .seut_scene                        import SEUT_MountpointAreas
 from .seut_scene                        import SEUT_Scene
 from .seut_object                       import SEUT_Object
@@ -129,7 +128,6 @@ classes = (
     SEUT_OT_MatCreate,
     SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
-    SEUT_OT_IconRender,
     SEUT_OT_IconRenderPreview,
     SEUT_MountpointAreas,
     SEUT_Scene,

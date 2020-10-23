@@ -95,7 +95,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection, collectionType 
                     linkSubpartScene(self, originScene, linkedObject, targetCollection)
         
     # Switch back to previous scene
-    context.area.type = currentArea
+    context.area.type = current_area
     context.window.scene = currentScene
     
     return {'CONTINUE'}
@@ -170,3 +170,46 @@ def clear_selection(context):
     if context.object is not None:
         context.object.select_set(False)
         context.view_layer.objects.active = None
+
+
+def toggle_scene_modes(context, mirroring, mountpoints, icon_render):
+    """Sets modes in all scenes."""
+
+    original_scene = context.scene
+
+    for scn in bpy.data.scenes:
+        context.window.scene = scn
+
+        if scn == original_scene:
+            if scn.seut.mirroringToggle != mirroring:
+                scn.seut.mirroringToggle = mirroring
+            if scn.seut.mountpointToggle != mountpoints:
+                scn.seut.mountpointToggle = mountpoints
+            if scn.seut.renderToggle != icon_render:
+                scn.seut.renderToggle = icon_render
+
+        else:
+            if scn.seut.mirroringToggle == 'on':
+                scn.seut.mirroringToggle = 'off'
+            if scn.seut.mountpointToggle == 'on':
+                scn.seut.mountpointToggle = 'off'
+            if scn.seut.renderToggle == 'on':
+                scn.seut.renderToggle = 'off'
+
+    context.window.scene = original_scene
+
+def create_seut_collection(seut_collection, name: str):
+    """Creates a new SEUT collection if it doesn't exist yet, else returns the existing one."""
+
+    if not name in bpy.data.collections:
+        collection = bpy.data.collections.new(name)
+        seut_collection.children.link(collection)
+
+    else:
+        collection = bpy.data.collections[name]
+        try:
+            seut_collection.children.link(collection)
+        except:
+            pass
+    
+    return collection

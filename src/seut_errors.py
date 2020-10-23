@@ -86,7 +86,7 @@ infos = {
     'I015': "SEUT: Bounding Box set for dimensions X: {variable_1} Y: {variable_2} Z: {variable_3}",
     'I016': "SEUT: Empty '{variable_1}' rotation {variable_2} registered as: {variable_3}",
     'I017': "SEUT: Mountpoint Area {variable_1} saved. {variable_2} {variable_3}",
-    'I018': "SEUT: ",
+    'I018': "SEUT: Icon successfully saved to '{variable_1}'.",
     'I019': "SEUT: ",
     'I020': "SEUT: ",
 }

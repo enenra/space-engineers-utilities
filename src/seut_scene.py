@@ -14,9 +14,10 @@ from bpy.props  import (EnumProperty,
 
 from .seut_mirroring                import clean_mirroring, setup_mirroring
 from .seut_mountpoints              import clean_mountpoints, setup_mountpoints
+from .seut_icon_render              import clean_icon_render, setup_icon_render
 from .seut_collections              import get_collections, rename_collections
 from .seut_errors                   import seut_report, check_export
-from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, to_radians, get_parent_collection
+from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, to_radians, get_parent_collection, toggle_scene_modes
 
 
 # These update_* functions need to be above the class... for some reason.
@@ -45,23 +46,7 @@ def update_GridScale(self, context):
 
 def update_MirroringToggle(self, context):
     scene = context.scene
-
-    if self.mirroringToggle == 'off':
-        clean_mirroring(self, context)
-
-    elif self.mirroringToggle == 'on':
-        clean_mirroring(self, context)
-
-        for scn in bpy.data.scenes:
-            context.window.scene = scn
-            if scn.seut.mountpointToggle == 'on' or scn.seut.renderToggle == 'on':
-                scn.seut.mountpointToggle = 'off'
-                scn.seut.renderToggle = 'off'
-            if scn != scene:
-                self.mirroringToggle = 'off'
-
-        context.window.scene = scene
-        setup_mirroring(self, context)
+    toggle_mode(self, context, 'MIRRORING')
 
 def update_mirroringScene(self, context):
     scene = context.scene
@@ -79,26 +64,45 @@ def update_mirroringScene(self, context):
 
 def update_MountpointToggle(self, context):  
     scene = context.scene
-
-    if self.mountpointToggle == 'off':
-        clean_mountpoints(self, context)
-
-    elif self.mountpointToggle == 'on':
-        clean_mountpoints(self, context)
-
-        for scn in bpy.data.scenes:
-            context.window.scene = scn
-            if scn.seut.mirroringToggle == 'on' or scn.seut.renderToggle == 'on':
-                scn.seut.mirroringToggle = 'off'
-                scn.seut.renderToggle = 'off'
-            if scn != scene:
-                self.mountpointToggle = 'off'
-
-        context.window.scene = scene
-        setup_mountpoints(self, context)
+    toggle_mode(self, context, 'MOUNTPOINT')
 
 def update_RenderToggle(self, context):
-    bpy.ops.scene.icon_render()
+    scene = context.scene
+    toggle_mode(self, context, 'ICON_RENDER')
+
+
+def toggle_mode(self, context, mode: str):
+    """Toggles the passed mode on and all other modes off, in all scenes."""
+
+    scene = context.scene
+
+    if mode == 'MIRRORING':
+        if self.mirroringToggle == 'off':
+            clean_mirroring(self, context)
+
+        elif self.mirroringToggle == 'on':
+            clean_mirroring(self, context)
+            toggle_scene_modes(context, 'on', 'off', 'off')
+            setup_mirroring(self, context)
+
+    elif mode == 'MOUNTPOINT':
+        if self.mountpointToggle == 'off':
+            clean_mountpoints(self, context)
+
+        elif self.mountpointToggle == 'on':
+            clean_mountpoints(self, context)
+            toggle_scene_modes(context, 'off', 'on', 'off')
+            setup_mountpoints(self, context)
+
+    elif mode == 'ICON_RENDER':
+        if self.renderToggle == 'off':
+            clean_icon_render(self, context)
+
+        elif self.renderToggle == 'on':
+            clean_icon_render(self, context)
+            toggle_scene_modes(context, 'off', 'off', 'on')
+            setup_icon_render(self, context)
+
 
 def update_RenderResolution(self, context):
     scene = context.scene
