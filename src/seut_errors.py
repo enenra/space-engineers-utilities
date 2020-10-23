@@ -2,8 +2,6 @@ import bpy
 import os
 import collections
 
-from .libraries.easybpy import *
-
 errors = {
     'E001': "SEUT: Import error. Imported object not found. (E001)",
     'E002': "SEUT: Collection {variable_1} not found, excluded from view layer or empty. Action not possible. (E002)",
@@ -56,8 +54,8 @@ warnings = {
     'W008': "SEUT: Scene is of type '{variable_1}' but does not contain any armatures.",
     'W009': "SEUT: Scene is of type '{variable_1}' but contains armatures.",
     'W010': "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2.",
-    'W011': "SEUT: ",
-    'W012': "SEUT: ",
+    'W011': "SEUT: Library '{variable_1}' could not be relocated in '{variable_2}'.",
+    'W012': "SEUT: Could not remove unused material slots for object '{variable_1}'.",
     'W013': "SEUT: ",
     'W014': "SEUT: ",
     'W015': "SEUT: ",
@@ -143,7 +141,7 @@ def check_collection(self, context, scene, collection, partial_check=True):
             seut_report(self, context, 'ERROR', False, 'E019', collection.name)
             return {'CANCELLED'}
 
-    if len(get_objects_from_collection(collection)) == 0 and collection.name[:4] != 'SEUT':
+    if len(collection.objects) == 0 and collection.name[:4] != 'SEUT':
         if partial_check:
             seut_report(self, context, 'WARNING', False, 'W003', collection.name)
             return {'FINISHED'}

@@ -16,9 +16,9 @@ from bpy.types import (Panel,
 
 from bpy.types                  import Operator
 
-from ..empties.seut_empties             import empty_types
-from ..materials.seut_ot_remapMaterials import SEUT_OT_RemapMaterials
-from ..seut_errors                      import seut_report
+from ..empties.seut_empties                 import empty_types
+from ..materials.seut_ot_remap_materials    import SEUT_OT_RemapMaterials
+from ..seut_errors                          import seut_report
 
 
 class SEUT_OT_Import(Operator):

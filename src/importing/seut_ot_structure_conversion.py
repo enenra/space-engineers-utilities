@@ -28,7 +28,7 @@ def convert_structure(self, context):
     """Converts blend files created with the old plugin to the new structure"""
 
     # For some reason it breaks if you don't run it starting from the scene at index 0
-    current_scene = bpy.context.window.scene
+    current_scene = context.window.scene
     context.window.scene = bpy.data.scenes[0]
 
     # Set scene indexes and SubtypeIds
@@ -143,7 +143,7 @@ def convert_structure(self, context):
                 bpy.data.objects.remove(mp)
             bpy.data.collections.remove(bpy.data.collections['Mountpoints' + tag])
     
-    bpy.context.window.scene = current_scene
+    context.window.scene = current_scene
 
     # Link up all the subparts for instancing
     for scn in bpy.data.scenes:

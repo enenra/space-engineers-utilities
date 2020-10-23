@@ -12,7 +12,7 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
-from .seut_errors   import seut_report
+from .seut_errors   import seut_report, get_abs_path
 from .seut_utils    import get_preferences
 
 

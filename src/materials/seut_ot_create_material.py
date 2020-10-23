@@ -6,9 +6,10 @@ from bpy.props  import (EnumProperty,
 
 from ..seut_errors  import seut_report
 
+
 class SEUT_OT_MatCreate(Operator):
     """Create a SEUT material from the defined preset"""
-    bl_idname = "object.mat_create"
+    bl_idname = "object.create_material"
     bl_label = "Create Material"
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -23,33 +24,32 @@ class SEUT_OT_MatCreate(Operator):
         wm = context.window_manager
         scene = context.scene
 
-        presetName = wm.seut.matPreset
+        preset_name = wm.seut.matPreset
         
         # Find SMAT to pull preset from.
-        presetMat = None
+        preset_material = None
 
         for mat in bpy.data.materials:
-            if mat.name == presetName:
-                presetMat = mat
+            if mat.name == preset_name:
+                preset_material = mat
         
-        if presetMat is None:
-            seut_report(self, context, 'ERROR', True, 'E016', presetName)
+        if preset_material is None:
+            seut_report(self, context, 'ERROR', True, 'E016', preset_name)
             return {'CANCELLED'}
             
-        newMat = presetMat.copy()
-        newMat.name = "SEUT Material"
+        new_material = preset_material.copy()
+        new_material.name = "SEUT Material"
 
-        context.active_object.active_material = newMat
-        activeMat = context.active_object.active_material
+        context.active_object.active_material = new_material
 
-        if activeMat.node_tree is None:
-            seut_report(self, context, 'ERROR', True, 'E016', presetName)
+        if new_material.node_tree is None:
+            seut_report(self, context, 'ERROR', True, 'E016', preset_name)
             return {'CANCELLED'}
             
         else:
-            activeMat.node_tree.make_local()
+            new_material.node_tree.make_local()
         
-            for node in activeMat.node_tree.nodes:
+            for node in new_material.node_tree.nodes:
                 if node is not None and node.name == "SEUT_MAT" and node.node_tree is not None:
                     node.node_tree.make_local()
 

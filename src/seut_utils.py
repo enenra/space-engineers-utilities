@@ -146,7 +146,7 @@ def get_preferences():
 
 
 def prep_context(context):
-    """Prep context for doing larger alterations"""
+    """Prep context for doing larger alterations, returns previous area"""
 
     try:
         current_area = context.area.type
