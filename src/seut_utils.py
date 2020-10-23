@@ -6,38 +6,38 @@ from math   import pi
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, seut_report
 
-def linkSubpartScene(self, originScene, empty, targetCollection, collectionType = 'main'):
+
+def link_subpart_scene(self, origin_scene, empty, target_collection, collection_type = 'main'):
     """Link instances of subpart scene objects as children to empty"""
 
     context = bpy.context
-    parentCollections = get_collections(originScene)
+    current_scene = context.window.scene
+    subpart_scene = empty.seut.linkedScene
+    parent_collections = get_collections(origin_scene)
+    subpart_collections = get_collections(subpart_scene)
 
-    currentScene = bpy.context.window.scene
-    subpartScene = empty.seut.linkedScene
-
-    subpartCollections = get_collections(subpartScene)
     # Checks whether collection exists, is excluded or is empty
-    result = check_collection(self, context, subpartScene, subpartCollections[collectionType], False)
+    result = check_collection(self, context, subpart_scene, subpart_collections[collection_type], False)
     if not result == {'CONTINUE'}:
         empty.seut.linkedScene = None
         empty['file'] = None
-        return result
+        return
     
     # This prevents instancing loops.
-    for o in subpartCollections[collectionType].objects:
-        if o is not None and o.type == 'EMPTY' and o.seut.linkedScene == originScene:
-            seut_report(self, context, 'ERROR', False, 'E005', subpartScene.name, currentScene.name)
+    for obj in subpart_collections[collection_type].objects:
+        if obj is not None and obj.type == 'EMPTY' and obj.seut.linkedScene == origin_scene:
+            seut_report(self, context, 'ERROR', False, 'E005', subpart_scene.name, current_scene.name)
             empty.seut.linkedScene = None
             empty['file'] = None
-            return {'CANCEL'}
+            return
     
-    # Switch to subpartScene to get collections
-    context.window.scene = subpartScene
+    # Switch to subpart_scene to get collections
+    context.window.scene = subpart_scene
     current_area = prep_context(context)
 
-    objectsToIterate = set(subpartCollections[collectionType].objects)
+    subpart_objects = set(subpart_collections[collection_type].objects)
 
-    for obj in objectsToIterate:
+    for obj in subpart_objects:
 
         # The following is done only on a first-level subpart as
         # further-nested subparts already have empties as parents.
@@ -45,8 +45,7 @@ def linkSubpartScene(self, originScene, empty, targetCollection, collectionType 
         if obj is not None and (obj.parent is None or obj.parent.type != 'EMPTY' or not 'file' in obj.parent) and obj.name.find("(L)") == -1:
 
             obj.hide_viewport = False
-
-            existingObjects = set(subpartCollections[collectionType].objects)
+            existing_objects = set(subpart_collections[collection_type].objects)
             
             # Create instance of object
             try:
@@ -58,63 +57,60 @@ def linkSubpartScene(self, originScene, empty, targetCollection, collectionType 
 
             bpy.ops.object.duplicate(linked=True)
         
-            newObjects = set(subpartCollections[collectionType].objects)
-            createdObjects = newObjects.copy()
-            deleteObjects = set()
+            new_objects = set(subpart_collections[collection_type].objects)
+            created_objects = new_objects.copy()
+            delete_objects = set()
 
-            for obj1 in newObjects:
-                for obj2 in existingObjects:
-                    if obj1 == obj2:
-                        createdObjects.remove(obj1)
-                if obj1 in createdObjects and obj1.name.find("(L)") != -1:
-                    createdObjects.remove(obj1)
-                    deleteObjects.add(obj1)
+            for new_obj in new_objects:
+                for existing_obj in existing_objects:
+                    if new_obj == existing_obj:
+                        created_objects.remove(new_obj)
+
+                if new_obj in created_objects and new_obj.name.find("(L)") != -1:
+                    created_objects.remove(new_obj)
+                    delete_objects.add(new_obj)
             
-            for delObj in deleteObjects:
-                bpy.data.objects.remove(delObj, do_unlink=True)
+            for obj in delete_objects:
+                bpy.data.objects.remove(obj, do_unlink=True)
             
             # Rename instance
-            linkedObject = None
-            for createdObj in createdObjects:
-                createdObj.name = obj.name + " (L)"
-                linkedObject = createdObj
+            linked_object = None
+            for obj in created_objects:
+                obj.name = obj.name + " (L)"
+                linked_object = obj
 
-            if linkedObject is not None:
+            if linked_object is not None:
                 # Link instance to empty
                 try:
-                    if targetCollection is None:
-                        parentCollections[collectionType].objects.link(linkedObject)
+                    if target_collection is None:
+                        parent_collections[collection_type].objects.link(linked_object)
                     else:
-                        targetCollection.objects.link(linkedObject)
+                        target_collection.objects.link(linked_object)
                 except RuntimeError:
                     pass
-                subpartCollections[collectionType].objects.unlink(linkedObject)
-                linkedObject.parent = empty
+                subpart_collections[collection_type].objects.unlink(linked_object)
+                linked_object.parent = empty
 
-                if linkedObject.type == 'EMPTY' and linkedObject.seut.linkedScene is not None and linkedObject.seut.linkedScene.name in bpy.data.scenes and originScene.seut.linkSubpartInstances:
-                    linkSubpartScene(self, originScene, linkedObject, targetCollection)
+                if linked_object.type == 'EMPTY' and linked_object.seut.linkedScene is not None and linked_object.seut.linkedScene.name in bpy.data.scenes and origin_scene.seut.linkSubpartInstances:
+                    linksubpart_scene(self, origin_scene, linked_object, target_collection)
         
     # Switch back to previous scene
     context.area.type = current_area
-    context.window.scene = currentScene
-    
-    return {'CONTINUE'}
+    context.window.scene = current_scene
 
 
-def unlinkSubpartScene(empty):
+def unlink_subpart_scene(empty):
     """Unlinks all subpart instances from an empty"""
 
     for obj in empty.children:
-        unlinkObjectsInHierarchy(obj)
-
-    return {'CONTINUE'}
+        unlink_objects_in_hierarchy(obj)
 
 
-def unlinkObjectsInHierarchy(obj):
+def unlink_objects_in_hierarchy(obj):
     """Unlinks all objects in hierarchy of an object"""
 
     for child in obj.children:
-        unlinkObjectsInHierarchy(child)
+        unlink_objects_in_hierarchy(child)
 
     bpy.data.objects.remove(obj, do_unlink=True)
 
@@ -132,9 +128,9 @@ def get_parent_collection(context, child):
     
     return None
 
+
 def to_radians(number):
     """Converts degrees to radians"""
-
     return pi * number / 180
 
 
@@ -197,6 +193,7 @@ def toggle_scene_modes(context, mirroring, mountpoints, icon_render):
                 scn.seut.renderToggle = 'off'
 
     context.window.scene = original_scene
+
 
 def create_seut_collection(seut_collection, name: str):
     """Creates a new SEUT collection if it doesn't exist yet, else returns the existing one."""

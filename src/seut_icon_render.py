@@ -6,7 +6,7 @@ from bpy.types      import Operator
 
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report, get_abs_path
-from .seut_utils                    import get_parent_collection, to_radians, create_seut_collection, clear_selection, prep_context, seut_report
+from .seut_utils                    import to_radians, create_seut_collection, clear_selection, prep_context, seut_report
     
 
 def setup_icon_render(self, context):
@@ -53,43 +53,43 @@ def setup_icon_render(self, context):
 
     # Spawn lights
     bpy.ops.object.light_add(type='POINT', location=(-12.5, -12.5, 5.0), rotation=(0.0, 0.0, 0.0))
-    keyLight = bpy.context.view_layer.objects.active
-    keyLight.parent = empty
-    keyLight.name = 'Key Light'
-    keyLight.data.energy = 7500.0 * scene.seut.renderDistance
+    key_light = bpy.context.view_layer.objects.active
+    key_light.parent = empty
+    key_light.name = 'Key Light'
+    key_light.data.energy = 7500.0 * scene.seut.renderDistance
     
     bpy.ops.object.light_add(type='POINT', location=(10.0, -10.0, -2.5), rotation=(0.0, 0.0, 0.0))
-    fillLight = bpy.context.view_layer.objects.active
-    fillLight.parent = empty
-    fillLight.name = 'Fill Light'
-    fillLight.data.energy = 5000.0 * scene.seut.renderDistance
+    fill_light = bpy.context.view_layer.objects.active
+    fill_light.parent = empty
+    fill_light.name = 'Fill Light'
+    fill_light.data.energy = 5000.0 * scene.seut.renderDistance
     
     bpy.ops.object.light_add(type='SPOT', location=(0.0, 15.0, 0.0), rotation=(to_radians(-90), 0.0, 0.0))
-    rimLight = bpy.context.view_layer.objects.active
-    rimLight.parent = empty
-    rimLight.name = 'Rim Light'
-    rimLight.data.energy = 10000.0 * scene.seut.renderDistance
+    rim_light = bpy.context.view_layer.objects.active
+    rim_light.parent = empty
+    rim_light.name = 'Rim Light'
+    rim_light.data.energy = 10000.0 * scene.seut.renderDistance
     
-    parentCollection = get_parent_collection(context, empty)
-    if parentCollection != collection:
+    parent_collection = empty.users_collection[0]
+    if parent_collection != collection:
         collection.objects.link(empty)
         collection.objects.link(camera)
-        collection.objects.link(keyLight)
-        collection.objects.link(fillLight)
-        collection.objects.link(rimLight)
+        collection.objects.link(key_light)
+        collection.objects.link(fill_light)
+        collection.objects.link(rim_light)
 
-        if parentCollection is None:
+        if parent_collection is None:
             scene.collection.objects.unlink(empty)
             scene.collection.objects.unlink(camera)
-            scene.collection.objects.unlink(keyLight)
-            scene.collection.objects.unlink(fillLight)
-            scene.collection.objects.unlink(rimLight)
+            scene.collection.objects.unlink(key_light)
+            scene.collection.objects.unlink(fill_light)
+            scene.collection.objects.unlink(rim_light)
         else:
-            parentCollection.objects.unlink(empty)
-            parentCollection.objects.unlink(camera)
-            parentCollection.objects.unlink(keyLight)
-            parentCollection.objects.unlink(fillLight)
-            parentCollection.objects.unlink(rimLight)
+            parent_collection.objects.unlink(empty)
+            parent_collection.objects.unlink(camera)
+            parent_collection.objects.unlink(key_light)
+            parent_collection.objects.unlink(fill_light)
+            parent_collection.objects.unlink(rim_light)
 
     # Spawn compositor node tree
     scene.use_nodes = True

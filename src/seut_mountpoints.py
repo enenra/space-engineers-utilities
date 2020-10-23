@@ -6,7 +6,7 @@ from bpy.props      import EnumProperty
 
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import get_parent_collection, prep_context, to_radians, clear_selection, create_seut_collection
+from .seut_utils                    import prep_context, to_radians, clear_selection, create_seut_collection
 
 
 def setup_mountpoints(self, context):
@@ -121,7 +121,7 @@ def create_mp_empty(context, name, collection, parent):
     empty = context.view_layer.objects.active
     empty.name = name
 
-    parent_collection = get_parent_collection(context, empty)
+    parent_collection = empty.users_collection[0]
     if parent_collection != collection:
         collection.objects.link(empty)
 
@@ -153,7 +153,7 @@ def create_mp_area(context, name, size, x, y, xDim, yDim, collection, parent):
     if xDim is not None and yDim is not None:
         area.dimensions = (xDim, yDim, 0)
 
-    parent_collection = get_parent_collection(context, area)
+    parent_collection = area.users_collection[0]
     if parent_collection != collection:
         collection.objects.link(area)
 

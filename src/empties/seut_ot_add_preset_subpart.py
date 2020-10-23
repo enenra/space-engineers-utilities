@@ -54,8 +54,7 @@ class SEUT_OT_AddPresetSubpart(Operator):
 
     def execute(self, context):
         scene = context.scene
-
-        target_objects = bpy.context.view_layer.objects.selected
+        target_object = context.selected_objects[0]
 
         # Determine name strings.
         empty_name = ""
@@ -131,9 +130,12 @@ class SEUT_OT_AddPresetSubpart(Operator):
             empty.name = empty_name + str(self.index)
         else:
             empty.name = empty_name
-
-        if len(target_objects) > 0:
-            empty.parent = target_objects[0]
+            
+        if target_object != None:
+            empty.parent = target_object
+        if target_object.users_collection[0] != None:
+            empty.users_collection[0].objects.unlink(empty)
+            target_object.users_collection[0].objects.link(empty)
 
         bpy.data.objects[empty.name][custom_prop_name] = ""
         

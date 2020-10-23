@@ -13,7 +13,7 @@ from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..export.seut_custom_fbx_exporter      import save_single
 from ..seut_collections                     import get_collections, names
-from ..seut_utils                           import linkSubpartScene, unlinkSubpartScene, get_parent_collection, get_preferences
+from ..seut_utils                           import link_subpart_scene, unlink_subpart_scene, get_parent_collection, get_preferences
 
 from ..seut_errors                          import seut_report, get_abs_path
 
@@ -297,7 +297,7 @@ def export_fbx(self, context, collection) -> str:
                 reference = get_subpart_reference(empty, collections)
                 reference = correct_for_export_type(scene, reference)
                 empty['file'] = reference
-                unlinkSubpartScene(empty)
+                unlink_subpart_scene(empty)
             
             # Blender FBX export halves empty size on export, this works around it
             if 'MaxHandle' not in empty and 'file' not in empty:
@@ -344,7 +344,7 @@ def export_fbx(self, context, collection) -> str:
                             collection_type = key
                             break
                         
-                    linkSubpartScene(self, scene, empty, empty.users_collection[0], collection_type)
+                    link_subpart_scene(self, scene, empty, empty.users_collection[0], collection_type)
                     empty['file'] = reference
 
             # Resetting empty size

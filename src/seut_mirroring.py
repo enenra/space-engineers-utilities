@@ -6,7 +6,7 @@ from collections    import OrderedDict
 
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import get_parent_collection, linkSubpartScene, unlinkSubpartScene, prep_context, to_radians, clear_selection, create_seut_collection
+from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, prep_context, to_radians, clear_selection, create_seut_collection
 
 
 mirroring_presets = OrderedDict([
@@ -126,7 +126,7 @@ def setup_mirroring(self, context):
     plane_z.name = 'Z Axis Mirror Plane'
     plane_z.active_material = smat_z
 
-    parentCollection = get_parent_collection(context, empty_x)
+    parentCollection = empty_x.users_collection[0]
     if parentCollection != collection:
         collection.objects.link(empty_x)
         collection.objects.link(empty_y)
@@ -156,11 +156,11 @@ def setup_mirroring(self, context):
         source_scene = scene.seut.mirroringScene
     
     empty_x.seut.linkedScene = source_scene
-    linkSubpartScene(self, scene, empty_x, collection)
+    link_subpart_scene(self, scene, empty_x, collection)
     empty_y.seut.linkedScene = source_scene
-    linkSubpartScene(self, scene, empty_y, collection)
+    link_subpart_scene(self, scene, empty_y, collection)
     empty_z.seut.linkedScene = source_scene
-    linkSubpartScene(self, scene, empty_z, collection)
+    link_subpart_scene(self, scene, empty_z, collection)
 
     clear_selection(context)
     context.area.type = current_area
@@ -182,7 +182,7 @@ def clean_mirroring(self, context):
             save_rotation(self, context, obj)
 
             if len(obj.children) > 0:
-                unlinkSubpartScene(obj)
+                unlink_subpart_scene(obj)
 
             obj.select_set(state=False, view_layer=context.window.view_layer)
             bpy.data.objects.remove(obj)

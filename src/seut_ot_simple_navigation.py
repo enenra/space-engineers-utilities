@@ -5,6 +5,7 @@ from bpy.types import Operator
 from .seut_collections              import get_collections
 from .seut_errors                   import seut_report
 
+
 class SEUT_OT_SimpleNavigation(Operator):
     """Makes navigation through SEUT collections simpler by hiding all non-active collections"""
     bl_idname = "scene.simple_navigation"
@@ -16,7 +17,6 @@ class SEUT_OT_SimpleNavigation(Operator):
 
         scene = context.scene
         wm = context.window_manager
-
         collections = get_collections(scene)
 
         if not wm.seut.simpleNavigationToggle:

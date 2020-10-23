@@ -82,13 +82,13 @@ from .seut_bbox                         import SEUT_OT_BBox
 from .seut_bbox                         import SEUT_OT_BBoxAuto
 from .seut_mountpoints                  import SEUT_OT_AddMountpointArea
 from .seut_collections                  import SEUT_OT_RecreateCollections
-from .seut_ot_simpleNavigation          import SEUT_OT_SimpleNavigation
+from .seut_ot_simple_navigation         import SEUT_OT_SimpleNavigation
 from .seut_icon_render                  import SEUT_OT_IconRenderPreview
 from .seut_scene                        import SEUT_MountpointAreas
 from .seut_scene                        import SEUT_Scene
 from .seut_object                       import SEUT_Object
-from .seut_windowManager                import SEUT_MatLibProps
-from .seut_windowManager                import SEUT_WindowManager
+from .seut_window_manager               import SEUT_MatLibProps
+from .seut_window_manager               import SEUT_WindowManager
 
 
 classes = (

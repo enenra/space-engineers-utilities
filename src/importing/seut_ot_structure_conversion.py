@@ -7,7 +7,7 @@ from ..export.seut_export_utils      import get_subpart_reference
 from ..seut_collections              import get_collections
 from ..seut_mirroring                import save_rotation
 from ..seut_errors                   import seut_report
-from ..seut_utils                    import linkSubpartScene, get_parent_collection
+from ..seut_utils                    import link_subpart_scene, get_parent_collection
 
 
 class SEUT_OT_StructureConversion(Operator):
@@ -154,7 +154,7 @@ def convert_structure(self, context):
                 for empty in collections[key].objects:
                     if empty.type == 'EMPTY' and 'file' in empty and empty['file'] in bpy.data.scenes:
                         reference = get_subpart_reference(empty, collections)                        
-                        linkSubpartScene(self, scn, empty, collections[key], key)
+                        link_subpart_scene(self, scn, empty, collections[key], key)
                         empty['file'] = reference
 
     # Set parent scenes from subparts

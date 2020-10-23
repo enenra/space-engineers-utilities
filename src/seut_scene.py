@@ -15,12 +15,11 @@ from bpy.props  import (EnumProperty,
 from .seut_mirroring                import clean_mirroring, setup_mirroring
 from .seut_mountpoints              import clean_mountpoints, setup_mountpoints
 from .seut_icon_render              import clean_icon_render, setup_icon_render
-from .seut_collections              import get_collections, rename_collections
+from .seut_collections              import get_collections, rename_collections, names
 from .seut_errors                   import seut_report, check_export
-from .seut_utils                    import linkSubpartScene, unlinkSubpartScene, to_radians, get_parent_collection, toggle_scene_modes
+from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, to_radians, get_parent_collection, toggle_scene_modes
 
 
-# These update_* functions need to be above the class... for some reason.
 def update_GridScale(self, context):
     
     scene = context.scene
@@ -44,27 +43,31 @@ def update_GridScale(self, context):
 
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
+
 def update_MirroringToggle(self, context):
     scene = context.scene
     toggle_mode(self, context, 'MIRRORING')
 
+
 def update_mirroringScene(self, context):
     scene = context.scene
-    targetScene = scene.seut.mirroringScene
+    target_scene = scene.seut.mirroringScene
 
-    if targetScene is None:
+    if target_scene is None:
         for scn in bpy.data.scenes:
             if scn.seut.mirroringScene == scene:
                 scn.seut.mirroringScene = None
 
-    elif targetScene is not None and targetScene.seut.mirroringScene is None or targetScene.seut.mirroringScene is not scene:
+    elif target_scene is not None and target_scene.seut.mirroringScene is None or target_scene.seut.mirroringScene is not scene:
         self.mirroringScene.seut.mirroringScene = scene
 
-    bpy.ops.scene.mirroring()
+    toggle_mode(self, context, 'MIRRORING')
+
 
 def update_MountpointToggle(self, context):  
     scene = context.scene
     toggle_mode(self, context, 'MOUNTPOINT')
+
 
 def update_RenderToggle(self, context):
     scene = context.scene
@@ -110,12 +113,14 @@ def update_RenderResolution(self, context):
     scene.render.resolution_x = scene.seut.renderResolution
     scene.render.resolution_y = scene.seut.renderResolution
 
+
 def update_renderEmptyRotation(self, context):
     scene = context.scene
 
     empty = bpy.data.objects['Icon Render']
     if empty is not None:
         empty.rotation_euler = scene.seut.renderEmptyRotation
+
 
 def update_renderEmptyLocation(self, context):
     scene = context.scene
@@ -124,11 +129,13 @@ def update_renderEmptyLocation(self, context):
     if empty is not None:
         empty.location = scene.seut.renderEmptyLocation
 
+
 def update_renderColorOverlay(self, context):
     scene = context.scene
 
     if scene.node_tree.nodes['RGB'] is not None:
         scene.node_tree.nodes['RGB'].mute = scene.seut.renderColorOverlay
+
 
 def update_renderZoom(self, context):
     scene = context.scene
@@ -136,6 +143,7 @@ def update_renderZoom(self, context):
     camera = bpy.data.objects['ICON']
     if camera is not None:
         camera.data.lens = scene.seut.renderZoom
+
 
 def update_renderDistance(self, context):
     scene = context.scene
@@ -146,17 +154,18 @@ def update_renderDistance(self, context):
         empty.scale.y = self.renderDistance
         empty.scale.z = self.renderDistance
 
-    keyLight = bpy.data.objects['Key Light']
-    if keyLight is not None:
-        keyLight.data.energy = 7500.0 * scene.seut.renderDistance
+    key_light = bpy.data.objects['Key Light']
+    if key_light is not None:
+        key_light.data.energy = 7500.0 * scene.seut.renderDistance
         
-    fillLight = bpy.data.objects['Fill Light']
-    if fillLight is not None:
-        fillLight.data.energy = 5000.0 * scene.seut.renderDistance
+    fill_light = bpy.data.objects['Fill Light']
+    if fill_light is not None:
+        fill_light.data.energy = 5000.0 * scene.seut.renderDistance
         
-    rimLight = bpy.data.objects['Rim Light']
-    if rimLight is not None:
-        rimLight.data.energy = 10000.0 * scene.seut.renderDistance
+    rim_light = bpy.data.objects['Rim Light']
+    if rim_light is not None:
+        rim_light.data.energy = 10000.0 * scene.seut.renderDistance
+
 
 def update_subtypeId(self, context):
     scene = context.scene
@@ -178,6 +187,7 @@ def update_subtypeId(self, context):
         
     scene.name = scene.seut.subtypeId
 
+
 def update_linkSubpartInstances(self, context):
     scene = context.scene
     collections = get_collections(scene)
@@ -186,19 +196,17 @@ def update_linkSubpartInstances(self, context):
         if col is not None:
             for empty in col.objects:
                 if empty is not None and empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
-                    
-                    collectionType = 'main'
-                    if col == collections['bs1']:
-                        collectionType = 'bs1'
-                    elif col == collections['bs2']:
-                        collectionType = 'bs2'
-                    elif col == collections['bs3']:
-                        collectionType = 'bs3'
+
+                    collection_type = 'main'
+                    for key in names.keys():
+                        if col == collections[key]:
+                            collection_type = key
+                            break
 
                     if scene.seut.linkSubpartInstances:
-                        linkSubpartScene(self, scene, empty, col, collectionType)
+                        link_subpart_scene(self, scene, empty, col, collection_type)
                     else:
-                        unlinkSubpartScene(empty)
+                        unlink_subpart_scene(empty)
 
 
 def update_export_largeGrid(self, context):
@@ -228,6 +236,7 @@ def update_export_exportPath(self, context):
 
 def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'mainScene'
+
 
 class SEUT_MountpointAreas(PropertyGroup):
     
@@ -267,6 +276,7 @@ class SEUT_MountpointAreas(PropertyGroup):
         name="Pressurized",
         default=False
     )
+
 
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
