@@ -203,10 +203,6 @@ def export_hkt(self, context):
     
     for obj in collections['hkt'].objects:
 
-        # Check for missing UVMs (this might not be 100% reliable)
-        if check_uvms(obj) != {'CONTINUE'}:
-            return {'CANCELLED'}
-
         # Check for unapplied modifiers
         if len(obj.modifiers) > 0:
             seut_report(self, context, 'ERROR', True, 'E034', obj.name)
