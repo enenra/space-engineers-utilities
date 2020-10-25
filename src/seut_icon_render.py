@@ -195,7 +195,7 @@ class SEUT_OT_IconRenderPreview(Operator):
 
         for col in collections.values():
             if col is not None:
-                if col.name == 'Main' + tag:
+                if col.name == 'Main' + tag or col.name == 'Render' + tag:
                     for obj in col.objects:
                         obj.hide_render = False
                         obj.hide_viewport = False
