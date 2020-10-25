@@ -93,7 +93,7 @@ def link_subpart_scene(self, origin_scene, empty, target_collection, collection_
 
                 if linked_object.type == 'EMPTY' and linked_object.seut.linkedScene is not None and linked_object.seut.linkedScene.name in bpy.data.scenes and origin_scene.seut.linkSubpartInstances:
                     link_subpart_scene(self, origin_scene, linked_object, target_collection)
-        
+
     # Switch back to previous scene
     context.area.type = current_area
     context.window.scene = current_scene

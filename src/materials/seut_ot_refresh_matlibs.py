@@ -37,7 +37,7 @@ def refresh_matlibs(self, context):
     new_set = set()
 
     for file in os.listdir(materials_path):
-        if file is not None and file.endswith(".blend") and file.find("MatLib_") != -1:
+        if file is not None and file.endswith(".blend") and file.lower().find("matlib_") != -1:
             new_set.add(file)
 
     # Add everything in the directory that is not already in the set to the set
@@ -58,8 +58,11 @@ def refresh_matlibs(self, context):
             continue
         else:
             for index in range(0, len(wm.seut.matlibs)):
-                if wm.seut.matlibs[index].name == lib.name:
-                    wm.seut.matlibs.remove(index)
+                try:
+                    if wm.seut.matlibs[index].name == lib.name:
+                        wm.seut.matlibs.remove(index)
+                except IndexError:
+                    pass
     
     # Finally, attempt to re-link any MatLibs with broken paths
     try:
