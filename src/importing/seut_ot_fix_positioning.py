@@ -2,6 +2,8 @@ import bpy
 
 from bpy.types      import Operator
 
+from ..seut_errors  import seut_report
+
 
 class SEUT_OT_FixPositioning(Operator):
     """Attempts to fix the positioning of an imported object and its children"""
