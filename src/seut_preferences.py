@@ -192,6 +192,10 @@ def unload_icons():
     preview_collections.clear()
 
 
+def get_icons() -> dict:
+    return preview_collections
+
+
 def verify_tool_path(self, context, path: str, name: str, filename: str) -> str:
     """Verifies the path of an external tool"""
 
