@@ -5,7 +5,10 @@ from bpy.types  import Operator, AddonPreferences
 from bpy.props  import BoolProperty, StringProperty, EnumProperty
 
 from .seut_errors   import seut_report, get_abs_path
-        
+
+
+preview_collections = {}
+
 
 def update_set_dev_paths(self, context):
     scene = context.scene
@@ -141,8 +144,13 @@ class SEUT_AddonPreferences(AddonPreferences):
 
         current_version_name = 'v' + str(get_addon_version()).replace("(", "").replace(")", "").replace(", ", ".")
 
-        split = layout.split(factor=0.95)
+        preview_collections = get_icons()
+        pcoll = preview_collections['main']
+
+        split = layout.split(factor=0.90)
         split.label(text="")
+        split = split.split(factor=0.5)
+        split.operator('wm.discord_link', text="", icon_value=pcoll['discord'].icon_id)
         link = split.operator('wm.semref_link', text="", icon='INFO')
         link.section = 'reference'
         link.page = 'preferences'
@@ -166,6 +174,22 @@ class SEUT_AddonPreferences(AddonPreferences):
         box.prop(self, "mwmb_path", expand=True)
         box.prop(self, "fbx_importer_path", expand=True)
         box.prop(self, "havok_path", expand=True)
+
+
+def load_icons():
+    import bpy.utils.previews
+    icon_discord = bpy.utils.previews.new()
+    icon_dir = os.path.join(os.path.dirname(__file__), "assets")
+    icon_discord.load("discord", os.path.join(icon_dir, "discord.png"), 'IMAGE')
+
+    preview_collections['main'] = icon_discord
+
+
+def unload_icons():
+    
+    for pcoll in preview_collections.values():
+        bpy.utils.previews.remove(pcoll)
+    preview_collections.clear()
 
 
 def verify_tool_path(self, context, path: str, name: str, filename: str) -> str:

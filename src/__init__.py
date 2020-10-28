@@ -68,9 +68,11 @@ from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEF
 from .utils.seut_updater                        import check_update
 from .utils.seut_updater                        import SEUT_OT_GetUpdate
 from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
+from .utils.seut_ot_discord_link                import SEUT_OT_DiscordLink
 
 from .seut_preferences                  import SEUT_AddonPreferences
 from .seut_preferences                  import get_addon_version
+from .seut_preferences                  import load_icons, unload_icons
 from .seut_pt_toolbar                   import SEUT_PT_Panel
 from .seut_pt_toolbar                   import SEUT_PT_Panel_BoundingBox
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Mirroring
@@ -106,6 +108,7 @@ classes = (
     SEUT_MT_ContextMenu,
     SEUT_OT_GetUpdate,
     SEUT_OT_SEMREFLink,
+    SEUT_OT_DiscordLink,
     SEUT_OT_AddHighlightEmpty,
     SEUT_OT_AddDummy,
     SEUT_OT_AddPresetSubpart,
@@ -155,6 +158,8 @@ def register():
 
     seut_preferences.addon_version = bl_info['version']
 
+    load_icons()
+
 
 def unregister():
     for cls in reversed(classes):
@@ -169,6 +174,8 @@ def unregister():
     del bpy.types.WindowManager.seut
 
     bpy.app.handlers.load_post.remove(load_handler)
+
+    unload_icons()
 
 
 def menu_func(self, context):
