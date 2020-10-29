@@ -7,7 +7,7 @@ from bpy.types              import Operator
 
 url = "http://api.github.com/repos/enenra/space-engineers-utilities/tags"
 
-version = re.compile(r"v[0-9] + \.[0-9] + \.[0-9] + ")
+version = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+")
 
 
 class SEUT_OT_GetUpdate(Operator):
