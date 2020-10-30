@@ -206,15 +206,14 @@ class SEUT_OT_IconRenderPreview(Operator):
 
         # This path juggling is to prevent Blender from saving the default render output
         path = scene.render.filepath
-        scene.render.filepath = scene.render.filepath + "//" + scene.seut.subtypeId
+        scene.render.filepath = get_abs_path(scene.render.filepath) + "\\" + scene.seut.subtypeId + '.' + scene.render.image_settings.file_format.lower()
 
         bpy.ops.render.render()
         bpy.ops.render.view_show('INVOKE_DEFAULT')
         area = bpy.context.window_manager.windows[-1].screen.areas[0]
         image = area.spaces.active.image
         area.spaces.active.image = bpy.data.images['Viewer Node']
-
-        scene.render.filepath = path
+        bpy.data.images['Viewer Node'].save_render(scene.render.filepath)
         
         for col in collections.values():
             if col is not None:
@@ -224,6 +223,8 @@ class SEUT_OT_IconRenderPreview(Operator):
 
         wm.seut.simpleNavigationToggle = simple_nav
 
-        seut_report(self, context, 'INFO', True, 'I018', scene.render.filepath + "\\" + scene.seut.subtypeId + '.' + scene.render.image_settings.file_format.lower())
+        seut_report(self, context, 'INFO', True, 'I018', scene.render.filepath)
+
+        scene.render.filepath = path
 
         return {'FINISHED'}
