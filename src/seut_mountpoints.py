@@ -4,6 +4,7 @@ from math           import pi
 from bpy.types      import Operator
 from bpy.props      import EnumProperty
 
+from .materials.seut_materials      import create_internal_material
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
 from .seut_utils                    import prep_context, to_radians, clear_selection, create_seut_collection
@@ -25,11 +26,10 @@ def setup_mountpoints(self, context):
     for mat in bpy.data.materials:
         if mat.name == 'SMAT_Mountpoint':
             smat_mp = mat
+            break
     
     if smat_mp is None:
-        seut_report(self, context, 'ERROR', False, 'E026', "Mountpoint Material")
-        scene.seut.mountpointToggle = 'off'
-        return
+        smat_mp = create_internal_material(context, 'MOUNTPOINT')
         
     tag = ' (' + scene.seut.subtypeId + ')'
 

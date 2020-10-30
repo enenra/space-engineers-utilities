@@ -4,6 +4,7 @@ from math           import pi
 from bpy.types      import Operator
 from collections    import OrderedDict
 
+from .materials.seut_materials      import create_internal_material
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
 from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, prep_context, to_radians, clear_selection, create_seut_collection
@@ -54,22 +55,24 @@ def setup_mirroring(self, context):
         scene.seut.mirroringToggle = 'off'
         return
 
-    mats = 0
+    smat_x = None
+    smat_y = None
+    smat_z = None
+
     for mat in bpy.data.materials:
         if mat.name == 'SMAT_Mirror_X':
             smat_x = mat
-            mats += 1
         elif mat.name == 'SMAT_Mirror_Y':
             smat_y = mat
-            mats += 1
         elif mat.name == 'SMAT_Mirror_Z':
             smat_z = mat
-            mats += 1
     
-    if mats != 3:
-        seut_report(self, context, 'ERROR', False, 'E026', "Mirror Axis Materials")
-        scene.seut.mirroringToggle = 'off'
-        return
+    if smat_x is None:
+        smat_x = create_internal_material(context, 'MIRROR_X')
+    if smat_y is None:
+        smat_y = create_internal_material(context, 'MIRROR_Y')
+    if smat_z is None:
+        smat_z = create_internal_material(context, 'MIRROR_Z')
         
     tag = ' (' + scene.seut.subtypeId + ')'
 
