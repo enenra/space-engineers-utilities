@@ -259,8 +259,7 @@ class SEUT_OT_AddMountpointArea(Operator):
                 smat_mp = mat
         
         if smat_mp is None:
-            seut_report(self, context, 'ERROR', True, 'E026', "Mountpoint Material")
-            return {'CANCELLED'}
+            smat_mp = create_internal_material(context, 'MOUNTPOINT')
 
         # The 3D cursor is used as the origin. If it's not on center, everything is misaligned ingame.
         cursor_location = scene.cursor.location.copy()

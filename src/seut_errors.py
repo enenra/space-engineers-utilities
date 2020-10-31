@@ -28,7 +28,7 @@ errors = {
     'E023': "SEUT: Empty '{variable_1}' has incorrect rotation value: {variable_2} (E023)",
     'E024': "SEUT: Collection 'Mountpoints ({variable_1})' not found. Disable and then re-enable Mountpoint Mode to recreate! (E024)",
     'E025': "SEUT: Cannot create highlight empty for object outside of 'Main' collection. (E025)",
-    'E026': "SEUT: Cannot find {variable_1}. Re-link 'MatLib_Presets'! (E026)",
+    'E026': "SEUT: Filename incorrect: BLEND-filename must start with 'MatLib_' to create a valid MatLib. (E026)",
     'E027': "SEUT: 'Mountpoints {variable_1}' not found. Disable and then re-enable Mountpoint Mode to recreate! (E027)",
     'E028': "SEUT: Object is not an Armature. (E028)",
     'E029': "SEUT: No Armature selected. (E029)",
@@ -40,7 +40,6 @@ errors = {
     'E035': "SEUT: There was an error during export caused by {variable_1}. Please refer to the logs in your export folder for details. (E035)",
     'E036': "SEUT: An error has occurred in the FBX exporter. Try exiting Edit-Mode before exporting. (E036)",
     'E037': "SEUT: Scene '{variable_1}' could not be exported. (E037)",
-    'E038': "SEUT: Filename incorrect: BLEND-filename must start with 'MatLib_' to create a valid MatLib. (E038)",
 }
 
 warnings = {

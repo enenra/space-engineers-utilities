@@ -165,8 +165,7 @@ class SEUT_PT_Panel_MatLib(Panel):
 def create_internal_material(context, mat_type: str):
     """Creates a preset internal SEUT material"""
 
-    bpy.data.materials.new(name="SEUT_TEMP")
-    material = bpy.data.materials['SEUT_TEMP']
+    material = bpy.data.materials.new(name="SEUT_TEMP")
     material.use_nodes = True
     nodes = material.node_tree.nodes
     

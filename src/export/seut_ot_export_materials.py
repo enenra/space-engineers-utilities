@@ -33,7 +33,7 @@ def export_materials(self, context):
     filename = bpy.path.basename(bpy.context.blend_data.filepath)[:offset]
 
     if not filename.startswith("MatLib_"):
-        seut_report(self, context, 'ERROR', True, 'E038')
+        seut_report(self, context, 'ERROR', True, 'E026')
         return {'FILE_NAME_WRONG'}
     
     # This culls the MatLb_ from the filename
