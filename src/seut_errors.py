@@ -2,6 +2,7 @@ import bpy
 import os
 import collections
 
+
 errors = {
     'E001': "SEUT: Import error. Imported object not found. (E001)",
     'E002': "SEUT: Collection {variable_1} not found, excluded from view layer or empty. Action not possible. (E002)",
@@ -55,14 +56,6 @@ warnings = {
     'W010': "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2.",
     'W011': "SEUT: Library '{variable_1}' could not be relocated in '{variable_2}'.",
     'W012': "SEUT: Could not remove unused material slots for object '{variable_1}'.",
-    'W013': "SEUT: ",
-    'W014': "SEUT: ",
-    'W015': "SEUT: ",
-    'W016': "SEUT: ",
-    'W017': "SEUT: ",
-    'W018': "SEUT: ",
-    'W019': "SEUT: ",
-    'W020': "SEUT: ",
 }
 
 infos = {
@@ -84,8 +77,6 @@ infos = {
     'I016': "SEUT: Empty '{variable_1}' rotation {variable_2} registered as: {variable_3}",
     'I017': "SEUT: Mountpoint Area {variable_1} saved. {variable_2} {variable_3}",
     'I018': "SEUT: Icon successfully saved to '{variable_1}'.",
-    'I019': "SEUT: ",
-    'I020': "SEUT: ",
 }
 
 
