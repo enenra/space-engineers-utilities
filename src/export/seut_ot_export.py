@@ -163,7 +163,7 @@ def export_main(self, context):
             unparented_objects += 1
         
         # Check for missing UVMs (this might not be 100% reliable)
-        if check_uvms(obj) != {'CONTINUE'}:
+        if check_uvms(self, obj) != {'CONTINUE'}:
             return {'CANCELLED'}  
     
     # Check for armatures being present in collection
@@ -261,17 +261,17 @@ def export_bs(self, context):
     # Check for missing UVMs (this might not be 100% reliable)
     if bs1_valid:
         for obj in collections['bs1'].objects:
-            if check_uvms(obj) != {'CONTINUE'}:
+            if check_uvms(self, obj) != {'CONTINUE'}:
                 return {'CANCELLED'}
     
     if bs2_valid:
         for obj in collections['bs2'].objects:
-            if check_uvms(obj) != {'CONTINUE'}:
+            if check_uvms(self, obj) != {'CONTINUE'}:
                 return {'CANCELLED'}
     
     if bs3_valid:
         for obj in collections['bs3'].objects:
-            if check_uvms(obj) != {'CONTINUE'}:
+            if check_uvms(self, obj) != {'CONTINUE'}:
                 return {'CANCELLED'}
 
     if bs1_valid:
@@ -324,22 +324,22 @@ def export_lod(self, context):
     # Check for missing UVMs (this might not be 100% reliable)
     if lod1_valid:
         for obj in collections['lod1'].objects:
-            if check_uvms(obj) != {'CONTINUE'}:
+            if check_uvms(self, obj) != {'CONTINUE'}:
                 return {'CANCELLED'}
 
     if lod2_valid:
         for obj in collections['lod2'].objects:
-            if check_uvms(obj) != {'CONTINUE'}:
+            if check_uvms(self, obj) != {'CONTINUE'}:
                 return {'CANCELLED'}
     
     if lod3_valid:
         for obj in collections['lod3'].objects:
-            if check_uvms(obj) != {'CONTINUE'}:
+            if check_uvms(self, obj) != {'CONTINUE'}:
                 return {'CANCELLED'}
     
     if bs_lod_valid:
         for obj in collections['bs_lod'].objects:
-            if check_uvms(obj) != {'CONTINUE'}:
+            if check_uvms(self, obj) != {'CONTINUE'}:
                 return {'CANCELLED'}
 
     if lod1_valid:
