@@ -173,7 +173,7 @@ def check_collection_excluded(scene, collection) -> bool:
     return False
 
 
-def check_uvms(self, obj):
+def check_uvms(self, context, obj):
     """Checks whether object has UV layers"""
 
     if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:

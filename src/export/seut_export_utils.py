@@ -371,6 +371,8 @@ def get_subpart_reference(empty, collections: dict) -> str:
         if parent_collection.name[:2] == 'BS' and parent_collection == collections[key]:
             return empty.seut.linkedScene.seut.subtypeId + "_" + names[key]
 
+    return empty.seut.linkedScene.seut.subtypeId
+
 
 def correct_for_export_type(scene, reference: str) -> str:
     """Corrects reference depending on export type (large / small) selected."""
