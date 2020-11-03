@@ -103,6 +103,13 @@ def setup_icon_render(self, context):
     node_bright_contrast = tree.nodes.new(type='CompositorNodeBrightContrast')
     node_viewer = tree.nodes.new(type='CompositorNodeViewer')
 
+    node_render_layers.location = (-862.5000, 294.5000)
+    node_color_correction.location = (-462.5000, 294.5000)
+    node_rgb.location = (-462.5000, -68.5000)
+    node_mix_rgb.location = (137.5000, 294.5000)
+    node_bright_contrast.location = (412.5000, 294.5000)
+    node_viewer.location = (687.5000, 294.5000)
+
     tree.links.new(node_render_layers.outputs[0], node_color_correction.inputs[0])
     tree.links.new(node_color_correction.outputs[0], node_mix_rgb.inputs[1])
     tree.links.new(node_rgb.outputs[0], node_mix_rgb.inputs[2])
@@ -193,16 +200,20 @@ class SEUT_OT_IconRenderPreview(Operator):
 
         collections = get_collections(scene)
 
+        # This is done in two steps so that objects which are in the main collection as well as other collections are guaranteed to be visible.
+        for col in collections.values():
+            if col is not None:
+                if col.name != 'Main' + tag and col.name != 'Render' + tag:
+                    for obj in col.objects:
+                        obj.hide_render = True
+                        obj.hide_viewport = True
+
         for col in collections.values():
             if col is not None:
                 if col.name == 'Main' + tag or col.name == 'Render' + tag:
                     for obj in col.objects:
                         obj.hide_render = False
                         obj.hide_viewport = False
-                else:
-                    for obj in col.objects:
-                        obj.hide_render = True
-                        obj.hide_viewport = True
 
         # This path juggling is to prevent Blender from saving the default render output
         path = scene.render.filepath
