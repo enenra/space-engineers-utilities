@@ -13,7 +13,7 @@ from ..seut_utils                    import link_subpart_scene, get_parent_colle
 class SEUT_OT_StructureConversion(Operator):
     """Ports blend files created with the old plugin to the new structure"""
     bl_idname = "wm.convert_structure"
-    bl_label = "Convert to new structure"
+    bl_label = "Convert to New Structure"
     bl_options = {'REGISTER', 'UNDO'}
 
 
@@ -82,6 +82,8 @@ def convert_structure(self, context):
         # Convert custom properties of empties from harag's to the default blender method.
         for obj in scn.objects:
             if obj.type == 'EMPTY':
+
+                obj.hide_select = False
 
                 obj.empty_display_type = 'CUBE'
                 for key in empty_types.keys():
