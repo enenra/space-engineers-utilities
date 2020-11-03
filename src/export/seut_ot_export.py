@@ -370,7 +370,7 @@ def export_mwm(self, context):
         mwmbuilder(self, context, path, path, settings, mwmfile, materials_path)
     finally:
         if scene.seut.export_deleteLooseFiles:
-            delete_loose_files(path)
+            delete_loose_files(self, context, path)
 
     return {'FINISHED'}
 

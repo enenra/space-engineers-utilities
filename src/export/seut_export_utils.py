@@ -140,7 +140,7 @@ def add_subelement(parent, name: str, value):
     param.text = str(value)
 
 
-def create_texture_entry(mat_entry, mat_name: str, images: dict, tex_type: str, tex_name: str, tex_name_long: str, ):
+def create_texture_entry(self, context, mat_entry, mat_name: str, images: dict, tex_type: str, tex_name: str, tex_name_long: str, ):
     """Creates a texture entry for a texture type into the XML tree"""
     
     rel_path = create_relative_path(images[tex_type].filepath, "Textures")
@@ -213,13 +213,13 @@ def create_mat_entry(self, context, tree, mat):
 
     else:
         if not images['cm'] == None:
-            create_texture_entry(mat_entry, mat.name, images, 'cm', 'CM', 'ColorMetalTexture')
+            create_texture_entry(self, context, mat_entry, mat.name, images, 'cm', 'CM', 'ColorMetalTexture')
         if not images['ng'] == None:
-            create_texture_entry(mat_entry, mat.name, images, 'ng', 'NG', 'NormalGlossTexture')
+            create_texture_entry(self, context, mat_entry, mat.name, images, 'ng', 'NG', 'NormalGlossTexture')
         if not images['add'] == None:
-            create_texture_entry(mat_entry, mat.name, images, 'add', 'ADD', 'AddMapsTexture')
+            create_texture_entry(self, context, mat_entry, mat.name, images, 'add', 'ADD', 'AddMapsTexture')
         if not images['am'] == None:
-            create_texture_entry(mat_entry, mat.name, images, 'am', 'ALPHAMASK', 'AlphamaskTexture')
+            create_texture_entry(self, context, mat_entry, mat.name, images, 'am', 'ALPHAMASK', 'AlphamaskTexture')
         
         seut_report(self, context, 'INFO', False, 'I002', mat.name)
 
@@ -550,7 +550,7 @@ def write_to_log(logfile, content, cmdline=None, cwd=None, loglines=[]):
 
         log.write(content)
 
-def delete_loose_files(path):
+def delete_loose_files(self, context, path):
     fileRemovalList = [fileName for fileName in glob.glob(path + "*.*") if "fbx" in fileName or
         "xml" in fileName or "hkt" in fileName or "log" in fileName]
 
