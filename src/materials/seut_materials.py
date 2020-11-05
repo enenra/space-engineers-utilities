@@ -131,7 +131,6 @@ class SEUT_PT_Panel_Materials(Panel):
         link.section = 'tutorials'
         link.page = 'create-material'
 
-        box.prop(wm.seut, 'matPreset', icon='PRESET')
         box.operator('object.create_material', icon='ADD')
 
 

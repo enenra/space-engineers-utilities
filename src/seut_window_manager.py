@@ -39,18 +39,30 @@ def update_enabled(self, context):
 
     else:
         with bpy.data.libraries.load(materials_path + "\\" + self.name, link=True) as (data_from, data_to):
+            keep_img = []
+            for mat in data_from.materials:
+                material = bpy.data.materials[mat]
 
-                for mat in data_from.materials:
-                    if mat in bpy.data.materials and bpy.data.materials[mat].library is not None and bpy.data.materials[mat].library.name == self.name:
-                        bpy.data.materials.remove(bpy.data.materials[mat], do_unlink=True)
+                if material.name in bpy.data.materials and material.library is not None and material.library.name == self.name:
+                    bpy.data.materials.remove(material, do_unlink=True)
 
-                for img in data_from.images:
-                    if img in bpy.data.images and bpy.data.images[img].library is not None and bpy.data.images[img].library.name == self.name:
-                        bpy.data.images.remove(bpy.data.images[img], do_unlink=True)
+                elif material.name in bpy.data.materials and material.library is None:
+                    for node in material.node_tree.nodes:
+                        if node.type == 'TEX_IMAGE' and (node.label == 'CM' or node.label == 'ADD' or node.label == 'NG' or node.label == 'ALPHAMASK'):
+                            keep_img.append(node.image.name)
 
-                for node_group in data_from.node_groups:
-                    if node_group in bpy.data.node_groups and bpy.data.node_groups[node_group].library is not None and bpy.data.node_groups[node_group].library.name == self.name:
-                        bpy.data.node_groups.remove(bpy.data.node_groups[node_group], do_unlink=True)
+            for img in data_from.images:
+                image = bpy.data.images[img]
+                if image.name in bpy.data.images and image.library is not None and image.library.name == self.name:
+                    if image.name in keep_img:
+                        image.make_local()
+                    else:
+                        bpy.data.images.remove(image, do_unlink=True)
+
+            for ng in data_from.node_groups:
+                node_group = bpy.data.node_groups[ng]
+                if node_group.name in bpy.data.node_groups and node_group.library is not None and node_group.library.name == self.name:
+                    bpy.data.node_groups.remove(node_group, do_unlink=True)
                         
 
 class SEUT_MatLibProps(PropertyGroup):
@@ -103,20 +115,6 @@ class SEUT_WindowManager(PropertyGroup):
     )
     
     # Materials
-    matPreset: EnumProperty(
-        name='Preset',
-        description="Select a nodetree preset for your material",
-        items=(
-            ('SMAT_Preset_Full', 'Full', '[X] CM\n[X] Emissive\n[X] ADD\n[X] NG\n[X] Alpha'),
-            ('SMAT_Preset_Full_NoEmissive', 'No Emissive', '[X] CM\n[_] Emissive\n[X] ADD\n[X] NG\n[X] Alpha'),
-            ('SMAT_Preset_Full_NoADD', 'Full, No ADD', '[X] CM\n[_] Emissive\n[_] ADD\n[X] NG\n[X] Alpha'),
-            ('SMAT_Preset_NoAlpha', 'No Alpha', '[X] CM\n[X] Emissive\n[X] ADD\n[X] NG\n[_] Alpha'),
-            ('SMAT_Preset_NoAlpha_NoEmissive', 'No Alpha, No Emissive', '[X] CM\n[_] Emissive\n[X] ADD\n[X] NG\n[_] Alpha'),
-            ('SMAT_Preset_NoADD', 'No ADD', '[X] CM\n[_] Emissive\n[_] ADD\n[X] NG\n[_] Alpha'),
-            ('SMAT_Preset_NoCM_NoADD', 'No CM, No ADD', '[_] CM\n[_] Emissive\n[_] ADD\n[X] NG\n[X] Alpha')
-            ),
-        default='SMAT_Preset_Full'
-    )
     matlibs: CollectionProperty(
         type=SEUT_MatLibProps
     )
