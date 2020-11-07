@@ -52,8 +52,7 @@ warnings = {
     'W007': "SEUT: Highlight empty '{variable_1}' and its linked object '{variable_2}' have different parent objects. This may prevent the empty from working properly ingame.",
     'W008': "SEUT: Scene '{variable_1}' is of type '{variable_2}' but does not contain any armatures.",
     'W009': "SEUT: Scene '{variable_1}'  is of type '{variable_2}' but contains armatures.",
-    'W010': "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2.",
-    'W011': "SEUT: Library '{variable_1}' could not be relocated in '{variable_2}'.",
+    'W010': "SEUT: Library '{variable_1}' could not be relocated in '{variable_2}'.",
 }
 
 infos = {
