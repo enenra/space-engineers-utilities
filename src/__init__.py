@@ -69,6 +69,7 @@ from .utils.seut_updater                        import check_update
 from .utils.seut_updater                        import SEUT_OT_GetUpdate
 from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
 from .utils.seut_ot_discord_link                import SEUT_OT_DiscordLink
+from .utils.seut_ot_issue_display               import SEUT_OT_IssueDisplay
 
 from .seut_preferences                  import SEUT_AddonPreferences
 from .seut_preferences                  import get_addon_version
@@ -89,6 +90,7 @@ from .seut_icon_render                  import SEUT_OT_IconRenderPreview
 from .seut_scene                        import SEUT_MountpointAreas
 from .seut_scene                        import SEUT_Scene
 from .seut_object                       import SEUT_Object
+from .seut_window_manager               import SEUT_IssueProperty
 from .seut_window_manager               import SEUT_MatLibProps
 from .seut_window_manager               import SEUT_WindowManager
 
@@ -109,6 +111,7 @@ classes = (
     SEUT_OT_GetUpdate,
     SEUT_OT_SEMREFLink,
     SEUT_OT_DiscordLink,
+    SEUT_OT_IssueDisplay,
     SEUT_OT_AddHighlightEmpty,
     SEUT_OT_AddDummy,
     SEUT_OT_AddPresetSubpart,
@@ -135,6 +138,7 @@ classes = (
     SEUT_MountpointAreas,
     SEUT_Scene,
     SEUT_Object,
+    SEUT_IssueProperty,
     SEUT_MatLibProps,
     SEUT_WindowManager,
     SEUT_UL_MatLib,

@@ -152,7 +152,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         split = split.split(factor=0.5)
         split.operator('wm.discord_link', text="", icon_value=pcoll['discord'].icon_id)
         link = split.operator('wm.semref_link', text="", icon='INFO')
-        link.section = 'reference'
+        link.section = 'reference/'
         link.page = 'preferences'
 
         row = layout.row()

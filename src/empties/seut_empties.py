@@ -55,7 +55,7 @@ class SEUT_PT_EmptyLink(Panel):
             split = layout.split(factor=0.92)
             split.prop(empty.seut, 'linkedScene', text="",)
             link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'tutorials'
+            link.section = 'tutorials/'
             link.page = 'subparts'
 
         elif 'highlight' in empty:
@@ -63,5 +63,5 @@ class SEUT_PT_EmptyLink(Panel):
             split = layout.split(factor=0.92)
             split.prop(empty.seut, 'linkedObject', text="",)
             link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'tutorials'
+            link.section = 'tutorials/'
             link.page = 'interaction-highlights'

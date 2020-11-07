@@ -63,7 +63,34 @@ def update_enabled(self, context):
                 node_group = bpy.data.node_groups[ng]
                 if node_group.name in bpy.data.node_groups and node_group.library is not None and node_group.library.name == self.name:
                     bpy.data.node_groups.remove(node_group, do_unlink=True)
-                        
+
+
+class SEUT_IssueProperty(PropertyGroup):
+    """Holder for issue information"""
+
+    timestamp: FloatProperty(
+        subtype='TIME',
+        unit='TIME'
+    )
+    issue_type: EnumProperty(
+        name='Info Type',
+        items=(
+            ('INFO', 'INFO', ''),
+            ('WARNING', 'WARNING', ''),
+            ('ERROR', 'ERROR', '')
+            ),
+        default='INFO'
+    )
+    text: StringProperty(
+        name="Text"
+    )
+    code: StringProperty(
+        name="Code"
+    )
+    reference: StringProperty(
+        name="Reference Name"
+    )
+
 
 class SEUT_MatLibProps(PropertyGroup):
     """Holder for the various MatLib properties"""
@@ -129,4 +156,15 @@ class SEUT_WindowManager(PropertyGroup):
     )
     latest_version: StringProperty(
         name="Latest Version"
+    )
+
+    # Issues
+    issues: CollectionProperty(
+        type=SEUT_IssueProperty
+    )
+    issue_index: IntProperty(
+        default=0
+    )
+    issue_alert: BoolProperty(
+        default=False
     )

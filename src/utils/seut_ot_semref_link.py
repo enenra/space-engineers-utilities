@@ -15,11 +15,13 @@ class SEUT_OT_SEMREFLink(Operator):
 
     page: StringProperty()
 
+    code: StringProperty()
+
 
     def execute(self, context):
 
         wm = context.window_manager
 
-        webbrowser.open("https://space-engineers-modding.github.io/modding-reference/" + self.section + "/tools/3d-modelling/seut/" + self.page + ".html")
+        webbrowser.open("https://space-engineers-modding.github.io/modding-reference/" + self.section + "tools/3d-modelling/seut/" + self.page + ".html" + self.code)
         
         return {'FINISHED'}

@@ -38,7 +38,7 @@ class SEUT_PT_Panel(Panel):
             split = box.split(factor=0.85)
             split.label(text=scene.name, icon_value=layout.icon(scene))
             link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'reference'
+            link.section = 'reference/'
             link.page = 'main-panel'
 
             box.prop(scene.seut, 'sceneType')
@@ -60,10 +60,15 @@ class SEUT_PT_Panel(Panel):
             split = layout.split(factor=0.85)
             split.operator('scene.recreate_collections', icon='COLLECTION_NEW')
             link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'reference'
+            link.section = 'reference/'
             link.page = 'outliner'
             
             layout.prop(wm.seut, 'simpleNavigationToggle')
+
+            row = layout.row()
+            if wm.seut.issue_alert:
+                row.alert = True
+            row.operator('wm.issue_display', icon='INFO')
 
 
 class SEUT_PT_Panel_BoundingBox(Panel):
@@ -127,7 +132,7 @@ class SEUT_PT_Panel_Mirroring(Panel):
                 row = split.row()
                 row.prop(scene.seut, 'mirroringToggle', expand=True)
                 link = split.operator('wm.semref_link', text="", icon='INFO')
-                link.section = 'tutorials'
+                link.section = 'tutorials/'
                 link.page = 'mirroring'
                 
                 layout.prop(scene.seut, 'mirroringScene', text="Model", icon='MOD_MIRROR')
@@ -161,7 +166,7 @@ class SEUT_PT_Panel_Mountpoints(Panel):
                 row = split.row()
                 row.prop(scene.seut, 'mountpointToggle', expand=True)
                 link = split.operator('wm.semref_link', text="", icon='INFO')
-                link.section = 'tutorials'
+                link.section = 'tutorials/'
                 link.page = 'mountpoints'
 
                 if not context.active_object is None and context.active_object.name in bpy.data.collections['Mountpoints (' + scene.seut.subtypeId + ')'].objects and not context.active_object.type == 'EMPTY':

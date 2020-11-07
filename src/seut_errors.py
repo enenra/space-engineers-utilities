@@ -1,6 +1,7 @@
 import bpy
 import os
 import collections
+import time
 
 
 errors = {
@@ -225,14 +226,44 @@ def seut_report(self, context, report_type: str, can_report: bool, code: str, va
 
     # bpy.ops.message.popup_message(p_type='ERROR', p_text=text, p_link=link)
 
-    if can_report:
-        self.report({report_type}, text)
+    # if can_report:
+    #     self.report({report_type}, text)
 
-    else:
-        if report_type == 'ERROR':
-            show_popup_report(context, "Report: Error", text)
-            print("Error: " + text)
-        elif report_type == 'WARNING':
-            print("Warning: " + text)
-        elif report_type == 'INFO':
-            print("Info: " + text)
+    # else:
+    if report_type == 'ERROR':
+        show_popup_report(context, "Report: Error", text)
+        print("Error: " + text)
+    elif report_type == 'WARNING':
+        print("Warning: " + text)
+    elif report_type == 'INFO':
+        print("Info: " + text)
+    
+    add_to_issues(context, report_type, text, code, None)
+
+
+def add_to_issues(context, issue_type: str, text: str, code: str, reference: str):
+    """Adds an entry to the SEUT issues list"""
+
+    wm = context.window_manager
+    issues = wm.seut.issues
+
+    while len(issues) > 19:
+        oldest = None
+        for index in range(0, len(issues)):
+            if oldest == None:
+                oldest = index
+            elif issues[index].timestamp < oldest:
+                oldest = index
+    
+        issues.remove(oldest)
+    
+    issue = issues.add()
+    issue.timestamp = time.time()
+    issue.issue_type = issue_type
+    issue.text = text
+    if code is not None:
+        issue.code = code
+    if reference is not None:
+        issue.reference = reference
+    if issue_type == 'ERROR':
+        wm.seut.issue_alert = True
