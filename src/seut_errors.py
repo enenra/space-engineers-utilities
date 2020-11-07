@@ -44,17 +44,16 @@ errors = {
 
 warnings = {
     'W001': "SEUT: Collection not found. Action not possible.",
-    'W002': "SEUT: Collection '{variable_1}' excluded from view layer or cannot be found. Action not possible.",
-    'W003': "SEUT: Collection '{variable_1}' is empty. Action not possible.",
+    'W002': "SEUT: Collection '{variable_1}' excluded from view layer or empty. Action not possible.",
+    'W003': "SEUT: Could not remove unused material slots for object '{variable_1}'.",
     'W004': "SEUT: '{variable_1}' texture of local material '{variable_2}' is not of a valid resolution ({variable_3}). May not display correctly ingame.",
     'W005': "SEUT: Empty '{variable_1}' (numbering might differ) in collection '{variable_2}' has no parent object. This may prevent it from working properly ingame.",
     'W006': "SEUT: Parent of empty '{variable_1}' (numbering might differ), '{variable_2}', in collection '{variable_3}' has a parent object. This may prevent the empty from working properly ingame.",
     'W007': "SEUT: Highlight empty '{variable_1}' and its linked object '{variable_2}' have different parent objects. This may prevent the empty from working properly ingame.",
-    'W008': "SEUT: Scene is of type '{variable_1}' but does not contain any armatures.",
-    'W009': "SEUT: Scene is of type '{variable_1}' but contains armatures.",
+    'W008': "SEUT: Scene '{variable_1}' is of type '{variable_2}' but does not contain any armatures.",
+    'W009': "SEUT: Scene '{variable_1}'  is of type '{variable_2}' but contains armatures.",
     'W010': "SEUT: Invalid Build Stage setup. Cannot have BS2 but no BS1, or BS3 but no BS2.",
     'W011': "SEUT: Library '{variable_1}' could not be relocated in '{variable_2}'.",
-    'W012': "SEUT: Could not remove unused material slots for object '{variable_1}'.",
 }
 
 infos = {
@@ -132,7 +131,7 @@ def check_collection(self, context, scene, collection, partial_check=True):
 
     if len(collection.objects) == 0 and collection.name[:4] != 'SEUT':
         if partial_check:
-            seut_report(self, context, 'WARNING', False, 'W003', collection.name)
+            seut_report(self, context, 'WARNING', False, 'W002', collection.name)
             return {'FINISHED'}
         else:
             seut_report(self, context, 'ERROR', False, 'E002', '"' + collection.name + '"')

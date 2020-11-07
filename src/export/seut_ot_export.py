@@ -168,9 +168,9 @@ def export_main(self, context):
     
     # Check for armatures being present in collection
     if not found_armatures and (scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'):
-        seut_report(self, context, 'WARNING', True, 'W008', scene.seut.sceneType)
+        seut_report(self, context, 'WARNING', True, 'W008', scene.name, scene.seut.sceneType)
     if found_armatures and not (scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'):
-        seut_report(self, context, 'WARNING', True, 'W009', scene.seut.sceneType)
+        seut_report(self, context, 'WARNING', True, 'W009', scene.name, scene.seut.sceneType)
     
     # Check for unparented objects
     if unparented_objects > 1:

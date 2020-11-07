@@ -43,7 +43,7 @@ def remap_materials(self, context):
             try:
                 bpy.ops.object.material_slot_remove_unused()
             except RuntimeError:
-                seut_report(self, context, 'WARNING', True, 'W012', obj.name)
+                seut_report(self, context, 'WARNING', True, 'W003', obj.name)
 
             for slot in obj.material_slots:
                 if slot.material != None and slot.material.library == None:

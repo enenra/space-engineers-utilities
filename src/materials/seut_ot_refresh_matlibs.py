@@ -94,7 +94,7 @@ def refresh_matlibs(self, context):
                     filename=lib.name
                 )
             except:
-                seut_report(self, context, 'WARNING', False, 'W011', lib.name, materials_path)
+                seut_report(self, context, 'WARNING', False, 'W010', lib.name, materials_path)
 
     try:
         context.area.type = currentArea
