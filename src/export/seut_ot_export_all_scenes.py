@@ -37,11 +37,11 @@ class SEUT_OT_ExportAllScenes(Operator):
 
                 if not result == {'FINISHED'}:
                     failed_counter += 1
-                    seut_report(self, context, 'ERROR', True, 'E037', scn.name)
+                    seut_report(self, context, 'ERROR', True, 'E016', scn.name)
 
             except RuntimeError:
                 failed_counter += 1
-                seut_report(self, context, 'ERROR', True, 'E037', scn.name)
+                seut_report(self, context, 'ERROR', True, 'E016', scn.name)
         
         context.window.scene = original_scene
         context.area.type = current_area

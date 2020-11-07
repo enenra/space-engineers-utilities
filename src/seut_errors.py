@@ -8,7 +8,7 @@ errors = {
     'E001': "SEUT: Import error. Imported object not found.",
     'E002': "SEUT: Collection {variable_1} not found, excluded from view layer or empty. Action not possible.",
     'E003': "SEUT: {variable_1} path '{variable_2}' doesn't exist.",
-    'E004': "SEUT: No SubtypeId set.",
+    'E004': "SEUT: No SubtypeId set for scene '{variable_1}'.",
     'E005': "SEUT: Linking to scene '{variable_1}' from '{variable_2}' would create a subpart instancing loop.",
     'E006': "SEUT: LOD2 cannot be set if LOD1 is not, or LOD3 if LOD2 is not.",
     'E007': "SEUT: '{variable_1}' texture filepath in local material '{variable_2}' does not contain 'Textures\\'. Cannot be transformed into relative path.",
@@ -20,13 +20,13 @@ errors = {
     'E013': "SEUT: Path to {variable_1} (Addon Preferences) not valid - wrong target file: Expected '{variable_2}' but is set to '{variable_3}'.",
     'E014': "SEUT: Export path '{variable_1}' in scene '{variable_2}' does not contain 'Models\\'. Cannot be transformed into relative path.",
     'E015': "SEUT: Invalid {variable_1} setup. Cannot have {variable_1}2 but no {variable_1}1, or {variable_1}3 but no {variable_1}2.",
-    'E016': "SEUT: Preset '{variable_1}' is invalid or cannot be found. Node Tree cannot be created. Re-link 'MatLib_Presets'!",
-    'E017': "SEUT: Path ({variable_1}) does not point to a 'Materials'-folder.",
+    'E016': "SEUT: Scene '{variable_1}' could not be exported.",
+    'E017': "SEUT: An error has occurred in the FBX exporter. Try exiting Edit-Mode before exporting.",
     'E018': "SEUT: Cannot set SubtypeId to a SubtypeId that has already been used for another scene in the same BLEND file.",
-    'E019': "SEUT: No export folder defined.",
+    'E019': "SEUT: No export folder defined for scene '{variable_1}'.",
     'E020': "SEUT: Deletion of temporary files failed.",
     'E021': "SEUT: Available MatLibs could not be refreshed.",
-    'E022': "SEUT: Too many objects in Collision collection. Collection contains {variable_1}, but Space Engineers only supports a maximum of 16.",
+    'E022': "SEUT: Too many objects in '{variable_1}'-collection. Collection contains {variable_2} but Space Engineers only supports a maximum of 16.",
     'E023': "SEUT: Empty '{variable_1}' has incorrect rotation value: {variable_2}",
     'E024': "SEUT: Collection 'Mountpoints ({variable_1})' not found. Disable and then re-enable Mountpoint Mode to recreate!",
     'E025': "SEUT: Cannot create highlight empty for object outside of 'Main' collection.",
@@ -35,13 +35,11 @@ errors = {
     'E028': "SEUT: Object is not an Armature.",
     'E029': "SEUT: No Armature selected.",
     'E030': "SEUT: Path is directory, not EXE.",
-    'E031': "SEUT: Cannot export collection if it has more than one top-level (unparented) object.",
-    'E032': "SEUT: Object '{variable_1}' does not have any valid UV-Maps. This will crash Space Engineers.",
-    'E033': "SEUT: Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, Material names or object names.",
+    'E031': "SEUT: Cannot export collection '{variable_1}' if it has more than one top-level (unparented) object.",
+    'E032': "SEUT: Object '{variable_1}' does not have valid UV-Maps. This will crash Space Engineers.",
+    'E033': "SEUT: Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, material names and object names.",
     'E034': "SEUT: Collision object '{variable_1}' has unapplied modifiers. Collision model cannot be created.",
     'E035': "SEUT: There was an error during export caused by {variable_1}. Please refer to the logs in your export folder for details.",
-    'E036': "SEUT: An error has occurred in the FBX exporter. Try exiting Edit-Mode before exporting.",
-    'E037': "SEUT: Scene '{variable_1}' could not be exported.",
 }
 
 warnings = {
@@ -96,7 +94,7 @@ def check_export(self, context, can_report=True):
         seut_report(self, context, 'ERROR', can_report, 'E003', "Export", path)
         return {'CANCELLED'}
     elif path == "":
-        seut_report(self, context, 'ERROR', can_report, 'E019')
+        seut_report(self, context, 'ERROR', can_report, 'E019', scene.name)
         return {'CANCELLED'}
 
     if path.find("Models\\") != -1 or (path + "\\").find("Models\\") != -1:
@@ -106,7 +104,7 @@ def check_export(self, context, can_report=True):
         return {'CANCELLED'}
 
     if scene.seut.subtypeId == "":
-        seut_report(self, context, 'ERROR', can_report, 'E004')
+        seut_report(self, context, 'ERROR', can_report, 'E004', scene.name)
         return {'CANCELLED'}
 
     return {'CONTINUE'}
@@ -129,7 +127,7 @@ def check_collection(self, context, scene, collection, partial_check=True):
             seut_report(self, context, 'WARNING', False, 'W002', collection.name)
             return {'FINISHED'}
         else:
-            seut_report(self, context, 'ERROR', False, 'E019', collection.name)
+            seut_report(self, context, 'ERROR', False, 'E002', collection.name)
             return {'CANCELLED'}
 
     if len(collection.objects) == 0 and collection.name[:4] != 'SEUT':
@@ -255,7 +253,7 @@ def add_to_issues(context, issue_type: str, text: str, code: str, reference: str
     issue.timestamp = time.time()
     issue.issue_type = issue_type
     issue.text = text[len("SEUT: "):]
-    
+
     if code is not None:
         issue.code = code
     if reference is not None:

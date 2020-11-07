@@ -174,7 +174,7 @@ def export_main(self, context):
     
     # Check for unparented objects
     if unparented_objects > 1:
-        seut_report(self, context, 'ERROR', True, 'E031')
+        seut_report(self, context, 'ERROR', True, 'E031', collections['main'].name)
         return {'CANCELLED'}
 
     export_collection(self, context, collections['main'])
@@ -215,7 +215,7 @@ def export_hkt(self, context):
     
     # Check if max amount of collision objects is exceeded
     if len(collections['hkt'].objects) > 16:
-        seut_report(self, context, 'ERROR', True, 'E022', len(collections['hkt'].objects))
+        seut_report(self, context, 'ERROR', True, 'E022', collections['hkt'].name, len(collections['hkt'].objects))
         return {'CANCELLED'}
 
     # FBX export via Custom FBX Importer

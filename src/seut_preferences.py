@@ -43,7 +43,7 @@ def update_materials_path(self, context):
 
     if os.path.isdir(path):
         if not path[-9:] == 'Materials':
-            seut_report(self, context, 'ERROR', False, 'E017', self.materials_path)
+            seut_report(self, context, 'ERROR', False, 'E012', "Materials Folder", self.materials_path)
             self.materials_path = ""
         else:
             bpy.ops.scene.refresh_matlibs()

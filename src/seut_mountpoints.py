@@ -303,7 +303,7 @@ class SEUT_OT_AddMountpointArea(Operator):
         try:
             area = create_mp_area(context, 'Mountpoint Area ' + side.capitalize(), 1, scale, scale, None, None, collection, bpy.data.objects['Mountpoints ' + side.capitalize()])
         except KeyError:
-            seut_report(self, context, 'ERROR', True, 'E027')
+            seut_report(self, context, 'ERROR', True, 'E027', side.capitalize())
             return {'CANCELLED'}
 
         area.active_material = smat_mp

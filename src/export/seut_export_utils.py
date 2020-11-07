@@ -83,28 +83,28 @@ def export_xml(self, context, collection) -> str:
     # Write LOD references into the XML, if applicable
     if collection == collections['main']:
         
-        lod1Printed = False
-        lod2Printed = False
+        lod1_printed = False
+        lod2_printed = False
 
         if collections['lod1'] == None or len(collections['lod1'].objects) == 0:
             seut_report(self, context, 'INFO', False, 'I003', 'LOD1')
         else:
             create_lod_entry(scene, model, scene.seut.export_lod1Distance, path, '_LOD1')
-            lod1Printed = True
+            lod1_printed = True
 
         if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
             seut_report(self, context, 'INFO', False, 'I003', 'LOD2')
         else:
-            if lod1Printed:
+            if lod1_printed:
                 create_lod_entry(scene, model, scene.seut.export_lod2Distance, path, '_LOD2')
-                lod2Printed = True
+                lod2_printed = True
             else:
                 seut_report(self, context, 'ERROR', True, 'E006')
 
         if collections['lod3'] == None or len(collections['lod3'].objects) == 0:
             seut_report(self, context, 'INFO', False, 'I003', 'LOD3')
         else:
-            if lod2Printed:
+            if lod2_printed:
                 create_lod_entry(scene, model, scene.seut.export_lod3Distance, path, '_LOD3')
             else:
                 seut_report(self, context, 'ERROR', True, 'E006')
@@ -322,7 +322,7 @@ def export_fbx(self, context, collection) -> str:
     try:
         export_to_fbxfile(settings, scene, fbx_file, collection.objects, ishavokfbxfile=False)
     except RuntimeError as error:
-        seut_report(self, context, 'ERROR', False, 'E036')
+        seut_report(self, context, 'ERROR', False, 'E017')
         error_during_export = True
 
     # Revert materials back to original form
