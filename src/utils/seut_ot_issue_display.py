@@ -74,3 +74,8 @@ class SEUT_OT_IssueDisplay(Operator):
                 semref.section = ''
                 semref.page = 'troubleshooting'
                 semref.code = '#' + issue.code.lower()
+        
+        layout.separator(factor=1.0)
+        split = layout.split(factor=0.75)
+        split.label(text="Should no relevant error be listed here, please check the Blender System Console:")
+        split.operator('wm.console_toggle', icon='CONSOLE')
