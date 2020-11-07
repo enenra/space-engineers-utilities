@@ -224,12 +224,6 @@ def seut_report(self, context, report_type: str, can_report: bool, code: str, va
 
     link = "https://space-engineers-modding.github.io/modding-reference/tools/3d-modelling/seut/troubleshooting.html#" + code.lower()
 
-    # bpy.ops.message.popup_message(p_type='ERROR', p_text=text, p_link=link)
-
-    # if can_report:
-    #     self.report({report_type}, text)
-
-    # else:
     if report_type == 'ERROR':
         show_popup_report(context, "Report: Error", text)
         print("Error: " + text + " (" + code + ")")
@@ -261,6 +255,7 @@ def add_to_issues(context, issue_type: str, text: str, code: str, reference: str
     issue.timestamp = time.time()
     issue.issue_type = issue_type
     issue.text = text[len("SEUT: "):]
+    
     if code is not None:
         issue.code = code
     if reference is not None:
