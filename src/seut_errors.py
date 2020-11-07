@@ -5,43 +5,43 @@ import time
 
 
 errors = {
-    'E001': "SEUT: Import error. Imported object not found. (E001)",
-    'E002': "SEUT: Collection {variable_1} not found, excluded from view layer or empty. Action not possible. (E002)",
-    'E003': "SEUT: {variable_1} path '{variable_2}' doesn't exist. (E003)",
-    'E004': "SEUT: No SubtypeId set. (E004)",
-    'E005': "SEUT: Linking to scene '{variable_1}' from '{variable_2}' would create a subpart instancing loop. (E005)",
-    'E006': "SEUT: LOD2 cannot be set if LOD1 is not, or LOD3 if LOD2 is not. (E006)",
-    'E007': "SEUT: '{variable_1}' texture filepath in local material '{variable_2}' does not contain 'Textures\\'. Cannot be transformed into relative path. (E007)",
-    'E008': "SEUT: BLEND file must be saved before export. (E008)",
-    'E009': "SEUT: Cannot create empties for more than one object at a time. (E009)",
-    'E010': "SEUT: Cannot run Simple Navigation if no SEUT collections are present. (E010)",
-    'E011': "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2. (E011)",
-    'E012': "SEUT: Path to {variable_1} (Addon Preferences) '{variable_2}' not valid. (E012)",
-    'E013': "SEUT: Path to {variable_1} (Addon Preferences) not valid - wrong target file: Expected '{variable_2}' but is set to '{variable_3}'. (E013)",
-    'E014': "SEUT: Export path '{variable_1}' in scene '{variable_2}' does not contain 'Models\\'. Cannot be transformed into relative path. (E014)",
-    'E015': "SEUT: Invalid {variable_1} setup. Cannot have {variable_1}2 but no {variable_1}1, or {variable_1}3 but no {variable_1}2. (E015)",
-    'E016': "SEUT: Preset '{variable_1}' is invalid or cannot be found. Node Tree cannot be created. Re-link 'MatLib_Presets'! (E016)",
-    'E017': "SEUT: Path ({variable_1}) does not point to a 'Materials'-folder. (E017)",
-    'E018': "SEUT: Cannot set SubtypeId to a SubtypeId that has already been used for another scene in the same BLEND file. (E018)",
-    'E019': "SEUT: No export folder defined. (E019)",
-    'E020': "SEUT: Deletion of temporary files failed. (E020)",
-    'E021': "SEUT: Available MatLibs could not be refreshed. (E021)",
-    'E022': "SEUT: Too many objects in Collision collection. Collection contains {variable_1}, but Space Engineers only supports a maximum of 16. (022)",
-    'E023': "SEUT: Empty '{variable_1}' has incorrect rotation value: {variable_2} (E023)",
-    'E024': "SEUT: Collection 'Mountpoints ({variable_1})' not found. Disable and then re-enable Mountpoint Mode to recreate! (E024)",
-    'E025': "SEUT: Cannot create highlight empty for object outside of 'Main' collection. (E025)",
-    'E026': "SEUT: Filename incorrect: BLEND-filename must start with 'MatLib_' to create a valid MatLib. (E026)",
-    'E027': "SEUT: 'Mountpoints {variable_1}' not found. Disable and then re-enable Mountpoint Mode to recreate! (E027)",
-    'E028': "SEUT: Object is not an Armature. (E028)",
-    'E029': "SEUT: No Armature selected. (E029)",
-    'E030': "SEUT: Path is directory, not EXE. (E030)",
-    'E031': "SEUT: Cannot export collection if it has more than one top-level (unparented) object. (E031)",
-    'E032': "SEUT: Object '{variable_1}' does not have any valid UV-Maps. This will crash Space Engineers. (E032)",
-    'E033': "SEUT: Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, Material names or object names. (E033)",
-    'E034': "SEUT: Collision object '{variable_1}' has unapplied modifiers. Collision model cannot be created. (E034)",
-    'E035': "SEUT: There was an error during export caused by {variable_1}. Please refer to the logs in your export folder for details. (E035)",
-    'E036': "SEUT: An error has occurred in the FBX exporter. Try exiting Edit-Mode before exporting. (E036)",
-    'E037': "SEUT: Scene '{variable_1}' could not be exported. (E037)",
+    'E001': "SEUT: Import error. Imported object not found.",
+    'E002': "SEUT: Collection {variable_1} not found, excluded from view layer or empty. Action not possible.",
+    'E003': "SEUT: {variable_1} path '{variable_2}' doesn't exist.",
+    'E004': "SEUT: No SubtypeId set.",
+    'E005': "SEUT: Linking to scene '{variable_1}' from '{variable_2}' would create a subpart instancing loop.",
+    'E006': "SEUT: LOD2 cannot be set if LOD1 is not, or LOD3 if LOD2 is not.",
+    'E007': "SEUT: '{variable_1}' texture filepath in local material '{variable_2}' does not contain 'Textures\\'. Cannot be transformed into relative path.",
+    'E008': "SEUT: BLEND file must be saved before export.",
+    'E009': "SEUT: Cannot create empties for more than one object at a time.",
+    'E010': "SEUT: Cannot run Simple Navigation if no SEUT collections are present.",
+    'E011': "SEUT: Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2.",
+    'E012': "SEUT: Path to {variable_1} (Addon Preferences) '{variable_2}' not valid.",
+    'E013': "SEUT: Path to {variable_1} (Addon Preferences) not valid - wrong target file: Expected '{variable_2}' but is set to '{variable_3}'.",
+    'E014': "SEUT: Export path '{variable_1}' in scene '{variable_2}' does not contain 'Models\\'. Cannot be transformed into relative path.",
+    'E015': "SEUT: Invalid {variable_1} setup. Cannot have {variable_1}2 but no {variable_1}1, or {variable_1}3 but no {variable_1}2.",
+    'E016': "SEUT: Preset '{variable_1}' is invalid or cannot be found. Node Tree cannot be created. Re-link 'MatLib_Presets'!",
+    'E017': "SEUT: Path ({variable_1}) does not point to a 'Materials'-folder.",
+    'E018': "SEUT: Cannot set SubtypeId to a SubtypeId that has already been used for another scene in the same BLEND file.",
+    'E019': "SEUT: No export folder defined.",
+    'E020': "SEUT: Deletion of temporary files failed.",
+    'E021': "SEUT: Available MatLibs could not be refreshed.",
+    'E022': "SEUT: Too many objects in Collision collection. Collection contains {variable_1}, but Space Engineers only supports a maximum of 16.",
+    'E023': "SEUT: Empty '{variable_1}' has incorrect rotation value: {variable_2}",
+    'E024': "SEUT: Collection 'Mountpoints ({variable_1})' not found. Disable and then re-enable Mountpoint Mode to recreate!",
+    'E025': "SEUT: Cannot create highlight empty for object outside of 'Main' collection.",
+    'E026': "SEUT: Filename incorrect: BLEND-filename must start with 'MatLib_' to create a valid MatLib.",
+    'E027': "SEUT: 'Mountpoints {variable_1}' not found. Disable and then re-enable Mountpoint Mode to recreate!",
+    'E028': "SEUT: Object is not an Armature.",
+    'E029': "SEUT: No Armature selected.",
+    'E030': "SEUT: Path is directory, not EXE.",
+    'E031': "SEUT: Cannot export collection if it has more than one top-level (unparented) object.",
+    'E032': "SEUT: Object '{variable_1}' does not have any valid UV-Maps. This will crash Space Engineers.",
+    'E033': "SEUT: Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, Material names or object names.",
+    'E034': "SEUT: Collision object '{variable_1}' has unapplied modifiers. Collision model cannot be created.",
+    'E035': "SEUT: There was an error during export caused by {variable_1}. Please refer to the logs in your export folder for details.",
+    'E036': "SEUT: An error has occurred in the FBX exporter. Try exiting Edit-Mode before exporting.",
+    'E037': "SEUT: Scene '{variable_1}' could not be exported.",
 }
 
 warnings = {
@@ -232,11 +232,11 @@ def seut_report(self, context, report_type: str, can_report: bool, code: str, va
     # else:
     if report_type == 'ERROR':
         show_popup_report(context, "Report: Error", text)
-        print("Error: " + text)
+        print("Error: " + text + " (" + code + ")")
     elif report_type == 'WARNING':
-        print("Warning: " + text)
+        print("Warning: " + text + " (" + code + ")")
     elif report_type == 'INFO':
-        print("Info: " + text)
+        print("Info: " + text + " (" + code + ")")
     
     add_to_issues(context, report_type, text, code, None)
 
@@ -260,7 +260,7 @@ def add_to_issues(context, issue_type: str, text: str, code: str, reference: str
     issue = issues.add()
     issue.timestamp = time.time()
     issue.issue_type = issue_type
-    issue.text = text
+    issue.text = text[len("SEUT: "):]
     if code is not None:
         issue.code = code
     if reference is not None:
