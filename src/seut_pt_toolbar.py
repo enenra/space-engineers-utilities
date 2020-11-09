@@ -277,7 +277,7 @@ class SEUT_PT_Panel_Export(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'main' or scene.seut.sceneType == 'subpart' scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
+        return scene.seut.sceneType == 'main' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
 
 
     def draw(self, context):
@@ -345,7 +345,7 @@ class SEUT_PT_Panel_Import(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'main' or scene.seut.sceneType == 'subpart' scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
+        return scene.seut.sceneType == 'main' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
 
 
     def draw(self, context):
