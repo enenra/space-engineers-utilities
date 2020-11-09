@@ -85,7 +85,7 @@ class SEUT_PT_Panel_BoundingBox(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation' and scene.seut.sceneType != 'subpart'
+        return scene.seut.sceneType == 'main'
 
 
     def draw(self, context):
@@ -128,7 +128,7 @@ class SEUT_PT_Panel_Mirroring(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation' and scene.seut.sceneType != 'subpart'
+        return scene.seut.sceneType == 'main'
 
 
     def draw(self, context):
@@ -164,7 +164,7 @@ class SEUT_PT_Panel_Mountpoints(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation' and scene.seut.sceneType != 'subpart'
+        return scene.seut.sceneType == 'main'
 
 
     def draw(self, context):
@@ -207,7 +207,7 @@ class SEUT_PT_Panel_IconRender(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation' and scene.seut.sceneType != 'subpart'
+        return scene.seut.sceneType == 'main'
 
 
     def draw(self, context):
@@ -274,6 +274,12 @@ class SEUT_PT_Panel_Export(Panel):
     bl_options = {'DEFAULT_CLOSED'}
 
 
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'main' or scene.seut.sceneType == 'subpart' scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
+
+
     def draw(self, context):
         layout = self.layout
         scene = context.scene
@@ -334,6 +340,12 @@ class SEUT_PT_Panel_Import(Panel):
     bl_category = "SEUT"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'main' or scene.seut.sceneType == 'subpart' scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
 
 
     def draw(self, context):
