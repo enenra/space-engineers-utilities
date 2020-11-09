@@ -44,7 +44,7 @@ class SEUT_PT_Panel(Panel):
             link.page = 'main-panel'
 
             box.prop(scene.seut, 'sceneType')
-            if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_anmiation':
+            if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
                 box.prop(scene.seut,'linkSubpartInstances')
             
             box = layout.box()
