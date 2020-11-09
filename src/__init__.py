@@ -63,6 +63,17 @@ from .materials.seut_ot_remap_materials         import SEUT_OT_RemapMaterials
 from .materials.seut_ot_refresh_matlibs         import SEUT_OT_RefreshMatLibs
 from .materials.seut_ot_create_material         import SEUT_OT_MatCreate
 from .materials.seut_materials                  import SEUT_UL_MatLib
+from .particles.seut_particle_settings          import SEUT_ParticlePropertyKeys
+from .particles.seut_particle_settings          import SEUT_ParticlePropertyValue2D
+from .particles.seut_particle_settings          import SEUT_ParticleProperty
+from .particles.seut_particle_settings          import SEUT_ParticleSettings
+from .particles.seut_particle_settings          import SEUT_UL_ParticleProperties
+from .particles.seut_ot_properties              import SEUT_OT_PropertiesAdd
+from .particles.seut_ot_properties              import SEUT_OT_PropertiesRemove
+from .particles.seut_particles                  import SEUT_PT_Panel_Particle
+from .particles.seut_particles                  import SEUT_PT_Panel_ParticleGeneration
+from .particles.seut_particles                  import SEUT_PT_Panel_ExportParticle
+from .particles.seut_particles                  import SEUT_PT_Panel_ImportParticle
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
 from .utils.seut_updater                        import check_update
@@ -104,6 +115,10 @@ classes = (
     SEUT_PT_Panel_IconRender,
     SEUT_PT_Panel_Export,
     SEUT_PT_Panel_Import,
+    SEUT_PT_Panel_Particle,
+    SEUT_PT_Panel_ParticleGeneration,
+    SEUT_PT_Panel_ExportParticle,
+    SEUT_PT_Panel_ImportParticle,
     SEUT_PT_Panel_Materials,
     SEUT_PT_Panel_MatLib,
     SEUT_PT_EmptyLink,
@@ -135,6 +150,12 @@ classes = (
     SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
     SEUT_OT_IconRenderPreview,
+    SEUT_ParticlePropertyKeys,
+    SEUT_ParticlePropertyValue2D,
+    SEUT_ParticleProperty,
+    SEUT_ParticleSettings,
+    SEUT_OT_PropertiesAdd,
+    SEUT_OT_PropertiesRemove,
     SEUT_MountpointAreas,
     SEUT_Scene,
     SEUT_Object,
@@ -142,6 +163,7 @@ classes = (
     SEUT_MatLibProps,
     SEUT_WindowManager,
     SEUT_UL_MatLib,
+    SEUT_UL_ParticleProperties,
 )
 
 
@@ -156,6 +178,7 @@ def register():
     bpy.types.Material.seut = PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
+    bpy.types.ParticleSettings.seut = PointerProperty(type=SEUT_ParticleSettings)
     bpy.types.WindowManager.seut = PointerProperty(type=SEUT_WindowManager)
 
     bpy.app.handlers.load_post.append(load_handler)
@@ -175,6 +198,7 @@ def unregister():
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
     del bpy.types.Object.seut
+    del bpy.types.ParticleSettings.seut
     del bpy.types.WindowManager.seut
 
     bpy.app.handlers.load_post.remove(load_handler)

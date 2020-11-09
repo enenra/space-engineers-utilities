@@ -29,19 +29,21 @@ class SEUT_OT_ExportAllScenes(Operator):
         failed_counter = 0
 
         for scn in bpy.data.scenes:
-            scene_counter += 1
-            context.window.scene = scn
+            if scn.seut.sceneType == 'mainScene' or scn.seut.sceneType == 'subpart' or scn.seut.sceneType == 'character' or scn.seut.sceneType == 'character_animation':
+                
+                scene_counter += 1
+                context.window.scene = scn
 
-            try:
-                result = export(self, context)
+                try:
+                    result = export(self, context)
 
-                if not result == {'FINISHED'}:
+                    if not result == {'FINISHED'}:
+                        failed_counter += 1
+                        seut_report(self, context, 'ERROR', True, 'E016', scn.name)
+
+                except RuntimeError:
                     failed_counter += 1
                     seut_report(self, context, 'ERROR', True, 'E016', scn.name)
-
-            except RuntimeError:
-                failed_counter += 1
-                seut_report(self, context, 'ERROR', True, 'E016', scn.name)
         
         context.window.scene = original_scene
         context.area.type = current_area

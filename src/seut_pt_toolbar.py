@@ -44,20 +44,21 @@ class SEUT_PT_Panel(Panel):
             link.page = 'main-panel'
 
             box.prop(scene.seut, 'sceneType')
-            if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
+            if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart':
                 box.prop(scene.seut,'linkSubpartInstances')
             
             box = layout.box()
             if scene.seut.sceneType == 'mainScene':
                 box.label(text="SubtypeId (File Name)", icon='COPY_ID')
-            elif scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
+            else:
                 box.label(text="File Name", icon='FILE')
             box.prop(scene.seut, "subtypeId", text="", expand=True)
 
-            box = layout.box()
-            box.label(text="Grid Scale", icon='GRID')
-            row = box.row()
-            row.prop(scene.seut,'gridScale', expand=True)
+            if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart':
+                box = layout.box()
+                box.label(text="Grid Scale", icon='GRID')
+                row = box.row()
+                row.prop(scene.seut,'gridScale', expand=True)
             
             split = layout.split(factor=0.85)
             split.operator('scene.recreate_collections', icon='COLLECTION_NEW')
@@ -85,7 +86,7 @@ class SEUT_PT_Panel_BoundingBox(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'main'
+        return scene.seut.sceneType == 'mainScene'
 
 
     def draw(self, context):
@@ -128,7 +129,7 @@ class SEUT_PT_Panel_Mirroring(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'main'
+        return scene.seut.sceneType == 'mainScene'
 
 
     def draw(self, context):
@@ -164,7 +165,7 @@ class SEUT_PT_Panel_Mountpoints(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'main'
+        return scene.seut.sceneType == 'mainScene'
 
 
     def draw(self, context):
@@ -207,7 +208,7 @@ class SEUT_PT_Panel_IconRender(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'main'
+        return scene.seut.sceneType == 'mainScene'
 
 
     def draw(self, context):
@@ -277,7 +278,7 @@ class SEUT_PT_Panel_Export(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'main' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
+        return scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
 
 
     def draw(self, context):
@@ -345,7 +346,7 @@ class SEUT_PT_Panel_Import(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'main' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
+        return scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
 
 
     def draw(self, context):
