@@ -5,6 +5,7 @@ from bpy.types  import Panel
 from .seut_collections              import get_collections
 from .seut_preferences              import get_addon_version
 
+
 class SEUT_PT_Panel(Panel):
     """Creates the topmost panel for SEUT"""
     bl_idname = "SEUT_PT_Panel"
@@ -12,6 +13,7 @@ class SEUT_PT_Panel(Panel):
     bl_category = "SEUT"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
+
 
     def draw(self, context):
         layout = self.layout
@@ -79,6 +81,13 @@ class SEUT_PT_Panel_BoundingBox(Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
 
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation' and scene.seut.sceneType != 'subpart'
+
+
     def draw(self, context):
         layout = self.layout
         scene = context.scene
@@ -115,10 +124,12 @@ class SEUT_PT_Panel_Mirroring(Panel):
     bl_region_type = "UI"
     bl_options = {'DEFAULT_CLOSED'}
 
+
     @classmethod
     def poll(cls, context):
         scene = context.scene
         return scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation' and scene.seut.sceneType != 'subpart'
+
 
     def draw(self, context):
         layout = self.layout
@@ -149,10 +160,12 @@ class SEUT_PT_Panel_Mountpoints(Panel):
     bl_region_type = "UI"
     bl_options = {'DEFAULT_CLOSED'}
 
+
     @classmethod
     def poll(cls, context):
         scene = context.scene
         return scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation' and scene.seut.sceneType != 'subpart'
+
 
     def draw(self, context):
         layout = self.layout
@@ -190,10 +203,12 @@ class SEUT_PT_Panel_IconRender(Panel):
     bl_region_type = "UI"
     bl_options = {'DEFAULT_CLOSED'}
 
+
     @classmethod
     def poll(cls, context):
         scene = context.scene
         return scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation' and scene.seut.sceneType != 'subpart'
+
 
     def draw(self, context):
         layout = self.layout
@@ -258,6 +273,7 @@ class SEUT_PT_Panel_Export(Panel):
     bl_region_type = "UI"
     bl_options = {'DEFAULT_CLOSED'}
 
+
     def draw(self, context):
         layout = self.layout
         scene = context.scene
@@ -318,6 +334,7 @@ class SEUT_PT_Panel_Import(Panel):
     bl_category = "SEUT"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
+
 
     def draw(self, context):
 

@@ -110,12 +110,6 @@ class SEUT_PT_Panel_Materials(Panel):
             link.section = 'reference/'
             link.page = 'shader-editor-panel'
 
-            if material.node_tree is not None and material.node_tree.nodes is not None:
-                for node in material.node_tree.nodes:
-                    if node.name == "SEUT_MAT" and node.node_tree is not None:
-                        box.label(text="Preset: " + node.node_tree.name)
-                        break
-
             box.prop(material.seut, 'overrideMatLib')
             box.prop(material.seut, 'technique', icon='IMGDISPLAY')
             box.prop(material.seut, 'facing')
