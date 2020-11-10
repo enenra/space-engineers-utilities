@@ -94,6 +94,12 @@ class SEUT_PT_Panel_Materials(Panel):
     bl_region_type = "UI"
 
 
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return 'SEUT' in scene.view_layers
+
+
     def draw(self, context):
         layout = self.layout
         wm = context.window_manager
@@ -135,6 +141,12 @@ class SEUT_PT_Panel_MatLib(Panel):
     bl_category = "SEUT"
     bl_space_type = "NODE_EDITOR"
     bl_region_type = "UI"
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return 'SEUT' in scene.view_layers
 
 
     def draw(self, context):

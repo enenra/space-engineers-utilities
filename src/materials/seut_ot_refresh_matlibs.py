@@ -4,7 +4,6 @@ import re
 
 from bpy.types  import Operator
 
-from .seut_ot_create_material   import create_material
 from ..seut_errors              import seut_report, get_abs_path
 from ..seut_utils               import get_preferences
 
@@ -33,10 +32,6 @@ def refresh_matlibs(self, context):
     if materials_path == "" or os.path.isdir(materials_path) == False:
         seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
         return
-    
-    if not 'SEUT Node Group' in bpy.data.node_groups or bpy.data.node_groups['SEUT Node Group'].library != None:
-        temp_mat = create_material()
-        bpy.data.materials.remove(temp_mat)
 
     # Find all MatLibs in directory, save to set, then add to matlibs list
     new_set = set()

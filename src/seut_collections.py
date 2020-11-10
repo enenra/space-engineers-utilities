@@ -3,6 +3,9 @@ import re
 
 from bpy.types import Operator
 
+from .materials.seut_ot_create_material import create_material
+
+
 names = {
     'seut': "SEUT",
     'main': 'Main',
@@ -40,6 +43,10 @@ class SEUT_OT_RecreateCollections(Operator):
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
             scene.seut.subtypeBefore = scene.name
+    
+        if not 'SEUT Node Group' in bpy.data.node_groups or bpy.data.node_groups['SEUT Node Group'].library != None:
+            temp_mat = create_material()
+            bpy.data.materials.remove(temp_mat)
 
         create_collections(context)
 

@@ -86,7 +86,7 @@ class SEUT_PT_Panel_BoundingBox(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene'
+        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers
 
 
     def draw(self, context):
@@ -94,26 +94,24 @@ class SEUT_PT_Panel_BoundingBox(Panel):
         scene = context.scene
         wm = context.window_manager
 
-        if 'SEUT' in scene.view_layers:
+        # Toggle
+        layout.prop(wm.seut,'bBoxToggle', expand=True)
 
-            # Toggle
-            layout.prop(wm.seut,'bBoxToggle', expand=True)
+        if wm.seut.bBoxToggle == 'on':
+            # Size
+            box = layout.box()
+            box.label(text="Size", icon='PIVOT_BOUNDBOX')
+            row = box.row()
+            row.prop(scene.seut, "bBox_X")
+            row.prop(scene.seut, "bBox_Y")
+            row.prop(scene.seut, "bBox_Z")
 
-            if wm.seut.bBoxToggle == 'on':
-                # Size
-                box = layout.box()
-                box.label(text="Size", icon='PIVOT_BOUNDBOX')
-                row = box.row()
-                row.prop(scene.seut, "bBox_X")
-                row.prop(scene.seut, "bBox_Y")
-                row.prop(scene.seut, "bBox_Z")
-
-                row = box.row()
-                # row.prop(wm.seut, 'bboxColor', text="")
-                # row.prop(wm.seut, 'bboxTransparency', text="")
-                
-                row = box.row()
-                row.operator('object.bbox_auto', icon='AUTO')
+            row = box.row()
+            # row.prop(wm.seut, 'bboxColor', text="")
+            # row.prop(wm.seut, 'bboxTransparency', text="")
+            
+            row = box.row()
+            row.operator('object.bbox_auto', icon='AUTO')
 
 
 class SEUT_PT_Panel_Mirroring(Panel):
@@ -129,7 +127,7 @@ class SEUT_PT_Panel_Mirroring(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene'
+        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers
 
 
     def draw(self, context):
@@ -137,19 +135,17 @@ class SEUT_PT_Panel_Mirroring(Panel):
         scene = context.scene
         wm = context.window_manager
 
-        if 'SEUT' in scene.view_layers:
-
-            if scene.seut.mirroringToggle == 'on':
-                split = layout.split(factor=0.85)
-                row = split.row()
-                row.prop(scene.seut, 'mirroringToggle', expand=True)
-                link = split.operator('wm.semref_link', text="", icon='INFO')
-                link.section = 'tutorials/'
-                link.page = 'mirroring'
-                
-                layout.prop(scene.seut, 'mirroringScene', text="Model", icon='MOD_MIRROR')
-            else:
-                layout.prop(scene.seut, 'mirroringToggle', expand=True)
+        if scene.seut.mirroringToggle == 'on':
+            split = layout.split(factor=0.85)
+            row = split.row()
+            row.prop(scene.seut, 'mirroringToggle', expand=True)
+            link = split.operator('wm.semref_link', text="", icon='INFO')
+            link.section = 'tutorials/'
+            link.page = 'mirroring'
+            
+            layout.prop(scene.seut, 'mirroringScene', text="Model", icon='MOD_MIRROR')
+        else:
+            layout.prop(scene.seut, 'mirroringToggle', expand=True)
 
 
 class SEUT_PT_Panel_Mountpoints(Panel):
@@ -165,7 +161,7 @@ class SEUT_PT_Panel_Mountpoints(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene'
+        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers
 
 
     def draw(self, context):
@@ -173,26 +169,24 @@ class SEUT_PT_Panel_Mountpoints(Panel):
         scene = context.scene
         wm = context.window_manager
 
-        if 'SEUT' in scene.view_layers:
+        if scene.seut.mountpointToggle == 'on':
+            split = layout.split(factor=0.85)
+            row = split.row()
+            row.prop(scene.seut, 'mountpointToggle', expand=True)
+            link = split.operator('wm.semref_link', text="", icon='INFO')
+            link.section = 'tutorials/'
+            link.page = 'mountpoints'
 
-            if scene.seut.mountpointToggle == 'on':
-                split = layout.split(factor=0.85)
-                row = split.row()
-                row.prop(scene.seut, 'mountpointToggle', expand=True)
-                link = split.operator('wm.semref_link', text="", icon='INFO')
-                link.section = 'tutorials/'
-                link.page = 'mountpoints'
-
-                if not context.active_object is None and context.active_object.name in bpy.data.collections['Mountpoints (' + scene.seut.subtypeId + ')'].objects and not context.active_object.type == 'EMPTY':
-                    box = layout.box()
-                    box.label(text="Area", icon='MESH_PLANE')
-                    row = box.row()
-                    row.prop(context.active_object.seut, 'default', icon='PINNED', text="Default")
-                    row.prop(context.active_object.seut, 'pressurized', icon='LOCKED', text="Pressurized")
-                    
-                layout.operator('scene.add_mountpoint_area', icon='ADD')
-            else:
-                layout.prop(scene.seut, 'mountpointToggle', expand=True)
+            if not context.active_object is None and context.active_object.name in bpy.data.collections['Mountpoints (' + scene.seut.subtypeId + ')'].objects and not context.active_object.type == 'EMPTY':
+                box = layout.box()
+                box.label(text="Area", icon='MESH_PLANE')
+                row = box.row()
+                row.prop(context.active_object.seut, 'default', icon='PINNED', text="Default")
+                row.prop(context.active_object.seut, 'pressurized', icon='LOCKED', text="Pressurized")
+                
+            layout.operator('scene.add_mountpoint_area', icon='ADD')
+        else:
+            layout.prop(scene.seut, 'mountpointToggle', expand=True)
         
 
 class SEUT_PT_Panel_IconRender(Panel):
@@ -208,61 +202,59 @@ class SEUT_PT_Panel_IconRender(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene'
+        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers
 
 
     def draw(self, context):
         layout = self.layout
         scene = context.scene
         wm = context.window_manager
-
-        if 'SEUT' in scene.view_layers:
         
-            layout.prop(scene.seut, 'renderToggle', expand=True)
+        layout.prop(scene.seut, 'renderToggle', expand=True)
 
-            camera = None
-            for cam in bpy.data.cameras:
-                if cam.name == 'ICON':
-                    camera = cam
-            empty = None
+        camera = None
+        for cam in bpy.data.cameras:
+            if cam.name == 'ICON':
+                camera = cam
+        empty = None
+        for obj in bpy.data.objects:
+            if obj.type == 'EMPTY' and obj.name == 'Icon Render':
+                empty = obj
+
+        if scene.seut.renderToggle == 'on':
+            layout.operator('scene.icon_render_preview', icon='RENDER_RESULT')
+
+            box = layout.box()
+            box.label(text='View', icon='CAMERA_DATA')
+            if camera is not None:
+                box.prop(scene.seut, 'renderZoom')
+            
+            keyLight = None
+            fillLight = None
+            rimLight = None
             for obj in bpy.data.objects:
-                if obj.type == 'EMPTY' and obj.name == 'Icon Render':
-                    empty = obj
+                if obj.type == 'LIGHT':
+                    if obj.name == 'Key Light':
+                        keyLight = obj
+                    elif obj.name == 'Fill Light':
+                        fillLight = obj
+                    elif obj.name == 'Rim Light':
+                        rimLight = obj
+                        
+            if camera is not None and keyLight is not None and fillLight is not None and rimLight is not None:
+                box.prop(scene.seut, 'renderDistance')
 
-            if scene.seut.renderToggle == 'on':
-                layout.operator('scene.icon_render_preview', icon='RENDER_RESULT')
+            if empty is not None:
+                box.prop(scene.seut, 'renderEmptyLocation')
+            if empty is not None:
+                box.prop(scene.seut, 'renderEmptyRotation')
 
-                box = layout.box()
-                box.label(text='View', icon='CAMERA_DATA')
-                if camera is not None:
-                    box.prop(scene.seut, 'renderZoom')
-                
-                keyLight = None
-                fillLight = None
-                rimLight = None
-                for obj in bpy.data.objects:
-                    if obj.type == 'LIGHT':
-                        if obj.name == 'Key Light':
-                            keyLight = obj
-                        elif obj.name == 'Fill Light':
-                            fillLight = obj
-                        elif obj.name == 'Rim Light':
-                            rimLight = obj
-                            
-                if camera is not None and keyLight is not None and fillLight is not None and rimLight is not None:
-                    box.prop(scene.seut, 'renderDistance')
-
-                if empty is not None:
-                    box.prop(scene.seut, 'renderEmptyLocation')
-                if empty is not None:
-                    box.prop(scene.seut, 'renderEmptyRotation')
-
-                box = layout.box()
-                box.label(text='Options', icon='SETTINGS')
-                box.prop(scene.seut, 'renderColorOverlay', invert_checkbox=True)
-                box.prop(scene.seut, 'renderResolution')
-                box.prop(scene.render.image_settings, 'file_format')
-                box.prop(scene.render, 'filepath')
+            box = layout.box()
+            box.label(text='Options', icon='SETTINGS')
+            box.prop(scene.seut, 'renderColorOverlay', invert_checkbox=True)
+            box.prop(scene.seut, 'renderResolution')
+            box.prop(scene.render.image_settings, 'file_format')
+            box.prop(scene.render, 'filepath')
 
 
 class SEUT_PT_Panel_Export(Panel):
@@ -278,60 +270,59 @@ class SEUT_PT_Panel_Export(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
+        return (scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation') and 'SEUT' in scene.view_layers
 
 
     def draw(self, context):
         layout = self.layout
         scene = context.scene
 
-        if 'SEUT' in scene.view_layers:
-            collections = get_collections(scene)
+        collections = get_collections(scene)
 
-            # Export
-            row = layout.row()
-            row.scale_y = 2.0
-            row.operator('scene.export_all_scenes', icon='EXPORT')
-            row = layout.row()
-            row.scale_y = 1.1
-            row.operator('scene.export', icon='EXPORT')
+        # Export
+        row = layout.row()
+        row.scale_y = 2.0
+        row.operator('scene.export_all_scenes', icon='EXPORT')
+        row = layout.row()
+        row.scale_y = 1.1
+        row.operator('scene.export', icon='EXPORT')
 
-            # Options
-            box = layout.box()
-            box.label(text="Options", icon='SETTINGS')
+        # Options
+        box = layout.box()
+        box.label(text="Options", icon='SETTINGS')
+    
+        row = box.row()
+        split = box.split(factor=0.70)
+        col = split.column()
+        col.prop(scene.seut, "export_deleteLooseFiles")
+        col = split.column()
+        col.prop(scene.seut, "export_sbc")
+
+        if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_anmiation':
+            box2 = box.box()
+            box2.label(text="Grid Export", icon='GRID')
+            row = box2.row()
+            row.prop(scene.seut, "export_largeGrid", icon='MESH_CUBE')
+            row.prop(scene.seut, "export_smallGrid", icon='META_CUBE')
         
-            row = box.row()
-            split = box.split(factor=0.70)
-            col = split.column()
-            col.prop(scene.seut, "export_deleteLooseFiles")
-            col = split.column()
-            col.prop(scene.seut, "export_sbc")
-
-            if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_anmiation':
-                box2 = box.box()
-                box2.label(text="Grid Export", icon='GRID')
-                row = box2.row()
-                row.prop(scene.seut, "export_largeGrid", icon='MESH_CUBE')
-                row.prop(scene.seut, "export_smallGrid", icon='META_CUBE')
-            
-            split = box.split(factor=0.85)
-            col = split.column()
-            col.prop(scene.seut, "export_exportPath", text="Folder", expand=True)
-            col = split.column()
-            col.operator('scene.copy_export_options', text="", icon='PASTEDOWN')
-            
-            # LOD
-            if collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None or collections['bs_lod'] is not None:
-                box = layout.box()
-                box.label(text="LOD Distance", icon='DRIVER_DISTANCE')
-                if collections['lod1'] is not None:
-                    box.prop(scene.seut, "export_lod1Distance")
-                if collections['lod2'] is not None:
-                    box.prop(scene.seut, "export_lod2Distance")
-                if collections['lod3'] is not None:
-                    box.prop(scene.seut, "export_lod3Distance")
-                if collections['bs_lod'] is not None:
-                    box.prop(scene.seut, "export_bs_lodDistance")
+        split = box.split(factor=0.85)
+        col = split.column()
+        col.prop(scene.seut, "export_exportPath", text="Folder", expand=True)
+        col = split.column()
+        col.operator('scene.copy_export_options', text="", icon='PASTEDOWN')
+        
+        # LOD
+        if collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None or collections['bs_lod'] is not None:
+            box = layout.box()
+            box.label(text="LOD Distance", icon='DRIVER_DISTANCE')
+            if collections['lod1'] is not None:
+                box.prop(scene.seut, "export_lod1Distance")
+            if collections['lod2'] is not None:
+                box.prop(scene.seut, "export_lod2Distance")
+            if collections['lod3'] is not None:
+                box.prop(scene.seut, "export_lod3Distance")
+            if collections['bs_lod'] is not None:
+                box.prop(scene.seut, "export_bs_lodDistance")
 
 
 class SEUT_PT_Panel_Import(Panel):
@@ -346,7 +337,7 @@ class SEUT_PT_Panel_Import(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'
+        return (scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation') and 'SEUT' in scene.view_layers
 
 
     def draw(self, context):
@@ -354,23 +345,21 @@ class SEUT_PT_Panel_Import(Panel):
         scene = context.scene
         layout = self.layout
 
-        if 'SEUT' in scene.view_layers:
+        # Import
+        row = layout.row()
+        row.scale_y = 2.0
+        row.operator('scene.import', icon='IMPORT')
 
-            # Import
-            row = layout.row()
-            row.scale_y = 2.0
-            row.operator('scene.import', icon='IMPORT')
+        # Repair
+        box = layout.box()
+        box.label(text="Repair", icon='TOOL_SETTINGS')
+        box.operator('object.remapmaterials', icon='MATERIAL')
+        box.operator('wm.convert_structure', icon='OUTLINER')
+        box.operator('object.fix_positioning', icon='EMPTY_AXIS')
 
-            # Repair
+        if scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
+            # Bones
             box = layout.box()
-            box.label(text="Repair", icon='TOOL_SETTINGS')
-            box.operator('object.remapmaterials', icon='MATERIAL')
-            box.operator('wm.convert_structure', icon='OUTLINER')
-            box.operator('object.fix_positioning', icon='EMPTY_AXIS')
-
-            if scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
-                # Bones
-                box = layout.box()
-                box.label(text="Bone Conversion", icon='ARMATURE_DATA')
-                box.operator('object.convertbonestoblenderformat', icon='OUTLINER_OB_ARMATURE')
-                box.operator('object.convertbonestoseformat', icon='OUTLINER_DATA_ARMATURE')
+            box.label(text="Bone Conversion", icon='ARMATURE_DATA')
+            box.operator('object.convertbonestoblenderformat', icon='OUTLINER_OB_ARMATURE')
+            box.operator('object.convertbonestoseformat', icon='OUTLINER_DATA_ARMATURE')
