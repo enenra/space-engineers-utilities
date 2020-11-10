@@ -68,6 +68,7 @@ from .particles.seut_particle_settings          import SEUT_ParticlePropertyValu
 from .particles.seut_particle_settings          import SEUT_ParticleProperty
 from .particles.seut_particle_settings          import SEUT_ParticleSettings
 from .particles.seut_particle_settings          import SEUT_UL_ParticleProperties
+from .particles.seut_ot_settings                import SEUT_OT_SettingsAdd
 from .particles.seut_ot_properties              import SEUT_OT_PropertiesAdd
 from .particles.seut_ot_properties              import SEUT_OT_PropertiesRemove
 from .particles.seut_particles                  import SEUT_PT_Panel_Particle
@@ -154,6 +155,7 @@ classes = (
     SEUT_ParticlePropertyValue2D,
     SEUT_ParticleProperty,
     SEUT_ParticleSettings,
+    SEUT_OT_SettingsAdd,
     SEUT_OT_PropertiesAdd,
     SEUT_OT_PropertiesRemove,
     SEUT_MountpointAreas,
