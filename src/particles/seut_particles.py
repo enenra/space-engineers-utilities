@@ -25,7 +25,10 @@ class SEUT_PT_Panel_Particle(Panel):
         scene = context.scene
         holder = context.active_object
 
-        layout.label(text=context.active_object.name)
+        box = layout.box()
+        box.label(text="Subtype", icon='COPY_ID')
+        box.prop(holder, "name", text="", expand=True)
+
         layout.prop(holder.seut, 'particle_id')
         layout.prop(holder.seut, 'particle_length')
         layout.prop(holder.seut, 'particle_preload')
@@ -60,7 +63,6 @@ class SEUT_PT_Panel_ParticleGeneration(Panel):
         if holder is not None:
 
             row = layout.row()
-
             row.template_list("PARTICLE_UL_particle_systems", "particle_systems", holder, "particle_systems", holder.particle_systems, "active_index", rows=3)
 
             col = row.column(align=True)
