@@ -88,7 +88,7 @@ class SEUT_OT_IssueDisplay(Operator):
 class SEUT_OT_ClearIssues(Operator):
     """Clears all current issues"""
     bl_idname = "wm.clear_issues"
-    bl_label = "Clear Issues"
+    bl_label = "Clear Notifications"
     bl_options = {'REGISTER', 'UNDO'}
 
 
