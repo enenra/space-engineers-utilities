@@ -16,12 +16,12 @@ def update_set_dev_paths(self, context):
     if not self.set_dev_paths:
         return
     else:
-        # enenra
-        if os.path.isdir("E:\\Games\\Modding\\SE\\models\\Materials\\"):
-            self.materials_path = "E:\\Games\\Modding\\SE\\models\\Materials\\"
-            self.mwmb_path = "E:\\Games\\Modding\\SE\\tools\\MwmBuilder\\MwmBuilder.exe"
-            self.fbx_importer_path = "E:\\Games\\Modding\\SE\\tools\\FBXImporter.exe"
-            self.havok_path="E:\\Games\\Modding\\SE\\tools\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
+        # enenra 
+        if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\Materials\\"):
+            self.materials_path = "D:\\Modding\\Space Engineers\\SEUT\\Materials\\"
+            self.mwmb_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\StollieMWMBuilder\\MwmBuilder.exe"
+            self.fbx_importer_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\FBXImporter.exe"
+            self.havok_path="D:\\Modding\\Space Engineers\\SEUT\\Tools\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
         
         # Stollie
         elif os.path.isdir("C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"):

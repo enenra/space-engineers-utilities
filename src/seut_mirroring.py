@@ -7,7 +7,7 @@ from collections    import OrderedDict
 from .materials.seut_materials      import create_internal_material
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, prep_context, to_radians, clear_selection, create_seut_collection
+from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, prep_context, to_radians, clear_selection, create_seut_collection, lock_object
 
 
 mirroring_presets = OrderedDict([
@@ -108,6 +108,7 @@ def setup_mirroring(self, context):
     plane_x = bpy.context.view_layer.objects.active
     plane_x.name = 'X Axis Mirror Plane'
     plane_x.active_material = smat_x
+    lock_object(plane_x)
 
     bpy.ops.object.add(type='EMPTY', location=(0.0, offset, 0.0), rotation=empty_y_rotation)
     empty_y = bpy.context.view_layer.objects.active
@@ -118,6 +119,7 @@ def setup_mirroring(self, context):
     plane_y = bpy.context.view_layer.objects.active
     plane_y.name = 'Y Axis Mirror Plane'
     plane_y.active_material = smat_y
+    lock_object(plane_y)
 
     bpy.ops.object.add(type='EMPTY', location=(0.0, 0.0, offset), rotation=empty_z_rotation)
     empty_z = bpy.context.view_layer.objects.active
@@ -128,6 +130,7 @@ def setup_mirroring(self, context):
     plane_z = bpy.context.view_layer.objects.active
     plane_z.name = 'Z Axis Mirror Plane'
     plane_z.active_material = smat_z
+    lock_object(plane_z)
 
     parentCollection = empty_x.users_collection[0]
     if parentCollection != collection:

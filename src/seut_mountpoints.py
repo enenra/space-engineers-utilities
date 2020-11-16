@@ -7,7 +7,7 @@ from bpy.props      import EnumProperty
 from .materials.seut_materials      import create_internal_material
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import prep_context, to_radians, clear_selection, create_seut_collection
+from .seut_utils                    import prep_context, to_radians, clear_selection, create_seut_collection, lock_object
 
 
 def setup_mountpoints(self, context):
@@ -55,32 +55,38 @@ def setup_mountpoints(self, context):
     empty_front.rotation_euler.x = to_radians(-90)
     empty_front.rotation_euler.z = to_radians(-180)
     empty_front.location.y = -(bbox_y / 2 * 1.05)
+    lock_object(empty_front)
 
     empty_back = create_mp_empty(context, 'Mountpoints Back', collection, None)
     empty_back.empty_display_type = 'SINGLE_ARROW'
     empty_back.rotation_euler.x = to_radians(-90)
     empty_back.location.y = bbox_y / 2 * 1.05
+    lock_object(empty_back)
 
     empty_left = create_mp_empty(context, 'Mountpoints Left', collection, None)
     empty_left.empty_display_type = 'SINGLE_ARROW'
     empty_left.rotation_euler.x = to_radians(-90)
     empty_left.rotation_euler.z = to_radians(270)
     empty_left.location.x = bbox_x / 2 * 1.05
+    lock_object(empty_left)
 
     empty_right = create_mp_empty(context, 'Mountpoints Right', collection, None)
     empty_right.empty_display_type = 'SINGLE_ARROW'
     empty_right.rotation_euler.x = to_radians(-90)
     empty_right.rotation_euler.z = to_radians(-270)
     empty_right.location.x = -(bbox_x / 2 * 1.05)
+    lock_object(empty_right)
 
     empty_top = create_mp_empty(context, 'Mountpoints Top', collection, None)
     empty_top.empty_display_type = 'SINGLE_ARROW'
     empty_top.location.z = bbox_z / 2 * 1.05
+    lock_object(empty_top)
 
     empty_bottom = create_mp_empty(context, 'Mountpoints Bottom', collection, None)
     empty_bottom.empty_display_type = 'SINGLE_ARROW'
     empty_bottom.rotation_euler.x = to_radians(180)
     empty_bottom.location.z = -(bbox_z / 2 * 1.05)
+    lock_object(empty_bottom)
 
     # Create default mountpoint areas
     if len(scene.seut.mountpointAreas) == 0:
