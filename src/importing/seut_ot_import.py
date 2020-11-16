@@ -51,7 +51,7 @@ class SEUT_OT_Import(Operator):
         try:
             result = bpy.ops.import_scene.fbx(filepath=self.filepath)
         except RuntimeError as error:
-            self.report({'ERROR'}, "SEUT:\n" + str(error))
+            seut_report(self, context, 'ERROR', True, 'E036', str(error))
             return {'CANCELLED'}
             
         new_objects = set(context.scene.objects)

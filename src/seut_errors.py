@@ -40,6 +40,7 @@ errors = {
     'E033': "Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, material names and object names.",
     'E034': "Collision object '{variable_1}' has unapplied modifiers. Collision model cannot be created.",
     'E035': "There was an error during export caused by {variable_1}. Please refer to the logs in your export folder for details.",
+    'E036': "The following error occurred during import:\n{variable_1}",
 }
 
 warnings = {
