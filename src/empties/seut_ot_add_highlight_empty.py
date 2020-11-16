@@ -11,7 +11,7 @@ from ..seut_errors                  import seut_report
 
 
 class SEUT_OT_AddHighlightEmpty(Operator):
-    """Add highlight empty to selected object"""
+    """Add highlight empty to selected object. \n Note: You must have a reference object selected"""
     bl_idname = "object.add_highlight_empty"
     bl_label = "Add Highlight"
     bl_options = {'REGISTER', 'UNDO'}
