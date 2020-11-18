@@ -215,14 +215,6 @@ def create_seut_collection(seut_collection, name: str):
 def lock_object(target):
     """Locks the specified object's location, rotation and scale"""
 
-    target.lock_location[0] = True
-    target.lock_location[1] = True
-    target.lock_location[2] = True
-
-    target.lock_rotation[0] = True
-    target.lock_rotation[1] = True
-    target.lock_rotation[2] = True
-
-    target.lock_scale[0] = True
-    target.lock_scale[1] = True
-    target.lock_scale[2] = True
+    target.lock_location = (True, True, True)
+    target.lock_rotation = (True, True, True)
+    target.lock_scale = (True, True, True)
