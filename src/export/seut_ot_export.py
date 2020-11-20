@@ -434,10 +434,10 @@ def export_sbc(self, context):
 
     if scene.seut.gridScale == 'large':
         def_CubeSize.text = 'Large'
-        gridSize = 2.5
+        grid_size = 2.5
     elif scene.seut.gridScale == 'small':
         def_CubeSize.text = 'Small'
-        gridSize = 0.5
+        grid_size = 0.5
     
     def_BlockTopology = ET.SubElement(def_definition, 'BlockTopology')
     def_BlockTopology.text = 'TriangleMesh'
@@ -453,11 +453,23 @@ def export_sbc(self, context):
             center_empty = obj
             break
 
-    if center_empty is not None:                
+    if center_empty is not None:
+        center_loc_x = center_empty.location.x
+        center_loc_y = center_empty.location.y
+        center_loc_z = center_empty.location.z
+
+        parent_obj = center_empty.parent
+
+        while parent_obj is not None:
+            center_loc_x += parent_obj.location.x
+            center_loc_y += parent_obj.location.y
+            center_loc_z += parent_obj.location.z
+            parent_obj = parent_obj.parent
+
         def_Center = ET.SubElement(def_definition, 'Center')
-        def_Center.set('x', str(round(center_empty.location.x / gridSize)))
-        def_Center.set('y', str(round(center_empty.location.z / gridSize)))   # This looks wrong but it's correct: Blender has different forward than SE.
-        def_Center.set('z', str(round(center_empty.location.y / gridSize)))
+        def_Center.set('x', str(round(center_loc_x / grid_size)))
+        def_Center.set('y', str(round(center_loc_z / grid_size)))   # This looks wrong but it's correct: Blender has different forward than SE.
+        def_Center.set('z', str(round(center_loc_y / grid_size)))
 
     def_ModelOffset = ET.SubElement(def_definition, 'ModelOffset')
     def_ModelOffset.set('x', '0')
