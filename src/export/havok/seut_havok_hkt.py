@@ -31,13 +31,17 @@ def process_fbximporterhkt_to_final_hkt_for_mwm(self, context, scene, path, sett
 
         # -t is for standard ouput, -s designates a filter set (hko created above), -p designates path.	
         # Above referenced from running "hctStandAloneFilterManager.exe -h"	
-        settings.callTool(	
+        result = settings.callTool(	
             context,
             [settings.havokfilter, '-t', '-s', hko.name, '-p', dstfile, srcfile], 	
             ToolType(2),
             logfile=dstfile+'.filter.log',	
             successfulExitCodes=[0,1]
-        )	
+        )
+
+    except:
+        result = False
+
     finally:	
         os.remove(hko.name)
 
@@ -54,5 +58,5 @@ def process_fbximporterhkt_to_final_hkt_for_mwm(self, context, scene, path, sett
                         hktBSfile = join(path, scene.seut.subtypeId + '_' + str(childcollection.name)[:3] + ".hkt")
                         copy(srcfile, hktBSfile)
                         
-        
-        seut_report(self, context, 'INFO', True, 'I009')
+        if result:
+            seut_report(self, context, 'INFO', True, 'I009')

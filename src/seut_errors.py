@@ -41,6 +41,7 @@ errors = {
     'E034': "Collision object '{variable_1}' has unapplied modifiers. Collision model cannot be created.",
     'E035': "There was an error during export caused by {variable_1}. Please refer to the logs in your export folder for details.",
     'E036': "The following error occurred during import:\n{variable_1}",
+    'E037': "Havok's 'hctFilterManager.dll' could not be found. Collision could not be exported.",
 }
 
 warnings = {

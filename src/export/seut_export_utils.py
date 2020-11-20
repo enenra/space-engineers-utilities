@@ -600,12 +600,19 @@ class ExportSettings:
             if logtextInspector is not None:
                 logtextInspector(out)
 
+            return True
+
         except subprocess.CalledProcessError as e:
             if self.isLogToolOutput and logfile:
                 write_to_log(logfile, e.output, cmdline=cmdline, cwd=cwd, loglines=loglines)
             if e.returncode not in successfulExitCodes:
-                seut_report(self, context, 'ERROR', False, 'E035', str(tooltype))
+                if e.returncode == 4294967295:
+                    seut_report(self, context, 'ERROR', False, 'E037')
+                else:
+                    seut_report(self, context, 'ERROR', False, 'E035', str(tooltype))
                 raise
+
+            return False
     
     def __getitem__(self, key): # makes all attributes available for parameter substitution
         if not type(key) is str or key.startswith('_'):
