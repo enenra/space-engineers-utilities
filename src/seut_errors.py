@@ -21,7 +21,7 @@ errors = {
     'E014': "Export path '{variable_1}' in scene '{variable_2}' does not contain 'Models\\'. Cannot be transformed into relative path.",
     'E015': "Invalid {variable_1} setup. Cannot have {variable_1}2 but no {variable_1}1, or {variable_1}3 but no {variable_1}2.",
     'E016': "Scene '{variable_1}' could not be exported.",
-    'E017': "An error has occurred in the FBX exporter. Try exiting Edit-Mode before exporting.",
+    'E017': "A RunTimeError has occurred in the FBX exporter. Try exiting Edit-Mode before exporting.",
     'E018': "Cannot set SubtypeId to a SubtypeId that has already been used for another scene in the same BLEND file.",
     'E019': "No export folder defined for scene '{variable_1}'.",
     'E020': "Deletion of temporary files failed.",
@@ -42,6 +42,7 @@ errors = {
     'E035': "There was an error during export caused by {variable_1}. Please refer to the logs in your export folder for details.",
     'E036': "The following error occurred during import:\n{variable_1}",
     'E037': "Havok's 'hctFilterManager.dll' could not be found. Collision could not be exported.",
+    'E038': "A KeyError occurred during export:\n{variable_1}",
 }
 
 warnings = {

@@ -321,9 +321,13 @@ def export_fbx(self, context, collection) -> str:
     error_during_export = False
     try:
         export_to_fbxfile(settings, scene, fbx_file, collection.objects, ishavokfbxfile=False)
+
     except RuntimeError as error:
         seut_report(self, context, 'ERROR', False, 'E017')
         error_during_export = True
+
+    except KeyError as error:
+        seut_report(self, context, 'ERROR', True, 'E038', error)
 
     # Revert materials back to original form
     for mat in bpy.data.materials:
@@ -736,4 +740,4 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         settings.depsgraph,	
         filepath=filepath,	
         **kwargs # Stores any number of Keyword Arguments into a dictionary called 'fbxSettings'.	
-    )	
+    )
