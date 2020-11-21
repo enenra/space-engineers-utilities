@@ -84,10 +84,10 @@ class SEUT_OT_Import(Operator):
                     obj.scale.y *= 0.5
                     obj.scale.z *= 0.5
 
-                    if 'file' in obj and obj['file'] in bpy.data.scenes:
-                        obj.seut.linkedScene = bpy.data.scenes[obj['file']]
-                    if 'highlight' in obj and obj['highlight'] in bpy.data.objects:
-                        obj.seut.linkedObject = bpy.data.objects[obj['highlight']]
+                if 'file' in obj and obj['file'] in bpy.data.scenes:
+                    obj.seut.linkedScene = bpy.data.scenes[obj['file']]
+                if 'highlight' in obj and obj['highlight'] in bpy.data.objects:
+                    obj.seut.linkedObject = bpy.data.objects[obj['highlight']]
         
         # Then run material remap
         bpy.ops.object.remapmaterials()

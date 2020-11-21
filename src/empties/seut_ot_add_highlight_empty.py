@@ -88,7 +88,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
             uses_index = True
         elif self.detector_type == 'textpanel':
             empty_name = "detector_textpanel"
-            uses_index = False
+            uses_index = True
         elif self.detector_type == 'button':
             empty_name = "dummy_detector_panel_button_"
             uses_index = True
