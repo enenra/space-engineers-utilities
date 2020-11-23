@@ -172,6 +172,7 @@ def create_internal_material(context, mat_type: str):
 
     material = bpy.data.materials.new(name="SEUT_TEMP")
     material.use_nodes = True
+    material.blend_method = 'BLEND'
     nodes = material.node_tree.nodes
     
     node_bsdf = None
