@@ -251,7 +251,7 @@ def add_to_issues(context, issue_type: str, text: str, code: str, reference: str
     issue = issues.add()
     issue.timestamp = time.time()
     issue.issue_type = issue_type
-    issue.text = text[len(""):]
+    issue.text = text
 
     if code is not None:
         issue.code = code

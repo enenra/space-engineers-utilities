@@ -288,7 +288,8 @@ def export_fbx(self, context, collection) -> str:
 
             # Additional parenting checks
             if 'highlight' in empty and empty.seut.linkedObject is not None:
-                empty['highlight'] = empty.seut.linkedObject.name
+                if empty['highlight'].find(";") == -1:
+                    empty['highlight'] = empty.seut.linkedObject.name
                 if empty.parent is not None and empty.seut.linkedObject.parent is not None and empty.parent != empty.seut.linkedObject.parent:
                     seut_report(self, context, 'WARNING', True, 'W007', empty.name, empty.seut.linkedObject.name)
             
