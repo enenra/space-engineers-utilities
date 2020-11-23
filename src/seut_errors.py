@@ -238,7 +238,7 @@ def add_to_issues(context, issue_type: str, text: str, code: str, reference: str
     wm = context.window_manager
     issues = wm.seut.issues
 
-    while len(issues) > 19:
+    while len(issues) > 49:
         oldest = None
         for index in range(0, len(issues)):
             if oldest == None:

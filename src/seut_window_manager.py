@@ -168,3 +168,18 @@ class SEUT_WindowManager(PropertyGroup):
     issue_alert: BoolProperty(
         default=False
     )
+    display_errors: BoolProperty(
+        name="Display Errors",
+        description="Toggles whether errors are visible in the SEUT Notifications screen",
+        default=True
+    )
+    display_warnings: BoolProperty(
+        name="Display Warnings",
+        description="Toggles whether warnings are visible in the SEUT Notifications screen",
+        default=True
+    )
+    display_infos: BoolProperty(
+        name="Display Infos",
+        description="Toggles whether infos are visible in the SEUT Notifications screen",
+        default=True
+    )
