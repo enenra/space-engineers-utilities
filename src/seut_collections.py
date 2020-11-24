@@ -50,6 +50,9 @@ class SEUT_OT_RecreateCollections(Operator):
 
         create_collections(context)
 
+        tag = ' (' + scene.seut.subtypeId + ')'
+        context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children['Main' + tag]
+
         return {'FINISHED'}
 
 
