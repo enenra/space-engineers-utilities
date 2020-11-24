@@ -29,6 +29,10 @@ class SEUT_OT_ExportAllScenes(Operator):
         failed_counter = 0
 
         for scn in bpy.data.scenes:
+            
+            if not 'SEUT' in scn.view_layers:
+                continue
+
             if scn.seut.sceneType == 'mainScene' or scn.seut.sceneType == 'subpart' or scn.seut.sceneType == 'character' or scn.seut.sceneType == 'character_animation':
                 
                 scene_counter += 1
