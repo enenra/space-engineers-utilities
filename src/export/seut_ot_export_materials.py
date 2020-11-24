@@ -47,7 +47,7 @@ def export_materials(self, context):
             create_mat_entry(self, context, materials, mat)
                 
     # Create file with subtypename + collection name and write string to it
-    xml_formatted = format_xml(self, context, model)
+    xml_formatted = format_xml(self, context, materials)
     
     exported_xml = open(bpy.path.abspath('//') + filename + ".xml", "w")
     exported_xml.write(xml_formatted)
