@@ -28,12 +28,12 @@ class SEUT_OT_Import(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
 
-    filter_glob: bpy.props.StringProperty(
+    filter_glob: StringProperty(
         default='*.fbx',
         options={'HIDDEN'}
         )
 
-    filepath: bpy.props.StringProperty(
+    filepath: StringProperty(
         subtype="FILE_PATH"
         )
 
