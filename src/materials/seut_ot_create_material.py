@@ -120,7 +120,7 @@ def create_seut_nodegroup(node):
     node_normal_map = nodes.new(type='ShaderNodeNormalMap')
     node_normal_map.label = 'Normal Map'
     node_normal_map.location = (-687.5000, -600.4375)
-    links.new(node_normal_map.outputs[0], node_bsdf.inputs[19])
+    links.new(node_normal_map.outputs[0], node_bsdf.inputs[20])
     
     node_add_switch = nodes.new(type='ShaderNodeMath')
     node_add_switch.label = 'ADD Switch'
