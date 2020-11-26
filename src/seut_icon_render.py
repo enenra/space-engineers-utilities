@@ -195,6 +195,9 @@ class SEUT_OT_IconRenderPreview(Operator):
 
         clear_selection(context)
 
+        scene.render.use_compositing = True
+        scene.render.use_sequencer = True
+
         simple_nav = wm.seut.simpleNavigationToggle
         wm.seut.simpleNavigationToggle = False
 
