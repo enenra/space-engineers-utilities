@@ -44,7 +44,8 @@ class SEUT_OT_AddDummy(Operator):
             ('particles2', 'Particles 2', 'Point of origin for particles (used in grinder)'),
             ('TopBlock', 'Piston Top', 'The top part of a piston'),
             ('wheel', 'Wheel', 'The position at which a wheel is connected to a suspension'),
-            ('center', 'Center', 'Defines the center of a block')
+            ('center', 'Center', 'Defines the center of a block'),
+            ('emitter', 'Emitter', 'Particle Emitter dummy used in exhaust-type blocks')
             ),
         default='conveyorline'
     )
@@ -143,6 +144,9 @@ class SEUT_OT_AddDummy(Operator):
             uses_index = False
         elif self.detector_type == 'center':
             empty_name = "Center"
+            uses_index = False
+        elif self.detector_type == 'emitter':
+            empty_name = "emitter"
             uses_index = False
         
         bpy.ops.object.add(type='EMPTY')
