@@ -5,6 +5,7 @@ import webbrowser
 
 from bpy.types              import Operator
 
+from ..seut_utils           import get_preferences
 
 url = "http://api.github.com/repos/enenra/space-engineers-utilities/tags"
 version = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+")
@@ -34,7 +35,10 @@ def check_update(current_version):
     """Checks the GitHub API for the latest SEUT release"""
 
     wm = bpy.context.window_manager
-    wm.seut.needs_update = ""
+    preferences = get_preferences()
+
+    wm.seut.needs_update = False
+    wm.seut.update_message = ""
 
     try:
         response = requests.get(url)
@@ -55,16 +59,23 @@ def check_update(current_version):
             
             if tuple(current_version_name[1:]) < tuple(str(latest_version_name)[1:]):
                 outdated = f"SEUT {latest_version_name[1:]} available!"
-                wm.seut.needs_update = outdated
+                wm.seut.update_message = outdated
+                wm.seut.needs_update = True
 
             elif tuple(current_version_name[1:]) > tuple(str(latest_version_name)[1:]):
-                wm.seut.needs_update = "Development Build"
+                wm.seut.update_message = "Development Build"
+                wm.seut.needs_update = False
 
             else:
-                wm.seut.needs_update = "SEUT is up to date."
+                if preferences.dev_mode:
+                    outdated = f"SEUT {latest_version_name[1:]} available!"
+                    wm.seut.update_message = outdated
+                    wm.seut.needs_update = True
+                else:
+                    wm.seut.update_message = "SEUT is up to date."
         
         elif response.status_code == 403:
-            wm.seut.needs_update = "Rate limit exceeded!"
+            wm.seut.update_message = "Rate limit exceeded!"
 
-    except:
-        wm.seut.needs_update = "Connection Failed!"
+    except error as e:
+        wm.seut.update_message = "Connection Failed!"

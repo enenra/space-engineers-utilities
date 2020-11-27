@@ -151,8 +151,11 @@ class SEUT_WindowManager(PropertyGroup):
     )
 
     # Updater
-    needs_update: StringProperty(
-        name="Needs Update"
+    needs_update: BoolProperty(
+        default = False
+    )
+    update_message: StringProperty(
+        name="Update Message"
     )
     latest_version: StringProperty(
         name="Latest Version"

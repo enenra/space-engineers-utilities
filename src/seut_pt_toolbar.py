@@ -3,7 +3,6 @@ import bpy
 from bpy.types  import Panel
 
 from .seut_collections              import get_collections
-from .seut_preferences              import get_addon_version
 
 
 class SEUT_PT_Panel(Panel):
@@ -20,12 +19,10 @@ class SEUT_PT_Panel(Panel):
         scene = context.scene
         wm = context.window_manager
 
-        currentVersionName = 'v' + str(get_addon_version()).replace("(", "").replace(")", "").replace(", ", ".")
-
-        if tuple(currentVersionName[1:]) < tuple(str(wm.seut.latest_version)[1:]) and wm.seut.needs_update != "":
+        if wm.seut.needs_update:
             row = layout.row()
             row.alert = True
-            row.label(text=wm.seut.needs_update, icon='ERROR')
+            row.label(text=wm.seut.update_message, icon='ERROR')
             row.operator('wm.get_update', icon='IMPORT', text="")
 
         if not 'SEUT' in scene.view_layers:

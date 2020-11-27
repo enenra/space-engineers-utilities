@@ -9,6 +9,8 @@ from .seut_errors   import seut_report, get_abs_path
 
 preview_collections = {}
 
+DEV_MODE = True
+
 
 def update_set_dev_paths(self, context):
     scene = context.scene
@@ -101,6 +103,9 @@ class SEUT_AddonPreferences(AddonPreferences):
     """Saves the preferences set by the user"""
     bl_idname = __package__
 
+    dev_mode: BoolProperty(
+        default = DEV_MODE
+    )
     set_dev_paths: BoolProperty(
         name = "Set Dev Paths",
         description = "Set Dev Paths",
@@ -145,6 +150,8 @@ class SEUT_AddonPreferences(AddonPreferences):
         layout = self.layout
         wm = context.window_manager
 
+        self.dev_mode = DEV_MODE
+
         current_version_name = 'v' + str(get_addon_version()).replace("(", "").replace(")", "").replace(", ", ".")
 
         preview_collections = get_icons()
@@ -161,15 +168,16 @@ class SEUT_AddonPreferences(AddonPreferences):
         row = layout.row()
         row.label(text="Update Status:")
 
-        if tuple(current_version_name[1:]) < tuple(wm.seut.latest_version[1:]):
+        if wm.seut.needs_update:
             row.alert = True
-            row.label(text=wm.seut.needs_update, icon='ERROR')
+            row.label(text=wm.seut.update_message, icon='ERROR')
             row.operator('wm.get_update', icon='IMPORT')
         else:
-            row.label(text=wm.seut.needs_update, icon='CHECKMARK')
+            row.label(text=wm.seut.update_message, icon='CHECKMARK')
             row.operator('wm.get_update', text="Releases", icon='IMPORT')
 
-        layout.prop(self, "set_dev_paths", icon='FILEBROWSER')
+        if self.dev_mode:
+            layout.prop(self, "set_dev_paths", icon='FILEBROWSER')
 
         layout.prop(self, "materials_path", expand=True)
         box = layout.box()
