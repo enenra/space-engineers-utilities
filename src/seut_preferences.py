@@ -43,13 +43,16 @@ def update_materials_path(self, context):
 
     if os.path.isdir(path):
         if not path[-9:] == 'Materials':
-            seut_report(self, context, 'ERROR', False, 'E012', "Materials Folder", self.materials_path)
+            seut_report(self, context, 'ERROR', False, 'E012', "Materials Folder", path)
             self.materials_path = ""
         else:
             bpy.ops.scene.refresh_matlibs()
     else:
-        seut_report(self, context, 'ERROR', False, 'E003', 'Materials', os.path.abspath(bpy.path.abspath(self.materials_path)))
-        self.materials_path = ""
+        if os.path.basename(os.path.dirname(path)) == 'Materials':
+          self.materials_path = os.path.dirname(path) + '\\'
+        else:
+          seut_report(self, context, 'ERROR', False, 'E003', 'Materials', path)
+          self.materials_path = ""
     
 
 def update_fbx_importer_path(self, context):
