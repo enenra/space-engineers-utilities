@@ -80,14 +80,9 @@ class SEUT_PT_Panel_ParticleGeneration(Panel):
                 row = layout.row()
                 row.template_list('SEUT_UL_ParticleProperties', "", particle_setting.seut, 'properties', particle_setting.seut, 'properties_index', rows=rows)
 
-                # col = row.column(align=True)
-                # col.operator('particle.properties_add', icon='ADD', text="")
-                # col.operator('particle.properties_remove', icon='REMOVE', text="")
-
                 if len(particle_setting.seut.properties) > 0:
                     particle_property = particle_setting.seut.properties[particle_setting.seut.properties_index]
 
-                    # layout.prop(particle_property, 'name_internal')
                     # layout.label(text="Animation Type: " + particle_property.prop_animation_type)
                     # layout.label(text="Type: " + particle_property.prop_type)
 
@@ -122,7 +117,7 @@ class SEUT_PT_Panel_ParticleGeneration(Panel):
                     else:
                         rows = 1
                         row = layout.row()
-                        row.template_list('SEUT_UL_ParticleProperties', "", particle_setting.seut, 'properties', particle_setting.seut, 'properties_index', rows=rows)
+                        row.template_list('SEUT_UL_ParticlePropertyValues2D', "", particle_property, 'keys', particle_property, 'keys_index', rows=rows)
 
                         col = row.column(align=True)
                         col.operator('particle.properties_add', icon='ADD', text="")

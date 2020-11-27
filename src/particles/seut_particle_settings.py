@@ -74,8 +74,13 @@ class SEUT_ParticlePropertyValue2D(PropertyGroup):
         description="TBD",
         subtype='COLOR_GAMMA'
     )
-    value_2d: CollectionProperty(
+    
+    keys: CollectionProperty(
         type=SEUT_ParticlePropertyKeys
+    )
+    keys_index: IntProperty(
+        name="Values 2D Index",
+        default=0
     )
 
 
@@ -203,6 +208,10 @@ class SEUT_ParticleProperty(PropertyGroup):
     keys: CollectionProperty(
         type=SEUT_ParticlePropertyValue2D
     )
+    keys_index: IntProperty(
+        name="Values 2D Index",
+        default=0
+    )
 
 
 class SEUT_ParticleSettings(PropertyGroup):
@@ -276,6 +285,17 @@ properties = {
 
 
 class SEUT_UL_ParticleProperties(UIList):
+    """Creates the Particle Properties UI list"""
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+
+        layout.label(text=item.name, icon='PROPERTIES')
+
+    def invoke(self, context, event):
+        pass
+
+
+class SEUT_UL_ParticlePropertyValues2D(UIList):
     """Creates the Particle Properties UI list"""
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):

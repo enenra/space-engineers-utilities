@@ -46,7 +46,7 @@ class SEUT_OT_Import_Materials(Operator):
         try:
             tree = ET.parse(self.filepath)
         except:
-            print("AAAAAAAAAAAAAAAAAAAAA")
+            print("AAAAAAAAAAAAAAAAAAAAAH")
             return
 
         root = tree.getroot()
@@ -107,22 +107,22 @@ class SEUT_OT_Import_Materials(Operator):
                 # Error if textures are incompatible DDS format (via splitext)
                 
 
-                if cm_img != False and != None:
+                if cm_img != False and cm_img != None:
                     cm_node.image = cm_img
                 elif cm_img == None:
                     material.node_tree.nodes.remove(cm_node)
 
-                if ng_img != False and != None:
+                if ng_img != False and ng_img != None:
                     ng_node.image = ng_img
                 elif ng_img == None:
                     material.node_tree.nodes.remove(ng_node)
 
-                if add_img != False and != None:
+                if add_img != False and add_img != None:
                     add_node.image = add_img
                 elif add_img == None:
                     material.node_tree.nodes.remove(add_node)
 
-                if am_img != False and != None:
+                if am_img != False and am_img != None:
                     am_node.image = am_img
                 elif am_img == None:
                     material.node_tree.nodes.remove(am_node)

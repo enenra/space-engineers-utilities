@@ -16,7 +16,7 @@ bl_info = {
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie",
     "version": (0, 9, 95),
-    "blender": (2, 90, 0),
+    "blender": (2, 91, 0),
     "location": "View3D > Tools ",
     "warning": "",
     "wiki_url": "https://space-engineers-modding.github.io/modding-reference/tools/3d-modelling/seut.html",
@@ -68,6 +68,7 @@ from .particles.seut_particle_settings          import SEUT_ParticlePropertyValu
 from .particles.seut_particle_settings          import SEUT_ParticleProperty
 from .particles.seut_particle_settings          import SEUT_ParticleSettings
 from .particles.seut_particle_settings          import SEUT_UL_ParticleProperties
+from .particles.seut_particle_settings          import SEUT_UL_ParticlePropertyValues2D
 from .particles.seut_ot_settings                import SEUT_OT_SettingsAdd
 from .particles.seut_ot_properties              import SEUT_OT_PropertiesAdd
 from .particles.seut_ot_properties              import SEUT_OT_PropertiesRemove
@@ -168,6 +169,7 @@ classes = (
     SEUT_WindowManager,
     SEUT_UL_MatLib,
     SEUT_UL_ParticleProperties,
+    SEUT_UL_ParticlePropertyValues2D,
 )
 
 
