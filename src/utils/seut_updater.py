@@ -7,7 +7,8 @@ from bpy.types              import Operator
 
 from ..seut_utils           import get_preferences
 
-url = "http://api.github.com/repos/enenra/space-engineers-utilities/tags"
+url_releases = "https://api.github.com/repos/enenra/space-engineers-utilities/releases"
+url_tags = "https://api.github.com/repos/enenra/space-engineers-utilities/tags"
 version = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+")
 
 
@@ -41,17 +42,26 @@ def check_update(current_version):
     wm.seut.update_message = ""
 
     try:
-        response = requests.get(url)
+        response_tags = requests.get(url_tags)
+        response_releases = requests.get(url_releases)
 
-        if response.status_code == 200:
-            resp_json = response.json()
+        if response_tags.status_code == 200 and response_releases.status_code == 200:
+            json_tags = response_tags.json()
+            json_releases = response_releases.json()
+
             versions = list()
 
-            for tag in resp_json:
-                name = tag['name']
+            for tag in json_tags:
+                name_tag = tag['name']
 
-                if version.match(name):
-                    versions.append(name)
+                for release in json_releases:
+                    name_release = release['tag_name']
+                    prerelease = release['prerelease']
+
+                    if name_tag == name_release:
+                        if version.match(name_tag) and prerelease == False:
+                            versions.append(name_tag)
+                        break
 
             latest_version_name = sorted(versions, reverse=True)[0]
             wm.seut.latest_version = latest_version_name
@@ -74,8 +84,8 @@ def check_update(current_version):
                 else:
                     wm.seut.update_message = "SEUT is up to date."
         
-        elif response.status_code == 403:
+        elif response_tags.status_code == 403 or response_releases.status_code == 403:
             wm.seut.update_message = "Rate limit exceeded!"
 
-    except error as e:
+    except:
         wm.seut.update_message = "Connection Failed!"
