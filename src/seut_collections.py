@@ -43,6 +43,12 @@ class SEUT_OT_RecreateCollections(Operator):
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
             scene.seut.subtypeBefore = scene.name
+        
+        for scn in bpy.data.scenes:
+            if scene.seut.subtypeId == scn.seut.subtypeId:
+                scene.seut.subtypeId = scene.name
+                scene.seut.subtypeBefore = scene.name
+                break
     
         if not 'SEUT Node Group' in bpy.data.node_groups or bpy.data.node_groups['SEUT Node Group'].library != None:
             temp_mat = create_material()
@@ -65,6 +71,14 @@ def get_collections(scene):
     collections = {}
     for key in names.keys():
         collections[key] = None
+
+
+    if not 'SEUT' in scene.view_layers:
+        # This errors sometimes if it's triggered from draw in the toolbar
+        try:
+            scene.view_layers[0].name = 'SEUT'
+        except:
+            pass
 
     children = scene.view_layers['SEUT'].layer_collection.children
 
@@ -90,6 +104,8 @@ def rename_collections(scene):
     tag_before = ' (' + scene.seut.subtypeBefore + ')'
     children = scene.view_layers['SEUT'].layer_collection.children
 
+    seut_collection = None
+    
     for child in children:
         col = child.collection
         if col.name == 'SEUT' + tag_before or col.name[:4 + len(tag_before)] == 'SEUT' + tag_before and re.search("\.[0-9]{3}", col.name[-4:]) != None:
