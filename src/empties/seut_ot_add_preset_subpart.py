@@ -40,7 +40,8 @@ class SEUT_OT_AddPresetSubpart(Operator):
             ('TurbineRotor', 'Wind Turbine Rotor', 'The subpart containing the rotating blades of a wind turbine'),
             ('HangarDoor', 'Hangar Door Part', 'Subpart for a hangar door section. \nSupports index, and all of these subparts are placed within its base'),
             ('LaserComTurret', 'Laser Antenna Targeter Azimuth', 'Subpart for a laser antenna turret'),
-            ('LaserCom', 'Laser Antenna Targeter Elevation', 'Subpart for a laser antenna turret (attached to Laser Antenna azimuth subpart)')
+            ('LaserCom', 'Laser Antenna Targeter Elevation', 'Subpart for a laser antenna turret (attached to Laser Antenna azimuth subpart)'),
+            ('RotatingLightDummy', 'Rotating Light', 'Subpart for the rotating light top part in a Rotating Light block')
             ),
         default='DoorLeft'
     )
@@ -120,6 +121,9 @@ class SEUT_OT_AddPresetSubpart(Operator):
             uses_index = False
         elif self.detector_type == 'LaserCom':
             empty_name = "subpart_LaserCom"
+            uses_index = False
+        elif self.detector_type == 'RotatingLightDummy':
+            empty_name = "subpart_RotatingLightDummy"
             uses_index = False
 
         bpy.ops.object.add(type='EMPTY')
