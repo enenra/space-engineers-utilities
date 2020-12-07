@@ -98,6 +98,7 @@ from .seut_pt_toolbar                   import SEUT_PT_Panel_Import
 from .seut_bbox                         import SEUT_OT_BBox
 from .seut_bbox                         import SEUT_OT_BBoxAuto
 from .seut_mountpoints                  import SEUT_OT_AddMountpointArea
+from .seut_collections                  import SEUT_Collection
 from .seut_collections                  import SEUT_OT_RecreateCollections
 from .seut_ot_simple_navigation         import SEUT_OT_SimpleNavigation
 from .seut_icon_render                  import SEUT_OT_IconRenderPreview
@@ -163,6 +164,7 @@ classes = (
     SEUT_OT_PropertiesRemove,
     SEUT_MountpointAreas,
     SEUT_Scene,
+    SEUT_Collection,
     SEUT_Object,
     SEUT_IssueProperty,
     SEUT_MatLibProps,
@@ -184,6 +186,7 @@ def register():
     bpy.types.Material.seut = PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
+    bpy.types.Collection.seut = PointerProperty(type=SEUT_Collection)
     bpy.types.ParticleSettings.seut = PointerProperty(type=SEUT_ParticleSettings)
     bpy.types.WindowManager.seut = PointerProperty(type=SEUT_WindowManager)
 
@@ -204,6 +207,7 @@ def unregister():
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
     del bpy.types.Object.seut
+    del bpy.types.Collection.seut
     del bpy.types.ParticleSettings.seut
     del bpy.types.WindowManager.seut
 

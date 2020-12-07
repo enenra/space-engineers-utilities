@@ -1,13 +1,21 @@
 import bpy
 import re
 
-from bpy.types import Operator
+from bpy.types  import Operator
+from bpy.types  import PropertyGroup
+from bpy.props  import (EnumProperty,
+                        FloatProperty,
+                        FloatVectorProperty,
+                        IntProperty,
+                        StringProperty,
+                        BoolProperty,
+                        PointerProperty)
 
 from .materials.seut_ot_create_material import create_material
 
 
 names = {
-    'seut': "SEUT",
+    'seut': 'SEUT',
     'main': 'Main',
     'hkt': 'Collision',
     'lod1': 'LOD1',
@@ -21,6 +29,52 @@ names = {
     'mirroring': 'Mirroring',
     'render': 'Render'
 }
+
+colors = {
+    'seut': 'COLOR_01',
+    'main': 'COLOR_01',
+    'hkt': 'COLOR_01',
+    'lod': 'COLOR_01',
+    'bs': 'COLOR_01',
+    'bs_lod': 'COLOR_01',
+    'mountpoints': 'COLOR_01',
+    'mirroring': 'COLOR_01',
+    'render': 'COLOR_01'
+}
+
+
+class SEUT_Collection(PropertyGroup):
+    """Holder for the varios collection properties"""
+    
+    scene: PointerProperty(
+        type=bpy.types.Scene
+    )
+    
+    col_type: EnumProperty(
+        items=(
+            ('seut', 'SEUT', ''),
+            ('main', 'Main', ''),
+            ('hkt', 'Collision', ''),
+            ('lod', 'LOD', ''),
+            ('bs', 'BS', ''),
+            ('bs_lod', 'BS_LOD', ''),
+            ('mountpoints', 'Mountpoints', ''),
+            ('mirroring', 'Mirroring', ''),
+            ('render', 'Render', ''),
+            )
+    )
+
+    type_index: IntProperty(
+        default = 0
+    )
+
+    lod_distance: IntProperty(
+        name = "LOD Distance",
+        description = "From what distance this LOD should display",
+        default = 25,
+        min = 0
+    )
+
 
 class SEUT_OT_RecreateCollections(Operator):
     """Recreates the collections"""
@@ -65,13 +119,10 @@ class SEUT_OT_RecreateCollections(Operator):
 def get_collections(scene):
     """Scans existing collections to find the SEUT ones"""
 
-    tag = ' (' + scene.seut.subtypeId + ')'
-
     # Use the keys of names to create a new dict
     collections = {}
     for key in names.keys():
         collections[key] = None
-
 
     if not 'SEUT' in scene.view_layers:
         # This errors sometimes if it's triggered from draw in the toolbar
@@ -80,19 +131,13 @@ def get_collections(scene):
         except:
             pass
 
-    children = scene.view_layers['SEUT'].layer_collection.children
-
-    if str('SEUT' + tag) in children:
-        collections['seut'] = children['SEUT' + tag].collection
-
-    # Find collections in scene by keys and values in names
-    if not collections['seut'] is None:
-        for col in collections['seut'].children:
-            for key in names.keys():
-                if key == 'seut':
-                    pass
-                elif col.name == names[key] + tag:
-                    collections[key] = col
+    for col in bpy.data.collections:
+        if not col.seut.scene is scene:
+            continue
+        if col.seut.type_index > 0:
+            collections[col.seut.col_type + str(col.seut.type_index)] = col
+        else:
+            collections[col.seut.col_type] = col
     
     return collections
 
@@ -105,7 +150,7 @@ def rename_collections(scene):
     children = scene.view_layers['SEUT'].layer_collection.children
 
     seut_collection = None
-    
+
     for child in children:
         col = child.collection
         if col.name == 'SEUT' + tag_before or col.name[:4 + len(tag_before)] == 'SEUT' + tag_before and re.search("\.[0-9]{3}", col.name[-4:]) != None:

@@ -77,7 +77,7 @@ infos = {
     'I016': "Empty '{variable_1}' rotation {variable_2} registered as: {variable_3}",
     'I017': "Mountpoint Area {variable_1} saved. {variable_2} {variable_3}",
     'I018': "Icon successfully saved to '{variable_1}'.",
-    'I019': "Successfully imported {variable_1} materials from '{variable_2}'.",
+    'I019': "Successfully imported {variable_1} materials from '{variable_2}':\n{variable_3}",
 }
 
 

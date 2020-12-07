@@ -130,8 +130,14 @@ class SEUT_OT_Import_Materials(Operator):
                 imported.append(material.name)
                 
 
-        seut_report(self, context, 'INFO', True, 'I019', len(imported), self.filepath)
-        # how to output the list of imported materials?
+        materials_string = ""
+        for name in imported:
+            if materials_string == "":
+                materials_string = name
+            else:
+                materials_string = materials_string + ", " + name
+
+        seut_report(self, context, 'INFO', True, 'I019', len(imported), self.filepath, materials_string)
 
         return {'FINISHED'}
 
