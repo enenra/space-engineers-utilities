@@ -132,8 +132,29 @@ def get_collections(scene):
             pass
 
     for col in bpy.data.collections:
-        if not col.seut.scene is scene:
+
+        if col is None:
             continue
+        
+        # This is for backwards compatibility with old system.
+        if col.seut.scene is None and re.search("\(" + scene.seut.subtypeId + "\)", col.name) != None:
+            col.seut.scene = scene
+            raw_type = re.match("([^ ]+) .*", col.name)
+            temp_type = re.match("/[^[0-9]]*/", raw_type).lower()
+
+            if temp_type == "collision":
+                col.seut.col_type = "hkt"
+            else:
+                col.seut.col_type = temp_type
+
+            if len(temp_type) != len(raw_type):
+                col.seut.type_index = raw_type[len(temp_type):]
+            else:
+                col.seut.type_index = 0
+
+        elif not col.seut.scene is scene:
+            continue
+
         if col.seut.type_index > 0:
             collections[col.seut.col_type + str(col.seut.type_index)] = col
         else:
@@ -145,32 +166,17 @@ def get_collections(scene):
 def rename_collections(scene):
     """Scans existing collections to find the SEUT ones and renames them if the tag has changed"""
 
-    tag = ' (' + scene.seut.subtypeId + ')'
-    tag_before = ' (' + scene.seut.subtypeBefore + ')'
-    children = scene.view_layers['SEUT'].layer_collection.children
+    # TODO: Figure out how to handle collections after scene copy, since their .seut.scene will still point to old one.
 
-    seut_collection = None
-
-    for child in children:
-        col = child.collection
-        if col.name == 'SEUT' + tag_before or col.name[:4 + len(tag_before)] == 'SEUT' + tag_before and re.search("\.[0-9]{3}", col.name[-4:]) != None:
-            seut_collection = col
-            col.name = 'SEUT' + tag
-    
-    if seut_collection is None:
-        return
-
-    for col in seut_collection.children:
-        for key in names.keys():
-            
-            col_name = col.name[:len(names[key] + " (")]
-
-            if key == 'seut':
-                pass
-            elif col_name == names[key] + " (":
-                col.name = names[key] + tag
-
-    return
+    for col in bpy.data.collections:
+        if col is None:
+            continue
+        if not col.seut.scene is scene:
+            continue
+        if col.seut.type_index > 0:
+            col.name = col.seut.col_type + str(col.seut.type_index) + " (" + col.seut.scene.seut.subtypeId + ")"
+        else:
+            col.name = col.seut.col_type + " (" + col.seut.scene.seut.subtypeId + ")"
 
 
 def create_collections(context):
@@ -185,9 +191,13 @@ def create_collections(context):
 
             collections[key] = bpy.data.collections.new(names[key] + tag)
 
+            # TODO: If collection is LOD collection, set distance based on index
+
             if collections[key] is collections['seut']:
                 scene.collection.children.link(collections[key])
             else:
                 collections['seut'].children.link(collections[key])
+        
+        # TODO: Move collection to its scene if it's not there.
 
     return collections
