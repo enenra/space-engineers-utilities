@@ -43,6 +43,7 @@ errors = {
     'E036': "The following error occurred during import:\n{variable_1}",
     'E037': "Havok's 'hctFilterManager.dll' could not be found. Collision could not be exported.",
     'E038': "A KeyError occurred during export:\n{variable_1}",
+    'E039': "Assimp32.dll could not be found by MWM Builder. Output could not be converted to MWM.",
 }
 
 warnings = {
