@@ -10,7 +10,7 @@ from ..seut_utils               import get_preferences
 
 class SEUT_OT_RefreshMatLibs(Operator):
     """Refresh available MatLibs"""
-    bl_idname = "scene.refresh_matlibs"
+    bl_idname = "wm.refresh_matlibs"
     bl_label = "Refresh MatLibs"
     bl_options = {'REGISTER', 'UNDO'}
 

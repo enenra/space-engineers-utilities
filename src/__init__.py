@@ -234,7 +234,7 @@ def load_handler(dummy):
         
     # This nightmare exists to avoid errors on startup
     try:
-        bpy.ops.scene.refresh_matlibs()
+        bpy.ops.wm.refresh_matlibs()
     except:
         try:
             seut_report(self, context, 'ERROR', False, 'E021')

@@ -157,7 +157,7 @@ class SEUT_PT_Panel_MatLib(Panel):
         rows = 2
         row = layout.row()
         row.template_list('SEUT_UL_MatLib', "", wm.seut , 'matlibs', wm.seut , 'matlib_index', rows=rows)
-        layout.operator('scene.refresh_matlibs', icon='FILE_REFRESH')
+        layout.operator('wm.refresh_matlibs', icon='FILE_REFRESH')
         
         layout.separator()
         split = layout.split(factor=0.85)
