@@ -169,7 +169,10 @@ class SEUT_OT_AddDummy(Operator):
             collections['main'].objects.link(empty)
 
             if parent_collection is None:
-                scene.collection.objects.unlink(empty)
+                try:
+                    scene.collection.objects.unlink(empty)
+                except:
+                    pass
             else:
                 parent_collection.objects.unlink(empty)
         
