@@ -21,7 +21,7 @@ class SEUT_OT_AddDummy(Operator):
         name='Dummy Type',
         items=(
             ('conveyorline', 'Conveyorline', 'Conveyor connection point without direct access. Does not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
-            ('conveyorline_small', 'Conveyorline Small', 'Small conveyor connection point without direct access. Deos not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
+            ('conveyorline_small', 'Conveyorline Small', 'Small conveyor connection point without direct access. Does not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('conveyorline_in', 'Conveyorline In', 'Conveyor connection point without direct access that only lets items pass into the block. Does not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('conveyorline_out', 'Conveyorline Out', 'Conveyor connection point without direct access that only lets items pass out of the block. Does not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('Connector', 'Connector', 'Adds connector functionality.\n Warning: Cannot be placed too far from block origin or the connector will only spin grids instead of connecting'),
