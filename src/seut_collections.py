@@ -194,7 +194,8 @@ class SEUT_OT_CreateCollection(Operator):
 
         collection.seut.col_type = self.col_type
         collection.seut.scene = scene
-        collection.color_tag = colors[self.col_type]
+        if bpy.app.version >= (2, 91, 0):
+            collection.color_tag = colors[self.col_type]
         collections['seut'].children.link(collection)
 
         return {'FINISHED'}
@@ -280,14 +281,16 @@ def create_collections(context):
 
                 collections[key] = bpy.data.collections.new(names[key] + tag)
                 collections[key].seut.scene = scene
-                collections[key].color_tag = colors[key]
+                if bpy.app.version >= (2, 91, 0):
+                    collections[key].color_tag = colors[key]
                 scene.collection.children.link(collections[key])
 
             elif key == 'main':
                 collections[key] = bpy.data.collections.new(names[key] + tag)
                 collections[key].seut.scene = scene
                 collections[key].seut.col_type = key
-                collections[key].color_tag = colors[key]
+                if bpy.app.version >= (2, 91, 0):
+                    collections[key].color_tag = colors[key]
                 collections['seut'].children.link(collections[key])
 
             elif key == 'lod' or key == 'bs':
@@ -299,21 +302,24 @@ def create_collections(context):
                 collections[key][1].seut.scene = scene
                 collections[key][1].seut.col_type = key
                 collections[key][1].seut.type_index = 1
-                collections[key][1].color_tag = colors[key]
+                if bpy.app.version >= (2, 91, 0):
+                    collections[key][1].color_tag = colors[key]
                 collections['seut'].children.link(collections[key][1])
 
                 collections[key][2] = bpy.data.collections.new(names[key] + '2' + tag)
                 collections[key][2].seut.scene = scene
                 collections[key][2].seut.col_type = key
                 collections[key][2].seut.type_index = 2
-                collections[key][2].color_tag = colors[key]
+                if bpy.app.version >= (2, 91, 0):
+                    collections[key][2].color_tag = colors[key]
                 collections['seut'].children.link(collections[key][2])
 
                 collections[key][3] = bpy.data.collections.new(names[key] + '3' + tag)
                 collections[key][3].seut.scene = scene
                 collections[key][3].seut.col_type = key
                 collections[key][3].seut.type_index = 3
-                collections[key][3].color_tag = colors[key]
+                if bpy.app.version >= (2, 91, 0):
+                    collections[key][3].color_tag = colors[key]
                 collections['seut'].children.link(collections[key][3])
 
                 if key == 'lod':
@@ -328,7 +334,8 @@ def create_collections(context):
                 temp_col.seut.scene = scene
                 temp_col.seut.col_type = key
                 temp_col.seut.ref_col = collections['main']
-                temp_col.color_tag = colors[key]
+                if bpy.app.version >= (2, 91, 0):
+                    temp_col.color_tag = colors[key]
                 collections['seut'].children.link(temp_col)
 
             elif key == 'bs_lod':
@@ -338,7 +345,8 @@ def create_collections(context):
                 collections[key][1].seut.col_type = key
                 collections[key][1].seut.type_index = 1
                 collections[key][1].seut.lod_distance = 50
-                collections[key][1].color_tag = colors[key]
+                if bpy.app.version >= (2, 91, 0):
+                    collections[key][1].color_tag = colors[key]
                 collections['seut'].children.link(collections[key][1])
 
     return collections

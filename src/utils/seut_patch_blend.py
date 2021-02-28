@@ -82,8 +82,9 @@ def patch_collections():
                 continue
             if not col.seut.scene is scn:
                 continue
-
-            col.color = colors[col.seut.col_type]
+            
+            if bpy.app.version >= (2, 91, 0):
+                col.color = colors[col.seut.col_type]
 
         
         rename_collections(scn)
