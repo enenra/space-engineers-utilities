@@ -16,6 +16,11 @@ class SEUT_OT_AddPresetSubpart(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
 
+    @classmethod
+    def poll(cls, context):
+        return len(context.selected_objects) != 0
+
+
     # pistons probably missing, hangar doors too
     detector_type: EnumProperty(
         name='Subpart Type',
