@@ -51,6 +51,10 @@ def export(self, context):
 
     current_area = prep_context(context)
 
+    scene.seut.mountpointToggle == 'on'
+    scene.seut.mirroringToggle = 'off'
+    scene.seut.renderToggle = 'off'
+
     # Checks export path and whether SubtypeId exists
     result = check_export(self, context)
     if not result == {'CONTINUE'}:
