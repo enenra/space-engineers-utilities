@@ -56,19 +56,58 @@ class SEUT_PT_Panel(Panel):
                 box.label(text="Grid Scale", icon='GRID')
                 row = box.row()
                 row.prop(scene.seut,'gridScale', expand=True)
-            
-            split = layout.split(factor=0.85)
-            split.operator('scene.recreate_collections', icon='COLLECTION_NEW')
-            link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'reference/'
-            link.page = 'outliner'
-            
+                        
             layout.prop(wm.seut, 'simpleNavigationToggle')
 
             row = layout.row()
             if wm.seut.issue_alert:
                 row.alert = True
             row.operator('wm.issue_display', icon='INFO')
+
+
+class SEUT_PT_Panel_Collections(Panel):
+    """Creates the collections panel for SEUT"""
+    bl_idname = "SEUT_PT_Panel_Collections"
+    bl_label = "Collections"
+    bl_category = "SEUT"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers
+
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        wm = context.window_manager
+
+        split = layout.split(factor=0.85)
+        split.operator('scene.recreate_collections', icon='COLLECTION_NEW')
+        link = split.operator('wm.semref_link', text="", icon='INFO')
+        link.section = 'reference/'
+        link.page = 'outliner'
+
+        layout.operator('scene.create_collection')
+
+        active_col = context.view_layer.active_layer_collection.collection
+
+        if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod' or active_col.seut.col_type == 'hkt' or active_col.seut.col_type == 'bs_lod':
+            box = layout.box()
+            box.label(text='Properties', icon='SETTINGS')
+
+            if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod':
+                box.prop(active_col.seut,'lod_distance')
+
+            if active_col.seut.col_type == 'hkt':
+                split = box.split(factor=0.40)
+                col = split.column()
+                col.label(text="Reference:")
+                col = split.column()
+                col.prop(active_col.seut,'ref_col', text="")
 
 
 class SEUT_PT_Panel_BoundingBox(Panel):
@@ -307,19 +346,6 @@ class SEUT_PT_Panel_Export(Panel):
         col.prop(scene.seut, "export_exportPath", text="Folder", expand=True)
         col = split.column()
         col.operator('scene.copy_export_options', text="", icon='PASTEDOWN')
-        
-        # LOD
-        if collections['lod1'] is not None or collections['lod2'] is not None or collections['lod3'] is not None or collections['bs_lod'] is not None:
-            box = layout.box()
-            box.label(text="LOD Distance", icon='DRIVER_DISTANCE')
-            if collections['lod1'] is not None:
-                box.prop(scene.seut, "export_lod1Distance")
-            if collections['lod2'] is not None:
-                box.prop(scene.seut, "export_lod2Distance")
-            if collections['lod3'] is not None:
-                box.prop(scene.seut, "export_lod3Distance")
-            if collections['bs_lod'] is not None:
-                box.prop(scene.seut, "export_bs_lodDistance")
 
 
 class SEUT_PT_Panel_Import(Panel):

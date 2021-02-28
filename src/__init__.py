@@ -79,6 +79,7 @@ from .particles.seut_particles                  import SEUT_PT_Panel_ImportParti
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
 from .utils.seut_updater                        import check_update
+from .utils.seut_patch_blend                    import apply_patches
 from .utils.seut_updater                        import SEUT_OT_GetUpdate
 from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
 from .utils.seut_ot_discord_link                import SEUT_OT_DiscordLink
@@ -89,6 +90,7 @@ from .seut_preferences                  import SEUT_AddonPreferences
 from .seut_preferences                  import get_addon_version
 from .seut_preferences                  import load_icons, unload_icons
 from .seut_pt_toolbar                   import SEUT_PT_Panel
+from .seut_pt_toolbar                   import SEUT_PT_Panel_Collections
 from .seut_pt_toolbar                   import SEUT_PT_Panel_BoundingBox
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Mirroring
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Mountpoints
@@ -100,6 +102,7 @@ from .seut_bbox                         import SEUT_OT_BBoxAuto
 from .seut_mountpoints                  import SEUT_OT_AddMountpointArea
 from .seut_collections                  import SEUT_Collection
 from .seut_collections                  import SEUT_OT_RecreateCollections
+from .seut_collections                  import SEUT_OT_CreateCollection
 from .seut_ot_simple_navigation         import SEUT_OT_SimpleNavigation
 from .seut_icon_render                  import SEUT_OT_IconRenderPreview
 from .seut_scene                        import SEUT_MountpointAreas
@@ -113,6 +116,7 @@ from .seut_window_manager               import SEUT_WindowManager
 classes = (
     SEUT_AddonPreferences,
     SEUT_PT_Panel,
+    SEUT_PT_Panel_Collections,
     SEUT_PT_Panel_BoundingBox,
     SEUT_PT_Panel_Mirroring,
     SEUT_PT_Panel_Mountpoints,
@@ -150,6 +154,7 @@ classes = (
     SEUT_OT_BBoxAuto,
     SEUT_OT_AddMountpointArea,
     SEUT_OT_RecreateCollections,
+    SEUT_OT_CreateCollection,
     SEUT_OT_SimpleNavigation,
     SEUT_OT_MatCreate,
     SEUT_OT_RefreshMatLibs,
@@ -242,6 +247,7 @@ def load_handler(dummy):
             pass
 
     check_update(get_addon_version())
+    apply_patches()
 
 addon_keymaps = []
 

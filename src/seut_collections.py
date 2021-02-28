@@ -18,12 +18,8 @@ names = {
     'seut': 'SEUT',
     'main': 'Main',
     'hkt': 'Collision',
-    'lod1': 'LOD1',
-    'lod2': 'LOD2',
-    'lod3': 'LOD3',
-    'bs1': 'BS1',
-    'bs2': 'BS2',
-    'bs3': 'BS3',
+    'lod': 'LOD',
+    'bs': 'BS',
     'bs_lod': 'BS_LOD',
     'mountpoints': 'Mountpoints',
     'mirroring': 'Mirroring',
@@ -31,23 +27,43 @@ names = {
 }
 
 colors = {
-    'seut': 'COLOR_01',
-    'main': 'COLOR_01',
-    'hkt': 'COLOR_01',
+    'seut': 'COLOR_02',
+    'main': 'COLOR_04',
+    'hkt': 'COLOR_08',
     'lod': 'COLOR_01',
-    'bs': 'COLOR_01',
-    'bs_lod': 'COLOR_01',
-    'mountpoints': 'COLOR_01',
-    'mirroring': 'COLOR_01',
-    'render': 'COLOR_01'
+    'bs': 'COLOR_05',
+    'bs_lod': 'COLOR_06',
+    'mountpoints': 'COLOR_03',
+    'mirroring': 'COLOR_03',
+    'render': 'COLOR_03'
 }
+
+# TODO: Need to adjust all places that use collections['lod1'], 2, 3 etc. and same for BS
+# also everywhere that deals with hkt or bs_lod
+# also structure conversion
+
+def update_ref_col(self, context):
+    scene = context.scene
+    rename_collections(scene)
+
+
+def poll_ref_col(self, object):
+    collections = get_collections(self.scene)
+
+    has_hkt = []
+
+    for col in collections['hkt']:
+        if not col.seut.ref_col is None:
+            has_hkt.append(col.seut.ref_col)
+
+    return self.scene == object.seut.scene and object not in has_hkt and self.col_type == 'hkt' and (object.seut.col_type == 'main' or object.seut.col_type == 'bs')
 
 
 class SEUT_Collection(PropertyGroup):
     """Holder for the varios collection properties"""
     
     scene: PointerProperty(
-        type=bpy.types.Scene
+        type = bpy.types.Scene
     )
     
     col_type: EnumProperty(
@@ -62,6 +78,14 @@ class SEUT_Collection(PropertyGroup):
             ('mirroring', 'Mirroring', ''),
             ('render', 'Render', ''),
             )
+    )
+
+    ref_col: PointerProperty(
+        name = "Reference",
+        description = "The collection this collection is associated with",
+        type = bpy.types.Collection,
+        update = update_ref_col,
+        poll = poll_ref_col
     )
 
     type_index: IntProperty(
@@ -88,11 +112,7 @@ class SEUT_OT_RecreateCollections(Operator):
         scene = context.scene
 
         if not 'SEUT' in scene.view_layers:
-            # This errors sometimes if it's triggered from draw in the toolbar
-            try:
-                scene.view_layers[0].name = 'SEUT'
-            except:
-                pass
+            scene.view_layers[0].name = 'SEUT'
 
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
@@ -116,6 +136,70 @@ class SEUT_OT_RecreateCollections(Operator):
         return {'FINISHED'}
 
 
+class SEUT_OT_CreateCollection(Operator):
+    """Creates a specific collection"""
+    bl_idname = "scene.create_collection"
+    bl_label = "Create Collection"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        return 'SEUT' in context.scene.view_layers
+
+
+    col_type: EnumProperty(
+        items = (
+            ('hkt', 'Collision', 'A collection containing collision objects, assigned to another collection in the scene'),
+            ('lod', 'LOD', 'A Level of Detail (LOD) collection'),
+            ('bs', 'BS', 'A Build Stage (BS) collection'),
+            ('bs_lod', 'BS_LOD', 'A Build Stage Level of Detail (BS_LOD) collection'),
+            ),
+        name = "Collection Type"
+    )
+
+
+    def execute(self, context):
+
+        scene = context.scene
+        tag = ' (' + scene.seut.subtypeId + ')'
+        collections = get_collections(scene)
+
+        if self.col_type == 'lod' or self.col_type == 'bs' or self.col_type == 'bs_lod':
+            index = len(collections[self.col_type]) + 1
+            collection = bpy.data.collections.new(names[self.col_type] + str(index) + tag)
+            collection.seut.type_index = index
+        
+        elif self.col_type == 'hkt':
+            ref_col = context.view_layer.active_layer_collection.collection
+
+            if ref_col.seut is None or ref_col.seut.col_type == 'hkt':
+                ref_col = None
+
+            for col in collections['hkt']:
+                if col.seut.ref_col == ref_col:
+                    ref_col = None
+                    break
+
+            if ref_col is None:
+                collection = bpy.data.collections.new(names[self.col_type] + " - None" + tag)
+            else:
+
+                if ref_col.seut.col_type == 'lod' or ref_col.seut.col_type == 'bs' or ref_col.seut.col_type == 'bs_lod':
+                    collection = bpy.data.collections.new(names[self.col_type] + " - " + names[ref_col.seut.col_type] + str(ref_col.seut.type_index) + tag)
+                else:
+                    collection = bpy.data.collections.new(names[self.col_type] + " - " + names[ref_col.seut.col_type] + tag)
+
+                collection.seut.ref_col = ref_col
+
+        collection.seut.col_type = self.col_type
+        collection.seut.scene = scene
+        collection.color_tag = colors[self.col_type]
+        collections['seut'].children.link(collection)
+
+        return {'FINISHED'}
+
+
 def get_collections(scene):
     """Scans existing collections to find the SEUT ones"""
 
@@ -124,39 +208,24 @@ def get_collections(scene):
     for key in names.keys():
         collections[key] = None
 
-    if not 'SEUT' in scene.view_layers:
-        # This errors sometimes if it's triggered from draw in the toolbar
-        try:
-            scene.view_layers[0].name = 'SEUT'
-        except:
-            pass
-
     for col in bpy.data.collections:
-
         if col is None:
             continue
-        
-        # This is for backwards compatibility with old system.
-        if col.seut.scene is None and re.search("\(" + scene.seut.subtypeId + "\)", col.name) != None:
-            col.seut.scene = scene
-            raw_type = re.match("([^ ]+) .*", col.name)
-            temp_type = re.match("/[^[0-9]]*/", raw_type).lower()
-
-            if temp_type == "collision":
-                col.seut.col_type = "hkt"
-            else:
-                col.seut.col_type = temp_type
-
-            if len(temp_type) != len(raw_type):
-                col.seut.type_index = raw_type[len(temp_type):]
-            else:
-                col.seut.type_index = 0
-
-        elif not col.seut.scene is scene:
+        if not col.seut.scene is scene:
             continue
+        
+        if col.seut.col_type == 'hkt':
+            if collections[col.seut.col_type] is None:
+                collections[col.seut.col_type] = []
 
-        if col.seut.type_index > 0:
-            collections[col.seut.col_type + str(col.seut.type_index)] = col
+            collections[col.seut.col_type].append(col)
+
+        elif col.seut.col_type == 'lod' or col.seut.col_type == 'bs' or col.seut.col_type == 'bs_lod':
+            if collections[col.seut.col_type] is None:
+                collections[col.seut.col_type] = {}
+
+            collections[col.seut.col_type][col.seut.type_index] = col
+
         else:
             collections[col.seut.col_type] = col
     
@@ -166,17 +235,35 @@ def get_collections(scene):
 def rename_collections(scene):
     """Scans existing collections to find the SEUT ones and renames them if the tag has changed"""
 
-    # TODO: Figure out how to handle collections after scene copy, since their .seut.scene will still point to old one.
+    tag = ' (' + scene.seut.subtypeId + ')'
+    
+    # This ensures that after a full copy of a scene, the collections are reassigned to the new scene
+    scene.view_layers['SEUT'].layer_collection.children[0].collection.seut.scene = scene
+    for vl_col in scene.view_layers['SEUT'].layer_collection.children[0].children:
+        if not vl_col.collection.seut.scene is scene:
+            vl_col.collection.seut.scene = scene
 
     for col in bpy.data.collections:
         if col is None:
             continue
         if not col.seut.scene is scene:
             continue
-        if col.seut.type_index > 0:
-            col.name = col.seut.col_type + str(col.seut.type_index) + " (" + col.seut.scene.seut.subtypeId + ")"
+        
+        if col.seut.col_type == 'lod' or col.seut.col_type == 'bs' or col.seut.col_type == 'bs_lod':
+            col.name = names[col.seut.col_type] + str(col.seut.type_index) + " (" + col.seut.scene.seut.subtypeId + ")"
+
+        elif col.seut.col_type == 'hkt':
+
+            if col.seut.ref_col is None:
+                col.name = names[col.seut.col_type] + " - None" + " (" + col.seut.scene.seut.subtypeId + ")"
+
+            else:
+                if col.seut.ref_col.seut.col_type == 'lod' or col.seut.ref_col.seut.col_type == 'bs' or col.seut.ref_col.seut.col_type == 'bs_lod':
+                    col.name = names[col.seut.col_type] + " - " + names[col.seut.ref_col.seut.col_type] + str(col.seut.ref_col.seut.type_index) + " (" + col.seut.scene.seut.subtypeId + ")"
+                else:
+                    col.name = names[col.seut.col_type] + " - " + names[col.seut.ref_col.seut.col_type] + " (" + col.seut.scene.seut.subtypeId + ")"
         else:
-            col.name = col.seut.col_type + " (" + col.seut.scene.seut.subtypeId + ")"
+            col.name = names[col.seut.col_type] + " (" + col.seut.scene.seut.subtypeId + ")"
 
 
 def create_collections(context):
@@ -187,17 +274,71 @@ def create_collections(context):
     collections = get_collections(scene)
 
     for key in collections.keys():
-        if collections[key] == None and key != 'mountpoints' and key != 'mirroring' and key != 'render':
+        if collections[key] == None:
 
-            collections[key] = bpy.data.collections.new(names[key] + tag)
+            if key == 'seut':
 
-            # TODO: If collection is LOD collection, set distance based on index
-
-            if collections[key] is collections['seut']:
+                collections[key] = bpy.data.collections.new(names[key] + tag)
+                collections[key].seut.scene = scene
+                collections[key].color_tag = colors[key]
                 scene.collection.children.link(collections[key])
-            else:
+
+            elif key == 'main':
+                collections[key] = bpy.data.collections.new(names[key] + tag)
+                collections[key].seut.scene = scene
+                collections[key].seut.col_type = key
+                collections[key].color_tag = colors[key]
                 collections['seut'].children.link(collections[key])
-        
-        # TODO: Move collection to its scene if it's not there.
+
+            elif key == 'lod' or key == 'bs':
+
+                collections[key] = {}
+
+                # Keeping ['0'] for LOD0 support I may add in the future
+                collections[key][1] = bpy.data.collections.new(names[key] + '1' + tag)
+                collections[key][1].seut.scene = scene
+                collections[key][1].seut.col_type = key
+                collections[key][1].seut.type_index = 1
+                collections[key][1].color_tag = colors[key]
+                collections['seut'].children.link(collections[key][1])
+
+                collections[key][2] = bpy.data.collections.new(names[key] + '2' + tag)
+                collections[key][2].seut.scene = scene
+                collections[key][2].seut.col_type = key
+                collections[key][2].seut.type_index = 2
+                collections[key][2].color_tag = colors[key]
+                collections['seut'].children.link(collections[key][2])
+
+                collections[key][3] = bpy.data.collections.new(names[key] + '3' + tag)
+                collections[key][3].seut.scene = scene
+                collections[key][3].seut.col_type = key
+                collections[key][3].seut.type_index = 3
+                collections[key][3].color_tag = colors[key]
+                collections['seut'].children.link(collections[key][3])
+
+                if key == 'lod':
+                    collections[key][1].seut.lod_distance = 25
+                    collections[key][2].seut.lod_distance = 50
+                    collections[key][3].seut.lod_distance = 150
+
+            elif key == 'hkt':
+                temp_col = bpy.data.collections.new(names[key] + " - Main" + tag)
+                collections[key] = []
+                collections[key].append(temp_col)
+                temp_col.seut.scene = scene
+                temp_col.seut.col_type = key
+                temp_col.seut.ref_col = collections['main']
+                temp_col.color_tag = colors[key]
+                collections['seut'].children.link(temp_col)
+
+            elif key == 'bs_lod':
+                collections[key] = {}
+                collections[key][1] = bpy.data.collections.new(names[key] + '1' + tag)
+                collections[key][1].seut.scene = scene
+                collections[key][1].seut.col_type = key
+                collections[key][1].seut.type_index = 1
+                collections[key][1].seut.lod_distance = 50
+                collections[key][1].color_tag = colors[key]
+                collections['seut'].children.link(collections[key][1])
 
     return collections

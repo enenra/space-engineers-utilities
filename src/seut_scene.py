@@ -496,6 +496,8 @@ class SEUT_Scene(PropertyGroup):
         subtype="DIR_PATH",
         update=update_export_exportPath
     )
+
+    # These are pre 0.9.95 legacy, not directly used anymore --> moved to being saved onto collections
     export_lod1Distance: IntProperty(
         name="LOD1:",
         description="From what distance this LOD should display",

@@ -82,39 +82,34 @@ def export_xml(self, context, collection) -> str:
             
     # Write LOD references into the XML, if applicable
     if collection == collections['main']:
+
+        printed = {}
+        for key, value in collections['lod']:
+            lod_col = value
+
+            if len(lod_col.objects) < 1:
+                seut_report(self, context, 'INFO', False, 'I003', 'LOD' + str(lod_col.seut.type_index))
+            else:
+                if key - 1 in printed and printed[key - 1]:
+                    create_lod_entry(scene, model, lod_col.seut.lod_distance, path, '_LOD' + str(lod_col.seut.type_index))
+                    printed[key] = True
+                else:
+                    seut_report(self, context, 'ERROR', True, 'E006')
+                
+        if len(collections['bs']) > 0:
+            printed = {}
+            for key, value in collections['bs_lod']:
+                lod_col = value
+
+                if len(lod_col.objects) < 1:
+                    seut_report(self, context, 'INFO', False, 'I003', 'BS_LOD' + str(lod_col.seut.type_index))
+                else:
+                    if key - 1 in printed and printed[key - 1]:
+                        create_lod_entry(scene, model, lod_col.seut.lod_distance, path, '_BS_LOD' + str(lod_col.seut.type_index))
+                        printed[key] = True
+                    else:
+                        seut_report(self, context, 'ERROR', True, 'E006')
         
-        lod1_printed = False
-        lod2_printed = False
-
-        if collections['lod1'] == None or len(collections['lod1'].objects) == 0:
-            seut_report(self, context, 'INFO', False, 'I003', 'LOD1')
-        else:
-            create_lod_entry(scene, model, scene.seut.export_lod1Distance, path, '_LOD1')
-            lod1_printed = True
-
-        if collections['lod2'] == None or len(collections['lod2'].objects) == 0:
-            seut_report(self, context, 'INFO', False, 'I003', 'LOD2')
-        else:
-            if lod1_printed:
-                create_lod_entry(scene, model, scene.seut.export_lod2Distance, path, '_LOD2')
-                lod2_printed = True
-            else:
-                seut_report(self, context, 'ERROR', True, 'E006')
-
-        if collections['lod3'] == None or len(collections['lod3'].objects) == 0:
-            seut_report(self, context, 'INFO', False, 'I003', 'LOD3')
-        else:
-            if lod2_printed:
-                create_lod_entry(scene, model, scene.seut.export_lod3Distance, path, '_LOD3')
-            else:
-                seut_report(self, context, 'ERROR', True, 'E006')
-
-    if collection == collections['bs1'] or collection == collections['bs2'] or collection == collections['bs3']:
-        if collections['bs_lod'] == None or len(collections['bs_lod'].objects) == 0:
-            seut_report(self, context, 'INFO', False, 'I003', 'BS_LOD')
-        else:
-            create_lod_entry(scene, model, scene.seut.export_bs_lodDistance, path, '_BS_LOD')
-
     # Create file with subtypename + collection name and write string to it
     xml_formatted = format_xml(self, context, model)
     

@@ -236,50 +236,26 @@ def export_bs(self, context):
 
     scene = context.scene
     collections = get_collections(scene)
-    preferences = get_preferences()
 
-    # Checks whether collections exists, are excluded or are empty
-    bs1_valid = False
-    result = check_collection(self, context, scene, collections['bs1'], True)
-    if result == {'CONTINUE'}:
-        bs1_valid = True
+    valid = {}
+    for key, value in collections['bs']:
+        bs_col = value
 
-    bs2_valid = False
-    result = check_collection(self, context, scene, collections['bs2'], True)
-    if result == {'CONTINUE'}:
-        bs2_valid = True
+        valid[key] = False
+        result = check_collection(self, context, scene, bs_col, True)
+        if result == {'CONTINUE'}:
+            valid[key] = True
 
-    bs3_valid = False
-    result = check_collection(self, context, scene, collections['bs3'], True)
-    if result == {'CONTINUE'}:
-        bs3_valid = True
-
-    if (not bs1_valid and bs2_valid) or (not bs2_valid and bs3_valid):
-        seut_report(self, context, 'ERROR', True, 'E015', 'BS')
-        return {'CANCELLED'}
-    
-    # Check for missing UVMs (this might not be 100% reliable)
-    if bs1_valid:
-        for obj in collections['bs1'].objects:
-            if check_uvms(self, context, obj) != {'CONTINUE'}:
-                return {'CANCELLED'}
-    
-    if bs2_valid:
-        for obj in collections['bs2'].objects:
-            if check_uvms(self, context, obj) != {'CONTINUE'}:
-                return {'CANCELLED'}
-    
-    if bs3_valid:
-        for obj in collections['bs3'].objects:
-            if check_uvms(self, context, obj) != {'CONTINUE'}:
-                return {'CANCELLED'}
-
-    if bs1_valid:
-        export_collection(self, context, collections['bs1'])
-    if bs2_valid:
-        export_collection(self, context, collections['bs2'])
-    if bs3_valid:
-        export_collection(self, context, collections['bs3'])
+        if key - 1 in valid and not valid[key - 1] and valid[key]:
+            seut_report(self, context, 'ERROR', True, 'E015', 'LOD')
+            return {'CANCELLED'}
+        
+        if valid[key]:
+            for obj in bs_col.objects:
+                if check_uvms(self, context, obj) != {'CONTINUE'}:
+                    return {'CANCELLED'}
+            
+            export_collection(self, context, bs_col)
     
     return {'FINISHED'}
 
@@ -289,69 +265,41 @@ def export_lod(self, context):
 
     scene = context.scene
     collections = get_collections(scene)
-    preferences = get_preferences()
 
-    # Checks whether collections exists, are excluded or are empty
-    lod1_valid = False
-    result = check_collection(self, context, scene, collections['lod1'], True)
-    if result == {'CONTINUE'}:
-        lod1_valid = True
+    check_export_lods(self, context, collections['lod'])
+    check_export_lods(self, context, collections['bs_lod'])
 
-    lod2_valid = False
-    result = check_collection(self, context, scene, collections['lod2'], True)
-    if result == {'CONTINUE'}:
-        lod2_valid = True
-
-    lod3_valid = False
-    result = check_collection(self, context, scene, collections['lod3'], True)
-    if result == {'CONTINUE'}:
-        lod3_valid = True
-
-    bs_lod_valid = False
-    result = check_collection(self, context, scene, collections['bs_lod'], True)
-    if result == {'CONTINUE'}:
-        bs_lod_valid = True
-
-    if (not lod1_valid and lod2_valid) or (not lod2_valid and lod3_valid):
-        seut_report(self, context, 'ERROR', True, 'E015', 'LOD')
-        return {'CANCELLED'}
-
-    # Checks whether LOD distances are valid
-    if scene.seut.export_lod1Distance > scene.seut.export_lod2Distance or scene.seut.export_lod2Distance > scene.seut.export_lod3Distance:
-        seut_report(self, context, 'ERROR', True, 'E011')
-        return {'CANCELLED'}
-    
-    # Check for missing UVMs (this might not be 100% reliable)
-    if lod1_valid:
-        for obj in collections['lod1'].objects:
-            if check_uvms(self, context, obj) != {'CONTINUE'}:
-                return {'CANCELLED'}
-
-    if lod2_valid:
-        for obj in collections['lod2'].objects:
-            if check_uvms(self, context, obj) != {'CONTINUE'}:
-                return {'CANCELLED'}
-    
-    if lod3_valid:
-        for obj in collections['lod3'].objects:
-            if check_uvms(self, context, obj) != {'CONTINUE'}:
-                return {'CANCELLED'}
-    
-    if bs_lod_valid:
-        for obj in collections['bs_lod'].objects:
-            if check_uvms(self, context, obj) != {'CONTINUE'}:
-                return {'CANCELLED'}
-
-    if lod1_valid:
-        export_collection(self, context, collections['lod1'])  
-    if lod2_valid:
-        export_collection(self, context, collections['lod2'])
-    if lod3_valid:
-        export_collection(self, context, collections['lod3'])
-    if bs_lod_valid:
-        export_collection(self, context, collections['bs_lod'])
-    
     return {'FINISHED'}
+
+
+def check_export_lods(self, context, dictionary):
+    scene = context.scene
+
+    valid = {}
+    for key, value in dictionary:
+        lod_col = value
+
+        valid[key] = False
+        result = check_collection(self, context, scene, lod_col, True)
+        if result == {'CONTINUE'}:
+            valid[key] = True
+
+        if key - 1 in valid:
+
+            if not valid[key - 1] and valid[key]:
+                seut_report(self, context, 'ERROR', True, 'E015', 'LOD')
+                return {'CANCELLED'}
+
+            if dictionary[key - 1].seut.lod_distance > lod_col.seut.lod_distance:
+                seut_report(self, context, 'ERROR', True, 'E011')
+                return {'CANCELLED'}
+        
+        if valid[key]:
+            for obj in lod_col.objects:
+                if check_uvms(self, context, obj) != {'CONTINUE'}:
+                    return {'CANCELLED'}
+            
+            export_collection(self, context, lod_col)
 
 
 def export_mwm(self, context):
@@ -388,25 +336,18 @@ def export_sbc(self, context):
     if not result == {'CONTINUE'}:
         return result
 
-    # Checks whether collections exists, are excluded or are empty
-    bs1_valid = False
-    result = check_collection(self, context, scene, collections['bs1'], True)
-    if result == {'CONTINUE'}:
-        bs1_valid = True
+    bs_valid = {}
+    for key, value in collections['bs']:
+        bs_col = value
 
-    bs2_valid = False
-    result = check_collection(self, context, scene, collections['bs2'], True)
-    if result == {'CONTINUE'}:
-        bs2_valid = True
-
-    bs3_valid = False
-    result = check_collection(self, context, scene, collections['bs3'], True)
-    if result == {'CONTINUE'}:
-        bs3_valid = True
-
-    if (not bs1_valid and bs2_valid) or (not bs2_valid and bs3_valid):
-        seut_report(self, context, 'ERROR', True, 'E015', 'BS')
-        return {'CANCELLED'}
+        bs_valid[key] = False
+        result = check_collection(self, context, scene, bs_col, True)
+        if result == {'CONTINUE'}:
+            bs_valid[key] = True
+    
+        if key - 1 in bs_valid and not bs_valid[key - 1] and bs_valid[key]:
+            seut_report(self, context, 'ERROR', True, 'E015', 'BS')
+            return {'CANCELLED'}
 
     # Create XML tree and add initial parameters.
     definitions = ET.Element('Definitions')
@@ -584,15 +525,12 @@ def export_sbc(self, context):
 
     
     # Build Stages
-    if collections['bs1'] is not None or collections['bs2'] is not None or collections['bs3'] is not None:
+    if len(collections['bs']) > 0:
 
         counter = 0
-        if collections['bs1'] != None and len(collections['bs1'].objects) > 0:
-            counter += 1
-        if collections['bs2'] != None and len(collections['bs2'].objects) > 0:
-            counter += 1
-        if collections['bs3'] != None and len(collections['bs3'].objects) > 0:
-            counter += 1
+        for bs_col in collections['bs']:
+            if len(bs_col.objects) > 0:
+                counter += 1
 
         if counter > 0:
             def_BuildProgressModels = ET.SubElement(def_definition, 'BuildProgressModels')
