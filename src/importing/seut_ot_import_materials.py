@@ -107,24 +107,24 @@ class SEUT_OT_Import_Materials(Operator):
                 # Error if textures are incompatible DDS format (via splitext)
                 
 
-                if cm_img != False and cm_img != None:
+                if not cm_img is None:
                     cm_node.image = cm_img
-                elif cm_img == None:
+                else:
                     material.node_tree.nodes.remove(cm_node)
 
-                if ng_img != False and ng_img != None:
+                if not ng_img is None:
                     ng_node.image = ng_img
-                elif ng_img == None:
+                else:
                     material.node_tree.nodes.remove(ng_node)
 
-                if add_img != False and add_img != None:
+                if not add_img is None:
                     add_node.image = add_img
-                elif add_img == None:
+                else:
                     material.node_tree.nodes.remove(add_node)
 
-                if am_img != False and am_img != None:
+                if not am_img is None:
                     am_node.image = am_img
-                elif am_img == None:
+                else:
                     material.node_tree.nodes.remove(am_node)
                 
                 imported.append(material.name)
@@ -150,6 +150,7 @@ class SEUT_OT_Import_Materials(Operator):
 def load_image(path: str, materials_path: str):
     """Returns image by first checking if it already is in Blender, if not, loading it from the given path."""
 
+    preferences = get_preferences()
     name = os.path.splitext(os.path.basename(path))
     name_split = os.path.splitext(name)[0]
 
@@ -163,4 +164,4 @@ def load_image(path: str, materials_path: str):
         try:
             return bpy.data.images.load(path) # need to properly join materials path with this
         except:
-            return False
+            return

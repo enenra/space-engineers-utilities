@@ -92,6 +92,7 @@ class SEUT_Collection(PropertyGroup):
         default = 0
     )
 
+    # TODO: Attempt to add sanity checks via update_ function
     lod_distance: IntProperty(
         name = "LOD Distance",
         description = "From what distance this LOD should display",
