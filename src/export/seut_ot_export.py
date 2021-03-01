@@ -195,43 +195,58 @@ def export_hkt(self, context):
     settings = ExportSettings(scene, None)
     path = get_abs_path(scene.seut.export_exportPath) + "\\"
 
-    # Checks whether collection exists, is excluded or is empty
-    result = check_collection(self, context, scene, collections['hkt'], True)
-    if not result == {'CONTINUE'}:
-        return result
-
     # Check for availability of Havok SFM
     result = check_toolpath(self, context, preferences.havok_path, "Havok Standalone Filter Manager", "hctStandAloneFilterManager.exe")
     if not result == {'CONTINUE'}:
         return result
-    
-    for obj in collections['hkt'].objects:
 
-        # Check for unapplied modifiers
-        if len(obj.modifiers) > 0:
-            seut_report(self, context, 'ERROR', True, 'E034', obj.name)
+
+    for hkt_col in collections['hkt']:
+
+        result = check_collection(self, context, scene, hkt_col, True)
+        if not result == {'CONTINUE'}:
+            continue
+        
+        overall_result = {'FINISHED'}
+        cancelled = False
+        for obj in hkt_col.objects:
+
+            # Check for unapplied modifiers
+            if len(obj.modifiers) > 0:
+                seut_report(self, context, 'ERROR', True, 'E034', obj.name)
+                cancelled = True
+                break
+            
+            # TODO: Investigate this again, and only apply rigidbody if there isn't one already
+            context.view_layer.objects.active = obj
+            # bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) # This runs on all objects instead of just the active one for some reason. Breaks when there's instanced subparts.
+            bpy.ops.rigidbody.object_add(type='ACTIVE')
+
+        if cancelled:
             return {'CANCELLED'}
         
-        # Apply Rigid Body
-        context.view_layer.objects.active = obj
-        # bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) # This runs on all objects instead of just the active one for some reason. Breaks when there's instanced subparts.
-        bpy.ops.rigidbody.object_add(type='ACTIVE')
-    
-    # Check if max amount of collision objects is exceeded
-    if len(collections['hkt'].objects) > 16:
-        seut_report(self, context, 'ERROR', True, 'E022', collections['hkt'].name, len(collections['hkt'].objects))
-        return {'CANCELLED'}
+        if len(hkt_col.objects) > 16:
+            seut_report(self, context, 'ERROR', True, 'E022', hkt_col.name, len(hkt_col.objects))
+            continue
 
-    # FBX export via Custom FBX Importer
-    fbx_hkt_file = join(path, scene.seut.subtypeId + ".hkt.fbx")
-    hkt_file = join(path, scene.seut.subtypeId + ".hkt")
-    
-    export_to_fbxfile(settings, scene, fbx_hkt_file, collections['hkt'].objects, ishavokfbxfile=True)
+        # FBX export via Custom FBX Importer
+        ref_col = hkt_col.seut.ref_col
 
-    # Then create the HKT file.
-    process_hktfbx_to_fbximporterhkt(context, settings, fbx_hkt_file, hkt_file)
-    process_fbximporterhkt_to_final_hkt_for_mwm(self, context, scene, path, settings, hkt_file, hkt_file)
+        tag = ""
+        if ref_col.seut.col_type == 'bs':
+            tag = "_" + ref_col.seut.col_type + str(ref_col.seut.type_index)
+
+        fbx_hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt.fbx")
+        hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt")
         
+        export_to_fbxfile(settings, scene, fbx_hkt_file, hkt_col.objects, ishavokfbxfile=True)
+
+        # Then create the HKT file.
+        process_hktfbx_to_fbximporterhkt(context, settings, fbx_hkt_file, hkt_file)
+        process_fbximporterhkt_to_final_hkt_for_mwm(self, context, scene, path, settings, hkt_file, hkt_file)
+
+        # TODO: Ensure fbx are associated with the correct hkts now that there's multiple
+
     return {'FINISHED'}
 
 
