@@ -59,6 +59,19 @@ def poll_ref_col(self, object):
     return self.scene == object.seut.scene and object not in has_hkt and self.col_type == 'hkt' and (object.seut.col_type == 'main' or object.seut.col_type == 'bs')
 
 
+def update_lod_distance(self, context):
+    scene = context.scene
+    collections = get_collections(scene)
+
+    if self.type_index - 1 in collections[self.col_type]:
+        if self.lod_distance <= collections[self.col_type][self.type_index - 1].seut.lod_distance:
+            self.lod_distance = collections[self.col_type][self.type_index - 1].seut.lod_distance + 1
+
+    if self.type_index + 1 in collections[self.col_type]:
+        if self.lod_distance >= collections[self.col_type][self.type_index + 1].seut.lod_distance:
+            collections[self.col_type][self.type_index + 1].seut.lod_distance = self.lod_distance + 1
+
+
 class SEUT_Collection(PropertyGroup):
     """Holder for the varios collection properties"""
     
@@ -97,7 +110,8 @@ class SEUT_Collection(PropertyGroup):
         name = "LOD Distance",
         description = "From what distance this LOD should display",
         default = 25,
-        min = 0
+        min = 0,
+        update = update_lod_distance
     )
 
 
@@ -170,6 +184,9 @@ class SEUT_OT_CreateCollection(Operator):
             index = len(collections[self.col_type]) + 1
             collection = bpy.data.collections.new(names[self.col_type] + str(index) + tag)
             collection.seut.type_index = index
+
+            if index - 1 in collections[self.col_type]:
+                collection.seut.lod_distance = collections[self.col_type][index - 1].seut.lod_distance + 1
         
         elif self.col_type == 'hkt':
             ref_col = context.view_layer.active_layer_collection.collection
