@@ -4,11 +4,10 @@ from bpy.types import Operator
 
 from ..empties.seut_empties          import empty_types
 from ..export.seut_export_utils      import get_subpart_reference
-from ..seut_collections              import get_collections
+from ..seut_collections              import get_collections, rename_collections, create_collections, colors
 from ..seut_mirroring                import save_rotation
 from ..seut_errors                   import seut_report
 from ..seut_utils                    import link_subpart_scene, get_parent_collection
-
 
 class SEUT_OT_StructureConversion(Operator):
     """Ports blend files created with the old plugin to the new structure"""
@@ -35,29 +34,31 @@ def convert_structure(self, context):
     for scn in bpy.data.scenes:
         scn.seut.subtypeId = scn.name
         tag = ' (' + scn.seut.subtypeId + ')'
-        
-        # Create main SEUT collection for each scene
-        seut_exists = False
-        for collection in scn.collection.children:
-            if collection.name == 'SEUT' + tag:
-                seut_exists = True
 
-        if not seut_exists:
+        if 'SEUT' in scn.view_layers:
+            collections = get_collections(scn)
+
+            for col in collections:
+                if not col.seut.col_type == 'seut':
+                    bpy.data.collections.remove(col)
+
+        else:
             scn.view_layers[0].name = 'SEUT'
             seut = bpy.data.collections.new('SEUT' + tag)
+            seut.seut.col_type = 'seut'
             scn.collection.children.link(seut)
         
         assignments = {
-            'Collection 1': 'Main',
-            'Collection 2': 'Collision',
-            'Collection 3': 'Mountpoints',
-            'Collection 4': 'Mirroring',
-            'Collection 6': 'LOD1',
-            'Collection 7': 'LOD2',
-            'Collection 8': 'LOD3',
-            'Collection 11': 'BS1',
-            'Collection 12': 'BS2',
-            'Collection 13': 'BS3',
+            'Collection 1': 'main',
+            'Collection 2': 'hkt',
+            'Collection 3': 'mountpoints',
+            'Collection 4': 'mirroring',
+            'Collection 6': 'lod1',
+            'Collection 7': 'lod2',
+            'Collection 8': 'lod3',
+            'Collection 11': 'bs1',
+            'Collection 12': 'bs2',
+            'Collection 13': 'bs3',
         }
         
         # Convert collections created from layers to corresponding SEUT collections
@@ -68,6 +69,31 @@ def convert_structure(self, context):
 
             for key in assignments.keys():
                 if col.name == key or col.name[:len(key) + 1] == key + ".":
+                  
+                    if not assignments[key] == 'main' and not assignments[key] == 'hkt' and not assignments[key] == 'mountpoints' and not assignments[key] == 'mirroring':
+
+                        col.seut.type_index = int(key[-1])
+
+                        if assignments[key].startswith('bs'):
+                            col.seut.col_type = 'bs'
+
+                        elif assignments[key].startswith('lod'):
+                            col.seut.col_type = 'lod'
+                            if int(key[-1]) == 1:
+                                col.seut.lod_distance = 25
+                            elif int(key[-1]) == 2:
+                                col.seut.lod_distance = 50
+                            elif int(key[-1]) == 3:
+                                col.seut.lod_distance = 150
+
+                    else:
+                        col.seut.col_type = key
+                    
+                    if bpy.app.version >= (2, 91, 0):
+                        col.color_tag = colors[col.seut.col_type]
+
+                    col.seut.scene = scn
+
                     if assignments[key] + tag in bpy.data.collections:
                         bpy.data.collections.remove(bpy.data.collections[assignments[key] + tag])
                     col.name = assignments[key] + tag
@@ -78,7 +104,10 @@ def convert_structure(self, context):
                 bpy.data.collections['SEUT' + tag].children.link(col)
             
             col.hide_viewport = False
-            
+        
+        rename_collections(scn)
+        create_collections(scn)
+
         # Convert custom properties of empties from harag's to the default blender method.
         for obj in scn.objects:
             if obj.type == 'EMPTY':

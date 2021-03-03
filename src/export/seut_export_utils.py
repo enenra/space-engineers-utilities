@@ -48,6 +48,7 @@ def export_xml(self, context, collection) -> str:
             continue
         if mat.users == 0 or mat.users == 1 and mat.use_fake_user:
             continue
+        # This is a legacy check to filter out the old material presets.
         if mat.name[:5] == 'SMAT_':
             continue
         
