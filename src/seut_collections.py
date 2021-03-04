@@ -63,13 +63,14 @@ def update_lod_distance(self, context):
     scene = context.scene
     collections = get_collections(scene)
 
-    if self.type_index - 1 in collections[self.col_type]:
-        if self.lod_distance <= collections[self.col_type][self.type_index - 1].seut.lod_distance:
-            self.lod_distance = collections[self.col_type][self.type_index - 1].seut.lod_distance + 1
+    if not collections[self.col_type] is None:
+        if self.type_index - 1 in collections[self.col_type]:
+            if self.lod_distance <= collections[self.col_type][self.type_index - 1].seut.lod_distance:
+                self.lod_distance = collections[self.col_type][self.type_index - 1].seut.lod_distance + 1
 
-    if self.type_index + 1 in collections[self.col_type]:
-        if self.lod_distance >= collections[self.col_type][self.type_index + 1].seut.lod_distance:
-            collections[self.col_type][self.type_index + 1].seut.lod_distance = self.lod_distance + 1
+        if self.type_index + 1 in collections[self.col_type]:
+            if self.lod_distance >= collections[self.col_type][self.type_index + 1].seut.lod_distance:
+                collections[self.col_type][self.type_index + 1].seut.lod_distance = self.lod_distance + 1
 
 
 class SEUT_Collection(PropertyGroup):
@@ -105,7 +106,6 @@ class SEUT_Collection(PropertyGroup):
         default = 0
     )
 
-    # TODO: Attempt to add sanity checks via update_ function
     lod_distance: IntProperty(
         name = "LOD Distance",
         description = "From what distance this LOD should display",
