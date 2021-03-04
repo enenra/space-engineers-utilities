@@ -82,13 +82,12 @@ def export_xml(self, context, collection) -> str:
             matRef.set('Name', mat.name)
             
     # Write LOD references into the XML, if applicable
-    if collection == collections['main']:
+    if collection.seut.col_type == 'main':
 
         printed = {}
-        for key, value in collections['lod']:
+        for key, value in collections['lod'].items():
             lod_col = value
-
-            if len(lod_col.objects) < 1:
+            if len(lod_col.objects) == 0:
                 seut_report(self, context, 'INFO', False, 'I003', 'LOD' + str(lod_col.seut.type_index))
             else:
                 if key - 1 in printed and printed[key - 1]:
@@ -96,19 +95,20 @@ def export_xml(self, context, collection) -> str:
                     printed[key] = True
                 else:
                     seut_report(self, context, 'ERROR', True, 'E006')
-                
+    
         if len(collections['bs']) > 0:
             printed = {}
-            for key, value in collections['bs_lod']:
+            for key, value in collections['bs_lod'].items():
                 lod_col = value
 
-                if len(lod_col.objects) < 1:
+                if len(lod_col.objects) == 0:
                     seut_report(self, context, 'INFO', False, 'I003', 'BS_LOD' + str(lod_col.seut.type_index))
                 else:
                     if key - 1 in printed and printed[key - 1]:
                         create_lod_entry(scene, model, lod_col.seut.lod_distance, path, '_BS_LOD' + str(lod_col.seut.type_index))
                         printed[key] = True
                     else:
+                        print("asasdads")
                         seut_report(self, context, 'ERROR', True, 'E006')
         
     # Create file with subtypename + collection name and write string to it

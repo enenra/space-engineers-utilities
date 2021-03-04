@@ -189,6 +189,8 @@ def export_main(self, context):
 def export_hkt(self, context):
     """Exports collision to HKT"""
 
+    # TODO: This errors with more than one HKT collection.
+
     scene = context.scene
     collections = get_collections(scene)
     preferences = get_preferences()
@@ -257,7 +259,8 @@ def export_bs(self, context):
     collections = get_collections(scene)
 
     valid = {}
-    for key, value in collections['bs']:
+    print(collections['bs'])
+    for key, value in collections['bs'].items():
         bs_col = value
 
         valid[key] = False
@@ -295,7 +298,7 @@ def check_export_lods(self, context, dictionary):
     scene = context.scene
 
     valid = {}
-    for key, value in dictionary:
+    for key, value in dictionary.items():
         lod_col = value
 
         valid[key] = False
@@ -356,7 +359,7 @@ def export_sbc(self, context):
         return result
 
     bs_valid = {}
-    for key, value in collections['bs']:
+    for key, value in collections['bs'].items():
         bs_col = value
 
         bs_valid[key] = False
@@ -547,7 +550,8 @@ def export_sbc(self, context):
     if len(collections['bs']) > 0:
 
         counter = 0
-        for bs_col in collections['bs']:
+        for key, value in collections['bs'].items():
+            bs_col = value
             if len(bs_col.objects) > 0:
                 counter += 1
 
