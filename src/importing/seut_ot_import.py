@@ -46,6 +46,8 @@ class SEUT_OT_Import(Operator):
     def execute(self, context):
         """Imports FBX and adjusts them for use in SEUT"""
 
+        wm = context.window_manager
+
         existing_objects = set(context.scene.objects)
 
         try:
@@ -91,6 +93,22 @@ class SEUT_OT_Import(Operator):
         
         # Then run material remap
         bpy.ops.object.remapmaterials()
+
+        if wm.seut.fix_scratched_materials:
+            for obj in imported_objects:
+                for slot in obj.material_slots:
+
+                    if slot.material == bpy.data.materials['PaintedMetalScratched_Colorable']:
+                        slot.material = bpy.data.materials['PaintedMetal_Colorable']
+
+                    elif slot.material == bpy.data.materials['PaintedMetal_Yellow']:
+                        slot.material = bpy.data.materials['PaintedMetalScratched_Yellow']
+
+                    elif slot.material == bpy.data.materials['PaintedMetal_Darker']:
+                        slot.material = bpy.data.materials['PaintedMetalScratched_Darker']
+
+                    elif slot.material == bpy.data.materials['PaintedMetalScratched_VeryDark']:
+                        slot.material = bpy.data.materials['PaintedMetal_VeryDark']
 
         seut_report(self, context, 'INFO', True, 'I014')
 

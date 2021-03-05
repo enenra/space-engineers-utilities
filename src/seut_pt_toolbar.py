@@ -371,12 +371,17 @@ class SEUT_PT_Panel_Import(Panel):
     def draw(self, context):
 
         scene = context.scene
+        wm = context.window_manager
         layout = self.layout
 
         # Import
         row = layout.row()
         row.scale_y = 2.0
         row.operator('scene.import', icon='IMPORT')
+        
+        box = layout.box()
+        box.label(text='Options', icon='SETTINGS')
+        box.prop(wm.seut, 'fix_scratched_materials', expand=True)
 
         # Repair
         box = layout.box()

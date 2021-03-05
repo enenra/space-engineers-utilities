@@ -140,7 +140,13 @@ class SEUT_WindowManager(PropertyGroup):
         step=10.0,
         update=update_BBox
     )
-    
+
+    fix_scratched_materials: BoolProperty(
+        name = "Fix Scratched Materials",
+        description = "Numerous SDK models have a scratched paint material assigned to their bevels in the FBX but don't have them ingame. This switches those surfaces to the non-scratched material",
+        default = True
+    )
+
     # Materials
     matlibs: CollectionProperty(
         type=SEUT_MatLibProps
