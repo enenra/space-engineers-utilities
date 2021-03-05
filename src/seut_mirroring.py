@@ -5,7 +5,7 @@ from bpy.types      import Operator
 from collections    import OrderedDict
 
 from .materials.seut_materials      import create_internal_material
-from .seut_collections              import get_collections
+from .seut_collections              import get_collections, colors
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
 from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, prep_context, to_radians, clear_selection, create_seut_collection, lock_object
 
@@ -77,6 +77,9 @@ def setup_mirroring(self, context):
     tag = ' (' + scene.seut.subtypeId + ')'
 
     collection = create_seut_collection(collections['seut'], 'Mirroring' + tag)
+    collection.seut.col_type = 'mirroring'
+    collection.seut.scene = scene
+    collection.color_tag = colors[collection.seut.col_type]
     
     # Compile rotation / position / size information
     empty_x_rot_raw = mirroring_presets[scene.seut.mirroring_X]

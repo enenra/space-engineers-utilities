@@ -4,7 +4,7 @@ import os
 from math           import pi
 from bpy.types      import Operator
 
-from .seut_collections              import get_collections
+from .seut_collections              import get_collections, colors
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report, get_abs_path
 from .seut_utils                    import to_radians, create_seut_collection, clear_selection, prep_context, seut_report
     
@@ -29,6 +29,9 @@ def setup_icon_render(self, context):
     tag = ' (' + scene.seut.subtypeId + ')'
 
     collection = create_seut_collection(collections['seut'], 'Render' + tag)
+    collection.seut.col_type = 'render'
+    collection.seut.scene = scene
+    collection.color_tag = colors[collection.seut.col_type]
     
     if scene.render.filepath == '/tmp\\':
         scene.render.filepath = '//'
