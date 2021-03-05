@@ -53,7 +53,7 @@ def poll_ref_col(self, object):
     has_hkt = []
 
     for col in collections['hkt']:
-        if not col.seut.ref_col is None:
+        if not col.seut is self and not col.seut.ref_col is None:
             has_hkt.append(col.seut.ref_col)
 
     return self.scene == object.seut.scene and object not in has_hkt and self.col_type == 'hkt' and (object.seut.col_type == 'main' or object.seut.col_type == 'bs')
@@ -257,10 +257,11 @@ def rename_collections(scene):
     tag = ' (' + scene.seut.subtypeId + ')'
     
     # This ensures that after a full copy of a scene, the collections are reassigned to the new scene
-    scene.view_layers['SEUT'].layer_collection.children[0].collection.seut.scene = scene
-    for vl_col in scene.view_layers['SEUT'].layer_collection.children[0].children:
-        if not vl_col.collection.seut.scene is scene:
-            vl_col.collection.seut.scene = scene
+    if scene.view_layers['SEUT'].layer_collection.children[0].collection.name.startswith("SEUT "):
+        scene.view_layers['SEUT'].layer_collection.children[0].collection.seut.scene = scene
+        for vl_col in scene.view_layers['SEUT'].layer_collection.children[0].children:
+            if not vl_col.collection.seut.scene is scene:
+                vl_col.collection.seut.scene = scene
 
     for col in bpy.data.collections:
         if col is None:
@@ -351,7 +352,6 @@ def create_collections(context):
                 collections[key].append(temp_col)
                 temp_col.seut.scene = scene
                 temp_col.seut.col_type = key
-                temp_col.seut.ref_col = collections['main']
                 if bpy.app.version >= (2, 91, 0):
                     temp_col.color_tag = colors[key]
                 collections['seut'].children.link(temp_col)
@@ -366,5 +366,16 @@ def create_collections(context):
                 if bpy.app.version >= (2, 91, 0):
                     collections[key][1].color_tag = colors[key]
                 collections['seut'].children.link(collections[key][1])
+    
+    # This needs to be separate because else it can cause issues if main doesn't exist yet.
+    for col in bpy.data.collections:
+        if col is None:
+            continue
+        if col.seut.scene is None:
+            continue
+
+        tag = ' (' + col.seut.scene.seut.subtypeId + ')'
+        if col.seut.col_type == 'hkt' and 'Main' + tag in bpy.data.collections:
+            col.seut.ref_col = bpy.data.collections['Main' + tag]
 
     return collections

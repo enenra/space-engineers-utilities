@@ -4,7 +4,7 @@ from bpy.types import Operator
 
 from ..empties.seut_empties          import empty_types
 from ..export.seut_export_utils      import get_subpart_reference
-from ..seut_collections              import get_collections, rename_collections, create_collections, colors
+from ..seut_collections              import get_collections, rename_collections, create_collections, colors, names
 from ..seut_mirroring                import save_rotation
 from ..seut_errors                   import seut_report
 from ..seut_utils                    import link_subpart_scene, get_parent_collection
@@ -36,17 +36,17 @@ def convert_structure(self, context):
         tag = ' (' + scn.seut.subtypeId + ')'
 
         if 'SEUT' in scn.view_layers:
-            collections = get_collections(scn)
-
-            for col in collections:
-                if not col.seut.col_type == 'seut':
+            for col in bpy.data.collections:
+                if col.seut.scene == scn and not col.seut.col_type == 'seut':
                     bpy.data.collections.remove(col)
+
 
         else:
             scn.view_layers[0].name = 'SEUT'
-            seut = bpy.data.collections.new('SEUT' + tag)
-            seut.seut.col_type = 'seut'
-            scn.collection.children.link(seut)
+            seut_col = bpy.data.collections.new('SEUT' + tag)
+            seut_col.seut.scene = scn
+            seut_col.color_tag = colors['seut']
+            scn.collection.children.link(seut_col)
         
         assignments = {
             'Collection 1': 'main',
@@ -67,36 +67,39 @@ def convert_structure(self, context):
             if col.name[:10] != "Collection":
                 continue
 
-            for key in assignments.keys():
+            for key, value in assignments.items():
                 if col.name == key or col.name[:len(key) + 1] == key + ".":
                   
-                    if not assignments[key] == 'main' and not assignments[key] == 'hkt' and not assignments[key] == 'mountpoints' and not assignments[key] == 'mirroring':
+                    if not value == 'main' and not value == 'hkt' and not value == 'mountpoints' and not value == 'mirroring':
+                        col.seut.type_index = int(value[-1])
 
-                        col.seut.type_index = int(key[-1])
-
-                        if assignments[key].startswith('bs'):
+                        if value.startswith('bs'):
                             col.seut.col_type = 'bs'
+                            value = 'bs'
 
-                        elif assignments[key].startswith('lod'):
+                        elif value.startswith('lod'):
                             col.seut.col_type = 'lod'
-                            if int(key[-1]) == 1:
+                            if int(value[-1]) == 1:
                                 col.seut.lod_distance = 25
-                            elif int(key[-1]) == 2:
+                            elif int(value[-1]) == 2:
                                 col.seut.lod_distance = 50
-                            elif int(key[-1]) == 3:
+                            elif int(value[-1]) == 3:
                                 col.seut.lod_distance = 150
+                            value = 'lod'
 
                     else:
-                        col.seut.col_type = key
+                        col.seut.col_type = value
                     
                     if bpy.app.version >= (2, 91, 0):
                         col.color_tag = colors[col.seut.col_type]
 
                     col.seut.scene = scn
 
-                    if assignments[key] + tag in bpy.data.collections:
-                        bpy.data.collections.remove(bpy.data.collections[assignments[key] + tag])
-                    col.name = assignments[key] + tag
+                    if names[value] + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections[names[value] + tag])
+
+                    col.name = names[value] + tag
+
                     break
             
             if not col.name[:4] == 'SEUT':
@@ -106,7 +109,7 @@ def convert_structure(self, context):
             col.hide_viewport = False
         
         rename_collections(scn)
-        create_collections(scn)
+        create_collections(context)
 
         # Convert custom properties of empties from harag's to the default blender method.
         for obj in scn.objects:
@@ -182,11 +185,21 @@ def convert_structure(self, context):
 
         for key in collections.keys():
             if collections[key] != None:
-                for empty in collections[key].objects:
-                    if empty.type == 'EMPTY' and 'file' in empty and str(empty['file']) in bpy.data.scenes:
-                        reference = get_subpart_reference(empty, collections)
-                        link_subpart_scene(self, scn, empty, collections[key], key)
-                        empty['file'] = reference
+
+                if key == 'bs' or key == 'lod' or key == 'bs_lod':
+                    for dict_col in collections[key]:
+                        for empty in collections[key][dict_col].objects:
+                            if empty.type == 'EMPTY' and 'file' in empty and str(empty['file']) in bpy.data.scenes:
+                                reference = get_subpart_reference(empty, collections)
+                                link_subpart_scene(self, scn, empty, collections[key][dict_col], key)
+                                empty['file'] = reference
+
+                elif key == 'main':
+                    for empty in collections[key].objects:
+                        if empty.type == 'EMPTY' and 'file' in empty and str(empty['file']) in bpy.data.scenes:
+                            reference = get_subpart_reference(empty, collections)
+                            link_subpart_scene(self, scn, empty, collections[key], key)
+                            empty['file'] = reference
 
     # Set parent scenes from subparts
     # Needs to happen in second loop, because first loop needs to first run through all scenes to name them

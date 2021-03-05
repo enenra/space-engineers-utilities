@@ -30,6 +30,12 @@ class SEUT_PT_Panel(Panel):
             row.scale_y = 2.0
             row.operator('scene.recreate_collections', text="Initialize SEUT Scene", icon='OUTLINER')
 
+            if 'RenderLayer' in scene.view_layers:
+                row = layout.row()
+                row = layout.row()
+                row.scale_y = 2.0
+                row.operator('wm.convert_structure', icon='OUTLINER')
+
         else:
 
             # SubtypeId
