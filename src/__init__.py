@@ -105,6 +105,7 @@ from .seut_collections                  import SEUT_OT_RecreateCollections
 from .seut_collections                  import SEUT_OT_CreateCollection
 from .seut_ot_simple_navigation         import SEUT_OT_SimpleNavigation
 from .seut_icon_render                  import SEUT_OT_IconRenderPreview
+from .seut_icon_render                  import SEUT_OT_CopyRenderOptions
 from .seut_scene                        import SEUT_MountpointAreas
 from .seut_scene                        import SEUT_Scene
 from .seut_object                       import SEUT_Object
@@ -160,6 +161,7 @@ classes = (
     SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
     SEUT_OT_IconRenderPreview,
+    SEUT_OT_CopyRenderOptions,
     SEUT_ParticlePropertyKeys,
     SEUT_ParticlePropertyValue2D,
     SEUT_ParticleProperty,

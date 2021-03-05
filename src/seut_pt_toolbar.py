@@ -290,7 +290,12 @@ class SEUT_PT_Panel_IconRender(Panel):
             box.prop(scene.seut, 'renderColorOverlay', invert_checkbox=True)
             box.prop(scene.seut, 'renderResolution')
             box.prop(scene.render.image_settings, 'file_format')
-            box.prop(scene.render, 'filepath')
+            
+            split = box.split(factor=0.85)
+            col = split.column()
+            col.prop(scene.render, 'filepath', text="Folder", expand=True)
+            col = split.column()
+            col.operator('scene.copy_render_options', text="", icon='PASTEDOWN')
 
 
 class SEUT_PT_Panel_Export(Panel):

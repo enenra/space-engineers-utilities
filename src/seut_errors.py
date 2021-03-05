@@ -65,7 +65,7 @@ infos = {
     'I003': "Collection '{variable_1}' not found or empty. Skipping XML entry.",
     'I004': "'{variable_1}' has been created.",
     'I005': "IndexError at material '{variable_1}'.",
-    'I006': "Export Options successfully copied to all scenes.",
+    'I006': "{variable_1} Options successfully copied to all scenes.",
     'I007': "FBX and XML files of scene '{variable_1}' have been compiled to MWM.",
     'I008': "{variable_1} of {variable_2} scenes successfully exported. Refer to Blender System Console for details.",
     'I009': "Collision files have been created.",

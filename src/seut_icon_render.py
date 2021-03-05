@@ -245,3 +245,29 @@ class SEUT_OT_IconRenderPreview(Operator):
         scene.render.filepath = path
 
         return {'FINISHED'}
+
+
+class SEUT_OT_CopyRenderOptions(Operator):
+    """Copies the icon render options of the current scene to all other scenes"""
+    bl_idname = "scene.copy_render_options"
+    bl_label = "Copy Icon Render Options"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    def execute(self, context):
+
+        scene = context.scene
+
+        if not os.path.isdir(get_abs_path(scene.render.filepath)):
+            seut_report(self, context, 'ERROR', False, 'E003', 'Render', get_abs_path(scene.render.filepath))
+            return {'CANCELLED'}
+        
+        for scn in bpy.data.scenes:
+            scn.render.filepath = scene.render.filepath
+            scn.seut.renderColorOverlay = scene.seut.renderColorOverlay
+            scn.seut.renderResolution = scene.seut.renderResolution
+            scn.render.image_settings.file_format = scene.render.image_settings.file_format
+        
+        seut_report(self, context, 'INFO', True, 'I006', "Icon Render")
+
+        return {'FINISHED'}
