@@ -64,13 +64,17 @@ def update_lod_distance(self, context):
     collections = get_collections(scene)
 
     if not collections[self.col_type] is None:
-        if self.type_index - 1 in collections[self.col_type]:
-            if self.lod_distance <= collections[self.col_type][self.type_index - 1].seut.lod_distance:
-                self.lod_distance = collections[self.col_type][self.type_index - 1].seut.lod_distance + 1
+        # This is to avoid a non-critical error where Blender expects a string for the contains check only in this particular instance. For reasons beyond human understanding.
+        try:
+            if self.type_index - 1 in collections[self.col_type]:
+                if self.lod_distance <= collections[self.col_type][self.type_index - 1].seut.lod_distance:
+                    self.lod_distance = collections[self.col_type][self.type_index - 1].seut.lod_distance + 1
 
-        if self.type_index + 1 in collections[self.col_type]:
-            if self.lod_distance >= collections[self.col_type][self.type_index + 1].seut.lod_distance:
-                collections[self.col_type][self.type_index + 1].seut.lod_distance = self.lod_distance + 1
+            if self.type_index + 1 in collections[self.col_type]:
+                if self.lod_distance >= collections[self.col_type][self.type_index + 1].seut.lod_distance:
+                    collections[self.col_type][self.type_index + 1].seut.lod_distance = self.lod_distance + 1
+        except TypeError:
+            pass
 
 
 class SEUT_Collection(PropertyGroup):
@@ -181,7 +185,23 @@ class SEUT_OT_CreateCollection(Operator):
         collections = get_collections(scene)
 
         if self.col_type == 'lod' or self.col_type == 'bs' or self.col_type == 'bs_lod':
-            index = len(collections[self.col_type]) + 1
+
+            # This handles the case in which collections are missing from the standard 3
+            if 1 not in collections[self.col_type]:
+                index = 1
+            elif 2 not in collections[self.col_type]:
+                index = 2
+            elif 3 not in collections[self.col_type]:
+                index = 3
+            else:
+                if len(collections[self.col_type]) + 1 in collections[self.col_type]:
+                    temp_key = 4
+                    while temp_key in collections[self.col_type]:
+                        temp_key += 1
+                    index = temp_key
+                else:
+                    index = len(collections[self.col_type]) + 1
+
             collection = bpy.data.collections.new(names[self.col_type] + str(index) + tag)
             collection.seut.type_index = index
 
