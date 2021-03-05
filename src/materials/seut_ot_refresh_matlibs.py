@@ -29,7 +29,7 @@ def refresh_matlibs(self, context):
     preferences = get_preferences()
     materials_path = get_abs_path(preferences.materials_path)
 
-    if materials_path == "" or os.path.isdir(materials_path) == False:
+    if preferences.materials_path == "" or os.path.isdir(materials_path) == False:
         seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
         return
 

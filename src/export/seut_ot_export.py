@@ -72,7 +72,7 @@ def export(self, context):
 
     # Check materials path
     materials_path = get_abs_path(preferences.materials_path)
-    if materials_path == "" or os.path.isdir(materials_path) == False:
+    if preferences.materials_path == "" or os.path.isdir(materials_path) == False:
         seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
         return {'CANCELLED'}
     
@@ -259,7 +259,6 @@ def export_bs(self, context):
     collections = get_collections(scene)
 
     valid = {}
-    print(collections['bs'])
     for key, value in collections['bs'].items():
         bs_col = value
 
