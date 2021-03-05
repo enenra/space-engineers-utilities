@@ -39,28 +39,32 @@ class SEUT_OT_Import_Materials(Operator):
         preferences = get_preferences()
         materials_path = get_abs_path(preferences.materials_path)
 
-        if materials_path == "" or os.path.isdir(materials_path) == False:
+        if preferences.materials_path == "" or os.path.isdir(materials_path) == False:
             seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
-            return
+            return {'CANCELLED'}
 
         try:
             tree = ET.parse(self.filepath)
         except:
-            print("AAAAAAAAAAAAAAAAAAAAAH")
-            return
+            seut_report(self, context, 'ERROR', True, 'E040')
+            return {'CANCELLED'}
 
         root = tree.getroot()
+
+        if not root.tag == 'MaterialsLib':
+            seut_report(self, context, 'ERROR', True, 'E040')
+            return {'CANCELLED'}
+
         imported = []
 
-        # check to make sure it's a material library and not a random xml file
-
         for mat in root:
-            if mat.attrib in bpy.data.materials:
+            if mat.attrib['Name'] in bpy.data.materials:
+                seut_report(self, context, 'INFO', True, 'I020', mat.attrib['Name'])
                 continue
 
             else:
                 material = create_material()
-                material.name = mat.attrib
+                material.name = mat.attrib['Name']
 
                 for node in material.node_tree.nodes:
                     if node.name == 'CM':
@@ -78,34 +82,29 @@ class SEUT_OT_Import_Materials(Operator):
                 am_img = None
 
                 for param in mat:
-                    if param.attrib == 'Technique':
+                    if param.attrib['Name'] == 'Technique':
                         material.seut.technique = param.text
 
-                    elif param.attrib == 'ColorMetalTexture':
+                    elif param.attrib['Name'] == 'ColorMetalTexture':
                         cm_img = load_image(param.text, materials_path)
 
-                    elif param.attrib == 'NormalGlossTexture':
+                    elif param.attrib['Name'] == 'NormalGlossTexture':
                         ng_img = load_image(param.text, materials_path)
 
-                    elif param.attrib == 'AddMapsTexture':
+                    elif param.attrib['Name'] == 'AddMapsTexture':
                         add_img = load_image(param.text, materials_path)
 
-                    elif param.attrib == 'AlphamaskTexture':
+                    elif param.attrib['Name'] == 'AlphamaskTexture':
                         am_img = load_image(param.text, materials_path)
 
-                    elif param.attrib == 'Facing':
+                    elif param.attrib['Name'] == 'Facing':
                         material.seut.facing = param.text
 
-                    elif param.attrib == 'WindScale':
+                    elif param.attrib['Name'] == 'WindScale':
                         material.seut.windScale = param.text
 
-                    elif param.attrib == 'WindFrequency':
-                        material.seut.windFrequency = param.text
-
-                # Error for textures not having been able to be loaded, delete mat after
-
-                # Error if textures are incompatible DDS format (via splitext)
-                
+                    elif param.attrib['Name'] == 'WindFrequency':
+                        material.seut.windFrequency = param.text                
 
                 if not cm_img is None:
                     cm_node.image = cm_img
@@ -114,6 +113,7 @@ class SEUT_OT_Import_Materials(Operator):
 
                 if not ng_img is None:
                     ng_node.image = ng_img
+                    ng_node.image.colorspace_settings.name = 'Non-Color'
                 else:
                     material.node_tree.nodes.remove(ng_node)
 
@@ -129,15 +129,18 @@ class SEUT_OT_Import_Materials(Operator):
                 
                 imported.append(material.name)
                 
+        if len(imported) == 0:
+            seut_report(self, context, 'INFO', True, 'E041', self.filepath)
 
-        materials_string = ""
-        for name in imported:
-            if materials_string == "":
-                materials_string = name
-            else:
-                materials_string = materials_string + ", " + name
+        else:
+            materials_string = ""
+            for name in imported:
+                if materials_string == "":
+                    materials_string = name
+                else:
+                    materials_string = materials_string + ", " + name
 
-        seut_report(self, context, 'INFO', True, 'I019', len(imported), self.filepath, materials_string)
+            seut_report(self, context, 'INFO', True, 'I019', len(imported), self.filepath, materials_string)
 
         return {'FINISHED'}
 
@@ -150,18 +153,17 @@ class SEUT_OT_Import_Materials(Operator):
 def load_image(path: str, materials_path: str):
     """Returns image by first checking if it already is in Blender, if not, loading it from the given path."""
 
-    preferences = get_preferences()
+    seut_path = os.path.dirname(materials_path)
     name = os.path.splitext(os.path.basename(path))
-    name_split = os.path.splitext(name)[0]
+    
+    img_path = os.path.splitext(os.path.join(seut_path, path))[0] + ".tif"
 
-    if name in bpy.data.images:
+    if name[0] in bpy.data.images:
         return bpy.data.images[name]
 
-    elif name_split in bpy.data.images:
-        return bpy.data.images[name_split]
-        
     else:
         try:
-            return bpy.data.images.load(path) # need to properly join materials path with this
+            return bpy.data.images.load(img_path)
         except:
+            seut_report(self, context, 'WARNING', True, 'W011', img_path)
             return

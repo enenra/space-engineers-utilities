@@ -132,6 +132,7 @@ class SEUT_PT_Panel_Materials(Panel):
         link.page = 'create-material'
 
         box.operator('object.create_material', icon='ADD')
+        box.operator('wm.import_materials', icon='IMPORT')
 
 
 class SEUT_PT_Panel_MatLib(Panel):

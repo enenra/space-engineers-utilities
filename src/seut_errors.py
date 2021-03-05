@@ -44,6 +44,8 @@ errors = {
     'E037': "Havok's 'hctFilterManager.dll' could not be found. Collision could not be exported.",
     'E038': "A KeyError occurred during export:\n{variable_1}",
     'E039': "Assimp32.dll could not be found by MWM Builder. Output could not be converted to MWM.",
+    'E040': "Selected XML file could not be loaded as a MaterialsLib.",
+    'E041': "No Materials were importet from MaterialsLib '{variable_1}'.",
 }
 
 warnings = {
@@ -57,6 +59,7 @@ warnings = {
     'W008': "Scene '{variable_1}' is of type '{variable_2}' but does not contain any armatures.",
     'W009': "Scene '{variable_1}'  is of type '{variable_2}' but contains armatures.",
     'W010': "Library '{variable_1}' could not be relocated in '{variable_2}'.",
+    'W011': "Loading of image '{variable_1}' failed.",
 }
 
 infos = {
@@ -78,7 +81,8 @@ infos = {
     'I016': "Empty '{variable_1}' rotation {variable_2} registered as: {variable_3}",
     'I017': "Mountpoint Area {variable_1} saved. {variable_2} {variable_3}",
     'I018': "Icon successfully saved to '{variable_1}'.",
-    'I019': "Successfully imported {variable_1} materials from '{variable_2}':\n{variable_3}",
+    'I019': "Successfully imported {variable_1} materials from '{variable_2}': {variable_3}",
+    'I020': "Material '{variable_1}' was skipped because it already exists in the BLEND file.",
 }
 
 
