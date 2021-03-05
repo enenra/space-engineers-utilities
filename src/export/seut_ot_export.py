@@ -535,10 +535,10 @@ def export_sbc(self, context):
 
                 # Need to do this to prevent ET from auto-rearranging keys.
                 def_Mountpoint.set('a_Side', side_name)
-                def_Mountpoint.set('b_StartX', str(round(start_x, 2)))
-                def_Mountpoint.set('c_StartY', str(round(start_y, 2)))
-                def_Mountpoint.set('d_EndX', str(round(end_x, 2)))
-                def_Mountpoint.set('e_EndY', str(round(end_y, 2)))
+                def_Mountpoint.set('b_StartX', str("{:.2f}".format(round(start_x, 2))))
+                def_Mountpoint.set('c_StartY', str("{:.2f}".format(round(start_y, 2))))
+                def_Mountpoint.set('d_EndX', str("{:.2f}".format(round(end_x, 2))))
+                def_Mountpoint.set('e_EndY', str("{:.2f}".format(round(end_y, 2))))
 
                 if area.default:
                     def_Mountpoint.set('f_Default', str(area.default).lower())
@@ -565,9 +565,9 @@ def export_sbc(self, context):
 
                 # This makes sure the last build stage is set to upper bound 1.0
                 if bs + 1 == counter:
-                    def_BS_Model.set('BuildPercentUpperBound', str(1.0))
+                    def_BS_Model.set('BuildPercentUpperBound', str("{:.2f}".format(1.0)))
                 else:
-                    def_BS_Model.set('BuildPercentUpperBound', str((bs + 1) * percentage)[:4])
+                    def_BS_Model.set('BuildPercentUpperBound', str("{:.2f}".format((bs + 1) * percentage)[:4]))
 
                 def_BS_Model.set('File', create_relative_path(path, "Models") + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
 
