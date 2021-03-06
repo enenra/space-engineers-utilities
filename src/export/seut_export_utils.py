@@ -85,16 +85,17 @@ def export_xml(self, context, collection) -> str:
     if collection.seut.col_type == 'main':
 
         printed = {}
-        for key, value in collections['lod'].items():
-            lod_col = value
-            if len(lod_col.objects) == 0:
-                seut_report(self, context, 'INFO', False, 'I003', 'LOD' + str(lod_col.seut.type_index))
-            else:
-                if key == 1 or key - 1 in printed and printed[key - 1]:
-                    create_lod_entry(scene, model, lod_col.seut.lod_distance, path, '_LOD' + str(lod_col.seut.type_index))
-                    printed[key] = True
+        if not collections['lod'] is None:
+            for key, value in collections['lod'].items():
+                lod_col = value
+                if len(lod_col.objects) == 0:
+                    seut_report(self, context, 'INFO', False, 'I003', 'LOD' + str(lod_col.seut.type_index))
                 else:
-                    seut_report(self, context, 'ERROR', True, 'E006')
+                    if key == 1 or key - 1 in printed and printed[key - 1]:
+                        create_lod_entry(scene, model, lod_col.seut.lod_distance, path, '_LOD' + str(lod_col.seut.type_index))
+                        printed[key] = True
+                    else:
+                        seut_report(self, context, 'ERROR', True, 'E006')
     
     elif collection.seut.col_type == 'bs':
 

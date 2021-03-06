@@ -360,17 +360,18 @@ def export_sbc(self, context):
         return result
 
     bs_valid = {}
-    for key, value in collections['bs'].items():
-        bs_col = value
+    if not collections['bs'] is None:
+        for key, value in collections['bs'].items():
+            bs_col = value
 
-        bs_valid[key] = False
-        result = check_collection(self, context, scene, bs_col, True)
-        if result == {'CONTINUE'}:
-            bs_valid[key] = True
-    
-        if key - 1 in bs_valid and not bs_valid[key - 1] and bs_valid[key]:
-            seut_report(self, context, 'ERROR', True, 'E015', 'BS')
-            return {'CANCELLED'}
+            bs_valid[key] = False
+            result = check_collection(self, context, scene, bs_col, True)
+            if result == {'CONTINUE'}:
+                bs_valid[key] = True
+        
+            if key - 1 in bs_valid and not bs_valid[key - 1] and bs_valid[key]:
+                seut_report(self, context, 'ERROR', True, 'E015', 'BS')
+                return {'CANCELLED'}
 
     # Create XML tree and add initial parameters.
     definitions = ET.Element('Definitions')
@@ -548,13 +549,14 @@ def export_sbc(self, context):
 
     
     # Build Stages
-    if len(collections['bs']) > 0:
+    if not collections['bs'] is None and len(collections['bs']) > 0:
 
         counter = 0
-        for key, value in collections['bs'].items():
-            bs_col = value
-            if len(bs_col.objects) > 0:
-                counter += 1
+        if not collections['bs'] is None:
+            for key, value in collections['bs'].items():
+                bs_col = value
+                if len(bs_col.objects) > 0:
+                    counter += 1
 
         if counter > 0:
             def_BuildProgressModels = ET.SubElement(def_definition, 'BuildProgressModels')
