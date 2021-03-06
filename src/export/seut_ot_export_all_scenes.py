@@ -40,6 +40,11 @@ class SEUT_OT_ExportAllScenes(Operator):
             seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
             return {'CANCELLED'}
 
+        # Checks export path and whether SubtypeId exists
+        result = check_export(self, context)
+        if not result == {'CONTINUE'}:
+            return result
+
         current_area = prep_context(context)
         original_scene = context.window.scene
 

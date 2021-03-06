@@ -202,52 +202,52 @@ def export_hkt(self, context):
     if not result == {'CONTINUE'}:
         return result
 
+    if not collections['hkt'] is None:
+        for hkt_col in collections['hkt']:
 
-    for hkt_col in collections['hkt']:
-
-        result = check_collection(self, context, scene, hkt_col, True)
-        if not result == {'CONTINUE'}:
-            continue
-        
-        overall_result = {'FINISHED'}
-        cancelled = False
-        for obj in hkt_col.objects:
-
-            # Check for unapplied modifiers
-            if len(obj.modifiers) > 0:
-                seut_report(self, context, 'ERROR', True, 'E034', obj.name)
-                cancelled = True
-                break
+            result = check_collection(self, context, scene, hkt_col, True)
+            if not result == {'CONTINUE'}:
+                continue
             
-            # TODO: Investigate this again, and only apply rigidbody if there isn't one already
-            context.view_layer.objects.active = obj
-            # bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) # This runs on all objects instead of just the active one for some reason. Breaks when there's instanced subparts.
-            bpy.ops.rigidbody.object_add(type='ACTIVE')
+            overall_result = {'FINISHED'}
+            cancelled = False
+            for obj in hkt_col.objects:
 
-        if cancelled:
-            return {'CANCELLED'}
-        
-        if len(hkt_col.objects) > 16:
-            seut_report(self, context, 'ERROR', True, 'E022', hkt_col.name, len(hkt_col.objects))
-            continue
+                # Check for unapplied modifiers
+                if len(obj.modifiers) > 0:
+                    seut_report(self, context, 'ERROR', True, 'E034', obj.name)
+                    cancelled = True
+                    break
+                
+                # TODO: Investigate this again, and only apply rigidbody if there isn't one already
+                context.view_layer.objects.active = obj
+                # bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) # This runs on all objects instead of just the active one for some reason. Breaks when there's instanced subparts.
+                bpy.ops.rigidbody.object_add(type='ACTIVE')
 
-        # FBX export via Custom FBX Importer
-        ref_col = hkt_col.seut.ref_col
+            if cancelled:
+                return {'CANCELLED'}
+            
+            if len(hkt_col.objects) > 16:
+                seut_report(self, context, 'ERROR', True, 'E022', hkt_col.name, len(hkt_col.objects))
+                continue
 
-        tag = ""
-        if ref_col.seut.col_type == 'bs':
-            tag = "_" + ref_col.seut.col_type + str(ref_col.seut.type_index)
+            # FBX export via Custom FBX Importer
+            ref_col = hkt_col.seut.ref_col
 
-        fbx_hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt.fbx")
-        hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt")
-        
-        export_to_fbxfile(settings, scene, fbx_hkt_file, hkt_col.objects, ishavokfbxfile=True)
+            tag = ""
+            if ref_col.seut.col_type == 'bs':
+                tag = "_" + ref_col.seut.col_type + str(ref_col.seut.type_index)
 
-        # Then create the HKT file.
-        process_hktfbx_to_fbximporterhkt(context, settings, fbx_hkt_file, hkt_file)
-        process_fbximporterhkt_to_final_hkt_for_mwm(self, context, scene, path, settings, hkt_file, hkt_file)
+            fbx_hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt.fbx")
+            hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt")
+            
+            export_to_fbxfile(settings, scene, fbx_hkt_file, hkt_col.objects, ishavokfbxfile=True)
 
-        # TODO: Ensure fbx are associated with the correct hkts now that there's multiple
+            # Then create the HKT file.
+            process_hktfbx_to_fbximporterhkt(context, settings, fbx_hkt_file, hkt_file)
+            process_fbximporterhkt_to_final_hkt_for_mwm(self, context, scene, path, settings, hkt_file, hkt_file)
+
+            # TODO: Ensure fbx are associated with the correct hkts now that there's multiple
 
     return {'FINISHED'}
 
@@ -259,24 +259,25 @@ def export_bs(self, context):
     collections = get_collections(scene)
 
     valid = {}
-    for key, value in collections['bs'].items():
-        bs_col = value
+    if not collections['bs'] is None:
+        for key, value in collections['bs'].items():
+            bs_col = value
 
-        valid[key] = False
-        result = check_collection(self, context, scene, bs_col, True)
-        if result == {'CONTINUE'}:
-            valid[key] = True
+            valid[key] = False
+            result = check_collection(self, context, scene, bs_col, True)
+            if result == {'CONTINUE'}:
+                valid[key] = True
 
-        if key - 1 in valid and not valid[key - 1] and valid[key]:
-            seut_report(self, context, 'ERROR', True, 'E015', 'LOD')
-            return {'CANCELLED'}
-        
-        if valid[key]:
-            for obj in bs_col.objects:
-                if check_uvms(self, context, obj) != {'CONTINUE'}:
-                    return {'CANCELLED'}
+            if key - 1 in valid and not valid[key - 1] and valid[key]:
+                seut_report(self, context, 'ERROR', True, 'E015', 'LOD')
+                return {'CANCELLED'}
             
-            export_collection(self, context, bs_col)
+            if valid[key]:
+                for obj in bs_col.objects:
+                    if check_uvms(self, context, obj) != {'CONTINUE'}:
+                        return {'CANCELLED'}
+                
+                export_collection(self, context, bs_col)
     
     return {'FINISHED'}
 
@@ -297,30 +298,31 @@ def check_export_lods(self, context, dictionary):
     scene = context.scene
 
     valid = {}
-    for key, value in dictionary.items():
-        lod_col = value
+    if not dictionary is None:
+        for key, value in dictionary.items():
+            lod_col = value
 
-        valid[key] = False
-        result = check_collection(self, context, scene, lod_col, True)
-        if result == {'CONTINUE'}:
-            valid[key] = True
+            valid[key] = False
+            result = check_collection(self, context, scene, lod_col, True)
+            if result == {'CONTINUE'}:
+                valid[key] = True
 
-        if key - 1 in valid:
+            if key - 1 in valid:
 
-            if not valid[key - 1] and valid[key]:
-                seut_report(self, context, 'ERROR', True, 'E015', 'LOD')
-                return {'CANCELLED'}
+                if not valid[key - 1] and valid[key]:
+                    seut_report(self, context, 'ERROR', True, 'E015', 'LOD')
+                    return {'CANCELLED'}
 
-            if dictionary[key - 1].seut.lod_distance > lod_col.seut.lod_distance:
-                seut_report(self, context, 'ERROR', True, 'E011')
-                return {'CANCELLED'}
-        
-        if valid[key]:
-            for obj in lod_col.objects:
-                if check_uvms(self, context, obj) != {'CONTINUE'}:
+                if dictionary[key - 1].seut.lod_distance > lod_col.seut.lod_distance:
+                    seut_report(self, context, 'ERROR', True, 'E011')
                     return {'CANCELLED'}
             
-            export_collection(self, context, lod_col)
+            if valid[key]:
+                for obj in lod_col.objects:
+                    if check_uvms(self, context, obj) != {'CONTINUE'}:
+                        return {'CANCELLED'}
+                
+                export_collection(self, context, lod_col)
 
 
 def export_mwm(self, context):
