@@ -606,6 +606,10 @@ class ExportSettings:
             if logtextInspector is not None:
                 logtextInspector(out)
 
+            out_str = out.decode("utf-8")
+            if out_str.find("Assimp.AssimpException: Error loading unmanaged library from path: Assimp32.dll") != -1:
+                seut_report(self, context, 'ERROR', False, 'E039')
+
             return True
 
         except subprocess.CalledProcessError as e:
@@ -617,10 +621,6 @@ class ExportSettings:
                 else:
                     seut_report(self, context, 'ERROR', False, 'E035', str(tooltype))
                 raise
-            
-            if e.output.startswith("error: {"):
-                if "Error loading unmanaged library from path: Assimp32.dll" in e.output:
-                    seut_report(self, context, 'ERROR', False, 'E039')
 
             return False
     
