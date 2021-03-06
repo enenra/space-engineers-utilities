@@ -192,8 +192,6 @@ def update_linkSubpartInstances(self, context):
     scene = context.scene
     collections = get_collections(scene)
 
-    # TODO: This doesn't work yet.
-
     for key in collections.keys():
         if key == 'main' and not collections[key] is None:
             col = collections[key]

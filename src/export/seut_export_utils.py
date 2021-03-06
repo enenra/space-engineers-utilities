@@ -266,20 +266,16 @@ def export_fbx(self, context, collection) -> str:
     bpy.context.view_layer.active_layer_collection = layer_collection
     
     # Prepare empties for export
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>> " + scene.name + " - " + collection.name)
     for empty in collection.objects:
         if empty is not None and empty.type == 'EMPTY':
-            print("> " + empty.name)
             
             # Remove numbers
             # To ensure they work ingame (where duplicate names are no issue) this will remove the ".001" etc. from the name (and cause another empty to get this numbering)
             if re.search("\.[0-9]{3}", empty.name[-4:]) != None and empty.name.find("(L)") == -1:
+                temp_obj = bpy.data.objects[empty.name[:-4]]
+                temp_obj.name = empty.name + " TEMP"
                 empty.name = empty.name[:-4]
-                print(empty.name)
-                # For some godforsaken reason, sometimes the name just isn't shortened. But trying it again seems to do the trick...
-                if re.search("\.[0-9]{3}", empty.name[-4:]) != None:
-                    empty.name = empty.name[:-4]
-                    print(empty.name)
+                temp_obj.name = temp_obj.name[:-len(" TEMP")]
 
             # Check parenting
             if empty.parent is None:

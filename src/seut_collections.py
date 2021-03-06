@@ -38,9 +38,6 @@ colors = {
     'render': 'COLOR_03'
 }
 
-# TODO: Need to adjust all places that use collections['lod1'], 2, 3 etc. and same for BS
-# also everywhere that deals with hkt or bs_lod
-# also structure conversion
 
 def update_ref_col(self, context):
     scene = context.scene
