@@ -192,21 +192,28 @@ def update_linkSubpartInstances(self, context):
     scene = context.scene
     collections = get_collections(scene)
 
-    for col in collections.values():
-        if col is not None:
+    # TODO: This doesn't work yet.
+
+    for key in collections.keys():
+        if key == 'main' and not collections[key] is None:
+            col = collections[key]
             for empty in col.objects:
                 if empty is not None and empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
 
-                    collection_type = 'main'
-                    for key in names.keys():
-                        if col == collections[key]:
-                            collection_type = key
-                            break
-
                     if scene.seut.linkSubpartInstances:
-                        link_subpart_scene(self, scene, empty, col, collection_type)
+                        link_subpart_scene(self, scene, empty, col, col.seut.col_type)
                     else:
                         unlink_subpart_scene(empty)
+
+        elif key == 'bs' or key == 'lod' or key == 'bs_lod' and not collections[key] is None:
+            for sub_key, value in collections[key].items():
+                for empty in value.objects:
+                    if empty is not None and empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
+
+                        if scene.seut.linkSubpartInstances:
+                            link_subpart_scene(self, scene, empty, value, key)
+                        else:
+                            unlink_subpart_scene(empty)
 
 
 def update_export_largeGrid(self, context):
