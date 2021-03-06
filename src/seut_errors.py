@@ -45,7 +45,7 @@ errors = {
     'E038': "A KeyError occurred during export:\n{variable_1}",
     'E039': "Assimp32.dll could not be found by MWM Builder. Output could not be converted to MWM.",
     'E040': "Selected XML file could not be loaded as a MaterialsLib.",
-    'E041': "No Materials were importet from MaterialsLib '{variable_1}'.",
+    'E041': "No Materials were imported from MaterialsLib '{variable_1}'.",
 }
 
 warnings = {
