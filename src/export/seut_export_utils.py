@@ -99,16 +99,17 @@ def export_xml(self, context, collection) -> str:
     elif collection.seut.col_type == 'bs':
 
         printed = {}
-        for key, value in collections['bs_lod'].items():
-            lod_col = value
-            if len(lod_col.objects) == 0:
-                seut_report(self, context, 'INFO', False, 'I003', 'BS_LOD' + str(lod_col.seut.type_index))
-            else:
-                if key == 1 or key - 1 in printed and printed[key - 1]:
-                    create_lod_entry(scene, model, lod_col.seut.lod_distance, path, '_BS_LOD' + str(lod_col.seut.type_index))
-                    printed[key] = True
+        if not collections['bs_lod'] is None:
+            for key, value in collections['bs_lod'].items():
+                lod_col = value
+                if len(lod_col.objects) == 0:
+                    seut_report(self, context, 'INFO', False, 'I003', 'BS_LOD' + str(lod_col.seut.type_index))
                 else:
-                    seut_report(self, context, 'ERROR', True, 'E006')
+                    if key == 1 or key - 1 in printed and printed[key - 1]:
+                        create_lod_entry(scene, model, lod_col.seut.lod_distance, path, '_BS_LOD' + str(lod_col.seut.type_index))
+                        printed[key] = True
+                    else:
+                        seut_report(self, context, 'ERROR', True, 'E006')
         
     # Create file with subtypename + collection name and write string to it
     xml_formatted = format_xml(self, context, model)
@@ -264,16 +265,20 @@ def export_fbx(self, context, collection) -> str:
     bpy.context.view_layer.active_layer_collection = layer_collection
     
     # Prepare empties for export
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>> " + scene.name + " - " + collection.name)
     for empty in collection.objects:
         if empty is not None and empty.type == 'EMPTY':
+            print("> " + empty.name)
             
             # Remove numbers
             # To ensure they work ingame (where duplicate names are no issue) this will remove the ".001" etc. from the name (and cause another empty to get this numbering)
             if re.search("\.[0-9]{3}", empty.name[-4:]) != None and empty.name.find("(L)") == -1:
                 empty.name = empty.name[:-4]
+                print(empty.name)
                 # For some godforsaken reason, sometimes the name just isn't shortened. But trying it again seems to do the trick...
                 if re.search("\.[0-9]{3}", empty.name[-4:]) != None:
                     empty.name = empty.name[:-4]
+                    print(empty.name)
 
             # Check parenting
             if empty.parent is None:

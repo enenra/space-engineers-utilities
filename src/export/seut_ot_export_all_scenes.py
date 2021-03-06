@@ -3,8 +3,8 @@ import bpy
 from bpy.types  import Operator
 
 from .seut_ot_export    import export
-from ..seut_errors      import check_export, seut_report
-from ..seut_utils       import prep_context
+from ..seut_errors      import *
+from ..seut_utils       import prep_context, get_preferences
 
 
 class SEUT_OT_ExportAllScenes(Operator):
@@ -21,6 +21,24 @@ class SEUT_OT_ExportAllScenes(Operator):
 
     def execute(self, context):
         """Exports all collections in all scenes and compresses them to MWM."""
+        
+        preferences = get_preferences()
+
+        # Check for availability of FBX Importer
+        result = check_toolpath(self, context, preferences.fbx_importer_path, "Custom FBX Importer", "FBXImporter.exe")
+        if not result == {'CONTINUE'}:
+            return result
+
+        # Check for availability of MWM Builder
+        result = check_toolpath(self, context, preferences.mwmb_path, "MWM Builder", "MwmBuilder.exe")
+        if not result == {'CONTINUE'}:
+            return result
+
+        # Check materials path
+        materials_path = get_abs_path(preferences.materials_path)
+        if preferences.materials_path == "" or os.path.isdir(materials_path) == False:
+            seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
+            return {'CANCELLED'}
 
         current_area = prep_context(context)
         original_scene = context.window.scene
