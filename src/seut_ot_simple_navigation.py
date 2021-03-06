@@ -17,17 +17,19 @@ class SEUT_OT_SimpleNavigation(Operator):
 
         scene = context.scene
         wm = context.window_manager
-        collections = get_collections(scene)
 
         if not wm.seut.simpleNavigationToggle:
-            for col in collections.values():
-                if col is not None:
-                    col.hide_viewport = False
+            for scn in bpy.data.scenes:
+                collections = get_collections(scn)
+                for col in bpy.data.collections:
+                    if col is not None and col.seut.scene is scn and col.seut.col_type != 'seut':
+                        seut_layer_col = scn.view_layers['SEUT'].layer_collection.children[collections['seut'].name]
+                        seut_layer_col.children[col.name].hide_viewport = False
             return {'FINISHED'}
 
         check = False
-        for col in collections.values():
-            if col is not None:
+        for col in bpy.data.collections:
+            if col is not None and col.seut.scene is scene:
                 check = True
 
         if not check:
@@ -45,26 +47,26 @@ class SEUT_OT_SimpleNavigation(Operator):
         scene = context.scene
         wm = context.window_manager
         collections = get_collections(scene)
-        collection = context.view_layer.active_layer_collection.collection
+        active_col = context.view_layer.active_layer_collection
 
         if not wm.seut.simpleNavigationToggle:
-            for col in collections.values():
-                if col is not None:
-                    col.hide_viewport = False
+            for col in bpy.data.collections:
+                if col is not None and col.seut.scene is scene and col.seut.col_type != 'seut':
+                    context.view_layer.layer_collection.children[collections['seut'].name].children[col.name].hide_viewport = False
             return {'FINISHED'}
 
-        if collection.hide_viewport:
-            collection.hide_viewport = False
+        if active_col.hide_viewport:
+            active_col.hide_viewport = False
 
-        if collection not in collections.values():
+        if active_col.collection.seut.col_type == 'none':
             return {'PASS_THROUGH'}
         
-        for col in collections.values():
-            if col is not None:
-                if col == collections['seut'] or col == collection:
+        for col in bpy.data.collections:
+            if col is not None and col.seut.scene is scene:
+                if col.seut.col_type == 'seut' or col == active_col.collection:
                     continue
                 else:
-                    col.hide_viewport = True
+                    context.view_layer.layer_collection.children[collections['seut'].name].children[col.name].hide_viewport = True
 
         return {'PASS_THROUGH'}
 
