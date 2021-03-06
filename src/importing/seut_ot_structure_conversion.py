@@ -45,6 +45,7 @@ def convert_structure(self, context):
             scn.view_layers[0].name = 'SEUT'
             seut_col = bpy.data.collections.new('SEUT' + tag)
             seut_col.seut.scene = scn
+            seut_col.seut.col_type = 'seut'
             seut_col.color_tag = colors['seut']
             scn.collection.children.link(seut_col)
         

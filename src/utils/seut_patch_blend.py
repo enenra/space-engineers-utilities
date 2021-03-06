@@ -36,13 +36,13 @@ def patch_collections():
         if not 'SEUT' + tag in scn.view_layers['SEUT'].layer_collection.children:
             continue
         # Ensure it doesn't run for scenes that have already been patched
-        if scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children['Main' + tag].collection.seut.col_type == 'main':
+        if not scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag].collection.seut.col_type == 'none':
             continue
         
         # Converting main collection
         seut_col = scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag].collection
-        seut_col.seut.col_type = 'seut'
         seut_col.seut.scene = scn
+        seut_col.seut.col_type = 'seut'
 
         for col in seut_col.children:
 

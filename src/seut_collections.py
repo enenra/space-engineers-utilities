@@ -56,7 +56,7 @@ def poll_ref_col(self, object):
         if not col.seut is self and not col.seut.ref_col is None:
             has_hkt.append(col.seut.ref_col)
 
-    return self.scene == object.seut.scene and object not in has_hkt and self.col_type == 'hkt' and (object.seut.col_type == 'main' or object.seut.col_type == 'bs')
+    return self.scene == object.seut.scene and not object.seut.col_type is 'none' and object not in has_hkt and self.col_type == 'hkt' and (object.seut.col_type == 'main' or object.seut.col_type == 'bs')
 
 
 def update_lod_distance(self, context):
@@ -86,6 +86,7 @@ class SEUT_Collection(PropertyGroup):
     
     col_type: EnumProperty(
         items=(
+            ('none', 'None', ''),
             ('seut', 'SEUT', ''),
             ('main', 'Main', ''),
             ('hkt', 'Collision', ''),
@@ -253,7 +254,10 @@ def get_collections(scene):
         if not col.seut.scene is scene:
             continue
         
-        if col.seut.col_type == 'hkt':
+        if col.seut.col_type is 'none':
+            continue
+
+        elif col.seut.col_type == 'hkt':
             if collections[col.seut.col_type] is None:
                 collections[col.seut.col_type] = []
 
@@ -288,8 +292,11 @@ def rename_collections(scene):
             continue
         if not col.seut.scene is scene:
             continue
+
+        if col.seut.col_type == 'none':
+            continue
         
-        if col.seut.col_type == 'lod' or col.seut.col_type == 'bs' or col.seut.col_type == 'bs_lod':
+        elif col.seut.col_type == 'lod' or col.seut.col_type == 'bs' or col.seut.col_type == 'bs_lod':
             col.name = names[col.seut.col_type] + str(col.seut.type_index) + " (" + col.seut.scene.seut.subtypeId + ")"
 
         elif col.seut.col_type == 'hkt':
@@ -302,6 +309,7 @@ def rename_collections(scene):
                     col.name = names[col.seut.col_type] + " - " + names[col.seut.ref_col.seut.col_type] + str(col.seut.ref_col.seut.type_index) + " (" + col.seut.scene.seut.subtypeId + ")"
                 else:
                     col.name = names[col.seut.col_type] + " - " + names[col.seut.ref_col.seut.col_type] + " (" + col.seut.scene.seut.subtypeId + ")"
+        
         else:
             col.name = names[col.seut.col_type] + " (" + col.seut.scene.seut.subtypeId + ")"
 
@@ -320,6 +328,7 @@ def create_collections(context):
 
                 collections[key] = bpy.data.collections.new(names[key] + tag)
                 collections[key].seut.scene = scene
+                collections[key].seut.col_type = key
                 if bpy.app.version >= (2, 91, 0):
                     collections[key].color_tag = colors[key]
                 scene.collection.children.link(collections[key])
