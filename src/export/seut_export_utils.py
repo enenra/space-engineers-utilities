@@ -380,30 +380,30 @@ def correct_for_export_type(scene, reference: str) -> str:
     """Corrects reference depending on export type (large / small) selected."""
 
     if scene.seut.gridScale == 'large':
-        if scene.seut.subtypeId.find("LG_") != None:
-            if reference.startswith("LG_") != None or reference.find("_LG_") != None or reference.endswith("_LG") != None:
+        if scene.seut.subtypeId.find("LG_") != -1:
+            if reference.startswith("LG_") != -1 or reference.find("_LG_") != -1 or reference.endswith("_LG") != -1:
                 pass
-            if reference.startswith("SG_") != None:
+            elif reference.startswith("SG_") != -1:
                 reference.replace("SG_", "LG_")
-            elif reference.find("_SG_") != None:
+            elif reference.find("_SG_") != -1:
                 reference.replace("_SG_", "_LG_")
-            elif reference.endswith("_SG") != None:
+            elif reference.endswith("_SG") != -1:
                 reference.replace("_SG", "_LG")
-            else:
-                reference = "LG_" + reference
+        elif scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+            reference = "LG_" + reference
 
     elif scene.seut.gridScale == 'small':
-        if scene.seut.subtypeId.find("SG_") != None:
-            if reference.startswith("SG_") != None or reference.find("_SG_") != None or reference.endswith("_SG") != None:
+        if scene.seut.subtypeId.find("SG_") != -1:
+            if reference.startswith("SG_") != -1 or reference.find("_SG_") != -1 or reference.endswith("_SG") != -1:
                 pass
-            if reference.startswith("LG_") != None:
+            elif reference.startswith("LG_") != -1:
                 reference.replace("LG_", "SG_")
-            elif reference.find("_LG_") != None:
+            elif reference.find("_LG_") != -1:
                 reference.replace("_LG_", "_SG_")
-            elif reference.endswith("_LG") != None:
+            elif reference.endswith("_LG") != -1:
                 reference.replace("_LG", "_SG")
-            else:
-                reference = "SG_" + reference
+        elif scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+            reference = "SG_" + reference
 
     return reference
 

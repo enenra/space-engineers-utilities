@@ -99,6 +99,13 @@ def export(self, context):
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("/small/", "/large/")
         
         export_all(self, context)
+
+    # Resetting the variables
+    if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+        scene.seut.subtypeId = subtype_id
+        scene.seut.gridScale = grid_scale
+        scene.seut.export_rescaleFactor = rescale_factor
+        scene.seut.export_exportPath = path
     
     # Exports small grid scenes
     if scene.seut.export_smallGrid:
