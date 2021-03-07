@@ -15,7 +15,7 @@ from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_loose_files, create_relative_path
 from .seut_export_utils             import correct_for_export_type, export_xml, export_fbx, export_collection
 from ..seut_preferences             import get_addon_version
-from ..seut_collections             import get_collections
+from ..seut_collections             import get_collections, names
 from ..seut_errors                  import *
 from ..seut_utils                   import prep_context, get_preferences
 
@@ -196,8 +196,6 @@ def export_main(self, context):
 def export_hkt(self, context):
     """Exports collision to HKT"""
 
-    # TODO: This errors with more than one HKT collection.
-
     scene = context.scene
     collections = get_collections(scene)
     preferences = get_preferences()
@@ -210,13 +208,55 @@ def export_hkt(self, context):
         return result
 
     if not collections['hkt'] is None:
+        
+        # This exists to determine which HKT is assigned to what FBX.
+
+        # Fill a dictionary with collections as keys
+        assignments = {}
+        assignments[collections['main']] = None
+        for key, value in collections.items():
+            if key == 'bs' or key == 'lod' or key == 'bs_lod':
+                if not collections[key] is None:
+                    for col in collections[key]:
+                        assignments[collections[key][col]] = None
+
+        # Assign HKT collections to each key
+        for hkt_col in collections['hkt']:
+
+            result = check_collection(self, context, scene, hkt_col, True)
+            if not result == {'CONTINUE'}:
+                continue
+
+            ref_col = hkt_col.seut.ref_col
+            if ref_col.seut.col_type == 'main':
+                for key, value in assignments.items():
+                    if key.seut.col_type == 'main':
+                        assignments[key] = hkt_col
+                    elif value is None:
+                        assignments[key] = hkt_col
+
+            if ref_col.seut.col_type == 'bs':
+                idx = ref_col.seut.type_index
+                for key, value in assignments.items():
+                    if key.seut.col_type == 'bs' and key.seut.type_index == idx:
+                        assignments[key] = hkt_col
+                    elif idx == 1 and (key.seut.col_type == 'bs' or key.seut.col_type == 'bs_lod') and value is None:
+                        assignments[key] = hkt_col
+
+        # This uses the collision collections as keys for a new dict that contains the assigned "normal" collections as values in a list
+        assignments_inverted = {}
+        for key, value in assignments.items():
+            if not value in assignments_inverted.keys():
+                assignments_inverted[value] = []
+            if not key in assignments_inverted[value]:
+                assignments_inverted[value].append(key)
+        
         for hkt_col in collections['hkt']:
 
             result = check_collection(self, context, scene, hkt_col, True)
             if not result == {'CONTINUE'}:
                 continue
             
-            overall_result = {'FINISHED'}
             cancelled = False
             for obj in hkt_col.objects:
 
@@ -240,10 +280,11 @@ def export_hkt(self, context):
 
             # FBX export via Custom FBX Importer
             ref_col = hkt_col.seut.ref_col
+            assignments_inverted[hkt_col].remove(ref_col) # This is removed because it's created by default
 
             tag = ""
             if ref_col.seut.col_type == 'bs':
-                tag = "_" + ref_col.seut.col_type + str(ref_col.seut.type_index)
+                tag = "_" + names[ref_col.seut.col_type] + str(ref_col.seut.type_index)
 
             fbx_hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt.fbx")
             hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt")
@@ -252,9 +293,7 @@ def export_hkt(self, context):
 
             # Then create the HKT file.
             process_hktfbx_to_fbximporterhkt(context, settings, fbx_hkt_file, hkt_file)
-            process_fbximporterhkt_to_final_hkt_for_mwm(self, context, scene, path, settings, hkt_file, hkt_file)
-
-            # TODO: Ensure fbx are associated with the correct hkts now that there's multiple
+            process_fbximporterhkt_to_final_hkt_for_mwm(self, context, path, assignments_inverted[hkt_col], settings, hkt_file, hkt_file)
 
     return {'FINISHED'}
 
