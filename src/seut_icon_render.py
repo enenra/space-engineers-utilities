@@ -209,14 +209,21 @@ class SEUT_OT_IconRenderPreview(Operator):
         # This is done in two steps so that objects which are in the main collection as well as other collections are guaranteed to be visible.
         for col in collections.values():
             if col is not None:
-                if col.name != 'Main' + tag and col.name != 'Render' + tag:
-                    for obj in col.objects:
-                        obj.hide_render = True
-                        obj.hide_viewport = True
+                if col.seut.col_type != 'hkt':
+                    for sub_col in col:
+                        for obj in sub_col.objects:
+                            obj.hide_render = True
+                            obj.hide_viewport = True
+
+                if col.seut.col_type != 'bs' or col.seut.col_type != 'lod' or col.seut.col_type != 'bs_lod':
+                    for key, value in col.items():
+                        for obj in value.objects:
+                            obj.hide_render = True
+                            obj.hide_viewport = True
 
         for col in collections.values():
             if col is not None:
-                if col.name == 'Main' + tag or col.name == 'Render' + tag:
+                if col.seut.col_type == 'main' or col.seut.col_type == 'render':
                     for obj in col.objects:
                         obj.hide_render = False
                         obj.hide_viewport = False

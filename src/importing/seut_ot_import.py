@@ -101,11 +101,11 @@ class SEUT_OT_Import(Operator):
                     if slot.material == bpy.data.materials['PaintedMetalScratched_Colorable']:
                         slot.material = bpy.data.materials['PaintedMetal_Colorable']
 
-                    elif slot.material == bpy.data.materials['PaintedMetal_Yellow']:
-                        slot.material = bpy.data.materials['PaintedMetalScratched_Yellow']
+                    elif slot.material == bpy.data.materials['PaintedMetalScratched_Yellow']:
+                        slot.material = bpy.data.materials['PaintedMetal_Yellow']
 
-                    elif slot.material == bpy.data.materials['PaintedMetal_Darker']:
-                        slot.material = bpy.data.materials['PaintedMetalScratched_Darker']
+                    elif slot.material == bpy.data.materials['PaintedMetalScratched_Darker']:
+                        slot.material = bpy.data.materials['PaintedMetal_Darker']
 
                     elif slot.material == bpy.data.materials['PaintedMetalScratched_VeryDark']:
                         slot.material = bpy.data.materials['PaintedMetal_VeryDark']

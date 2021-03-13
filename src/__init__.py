@@ -249,9 +249,13 @@ def load_handler(dummy):
             seut_report(self, context, 'ERROR', False, 'E021')
         except:
             pass
-
-    check_update(get_addon_version())
-    apply_patches()
+    
+    # On first install this might cause issues, the try is a safety for that.
+    try:
+        check_update(get_addon_version())
+        apply_patches()
+    except:
+        pass
 
 addon_keymaps = []
 
