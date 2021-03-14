@@ -207,26 +207,26 @@ class SEUT_OT_IconRenderPreview(Operator):
         collections = get_collections(scene)
 
         # This is done in two steps so that objects which are in the main collection as well as other collections are guaranteed to be visible.
-        for col in collections.values():
-            if col is not None:
-                if col.seut.col_type != 'hkt':
-                    for sub_col in col:
-                        for obj in sub_col.objects:
-                            obj.hide_render = True
-                            obj.hide_viewport = True
+        for key, value in collections.items():
+            if key == 'hkt':
+                for sub_col in value:
+                    for obj in sub_col.objects:
+                        obj.hide_render = True
+                        obj.hide_viewport = True
 
-                if col.seut.col_type != 'bs' or col.seut.col_type != 'lod' or col.seut.col_type != 'bs_lod':
-                    for key, value in col.items():
-                        for obj in value.objects:
-                            obj.hide_render = True
-                            obj.hide_viewport = True
+            if key == 'bs' or key == 'lod' or key == 'bs_lod':
+                for k, v in value.items():
+                    for obj in v.objects:
+                        obj.hide_render = True
+                        obj.hide_viewport = True
 
-        for col in collections.values():
-            if col is not None:
-                if col.seut.col_type == 'main' or col.seut.col_type == 'render':
-                    for obj in col.objects:
-                        obj.hide_render = False
-                        obj.hide_viewport = False
+        for obj in collections['main'].objects:
+            obj.hide_render = False
+            obj.hide_viewport = False
+
+        for obj in collections['render'].objects:
+            obj.hide_render = False
+            obj.hide_viewport = False
 
         # This path juggling is to prevent Blender from saving the default render output
         path = scene.render.filepath
@@ -239,11 +239,18 @@ class SEUT_OT_IconRenderPreview(Operator):
         area.spaces.active.image = bpy.data.images['Viewer Node']
         bpy.data.images['Viewer Node'].save_render(scene.render.filepath)
         
-        for col in collections.values():
-            if col is not None:
-                for obj in col.objects:
-                    obj.hide_render = False
-                    obj.hide_viewport = False
+        for key, value in collections.items():
+            if key == 'hkt':
+                for sub_col in value:
+                    for obj in sub_col.objects:
+                        obj.hide_render = False
+                        obj.hide_viewport = False
+
+            if key == 'bs' or key == 'lod' or key == 'bs_lod':
+                for k, v in value.items():
+                    for obj in v.objects:
+                        obj.hide_render = False
+                        obj.hide_viewport = False
 
         wm.seut.simpleNavigationToggle = simple_nav
 
