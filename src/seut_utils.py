@@ -122,9 +122,22 @@ def get_parent_collection(context, child):
     
     for key, value in collections.items():
         if value is not None:
-            for obj in value.objects:
-                if obj is not None and obj == child:
-                    return value
+            if key == 'hkt':
+                for col in value:
+                    for obj in col.objects:
+                        if obj is not None and obj == child:
+                            return col
+
+            elif key == 'bs' or key == 'lod' or key == 'bs_lod':
+                for k, v in value.items():
+                    for obj in v.objects:
+                        if obj is not None and obj == child:
+                            return v
+
+            else:
+                for obj in value.objects:
+                    if obj is not None and obj == child:
+                        return value
     
     return None
 
