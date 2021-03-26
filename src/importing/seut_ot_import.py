@@ -17,7 +17,7 @@ from bpy.types import (Panel,
 from bpy.types                  import Operator
 
 from ..empties.seut_empties                 import empty_types
-from ..materials.seut_ot_remap_materials    import SEUT_OT_RemapMaterials
+from ..materials.seut_ot_remap_materials    import remap_materials
 from ..seut_errors                          import seut_report
 
 
@@ -106,7 +106,7 @@ def import_fbx(self, context, filepath):
                 obj.seut.linkedObject = bpy.data.objects[obj['highlight']]
     
     # Then run material remap
-    bpy.ops.object.remapmaterials()
+    remap_materials(self, context)
 
     if wm.seut.fix_scratched_materials:
         for obj in imported_objects:

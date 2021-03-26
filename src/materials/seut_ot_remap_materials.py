@@ -15,9 +15,22 @@ class SEUT_OT_RemapMaterials(Operator):
 
     def execute(self, context):
 
-        result = remap_materials(self, context)
+        scene = context.scene
+        wm = context.window_manager
 
-        return result
+        enabled = False
+        for lib in wm.seut.matlibs:
+            if lib.enabled:
+                enabled = True
+                break
+        
+        if enabled:
+            result = remap_materials(self, context)
+            return result
+        else:
+            seut_report(self, context, 'ERROR', True, 'E042')
+            return {'CANCELLED'}
+
     
 
 # The original version of this code was written by Kamikaze
