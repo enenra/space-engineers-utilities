@@ -110,6 +110,12 @@ def convert_structure(self, context):
                 bpy.data.collections['SEUT' + tag].children.link(col)
                 
             col.hide_viewport = False
+
+            seut_layer_col = scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag]
+            if col.seut.col_type == 'main':
+                seut_layer_col.children[col.name].hide_viewport = False
+            else:
+                seut_layer_col.children[col.name].hide_viewport = True
         
         rename_collections(scn)
         create_collections(context)
