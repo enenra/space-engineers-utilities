@@ -54,6 +54,7 @@ from .export.seut_ot_export_all_scenes          import SEUT_OT_ExportAllScenes
 from .export.seut_ot_export_materials           import SEUT_OT_ExportMaterials
 from .export.seut_ot_copy_export_options        import SEUT_OT_CopyExportOptions
 from .importing.seut_ot_import                  import SEUT_OT_Import
+from .importing.seut_ot_import_complete         import SEUT_OT_ImportComplete
 from .importing.seut_ot_fix_positioning         import SEUT_OT_FixPositioning
 from .importing.seut_ot_structure_conversion    import SEUT_OT_StructureConversion
 from .importing.seut_ot_import_materials        import SEUT_OT_Import_Materials
@@ -147,6 +148,7 @@ classes = (
     SEUT_OT_CopyExportOptions,
     SEUT_OT_ExportMaterials,
     SEUT_OT_Import,
+    SEUT_OT_ImportComplete,
     SEUT_OT_StructureConversion,
     SEUT_OT_Import_Materials,
     SEUT_OT_FixPositioning,
@@ -241,14 +243,11 @@ def menu_draw(self, context):
 @persistent
 def load_handler(dummy):
         
-    # This nightmare exists to avoid errors on startup
+    # This exists to avoid errors on startup
     try:
         bpy.ops.wm.refresh_matlibs()
     except:
-        try:
-            seut_report(self, context, 'ERROR', False, 'E021')
-        except:
-            pass
+        pass
     
     # On first install this might cause issues, the try is a safety for that.
     try:

@@ -384,6 +384,7 @@ class SEUT_PT_Panel_Import(Panel):
         row = layout.row()
         row.scale_y = 2.0
         row.operator('scene.import', icon='IMPORT')
+        layout.operator('scene.import_complete', icon='IMPORT')
         
         box = layout.box()
         box.label(text='Options', icon='SETTINGS')

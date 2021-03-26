@@ -405,3 +405,42 @@ def create_collections(context):
             col.seut.ref_col = bpy.data.collections['Main' + tag]
 
     return collections
+
+
+def create_seut_collection(context, col_type, type_index, ref_col):
+
+    scene = context.scene
+    tag = ' (' + scene.seut.subtypeId + ')'
+    collections = get_collections(scene)
+
+    if type_index is None: type_index = 0
+    
+    if 'seut' not in collections or col_type not in collections:
+        create_collections(context)
+
+    if col_type == 'bs' or col_type == 'lod' or col_type == 'bs_lod':
+        if type_index in collections[col_type] and not collections[col_type][type_index] is None:
+            return collections[col_type][type_index]
+        else:
+            collection = bpy.data.collections.new(names[col_type] + tag)
+            collection.seut.scene = scene
+            collection.seut.col_type = col_type
+            collection.seut.type_index = type_index
+            if bpy.app.version >= (2, 91, 0):
+                collection.color_tag = colors[col_type]
+            collections['seut'].children.link(collection)
+
+    elif col_type == 'main':
+        if not collections[col_type] is None:
+            return collections[col_type]
+        
+        else:
+            collection = bpy.data.collections.new(names[col_type] + tag)
+            collection.seut.scene = scene
+            collection.seut.col_type = col_type
+            if bpy.app.version >= (2, 91, 0):
+                collection.color_tag = colors[col_type]
+            collections['seut'].children.link(collection)
+
+
+    return collection

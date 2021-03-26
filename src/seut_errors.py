@@ -76,13 +76,14 @@ infos = {
     'I011': "Highlight '{variable_1}' created for object '{variable_2}'.",
     'I012': "Structure conversion successfully completed.",
     'I013': "Attempt to Fix Positioning completed.",
-    'I014': "Import successfully completed.",
+    'I014': "Import of '{variable_1}' successfully completed.",
     'I015': "Bounding Box set for dimensions X: {variable_1} Y: {variable_2} Z: {variable_3}",
     'I016': "Empty '{variable_1}' rotation {variable_2} registered as: {variable_3}",
     'I017': "Mountpoint Area {variable_1} saved. {variable_2} {variable_3}",
     'I018': "Icon successfully saved to '{variable_1}'.",
     'I019': "Successfully imported {variable_1} materials from '{variable_2}': {variable_3}",
     'I020': "Material '{variable_1}' was skipped because it already exists in the BLEND file.",
+    'I021': "{variable_1} of {variable_2} files successfully imported. Refer to Blender System Console for details.",
 }
 
 
