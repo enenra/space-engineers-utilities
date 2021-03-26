@@ -67,7 +67,7 @@ def convert_structure(self, context):
 
             if col.name[:10] != "Collection":
                 continue
-
+            
             for key, value in assignments.items():
                 if col.name == key or col.name[:len(key) + 1] == key + ".":
                   
@@ -99,14 +99,16 @@ def convert_structure(self, context):
                     if names[value] + tag in bpy.data.collections:
                         bpy.data.collections.remove(bpy.data.collections[names[value] + tag])
 
-                    col.name = names[value] + tag
+                    idx = ""
+                    if col.seut.type_index != 0: idx = col.seut.type_index
+                    col.name = names[value] + str(idx) + tag
 
                     break
             
             if not col.name[:4] == 'SEUT':
                 scn.collection.children.unlink(col)
                 bpy.data.collections['SEUT' + tag].children.link(col)
-            
+                
             col.hide_viewport = False
         
         rename_collections(scn)

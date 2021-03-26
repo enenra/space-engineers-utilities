@@ -83,7 +83,7 @@ class SEUT_PT_Panel_Collections(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers
+        return (scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart') and 'SEUT' in scene.view_layers
 
 
     def draw(self, context):
