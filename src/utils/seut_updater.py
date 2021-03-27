@@ -59,26 +59,30 @@ def check_update(current_version):
                     prerelease = release['prerelease']
 
                     if name_tag == name_release:
-                        if version.match(name_tag) and prerelease == False:
-                            versions.append(name_tag)
+                        if version.match(name_tag):
+                            if prerelease and preferences.dev_mode:
+                                versions.append(name_tag)
+                            elif not prerelease:
+                                versions.append(name_tag)
                         break
-
-            latest_version_name = sorted(versions, reverse=True)[0]
-            wm.seut.latest_version = latest_version_name
-            current_version_name = 'v' + str(current_version).replace("(", "").replace(")", "").replace(", ", ".")
             
-            if tuple(current_version_name[1:]) < tuple(str(latest_version_name)[1:]):
-                outdated = f"SEUT {latest_version_name[1:]} available!"
+            latest_version = tuple(map(int, sorted(versions, reverse=True)[0][1:].split('.')))
+            latest_version_name = sorted(versions, reverse=True)[0][1:]
+            current_version = tuple(current_version)
+            wm.seut.latest_version = latest_version_name
+            
+            if current_version < latest_version:
+                outdated = f"SEUT {latest_version_name} available!"
                 wm.seut.update_message = outdated
                 wm.seut.needs_update = True
 
-            elif tuple(current_version_name[1:]) > tuple(str(latest_version_name)[1:]):
-                wm.seut.update_message = "Development Build"
+            elif current_version > latest_version:
+                wm.seut.update_message = "Latest Development Build"
                 wm.seut.needs_update = False
 
             else:
                 if preferences.dev_mode:
-                    outdated = f"SEUT {latest_version_name[1:]} available!"
+                    outdated = f"SEUT {latest_version_name} (release version) available!"
                     wm.seut.update_message = outdated
                     wm.seut.needs_update = True
                 else:

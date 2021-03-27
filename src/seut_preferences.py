@@ -15,22 +15,19 @@ DEV_MODE = True
 def update_set_dev_paths(self, context):
     scene = context.scene
 
-    if not self.set_dev_paths:
-        return
-    else:
-        # enenra 
-        if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\Materials\\"):
-            self.materials_path = "D:\\Modding\\Space Engineers\\SEUT\\Materials\\"
-            self.mwmb_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\StollieMWMBuilder\\MwmBuilder.exe"
-            self.fbx_importer_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\FBXImporter.exe"
-            self.havok_path="D:\\Modding\\Space Engineers\\SEUT\\Tools\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
-        
-        # Stollie
-        elif os.path.isdir("C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"):
-            self.materials_path = "C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"
-            self.mwmb_path = "C:\\3D_Projects\\BlenderPlugins\\StollieMWMBuilder\\MwmBuilder.exe"
-            self.fbx_importer_path = "C:\\3D_Projects\\BlenderPlugins\\HavokFBXImporter\\FBXImporter.exe"
-            self.havok_path="C:\\3D_Projects\\BlenderPlugins\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
+    # enenra 
+    if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\Materials\\"):
+        self.materials_path = "D:\\Modding\\Space Engineers\\SEUT\\Materials\\"
+        self.mwmb_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\StollieMWMBuilder\\MwmBuilder.exe"
+        self.fbx_importer_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\FBXImporter.exe"
+        self.havok_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
+    
+    # Stollie
+    elif os.path.isdir("C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"):
+        self.materials_path = "C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"
+        self.mwmb_path = "C:\\3D_Projects\\BlenderPlugins\\StollieMWMBuilder\\MwmBuilder.exe"
+        self.fbx_importer_path = "C:\\3D_Projects\\BlenderPlugins\\HavokFBXImporter\\FBXImporter.exe"
+        self.havok_path = "C:\\3D_Projects\\BlenderPlugins\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
         
         self.set_dev_paths = False
 
@@ -151,8 +148,6 @@ class SEUT_AddonPreferences(AddonPreferences):
         wm = context.window_manager
 
         self.dev_mode = DEV_MODE
-
-        current_version_name = 'v' + str(get_addon_version()).replace("(", "").replace(")", "").replace(", ", ".")
 
         preview_collections = get_icons()
         pcoll = preview_collections['main']

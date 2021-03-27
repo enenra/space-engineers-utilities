@@ -31,7 +31,7 @@ def refresh_matlibs(self, context):
 
     if preferences.materials_path == "" or os.path.isdir(materials_path) == False:
         seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
-        return
+        return {'CANCELLED'}
 
     # Find all MatLibs in directory, save to set, then add to matlibs list
     new_set = set()
