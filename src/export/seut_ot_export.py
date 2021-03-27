@@ -170,12 +170,12 @@ def export_main(self, context):
         if obj is not None and obj.type == 'ARMATURE':
             found_armatures = True
         
-        if obj.parent is None:
+        if obj.parent is None and obj.type != 'LIGHT' and obj.type != 'CAMERA':
             unparented_objects += 1
         
         # Check for missing UVMs (this might not be 100% reliable)
         if check_uvms(self, context, obj) != {'CONTINUE'}:
-            return {'CANCELLED'}  
+            return {'CANCELLED'}
     
     # Check for armatures being present in collection
     if not found_armatures and (scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'):
