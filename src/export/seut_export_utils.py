@@ -339,14 +339,8 @@ def export_fbx(self, context, collection) -> str:
             if scene.seut.linkSubpartInstances:
                 if 'file' in empty and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:                    
                     reference = get_subpart_reference(empty, collections)
-
-                    collection_type = 'main'
-                    for key in names.keys():
-                        if collection == collections[key]:
-                            collection_type = key
-                            break
                         
-                    link_subpart_scene(self, scene, empty, empty.users_collection[0], collection_type)
+                    link_subpart_scene(self, scene, empty, empty.users_collection[0])
                     empty['file'] = reference
 
             # Resetting empty size

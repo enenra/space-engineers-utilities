@@ -7,7 +7,7 @@ from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, seut_report
 
 
-def link_subpart_scene(self, origin_scene, empty, target_collection, collection_type = 'main'):
+def link_subpart_scene(self, origin_scene, empty, target_collection):
     """Link instances of subpart scene objects as children to empty"""
 
     context = bpy.context
@@ -16,18 +16,28 @@ def link_subpart_scene(self, origin_scene, empty, target_collection, collection_
     parent_collections = get_collections(origin_scene)
     subpart_collections = get_collections(subpart_scene)
 
-    # Checks whether collection exists, is excluded or is empty
-    if target_collection.seut.col_type == 'bs' or target_collection.seut.col_type == 'lod' or target_collection.seut.col_type == 'bs_lod':
-        result = check_collection(self, context, subpart_scene, subpart_collections[collection_type][target_collection.seut.type_index], False)
+    col_type = target_collection.seut.col_type
+    type_index = target_collection.seut.type_index
+
+    if col_type == 'bs' or col_type == 'lod' or col_type == 'bs_lod':
+        subpart_col = subpart_collections[col_type][type_index]
     else:
-        result = check_collection(self, context, subpart_scene, subpart_collections[collection_type], False)
+        subpart_col = subpart_collections[col_type]
+
+    # Checks whether collection exists, is excluded or is empty
+    result = check_collection(self, context, subpart_scene, subpart_col, False)
+
+    print("--------")
+    print(origin_scene.name + " " + target_collection.name + " " + empty.name)
+    print(empty.seut.linkedScene.name)
+
     if not result == {'CONTINUE'}:
         empty.seut.linkedScene = None
         empty['file'] = None
         return
     
     # This prevents instancing loops.
-    for obj in subpart_collections[collection_type].objects:
+    for obj in subpart_col.objects:
         if obj is not None and obj.type == 'EMPTY' and obj.seut.linkedScene == origin_scene:
             seut_report(self, context, 'ERROR', False, 'E005', subpart_scene.name, current_scene.name)
             empty.seut.linkedScene = None
@@ -38,17 +48,16 @@ def link_subpart_scene(self, origin_scene, empty, target_collection, collection_
     context.window.scene = subpart_scene
     current_area = prep_context(context)
 
-    subpart_objects = set(subpart_collections[collection_type].objects)
+    subpart_objects = set(subpart_col.objects)
 
     for obj in subpart_objects:
 
-        # The following is done only on a first-level subpart as
-        # further-nested subparts already have empties as parents.
+        # The following is done only on a first-level subpart as further-nested subparts already have empties as parents.
         # Needs to account for empties being parents that aren't subpart empties.
         if obj is not None and (obj.parent is None or obj.parent.type != 'EMPTY' or not 'file' in obj.parent) and obj.name.find("(L)") == -1:
 
             obj.hide_viewport = False
-            existing_objects = set(subpart_collections[collection_type].objects)
+            existing_objects = set(subpart_col.objects)
             
             # Create instance of object
             try:
@@ -60,7 +69,7 @@ def link_subpart_scene(self, origin_scene, empty, target_collection, collection_
 
             bpy.ops.object.duplicate(linked=True)
         
-            new_objects = set(subpart_collections[collection_type].objects)
+            new_objects = set(subpart_col.objects)
             created_objects = new_objects.copy()
             delete_objects = set()
 
@@ -86,12 +95,15 @@ def link_subpart_scene(self, origin_scene, empty, target_collection, collection_
                 # Link instance to empty
                 try:
                     if target_collection is None:
-                        parent_collections[collection_type].objects.link(linked_object)
+                        if col_type == 'bs' or col_type == 'lod' or col_type == 'bs_lod':
+                            parent_collections[col_type][type_index].objects.link(linked_object)
+                        else:
+                            parent_collections[col_type].objects.link(linked_object)
                     else:
                         target_collection.objects.link(linked_object)
                 except RuntimeError:
                     pass
-                subpart_collections[collection_type].objects.unlink(linked_object)
+                subpart_col.objects.unlink(linked_object)
                 linked_object.parent = empty
 
                 if linked_object.type == 'EMPTY' and linked_object.seut.linkedScene is not None and linked_object.seut.linkedScene.name in bpy.data.scenes and origin_scene.seut.linkSubpartInstances:

@@ -30,15 +30,9 @@ def update_linkedScene(self, context):
         if empty.seut.linkedScene is not None:
             empty['file'] = get_subpart_reference(empty, collections)
 
-            collection_type = 'main'
-            for key in names.keys():
-                if empty.users_collection[0] == collections[key]:
-                    collection_type = key
-                    break
-
             if scene.seut.linkSubpartInstances:
                 try:
-                    link_subpart_scene(self, scene, empty, empty.users_collection[0], collection_type)
+                    link_subpart_scene(self, scene, empty, empty.users_collection[0])
                 except AttributeError:
                     seut_report(self, context, 'ERROR', False, 'E002')
                     empty.seut.linkedScene = None

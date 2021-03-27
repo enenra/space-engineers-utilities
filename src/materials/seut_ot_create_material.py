@@ -8,7 +8,7 @@ from ..seut_errors  import seut_report
 
 
 class SEUT_OT_MatCreate(Operator):
-    """Create a SEUT material"""
+    """Create a SEUT material for the selected mesh"""
     bl_idname = "object.create_material"
     bl_label = "Create Material"
     bl_options = {'REGISTER', 'UNDO'}
@@ -16,7 +16,7 @@ class SEUT_OT_MatCreate(Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.active_object is not None
+        return context.active_object is not None and context.active_object.type == 'MESH'
 
 
     def execute(self, context):

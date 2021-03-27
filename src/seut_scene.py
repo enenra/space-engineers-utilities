@@ -199,7 +199,7 @@ def update_linkSubpartInstances(self, context):
                 if empty is not None and empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
 
                     if scene.seut.linkSubpartInstances:
-                        link_subpart_scene(self, scene, empty, col, col.seut.col_type)
+                        link_subpart_scene(self, scene, empty, col)
                     else:
                         unlink_subpart_scene(empty)
 
@@ -209,7 +209,7 @@ def update_linkSubpartInstances(self, context):
                     if empty is not None and empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
 
                         if scene.seut.linkSubpartInstances:
-                            link_subpart_scene(self, scene, empty, value, key)
+                            link_subpart_scene(self, scene, empty, value)
                         else:
                             unlink_subpart_scene(empty)
 

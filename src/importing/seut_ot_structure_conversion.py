@@ -46,7 +46,8 @@ def convert_structure(self, context):
             seut_col = bpy.data.collections.new('SEUT' + tag)
             seut_col.seut.scene = scn
             seut_col.seut.col_type = 'seut'
-            seut_col.color_tag = colors['seut']
+            if bpy.app.version >= (2, 91, 0):
+                seut_col.color_tag = colors['seut']
             scn.collection.children.link(seut_col)
         
         assignments = {
@@ -200,14 +201,14 @@ def convert_structure(self, context):
                         for empty in collections[key][dict_col].objects:
                             if empty.type == 'EMPTY' and 'file' in empty and str(empty['file']) in bpy.data.scenes:
                                 reference = get_subpart_reference(empty, collections)
-                                link_subpart_scene(self, scn, empty, collections[key][dict_col], key)
+                                link_subpart_scene(self, scn, empty, collections[key][dict_col])
                                 empty['file'] = reference
 
                 elif key == 'main':
                     for empty in collections[key].objects:
                         if empty.type == 'EMPTY' and 'file' in empty and str(empty['file']) in bpy.data.scenes:
                             reference = get_subpart_reference(empty, collections)
-                            link_subpart_scene(self, scn, empty, collections[key], key)
+                            link_subpart_scene(self, scn, empty, collections[key])
                             empty['file'] = reference
 
     # Set parent scenes from subparts
