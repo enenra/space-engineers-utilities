@@ -19,7 +19,7 @@ from bpy.types import (Panel,
 from bpy.types                  import Operator
 
 from .seut_ot_import        import import_fbx
-from ..seut_collections     import get_collections, create_seut_collection, names
+from ..seut_collections     import get_collections, create_seut_collection, sort_collections, names
 from ..seut_errors          import seut_report
 
 
@@ -99,6 +99,8 @@ class SEUT_OT_ImportComplete(Operator):
 
             if fbx_type['col_type'] != 'main':
                 scene.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children[col.name].hide_viewport = True
+        
+        sort_collections(context)
         
         seut_report(self, context, 'INFO', True, 'I021', col_counter - failed_counter, col_counter)
         

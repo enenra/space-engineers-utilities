@@ -60,6 +60,9 @@ def update_lod_distance(self, context):
     scene = context.scene
     collections = get_collections(scene)
 
+    if self.col_type is None or self.col_type == 'none':
+        return
+
     if not collections[self.col_type] is None:
         # This is to avoid a non-critical error where Blender expects a string for the contains check only in this particular instance. For reasons beyond human understanding.
         try:
@@ -207,6 +210,9 @@ class SEUT_OT_CreateCollection(Operator):
                 collection.seut.lod_distance = collections[self.col_type][index - 1].seut.lod_distance + 1
         
         elif self.col_type == 'hkt':
+            if get_hkt_col(collections, context.view_layer.active_layer_collection.collection) is not None:
+                return {'FINISHED'}
+
             ref_col = context.view_layer.active_layer_collection.collection
 
             if ref_col.seut is None or ref_col.seut.col_type == 'hkt':
@@ -401,8 +407,10 @@ def create_collections(context):
             continue
 
         tag = ' (' + col.seut.scene.seut.subtypeId + ')'
-        if col.seut.col_type == 'hkt' and 'Main' + tag in bpy.data.collections:
+        if col.seut.col_type == 'hkt' and col.seut.ref_col is None and 'Main' + tag in bpy.data.collections:
             col.seut.ref_col = bpy.data.collections['Main' + tag]
+
+    sort_collections(context)
 
     return collections
 
@@ -422,7 +430,7 @@ def create_seut_collection(context, col_type, type_index, ref_col):
         if type_index in collections[col_type] and not collections[col_type][type_index] is None:
             return collections[col_type][type_index]
         else:
-            collection = bpy.data.collections.new(names[col_type] + tag)
+            collection = bpy.data.collections.new(names[col_type] + str(type_index) + tag)
             collection.seut.scene = scene
             collection.seut.col_type = col_type
             collection.seut.type_index = type_index
@@ -442,5 +450,42 @@ def create_seut_collection(context, col_type, type_index, ref_col):
                 collection.color_tag = colors[col_type]
             collections['seut'].children.link(collection)
 
-
     return collection
+
+
+def sort_collections(context):
+
+    scene = context.scene
+    collections = get_collections(scene)
+    seut_cols = collections['seut'].children
+    
+    for lod in sorted(collections['lod'].values(), key=lambda lod: lod.name.lower()):
+        seut_cols.unlink(lod)
+        seut_cols.link(lod)
+        hkt = get_hkt_col(collections, lod)
+        if not hkt is None:
+            seut_cols.unlink(hkt)
+            seut_cols.link(hkt)
+        
+    for bs in sorted(collections['bs'].values(), key=lambda bs: bs.name.lower()):
+        seut_cols.unlink(bs)
+        seut_cols.link(bs)
+        hkt = get_hkt_col(collections, bs)
+        if not hkt is None:
+            seut_cols.unlink(hkt)
+            seut_cols.link(hkt)
+        
+    for bs_lod in sorted(collections['bs_lod'].values(), key=lambda bs_lod: bs_lod.name.lower()):
+        seut_cols.unlink(bs_lod)
+        seut_cols.link(bs_lod)
+        hkt = get_hkt_col(collections, bs_lod)
+        if not hkt is None:
+            seut_cols.unlink(hkt)
+            seut_cols.link(hkt)
+
+
+def get_hkt_col(collections, collection):
+    for col in collections['hkt']:
+        if col.seut.ref_col == collection:
+            return col
+    return None
