@@ -117,8 +117,8 @@ def convert_structure(self, context):
             else:
                 seut_layer_col.children[col.name].hide_viewport = True
         
-        rename_collections(scn)
         create_collections(context)
+        rename_collections(scn)
 
         # Convert custom properties of empties from harag's to the default blender method.
         for obj in scn.objects:

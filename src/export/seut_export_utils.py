@@ -369,9 +369,10 @@ def get_subpart_reference(empty, collections: dict) -> str:
 
     parent_collection = empty.users_collection[0]
 
-    for key in names.keys():
-        if parent_collection.name[:2] == 'BS' and parent_collection == collections[key]:
-            return empty.seut.linkedScene.seut.subtypeId + "_" + names[key]
+    if parent_collection.seut.col_type == 'bs':
+        for bs in collections['bs'].values():
+            if parent_collection == bs:
+                return empty.seut.linkedScene.seut.subtypeId + "_" + names['bs'] + str(bs.seut.type_index)
 
     return empty.seut.linkedScene.seut.subtypeId
 

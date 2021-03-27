@@ -17,7 +17,10 @@ def link_subpart_scene(self, origin_scene, empty, target_collection, collection_
     subpart_collections = get_collections(subpart_scene)
 
     # Checks whether collection exists, is excluded or is empty
-    result = check_collection(self, context, subpart_scene, subpart_collections[collection_type], False)
+    if target_collection.seut.col_type == 'bs' or target_collection.seut.col_type == 'lod' or target_collection.seut.col_type == 'bs_lod':
+        result = check_collection(self, context, subpart_scene, subpart_collections[collection_type][target_collection.seut.type_index], False)
+    else:
+        result = check_collection(self, context, subpart_scene, subpart_collections[collection_type], False)
     if not result == {'CONTINUE'}:
         empty.seut.linkedScene = None
         empty['file'] = None
