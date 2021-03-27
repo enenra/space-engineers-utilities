@@ -27,10 +27,6 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
     # Checks whether collection exists, is excluded or is empty
     result = check_collection(self, context, subpart_scene, subpart_col, False)
 
-    print("--------")
-    print(origin_scene.name + " " + target_collection.name + " " + empty.name)
-    print(empty.seut.linkedScene.name)
-
     if not result == {'CONTINUE'}:
         empty.seut.linkedScene = None
         empty['file'] = None
