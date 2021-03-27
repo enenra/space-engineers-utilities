@@ -214,12 +214,16 @@ class SEUT_OT_IconRenderPreview(Operator):
             if key == 'hkt':
                 for sub_col in value:
                     for obj in sub_col.objects:
+                        if obj is None:
+                            continue
                         obj.hide_render = True
                         obj.hide_viewport = True
 
             if key == 'bs' or key == 'lod' or key == 'bs_lod':
                 for k, v in value.items():
                     for obj in v.objects:
+                        if obj is None:
+                            continue
                         obj.hide_render = True
                         obj.hide_viewport = True
 
@@ -243,15 +247,22 @@ class SEUT_OT_IconRenderPreview(Operator):
         bpy.data.images['Viewer Node'].save_render(scene.render.filepath)
         
         for key, value in collections.items():
+            if value is None:
+                continue
+            
             if key == 'hkt':
                 for sub_col in value:
                     for obj in sub_col.objects:
+                        if obj is None:
+                            continue
                         obj.hide_render = False
                         obj.hide_viewport = False
 
             if key == 'bs' or key == 'lod' or key == 'bs_lod':
                 for k, v in value.items():
                     for obj in v.objects:
+                        if obj is None:
+                            continue
                         obj.hide_render = False
                         obj.hide_viewport = False
 
