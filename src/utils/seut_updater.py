@@ -70,11 +70,14 @@ def check_update(current_version):
                                 versions.append(name_tag)
                         break
             
-            latest_version_name = sorted(versions, reverse=True)[0][1:]
+            # For testing
+            # versions.append('v0.9.95')
             
+            latest_version_name = sorted(versions, reverse=True)[0][1:]
+
             is_dev = -1
             if latest_version_name.find("-DEV") != -1:
-                is_dev = int(re.match("(\d+)(?!.*\d)"))
+                is_dev = int(re.search("(\d+)(?!.*\d)", latest_version_name)[0])
                 latest_version = tuple(map(int, latest_version_name.split('-')[0].split('.')))
             else:
                 latest_version = tuple(map(int, latest_version_name.split('.')))
@@ -88,7 +91,7 @@ def check_update(current_version):
                 wm.seut.needs_update = True
 
             elif current_version > latest_version:
-                wm.seut.update_message = "Latest Development Build"
+                wm.seut.update_message = "Latest development version."
                 wm.seut.needs_update = False
 
             else:
@@ -108,7 +111,7 @@ def check_update(current_version):
 
                     # Version number is the same, latest is dev build but not newer.
                     else:
-                        wm.seut.update_message = "Latest Development Build"
+                        wm.seut.update_message = "Latest development version."
                         wm.seut.needs_update = False
 
                 else:
