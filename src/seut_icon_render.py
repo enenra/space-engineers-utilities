@@ -208,6 +208,9 @@ class SEUT_OT_IconRenderPreview(Operator):
 
         # This is done in two steps so that objects which are in the main collection as well as other collections are guaranteed to be visible.
         for key, value in collections.items():
+            if value is None:
+                continue
+            
             if key == 'hkt':
                 for sub_col in value:
                     for obj in sub_col.objects:

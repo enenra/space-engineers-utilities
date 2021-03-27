@@ -12,7 +12,7 @@ from .utils.seut_updater    import check_update
 preview_collections = {}
 
 DEV_MODE = True
-DEV_VER = 7
+DEV_VER = 8
 
 
 def update_set_dev_paths(self, context):
