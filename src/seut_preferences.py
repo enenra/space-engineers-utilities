@@ -2,18 +2,23 @@ import bpy
 import os
 
 from bpy.types  import Operator, AddonPreferences
-from bpy.props  import BoolProperty, StringProperty, EnumProperty
+from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
 
 from .seut_errors   import seut_report, get_abs_path
+
+from .utils.seut_updater    import check_update
 
 
 preview_collections = {}
 
 DEV_MODE = True
+DEV_VER = 7
 
 
 def update_set_dev_paths(self, context):
     scene = context.scene
+
+    check_update(get_addon_version())
 
     # enenra 
     if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\Materials\\"):
@@ -103,6 +108,9 @@ class SEUT_AddonPreferences(AddonPreferences):
     dev_mode: BoolProperty(
         default = DEV_MODE
     )
+    dev_ver: IntProperty(
+        default = DEV_VER
+    )
     set_dev_paths: BoolProperty(
         name = "Set Dev Paths",
         description = "Set Dev Paths",
@@ -148,6 +156,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         wm = context.window_manager
 
         self.dev_mode = DEV_MODE
+        self.dev_ver = DEV_VER
 
         preview_collections = get_icons()
         pcoll = preview_collections['main']

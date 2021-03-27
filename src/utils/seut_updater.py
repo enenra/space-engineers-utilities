@@ -9,7 +9,8 @@ from ..seut_utils           import get_preferences
 
 url_releases = "https://api.github.com/repos/enenra/space-engineers-utilities/releases"
 url_tags = "https://api.github.com/repos/enenra/space-engineers-utilities/tags"
-version = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+")
+rel_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+")
+dev_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+\-DEV[0-9]")
 
 
 class SEUT_OT_GetUpdate(Operator):
@@ -59,15 +60,25 @@ def check_update(current_version):
                     prerelease = release['prerelease']
 
                     if name_tag == name_release:
-                        if version.match(name_tag):
-                            if prerelease and preferences.dev_mode:
+
+                        if prerelease and preferences.dev_mode:
+                            if dev_ver.match(name_tag):
                                 versions.append(name_tag)
-                            elif not prerelease:
+
+                        elif not prerelease:
+                            if rel_ver.match(name_tag):
                                 versions.append(name_tag)
                         break
             
-            latest_version = tuple(map(int, sorted(versions, reverse=True)[0][1:].split('.')))
             latest_version_name = sorted(versions, reverse=True)[0][1:]
+            
+            is_dev = -1
+            if latest_version_name.find("-DEV") != -1:
+                is_dev = int(re.match("(\d+)(?!.*\d)"))
+                latest_version = tuple(map(int, latest_version_name.split('-')[0].split('.')))
+            else:
+                latest_version = tuple(map(int, latest_version_name.split('.')))
+
             current_version = tuple(current_version)
             wm.seut.latest_version = latest_version_name
             
@@ -82,11 +93,27 @@ def check_update(current_version):
 
             else:
                 if preferences.dev_mode:
-                    outdated = f"SEUT {latest_version_name} (release version) available!"
-                    wm.seut.update_message = outdated
-                    wm.seut.needs_update = True
+                    
+                    # Version number is the same and latest is not a dev version.
+                    if is_dev == -1:
+                        outdated = f"SEUT {latest_version_name} (release version) available!"
+                        wm.seut.update_message = outdated
+                        wm.seut.needs_update = True
+
+                    # Version number is the same but latest is a newer dev version.
+                    elif preferences.dev_ver < is_dev:
+                        outdated = f"SEUT {latest_version_name} available!"
+                        wm.seut.update_message = outdated
+                        wm.seut.needs_update = True
+
+                    # Version number is the same, latest is dev build but not newer.
+                    else:
+                        wm.seut.update_message = "Latest Development Build"
+                        wm.seut.needs_update = False
+
                 else:
                     wm.seut.update_message = "SEUT is up to date."
+                    wm.seut.needs_update = False
         
         elif response_tags.status_code == 403 or response_releases.status_code == 403:
             wm.seut.update_message = "Rate limit exceeded!"
