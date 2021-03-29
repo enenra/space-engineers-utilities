@@ -51,7 +51,6 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
         # The following is done only on a first-level subpart as further-nested subparts already have empties as parents.
         # Needs to account for empties being parents that aren't subpart empties.
         if obj is not None and (obj.parent is None or obj.parent.type != 'EMPTY' or not 'file' in obj.parent) and obj.name.find("(L)") == -1:
-
             obj.hide_viewport = False
             existing_objects = set(subpart_col.objects)
             
@@ -62,8 +61,7 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                 pass
             context.window.view_layer.objects.active = obj
             obj.select_set(state=True, view_layer=context.window.view_layer)
-
-            bpy.ops.object.duplicate(linked=True)
+            bpy.ops.object.duplicate(linked=False)
         
             new_objects = set(subpart_col.objects)
             created_objects = new_objects.copy()
@@ -99,11 +97,23 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                         target_collection.objects.link(linked_object)
                 except RuntimeError:
                     pass
+                # apply modifiers and position/rotation/scale on objects that aren't empties
+                if linked_object.type != 'EMPTY':
+                    oldActive = context.window.view_layer.objects.active
+                    if len(linked_object.modifiers) > 0:
+                        context.window.view_layer.objects.active = linked_object
+                        for mod in linked_object.modifiers:
+                            name = mod.name
+                            bpy.ops.object.modifier_apply(modifier = name)
+                        
+                    bpy.ops.object.transform_apply(location = True, scale = True, rotation = True)
+                    context.window.view_layer.objects.active = oldActive
                 subpart_col.objects.unlink(linked_object)
                 linked_object.parent = empty
 
                 if linked_object.type == 'EMPTY' and linked_object.seut.linkedScene is not None and linked_object.seut.linkedScene.name in bpy.data.scenes and origin_scene.seut.linkSubpartInstances:
                     link_subpart_scene(self, origin_scene, linked_object, target_collection)
+        
 
     # Switch back to previous scene
     context.area.type = current_area
