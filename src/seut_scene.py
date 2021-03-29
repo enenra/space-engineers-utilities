@@ -203,7 +203,7 @@ def update_linkSubpartInstances(self, context):
                     else:
                         unlink_subpart_scene(empty)
 
-        elif key == 'bs' or key == 'lod' or key == 'bs_lod' and not collections[key] is None:
+        elif (key == 'bs' or key == 'lod' or key == 'bs_lod') and not collections[key] is None:
             for sub_key, value in collections[key].items():
                 for empty in value.objects:
                     if empty is not None and empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
