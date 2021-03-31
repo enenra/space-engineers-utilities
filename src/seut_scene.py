@@ -445,7 +445,7 @@ class SEUT_Scene(PropertyGroup):
     )
     mirroringScene: PointerProperty(
         name='Mirror Model',
-        description="The scene which contains the (optional) mirror model. Must be set to type: 'Mirroring'",
+        description="The scene which contains the (optional) mirror model",
         type=bpy.types.Scene,
         poll=poll_linkedScene,
         update=update_mirroringScene
