@@ -1,40 +1,48 @@
 import bpy
 import os
+import json
+import addon_utils
 
 from bpy.types  import Operator, AddonPreferences
 from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
 
-from .seut_errors   import seut_report, get_abs_path
-
 from .utils.seut_updater    import check_update
+from .seut_errors           import seut_report, get_abs_path
+from .seut_utils            import get_preferences
 
 
 preview_collections = {}
 
 DEV_MODE = True
-DEV_VER = 12
+DEV_VER = 13
 
 
-def update_set_dev_paths(self, context):
-    scene = context.scene
+class SEUT_OT_SetDevPaths(Operator):
+    """Sets the SEUT dev paths"""
+    bl_idname = "wm.set_dev_paths"
+    bl_label = "Set Dev Paths"
+    bl_options = {'REGISTER', 'UNDO'}
 
-    check_update(get_addon_version())
 
-    # enenra 
-    if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\Materials\\"):
-        self.materials_path = "D:\\Modding\\Space Engineers\\SEUT\\Materials\\"
-        self.mwmb_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\StollieMWMBuilder\\MwmBuilder.exe"
-        self.fbx_importer_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\FBXImporter.exe"
-        self.havok_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
-    
-    # Stollie
-    elif os.path.isdir("C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"):
-        self.materials_path = "C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"
-        self.mwmb_path = "C:\\3D_Projects\\BlenderPlugins\\StollieMWMBuilder\\MwmBuilder.exe"
-        self.fbx_importer_path = "C:\\3D_Projects\\BlenderPlugins\\HavokFBXImporter\\FBXImporter.exe"
-        self.havok_path = "C:\\3D_Projects\\BlenderPlugins\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
+    def execute(self, context):
+        preferences = get_preferences()
         
-        self.set_dev_paths = False
+        check_update(get_addon_version())
+
+        if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\Materials\\"):
+            preferences.materials_path = "D:\\Modding\\Space Engineers\\SEUT\\Materials\\"
+            preferences.mwmb_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\StollieMWMBuilder\\MwmBuilder.exe"
+            preferences.fbx_importer_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\FBXImporter.exe"
+            preferences.havok_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
+        
+        # Stollie
+        elif os.path.isdir("C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"):
+            preferences.materials_path = "C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"
+            preferences.mwmb_path = "C:\\3D_Projects\\BlenderPlugins\\StollieMWMBuilder\\MwmBuilder.exe"
+            preferences.fbx_importer_path = "C:\\3D_Projects\\BlenderPlugins\\HavokFBXImporter\\FBXImporter.exe"
+            preferences.havok_path = "C:\\3D_Projects\\BlenderPlugins\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
+
+        return {'FINISHED'}
 
 
 def update_materials_path(self, context):
@@ -58,6 +66,8 @@ def update_materials_path(self, context):
           seut_report(self, context, 'ERROR', False, 'E003', 'Materials', path)
           self.materials_path = ""
     
+    save_addon_prefs()
+    
 
 def update_fbx_importer_path(self, context):
     filename = 'FBXImporter.exe'
@@ -71,6 +81,8 @@ def update_fbx_importer_path(self, context):
     
     self.fbx_importer_path_before = verify_tool_path(self, context, path, "Custom FBX Importer", filename)
     self.fbx_importer_path = verify_tool_path(self, context, path, "Custom FBX Importer", filename)
+
+    save_addon_prefs()
 
 
 def update_havok_path(self, context):
@@ -86,6 +98,8 @@ def update_havok_path(self, context):
     self.havok_path_before = verify_tool_path(self, context, path, "Havok Stand Alone Filter Manager", filename)
     self.havok_path = verify_tool_path(self, context, path, "Havok Stand Alone Filter Manager", filename)
 
+    save_addon_prefs()
+
 
 def update_mwmb_path(self, context):
     name = str('MwmBuilder.exe')
@@ -99,6 +113,8 @@ def update_mwmb_path(self, context):
     
     self.mwmb_path_before = verify_tool_path(self, context, path, "MWM Builder", name)
     self.mwmb_path = verify_tool_path(self, context, path, "MWM Builder", name)
+
+    save_addon_prefs()
     
 
 class SEUT_AddonPreferences(AddonPreferences):
@@ -110,12 +126,6 @@ class SEUT_AddonPreferences(AddonPreferences):
     )
     dev_ver: IntProperty(
         default = DEV_VER
-    )
-    set_dev_paths: BoolProperty(
-        name = "Set Dev Paths",
-        description = "Set Dev Paths",
-        default = False,
-        update=update_set_dev_paths
     )
     materials_path: StringProperty(
         name="Materials Folder",
@@ -181,7 +191,7 @@ class SEUT_AddonPreferences(AddonPreferences):
             row.operator('wm.get_update', text="Releases", icon='IMPORT')
 
         if self.dev_mode:
-            layout.prop(self, "set_dev_paths", icon='FILEBROWSER')
+            layout.operator('wm.set_dev_paths', icon='FILEBROWSER')
 
         layout.prop(self, "materials_path", expand=True)
         box = layout.box()
@@ -237,3 +247,38 @@ def verify_tool_path(self, context, path: str, name: str, filename: str) -> str:
 
 def get_addon_version():
     return addon_version
+
+
+def save_addon_prefs():
+
+    path = os.path.join(addon_utils.paths()[1], 'seut_preferences.cfg')
+    preferences = get_preferences()
+
+    data = {}
+    data['seut_preferences'] = []
+    data['seut_preferences'].append({
+        'materials_path': preferences.materials_path,
+        'mwmb_path': preferences.mwmb_path,
+        'fbx_importer_path': preferences.fbx_importer_path,
+        'havok_path': preferences.havok_path
+    })
+    
+    with open(path, 'w') as cfg_file:
+        json.dump(data, cfg_file, indent = 4)
+
+
+def load_addon_prefs():
+
+    path = os.path.join(addon_utils.paths()[1], 'seut_preferences.cfg')
+    preferences = get_preferences()
+
+    if os.path.exists(path):
+        with open(path) as cfg_file:
+            data = json.load(cfg_file)
+
+            if 'seut_preferences' in data:
+                cfg = data['seut_preferences']
+                preferences.materials_path = cfg['materials_path']
+                preferences.mwmb_path = cfg['mwmb_path']
+                preferences.fbx_importer_path = cfg['fbx_importer_path']
+                preferences.havok_path = cfg['havok_path']

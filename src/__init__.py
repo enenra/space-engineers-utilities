@@ -92,7 +92,8 @@ from .utils.seut_ot_issue_display               import SEUT_OT_IssueDisplay
 from .utils.seut_ot_issue_display               import SEUT_OT_ClearIssues
 
 from .seut_preferences                  import SEUT_AddonPreferences
-from .seut_preferences                  import get_addon_version
+from .seut_preferences                  import SEUT_OT_SetDevPaths
+from .seut_preferences                  import get_addon_version, load_addon_prefs
 from .seut_preferences                  import load_icons, unload_icons
 from .seut_pt_toolbar                   import SEUT_PT_Panel
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Collections
@@ -121,6 +122,7 @@ from .seut_window_manager               import SEUT_WindowManager
 
 classes = (
     SEUT_AddonPreferences,
+    SEUT_OT_SetDevPaths,
     SEUT_PT_Panel,
     SEUT_PT_Panel_Collections,
     SEUT_PT_Panel_BoundingBox,
@@ -259,6 +261,7 @@ def load_handler(dummy):
     try:
         check_update(get_addon_version())
         apply_patches()
+        load_addon_prefs()
     except:
         pass
 
