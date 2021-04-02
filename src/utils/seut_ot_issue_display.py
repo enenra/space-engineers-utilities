@@ -108,11 +108,8 @@ class SEUT_OT_ClearIssues(Operator):
     def execute(self, context):
         
         wm = context.window_manager
-        issues = wm.seut.issues
-
-        for index in range(0, len(issues)):
-            issues.remove(index)
         
+        wm.seut.issues.clear()
         SEUT_OT_IssueDisplay.issues_sorted.clear()
         
         return {'FINISHED'}
