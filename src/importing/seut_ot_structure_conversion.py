@@ -141,8 +141,17 @@ def convert_structure(self, context):
                         custom_prop_name = 'highlight'
                         target_object_name = harag_prop.get('highlight_objects')
 
-                        if target_object_name in bpy.data.objects:
-                            obj.seut.linkedObject = bpy.data.objects[target_object_name]
+                        
+                        if target_object_name.find(";") == -1:
+                            if target_object_name in bpy.data.objects:
+                                new = obj.seut.highlight_objects.add()
+                                new.obj = bpy.data.objects[target_object_name]
+                        else:
+                            split = target_object_name.split(";")
+                            for entry in split:
+                                if entry in bpy.data.objects:
+                                    new = obj.seut.highlight_objects.add()
+                                    new.obj = bpy.data.objects[entry]
 
                     elif harag_prop.get('file') is not None:
                         custom_prop_name = 'file'

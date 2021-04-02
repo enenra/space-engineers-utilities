@@ -103,7 +103,7 @@ class SEUT_PT_Panel_Collections(Panel):
 
         if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod' or active_col.seut.col_type == 'hkt' or active_col.seut.col_type == 'bs_lod':
             box = layout.box()
-            box.label(text='Properties', icon='SETTINGS')
+            box.label(text='Options', icon='SETTINGS')
 
             if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod':
                 box.prop(active_col.seut,'lod_distance')

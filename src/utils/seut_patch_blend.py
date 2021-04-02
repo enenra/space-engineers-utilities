@@ -7,8 +7,10 @@ from ..seut_collections     import rename_collections
 
 def apply_patches():
 
+    # SEUT 0.9.95
     patch_view_layers()
     patch_collections()
+    patch_highlight_empty_references()
 
 
 def patch_view_layers():
@@ -107,3 +109,15 @@ def patch_collections():
         tag = ' (' + col.seut.scene.seut.subtypeId + ')'
         if col.seut.col_type == 'hkt' and 'Main' + tag in bpy.data.collections:
             col.seut.ref_col = bpy.data.collections['Main' + tag]
+
+
+def patch_highlight_empty_references():
+    """Patches highlight empties to use the new CollectionProperty"""
+
+    for obj in bpy.data.objects:
+        if not obj is None and obj.type == 'EMPTY' and 'highlight' in obj:
+            if not obj.seut.linkedObject is None and len(obj.seut.highlight_objects) < 1:
+                ref = obj.seut.linkedObject
+                obj.seut.linkedObject = None
+                new = obj.seut.highlight_objects.add()
+                new.obj = ref

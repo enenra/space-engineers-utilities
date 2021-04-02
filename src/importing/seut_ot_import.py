@@ -102,8 +102,18 @@ def import_fbx(self, context, filepath):
 
             if 'file' in obj and obj['file'] in bpy.data.scenes:
                 obj.seut.linkedScene = bpy.data.scenes[obj['file']]
-            if 'highlight' in obj and obj['highlight'] in bpy.data.objects:
-                obj.seut.linkedObject = bpy.data.objects[obj['highlight']]
+
+            if 'highlight' in obj:
+                if obj['highlight'].find(";") == -1:
+                    if obj['highlight'] in bpy.data.objects:
+                        new = obj.seut.highlight_objects.add()
+                        new.obj = bpy.data.objects[obj['highlight']]
+                else:
+                    split = obj['highlight'].split(";")
+                    for entry in split:
+                        if entry in bpy.data.objects:
+                            new = obj.seut.highlight_objects.add()
+                            new.obj = bpy.data.objects[entry]
     
     # Then run material remap
     remap_materials(self, context)

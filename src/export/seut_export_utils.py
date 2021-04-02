@@ -284,11 +284,19 @@ def export_fbx(self, context, collection) -> str:
                 seut_report(self, context, 'WARNING', True, 'W006', empty.name, empty.parent.name, collection.name)
 
             # Additional parenting checks
-            if 'highlight' in empty and empty.seut.linkedObject is not None:
-                if empty['highlight'].find(";") == -1:
-                    empty['highlight'] = empty.seut.linkedObject.name
-                if empty.parent is not None and empty.seut.linkedObject.parent is not None and empty.parent != empty.seut.linkedObject.parent:
-                    seut_report(self, context, 'WARNING', True, 'W007', empty.name, empty.seut.linkedObject.name)
+            if 'highlight' in empty and len(empty.seut.highlight_objects) > 0:
+
+                highlights = ""
+                for entry in empty.seut.highlight_objects:
+                    if empty.parent is not None and entry.obj.parent is not None and empty.parent != entry.obj.parent:
+                        seut_report(self, context, 'WARNING', True, 'W007', empty.name, entry.obj.name)
+
+                    if highlights == "":
+                        highlights = entry.obj.name
+                    else:
+                        highlights = highlights + ';' + entry.obj.name
+
+                empty['highlight'] = highlights
             
             # Remove subpart instances
             elif 'file' in empty and empty.seut.linkedScene is not None:

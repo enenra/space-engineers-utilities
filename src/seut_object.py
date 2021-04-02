@@ -12,6 +12,7 @@ from bpy.props  import (EnumProperty,
                         )
 
 from .export.seut_export_utils      import get_subpart_reference
+from .empties.seut_empties          import SEUT_EmptyHighlights
 from .seut_collections              import get_collections, names
 from .seut_errors                   import seut_report
 from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, get_parent_collection
@@ -38,18 +39,6 @@ def update_linkedScene(self, context):
                     empty.seut.linkedScene = None
 
 
-def update_linkedObject(self, context):
-    scene = context.scene
-    empty = context.view_layer.objects.active
-
-    if empty is not None:
-        if 'highlight' in empty:
-            empty['highlight'] = None
-
-        if empty.seut.linkedObject is not None:
-            empty['highlight'] = empty.seut.linkedObject.name
-
-
 def update_default(self, context):
     scene = context.scene
 
@@ -71,10 +60,6 @@ def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'subpart'
 
 
-def poll_linkedObject(self, object):
-    return object != bpy.context.view_layer.objects.active and bpy.context.view_layer.objects.active.parent == object.parent and object.type != 'EMPTY'
-
-
 class SEUT_Object(PropertyGroup):
     """Holder for the various object properties"""
     
@@ -86,12 +71,19 @@ class SEUT_Object(PropertyGroup):
         update=update_linkedScene
     )
     
+    # Deprecated with SEUT 0.9.95
     linkedObject: PointerProperty(
         name='Highlight Object',
         description="Which object this empty links to",
-        type=bpy.types.Object,
-        poll=poll_linkedObject,
-        update=update_linkedObject
+        type=bpy.types.Object
+    )
+
+    highlight_objects: CollectionProperty(
+        type = SEUT_EmptyHighlights
+    )
+
+    highlight_object_index: IntProperty(
+        default = 0
     )
     
     default: BoolProperty(

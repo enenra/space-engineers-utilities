@@ -45,6 +45,9 @@ from bpy.types import (Panel,
 
 from .empties.seut_empties                      import SEUT_MT_ContextMenu
 from .empties.seut_empties                      import SEUT_PT_EmptyLink
+from .empties.seut_empties                      import SEUT_EmptyHighlights
+from .empties.seut_empties                      import SEUT_OT_HighlightObjectAdd
+from .empties.seut_empties                      import SEUT_OT_HighlightObjectRemove
 from .empties.seut_ot_add_highlight_empty       import SEUT_OT_AddHighlightEmpty
 from .empties.seut_ot_add_dummy                 import SEUT_OT_AddDummy
 from .empties.seut_ot_add_preset_subpart        import SEUT_OT_AddPresetSubpart
@@ -133,6 +136,9 @@ classes = (
     SEUT_PT_Panel_Materials,
     SEUT_PT_Panel_MatLib,
     SEUT_PT_EmptyLink,
+    SEUT_EmptyHighlights,
+    SEUT_OT_HighlightObjectAdd,
+    SEUT_OT_HighlightObjectRemove,
     SEUT_MT_ContextMenu,
     SEUT_OT_GetUpdate,
     SEUT_OT_SEMREFLink,
