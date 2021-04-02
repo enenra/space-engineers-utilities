@@ -136,7 +136,8 @@ class SEUT_OT_AddHighlightEmpty(Operator):
 
         if uses_index:
             empty.name = empty_name + str(self.index)
-            target_object.name = target_object.name + object_name_addition + str(self.index)
+            if target_object.name.find("_section") == -1:
+                target_object.name = target_object.name + object_name_addition + str(self.index)
         else:
             empty.name = empty_name
 

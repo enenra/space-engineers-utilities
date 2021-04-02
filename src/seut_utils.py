@@ -21,6 +21,8 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
 
     if col_type == 'bs' or col_type == 'lod' or col_type == 'bs_lod':
         subpart_col = subpart_collections[col_type][type_index]
+    elif col_type == 'mirroring':
+        subpart_col = subpart_collections['main']
     else:
         subpart_col = subpart_collections[col_type]
 

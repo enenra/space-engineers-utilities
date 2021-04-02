@@ -23,6 +23,10 @@ def update_obj(self, context):
         if len(empty.seut.highlight_objects) > 0:
             highlights = ""
             for entry in empty.seut.highlight_objects:
+
+                if entry.obj.name.find("_section") == -1:
+                    entry.obj.name = entry.obj.name + "_section"
+
                 if highlights == "":
                     highlights = entry.obj.name
                 else:
