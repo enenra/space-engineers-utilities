@@ -136,14 +136,14 @@ def recursive_fix_scratched(obj):
 def fix_scratched_materials(obj):
     for slot in obj.material_slots:
 
-        if slot.material == bpy.data.materials['PaintedMetalScratched_Colorable']:
+        if slot.material == bpy.data.materials['PaintedMetalScratched_Colorable'] and 'PaintedMetal_Colorable' in bpy.data.materials:
             slot.material = bpy.data.materials['PaintedMetal_Colorable']
 
-        elif slot.material == bpy.data.materials['PaintedMetalScratched_Yellow']:
+        elif slot.material == bpy.data.materials['PaintedMetalScratched_Yellow'] and 'PaintedMetal_Yellow' in bpy.data.materials:
             slot.material = bpy.data.materials['PaintedMetal_Yellow']
 
-        elif slot.material == bpy.data.materials['PaintedMetalScratched_Darker']:
+        elif slot.material == bpy.data.materials['PaintedMetalScratched_Darker'] and 'PaintedMetal_Darker' in bpy.data.materials:
             slot.material = bpy.data.materials['PaintedMetal_Darker']
 
-        elif slot.material == bpy.data.materials['PaintedMetalScratched_VeryDark']:
+        elif slot.material == bpy.data.materials['PaintedMetalScratched_VeryDark'] and 'PaintedMetal_VeryDark' in bpy.data.materials:
             slot.material = bpy.data.materials['PaintedMetal_VeryDark']
