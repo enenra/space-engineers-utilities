@@ -14,7 +14,7 @@ from .seut_utils            import get_preferences
 preview_collections = {}
 
 DEV_MODE = True
-DEV_VER = 13
+DEV_VER = 14
 
 
 class SEUT_OT_SetDevPaths(Operator):
@@ -29,6 +29,7 @@ class SEUT_OT_SetDevPaths(Operator):
         
         check_update(get_addon_version())
 
+        # enenra
         if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\Materials\\"):
             preferences.materials_path = "D:\\Modding\\Space Engineers\\SEUT\\Materials\\"
             preferences.mwmb_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\StollieMWMBuilder\\MwmBuilder.exe"
@@ -41,6 +42,9 @@ class SEUT_OT_SetDevPaths(Operator):
             preferences.mwmb_path = "C:\\3D_Projects\\BlenderPlugins\\StollieMWMBuilder\\MwmBuilder.exe"
             preferences.fbx_importer_path = "C:\\3D_Projects\\BlenderPlugins\\HavokFBXImporter\\FBXImporter.exe"
             preferences.havok_path = "C:\\3D_Projects\\BlenderPlugins\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
+        
+        else:
+            load_addon_prefs()
 
         return {'FINISHED'}
 
@@ -251,7 +255,7 @@ def get_addon_version():
 
 def save_addon_prefs():
 
-    path = os.path.join(addon_utils.paths()[1], 'seut_preferences.cfg')
+    path = os.path.join(bpy.utils.user_resource('CONFIG'), 'seut_preferences.cfg')
     preferences = get_preferences()
 
     data = {}
@@ -269,7 +273,7 @@ def save_addon_prefs():
 
 def load_addon_prefs():
 
-    path = os.path.join(addon_utils.paths()[1], 'seut_preferences.cfg')
+    path = os.path.join(bpy.utils.user_resource('CONFIG'), 'seut_preferences.cfg')
     preferences = get_preferences()
 
     if os.path.exists(path):
@@ -277,7 +281,7 @@ def load_addon_prefs():
             data = json.load(cfg_file)
 
             if 'seut_preferences' in data:
-                cfg = data['seut_preferences']
+                cfg = data['seut_preferences'][0]
                 preferences.materials_path = cfg['materials_path']
                 preferences.mwmb_path = cfg['mwmb_path']
                 preferences.fbx_importer_path = cfg['fbx_importer_path']
