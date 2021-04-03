@@ -460,7 +460,7 @@ def export_sbc(self, context):
 
     center_empty = None
     for obj in collections['main'].objects:
-        if obj is not None and obj.type == 'EMPTY' and obj.name == 'Center':
+        if obj is not None and obj.type == 'EMPTY' and obj.name.startswith('Center'):
             center_empty = obj
             break
 
