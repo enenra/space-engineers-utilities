@@ -81,7 +81,9 @@ class SEUT_OT_IssueDisplay(Operator):
             wrapp = textwrap.TextWrapper(width=110)
             text_list = wrapp.wrap(text=issue.text)
             for text in text_list:
-                col.label(text=text)
+                row = col.row()
+                row.scale_y = 0.75
+                row.label(text=text)
 
             row = split.row()
             if issue.issue_type == 'ERROR':
