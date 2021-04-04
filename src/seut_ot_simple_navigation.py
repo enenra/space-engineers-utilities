@@ -8,7 +8,7 @@ from .seut_errors                   import seut_report
 
 class SEUT_OT_SimpleNavigation(Operator):
     """Makes navigation through SEUT collections simpler by hiding all non-active collections"""
-    bl_idname = "scene.simple_navigation"
+    bl_idname = "wm.simple_navigation"
     bl_label = "Simple Navigation"
     bl_options = {'REGISTER', 'UNDO'}
 

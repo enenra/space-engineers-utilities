@@ -21,7 +21,7 @@ def update_BBox(self, context):
 
 
 def update_simpleNavigationToggle(self, context):
-    bpy.ops.scene.simple_navigation('INVOKE_DEFAULT')
+    bpy.ops.wm.simple_navigation('INVOKE_DEFAULT')
     
 
 def update_enabled(self, context):
