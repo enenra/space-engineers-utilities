@@ -9,7 +9,7 @@ from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
 from .utils.seut_updater    import check_update
 from .seut_errors           import seut_report, get_abs_path
 from .seut_utils            import get_preferences
-from .seut_bau              import draw_bau_ui, get_config
+from .seut_bau              import draw_bau_ui, get_config, set_config
 
 preview_collections = {}
 
@@ -268,16 +268,16 @@ def save_addon_prefs():
 
 def load_addon_prefs():
 
-    path = os.path.join(bpy.utils.user_resource('CONFIG'), 'seut_preferences.cfg')
-    preferences = get_preferences()
+    if 'blender_addon_updater' in sys.modules:
+        config = wm.bau.addons[__package__].config
+        if config != "":
+            set_config(config)
 
-    if os.path.exists(path):
-        with open(path) as cfg_file:
-            data = json.load(cfg_file)
+    else:
+        path = os.path.join(bpy.utils.user_resource('CONFIG'), 'seut_preferences.cfg')
+        preferences = get_preferences()
 
-            if 'seut_preferences' in data:
-                cfg = data['seut_preferences'][0]
-                preferences.materials_path = cfg['materials_path']
-                preferences.mwmb_path = cfg['mwmb_path']
-                preferences.fbx_importer_path = cfg['fbx_importer_path']
-                preferences.havok_path = cfg['havok_path']
+        if os.path.exists(path):
+            with open(path) as cfg_file:
+                data = json.load(cfg_file)
+                set_config(data)

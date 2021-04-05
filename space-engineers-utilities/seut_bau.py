@@ -128,6 +128,17 @@ def get_config():
     return data
 
 
+def set_config(data):
+    preferences = get_preferences()
+
+    if 'seut_preferences' in data:
+        cfg = data['seut_preferences'][0]
+        preferences.materials_path = cfg['materials_path']
+        preferences.mwmb_path = cfg['mwmb_path']
+        preferences.fbx_importer_path = cfg['fbx_importer_path']
+        preferences.havok_path = cfg['havok_path']
+
+
 def bau_register():
 
     wm = bpy.context.window_manager
