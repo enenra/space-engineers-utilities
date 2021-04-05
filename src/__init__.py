@@ -15,12 +15,14 @@ bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie",
-    "version": (0, 9, 95),
+    "version": (0, 9, 93),
+    "dev_version": 14,
     "blender": (2, 91, 0),
-    "location": "View3D > Tools ",
+    "location": "View3D > Tools",
     "warning": "",
     "wiki_url": "https://space-engineers-modding.github.io/modding-reference/tools/3d-modelling/seut.html",
     "tracker_url": "https://github.com/enenra/space-engineers-utilities/issues",
+    "git_url": "https://github.com/enenra/space-engineers-utilities",
     "support": "COMMUNITY",
     "category": "Modding"
 }
@@ -118,7 +120,7 @@ from .seut_object                       import SEUT_Object
 from .seut_window_manager               import SEUT_IssueProperty
 from .seut_window_manager               import SEUT_MatLibProps
 from .seut_window_manager               import SEUT_WindowManager
-
+from .seut_utils                        import get_preferences
 
 classes = (
     SEUT_AddonPreferences,
@@ -211,6 +213,9 @@ def register():
 
     bpy.app.handlers.load_post.append(load_handler)
 
+    from .seut_bau import bau_register
+    bpy.app.timers.register(bau_register)
+
     seut_preferences.addon_version = bl_info['version']
 
     load_icons()
@@ -265,7 +270,6 @@ def load_handler(dummy):
     except:
         pass
 
-addon_keymaps = []
 
 if __name__ == "__main__":
     register()

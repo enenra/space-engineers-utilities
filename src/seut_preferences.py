@@ -1,7 +1,7 @@
 import bpy
 import os
+import sys
 import json
-import addon_utils
 
 from bpy.types  import Operator, AddonPreferences
 from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
@@ -9,12 +9,11 @@ from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
 from .utils.seut_updater    import check_update
 from .seut_errors           import seut_report, get_abs_path
 from .seut_utils            import get_preferences
-
+from .seut_bau              import draw_bau_ui, get_config
 
 preview_collections = {}
 
 DEV_MODE = True
-DEV_VER = 14
 
 
 class SEUT_OT_SetDevPaths(Operator):
@@ -129,7 +128,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         default = DEV_MODE
     )
     dev_ver: IntProperty(
-        default = DEV_VER
+        default = sys.modules.get(__package__).bl_info['dev_version']
     )
     materials_path: StringProperty(
         name="Materials Folder",
@@ -168,9 +167,10 @@ class SEUT_AddonPreferences(AddonPreferences):
     def draw(self, context):
         layout = self.layout
         wm = context.window_manager
+        addon = sys.modules.get(__package__)
 
         self.dev_mode = DEV_MODE
-        self.dev_ver = DEV_VER
+        self.dev_ver = addon.bl_info['dev_version']
 
         preview_collections = get_icons()
         pcoll = preview_collections['main']
@@ -183,16 +183,18 @@ class SEUT_AddonPreferences(AddonPreferences):
         link.section = 'reference/'
         link.page = 'preferences'
 
-        row = layout.row()
-        row.label(text="Update Status:")
+        #row = layout.row()
+        #row.label(text="Update Status:")
 
-        if wm.seut.needs_update:
-            row.alert = True
-            row.label(text=wm.seut.update_message, icon='ERROR')
-            row.operator('wm.get_update', icon='IMPORT')
-        else:
-            row.label(text=wm.seut.update_message, icon='CHECKMARK')
-            row.operator('wm.get_update', text="Releases", icon='IMPORT')
+        #if wm.seut.needs_update:
+        #    row.alert = True
+        #    row.label(text=wm.seut.update_message, icon='ERROR')
+        #    row.operator('wm.get_update', icon='IMPORT')
+        #else:
+        #    row.label(text=wm.seut.update_message, icon='CHECKMARK')
+        #    row.operator('wm.get_update', text="Releases", icon='IMPORT')
+    
+        draw_bau_ui(self, context)
 
         if self.dev_mode:
             layout.operator('wm.set_dev_paths', icon='FILEBROWSER')
@@ -258,14 +260,7 @@ def save_addon_prefs():
     path = os.path.join(bpy.utils.user_resource('CONFIG'), 'seut_preferences.cfg')
     preferences = get_preferences()
 
-    data = {}
-    data['seut_preferences'] = []
-    data['seut_preferences'].append({
-        'materials_path': preferences.materials_path,
-        'mwmb_path': preferences.mwmb_path,
-        'fbx_importer_path': preferences.fbx_importer_path,
-        'havok_path': preferences.havok_path
-    })
+    data = get_config()
     
     with open(path, 'w') as cfg_file:
         json.dump(data, cfg_file, indent = 4)
