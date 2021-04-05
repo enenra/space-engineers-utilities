@@ -15,7 +15,7 @@ def draw_bau_ui(self, context, element=None):
     else:
         layout = element
     
-    if addon_utils.check('blender_addon_updater'):
+    if 'blender_addon_updater' in sys.modules:
         box = layout.box()
         row = box.row()
         row.label(text="Blender Addon Updater", icon='FILE_REFRESH')
@@ -52,7 +52,7 @@ def draw_bau_ui(self, context, element=None):
 
             elif bau_entry.dev_mode and bau_entry.dev_ver_needs_update:
                 split.alert = True
-                split.operator('wm.bau_update_addon', text="Update available: " + bau_entry.latest_dev_ver_name, icon='IMPORT')
+                op = split.operator('wm.bau_update_addon', text="Update available: " + bau_entry.latest_dev_ver_name, icon='IMPORT')
                 op.name = __package__
                 op.config = str(get_config())
 
@@ -103,7 +103,7 @@ def show_changelog(addon, box, changelog, latest_ver_name):
                 split = box.split(factor=0.75)
                 split.label(text="...")
 
-                op = split.operator('wm.url_open', text="More", icon='URL', emboss=False)
+                op = split.operator('wm.url_open', text="More", emboss=False)
                 op.url = addon.bl_info['git_url'] + "/releases/" + "v" + latest_ver_name
                 break
 
