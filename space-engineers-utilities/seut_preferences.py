@@ -11,9 +11,8 @@ from .seut_errors           import seut_report, get_abs_path
 from .seut_utils            import get_preferences
 from .seut_bau              import draw_bau_ui, get_config, set_config
 
-preview_collections = {}
 
-DEV_MODE = True
+preview_collections = {}
 
 
 class SEUT_OT_SetDevPaths(Operator):
@@ -118,6 +117,10 @@ def update_mwmb_path(self, context):
     self.mwmb_path = verify_tool_path(self, context, path, "MWM Builder", name)
 
     save_addon_prefs()
+
+
+def get_addon():
+    return sys.modules.get(__package__)
     
 
 class SEUT_AddonPreferences(AddonPreferences):
@@ -125,10 +128,10 @@ class SEUT_AddonPreferences(AddonPreferences):
     bl_idname = __package__
 
     dev_mode: BoolProperty(
-        default = DEV_MODE
+        default = get_addon().bl_info['dev_version'] > 0
     )
     dev_ver: IntProperty(
-        default = sys.modules.get(__package__).bl_info['dev_version']
+        default = get_addon().bl_info['dev_version']
     )
     materials_path: StringProperty(
         name="Materials Folder",
@@ -169,8 +172,8 @@ class SEUT_AddonPreferences(AddonPreferences):
         wm = context.window_manager
         addon = sys.modules.get(__package__)
 
-        self.dev_mode = DEV_MODE
-        self.dev_ver = addon.bl_info['dev_version']
+        self.dev_mode = get_addon().bl_info['dev_version'] > 0
+        self.dev_ver = get_addon().bl_info['dev_version']
 
         preview_collections = get_icons()
         pcoll = preview_collections['main']
@@ -232,8 +235,8 @@ def verify_tool_path(self, context, path: str, name: str, filename: str) -> str:
 
     # If it's a directory but appending the name gives a valid path, do that. Else, error.
     if os.path.isdir(path):
-        if os.path.exists(path + "\\" + filename):
-            return path + "\\" + filename
+        if os.path.exists(os.path.join(path, filename)):
+            return os.path.join(path, filename)
         else:
             seut_report(self, context, 'ERROR', False, 'E030')
             return ""
@@ -265,10 +268,13 @@ def save_addon_prefs():
     with open(path, 'w') as cfg_file:
         json.dump(data, cfg_file, indent = 4)
 
+    if 'blender_addon_updater' in sys.modules and __package__ in wm.bau.addons:
+        bpy.ops.wm.bau_save_config(name=__package__, config=data)
+
 
 def load_addon_prefs():
 
-    if 'blender_addon_updater' in sys.modules:
+    if 'blender_addon_updater' in sys.modules and __package__ in wm.bau.addons:
         config = wm.bau.addons[__package__].config
         if config != "":
             set_config(config)
