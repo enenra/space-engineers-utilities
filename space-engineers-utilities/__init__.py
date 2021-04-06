@@ -15,7 +15,7 @@ bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie",
-    "version": (0, 9, 93),
+    "version": (0, 9, 95),
     "dev_version": 14,
     "dev_tag": 'dev',
     "blender": (2, 91, 0),

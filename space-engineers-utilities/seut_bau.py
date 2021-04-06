@@ -9,6 +9,7 @@ from .seut_utils    import get_preferences
 def draw_bau_ui(self, context, element=None):
 
     wm = context.window_manager
+    preferences = get_preferences()
 
     if element is None:
         layout = self.layout
@@ -22,7 +23,7 @@ def draw_bau_ui(self, context, element=None):
     
         if __package__ in wm.bau.addons:
             addon = sys.modules.get(__package__)
-            current_version_name = str(addon.bl_info['version']).replace(", ", ".")
+            current_version_name = str(addon.bl_info['version']).replace("(","").replace(")","").replace(", ", ".")
             bau_entry = wm.bau.addons[__package__]
 
             col = row.column(align=True)
@@ -57,7 +58,10 @@ def draw_bau_ui(self, context, element=None):
                 op.config = str(get_config())
 
             else:
-                split.operator('wm.bau_update_addon', text="Up to date " + current_version_name, icon='CHECKMARK')
+                if not preferences.dev_mode:
+                    split.operator('wm.bau_update_addon', text="Up to date: " + current_version_name, icon='CHECKMARK')
+                else:
+                    split.operator('wm.bau_update_addon', text="Up to date: " + current_version_name + "-" + addon.bl_info['dev_tag'] + "." + str(addon.bl_info['dev_version']), icon='CHECKMARK')
                 split.enabled = False
 
             split = row.split(align=True)
@@ -86,7 +90,7 @@ def draw_bau_ui(self, context, element=None):
             op = col.operator('wm.bau_register_addon', text="", icon='LINK_BLEND')
             op.name = __package__
             op.display_changelog = True
-            op.dev_mode = get_preferences().dev_mode
+            op.dev_mode = preferences.dev_mode
 
 
 def show_changelog(addon, box, changelog, latest_ver_name):
