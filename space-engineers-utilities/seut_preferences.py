@@ -261,7 +261,7 @@ def get_addon_version():
 
 def save_addon_prefs():
 
-    path = os.path.join(bpy.utils.user_resource('CONFIG'), 'seut_preferences.cfg')
+    path = os.path.join(bpy.utils.user_resource('CONFIG'), 'space-engineers-utilities.cfg')
     preferences = get_preferences()
 
     data = get_config()
@@ -281,7 +281,7 @@ def load_addon_prefs():
             set_config(config)
 
     else:
-        path = os.path.join(bpy.utils.user_resource('CONFIG'), 'seut_preferences.cfg')
+        path = os.path.join(bpy.utils.user_resource('CONFIG'), 'space-engineers-utilities.cfg')
         preferences = get_preferences()
 
         if os.path.exists(path):

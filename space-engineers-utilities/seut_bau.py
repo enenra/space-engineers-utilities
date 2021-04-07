@@ -6,6 +6,7 @@ import time
 
 from .seut_utils    import get_preferences
 
+
 def draw_bau_ui(self, context, element=None):
 
     wm = context.window_manager
@@ -121,8 +122,8 @@ def get_config():
 
     preferences = get_preferences()
     data = {}
-    data['seut_preferences'] = []
-    data['seut_preferences'].append({
+    data['space-engineers-utilities'] = []
+    data['space-engineers-utilities'].append({
         'materials_path': preferences.materials_path,
         'mwmb_path': preferences.mwmb_path,
         'fbx_importer_path': preferences.fbx_importer_path,
@@ -135,8 +136,8 @@ def get_config():
 def set_config(data):
     preferences = get_preferences()
 
-    if 'seut_preferences' in data:
-        cfg = data['seut_preferences'][0]
+    if 'space-engineers-utilities' in data:
+        cfg = data['space-engineers-utilities'][0]
         preferences.materials_path = cfg['materials_path']
         preferences.mwmb_path = cfg['mwmb_path']
         preferences.fbx_importer_path = cfg['fbx_importer_path']
