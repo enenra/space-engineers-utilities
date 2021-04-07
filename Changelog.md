@@ -28,6 +28,7 @@
 * Changed: Scenes without initialized SEUT are skipped during `Export All Scenes`.
 * Changed: Lights and cameras in `Main` collection can be unparented.
 * Changed: Linked subparts are now locked & protected as a safety measure and to prevent potential duplication issues.
+* Fixed #267: Missing dummies `conveyorline_small_in` and `conveyorline_small_out`.
 * Fixed #257: Fix scratched materials option for import would sometimes do the opposite.
 * Fixed #256: In some cases, empties would still have .001 etc. numbers in their names.
 * Fixed #253: Various issues with simultaneous export, mainly with exporting both sizes to a single folder.
