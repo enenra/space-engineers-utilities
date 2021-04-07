@@ -186,18 +186,19 @@ class SEUT_AddonPreferences(AddonPreferences):
         link.section = 'reference/'
         link.page = 'preferences'
 
-        #row = layout.row()
-        #row.label(text="Update Status:")
+        if 'blender_addon_updater' in sys.modules and __package__ in wm.bau.addons:
+            draw_bau_ui(self, context)
+        else:
+            row = layout.row()
+            row.label(text="Update Status:")
 
-        #if wm.seut.needs_update:
-        #    row.alert = True
-        #    row.label(text=wm.seut.update_message, icon='ERROR')
-        #    row.operator('wm.get_update', icon='IMPORT')
-        #else:
-        #    row.label(text=wm.seut.update_message, icon='CHECKMARK')
-        #    row.operator('wm.get_update', text="Releases", icon='IMPORT')
-    
-        draw_bau_ui(self, context)
+            if wm.seut.needs_update:
+                row.alert = True
+                row.label(text=wm.seut.update_message, icon='ERROR')
+                row.operator('wm.get_update', icon='IMPORT')
+            else:
+                row.label(text=wm.seut.update_message, icon='CHECKMARK')
+                row.operator('wm.get_update', text="Releases", icon='IMPORT')
 
         if self.dev_mode:
             layout.operator('wm.set_dev_paths', icon='FILEBROWSER')
