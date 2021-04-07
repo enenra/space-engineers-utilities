@@ -18,7 +18,7 @@ bl_info = {
     "version": (0, 9, 95),
     "dev_version": 1,
     "dev_tag": 'rc',
-    "blender": (2, 91, 0),
+    "blender": (2, 92, 0),
     "location": "View3D > Tools",
     "warning": "",
     "wiki_url": "https://space-engineers-modding.github.io/modding-reference/tools/3d-modelling/seut.html",
