@@ -24,6 +24,8 @@ class SEUT_OT_AddDummy(Operator):
             ('conveyorline_small', 'Conveyorline Small', 'Small conveyor connection point without direct access. Does not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('conveyorline_in', 'Conveyorline In', 'Conveyor connection point without direct access that only lets items pass into the block. Does not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('conveyorline_out', 'Conveyorline Out', 'Conveyor connection point without direct access that only lets items pass out of the block. Does not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
+            ('conveyorline_small_in', 'Conveyorline Small In', 'Conveyor connection point for small grid without direct access that only lets items pass into the block. Does not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
+            ('conveyorline_small_out', 'Conveyorline Small Out', 'Conveyor connection point for small grid without direct access that only lets items pass out of the block. Does not highlight anything.\nNote: Conveyor empties in a block must overlap point of origin of conveyor empty in adjacent block to connect'),
             ('Connector', 'Connector', 'Adds connector functionality.\n Warning: Cannot be placed too far from block origin or the connector will only spin grids instead of connecting'),
             ('ejector', 'Ejector', 'Adds ejector functionality'),
             ('collector', 'Collector', 'Adds collector functionality'),
@@ -81,6 +83,12 @@ class SEUT_OT_AddDummy(Operator):
             uses_index = True
         elif self.detector_type == 'conveyorline_out':
             empty_name = "dummy_detector_conveyorline_out_"
+            uses_index = True
+        elif self.detector_type == 'conveyorline_small_in':
+            empty_name = "dummy_detector_conveyorline_small_in_"
+            uses_index = True
+        elif self.detector_type == 'conveyorline_small_out':
+            empty_name = "dummy_detector_conveyorline_small_out_"
             uses_index = True
         elif self.detector_type == 'Connector':
             empty_name = "dummy_detector_Connector_"
