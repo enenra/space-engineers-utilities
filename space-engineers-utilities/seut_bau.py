@@ -32,8 +32,6 @@ def draw_bau_ui(self, context, element=None):
             row.alignment = 'RIGHT'
 
             row = row.row(align=True)
-            # row.prop(bau_entry, 'rel_ver_needs_update', text="", icon='CANCEL')
-            # row.prop(bau_entry, 'dev_ver_needs_update', text="", icon='CANCEL')
             op = row.operator('wm.bau_save_config', text="", icon='FILE_TICK')
             op.name = __package__
             op.config = str(get_config())
@@ -145,7 +143,6 @@ def set_config(data):
 
 
 def bau_register():
-
     wm = bpy.context.window_manager
 
     try:
