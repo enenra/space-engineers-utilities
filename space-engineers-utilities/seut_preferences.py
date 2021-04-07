@@ -2,6 +2,7 @@ import bpy
 import os
 import sys
 import json
+import addon_utils
 
 from bpy.types  import Operator, AddonPreferences
 from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
@@ -186,7 +187,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         link.section = 'reference/'
         link.page = 'preferences'
 
-        if 'blender_addon_updater' in sys.modules and __package__ in wm.bau.addons:
+        if addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
             draw_bau_ui(self, context)
         else:
             row = layout.row()
@@ -269,13 +270,13 @@ def save_addon_prefs():
     with open(path, 'w') as cfg_file:
         json.dump(data, cfg_file, indent = 4)
 
-    if 'blender_addon_updater' in sys.modules and __package__ in wm.bau.addons:
+    if addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
         bpy.ops.wm.bau_save_config(name=__package__, config=data)
 
 
 def load_addon_prefs():
 
-    if 'blender_addon_updater' in sys.modules and __package__ in wm.bau.addons:
+    if addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
         config = wm.bau.addons[__package__].config
         if config != "":
             set_config(config)

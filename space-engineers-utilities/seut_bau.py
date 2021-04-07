@@ -17,7 +17,7 @@ def draw_bau_ui(self, context, element=None):
     else:
         layout = element
     
-    if 'blender_addon_updater' in sys.modules:
+    if addon_utils.check('blender_addon_updater') == (True, True):
         box = layout.box()
         row = box.row()
         row.label(text="Blender Addon Updater", icon='FILE_REFRESH')
