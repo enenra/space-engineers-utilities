@@ -17,7 +17,7 @@ bl_info = {
     "author": "enenra, Stollie",
     "version": (0, 9, 95),
     "dev_version": 1,
-    "dev_tag": 'rc',
+    "dev_tag": "rc",
     "blender": (2, 92, 0),
     "location": "View3D > Tools",
     "warning": "",
