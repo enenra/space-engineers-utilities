@@ -1,7 +1,7 @@
 import bpy
 import os
+import sys
 import json
-import addon_utils
 
 from bpy.types  import Operator, AddonPreferences
 from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
@@ -9,12 +9,10 @@ from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
 from .utils.seut_updater    import check_update
 from .seut_errors           import seut_report, get_abs_path
 from .seut_utils            import get_preferences
+from .seut_bau              import draw_bau_ui, get_config, set_config
 
 
 preview_collections = {}
-
-DEV_MODE = True
-DEV_VER = 14
 
 
 class SEUT_OT_SetDevPaths(Operator):
@@ -119,6 +117,10 @@ def update_mwmb_path(self, context):
     self.mwmb_path = verify_tool_path(self, context, path, "MWM Builder", name)
 
     save_addon_prefs()
+
+
+def get_addon():
+    return sys.modules.get(__package__)
     
 
 class SEUT_AddonPreferences(AddonPreferences):
@@ -126,10 +128,10 @@ class SEUT_AddonPreferences(AddonPreferences):
     bl_idname = __package__
 
     dev_mode: BoolProperty(
-        default = DEV_MODE
+        default = get_addon().bl_info['dev_version'] > 0
     )
     dev_ver: IntProperty(
-        default = DEV_VER
+        default = get_addon().bl_info['dev_version']
     )
     materials_path: StringProperty(
         name="Materials Folder",
@@ -168,9 +170,10 @@ class SEUT_AddonPreferences(AddonPreferences):
     def draw(self, context):
         layout = self.layout
         wm = context.window_manager
+        addon = sys.modules.get(__package__)
 
-        self.dev_mode = DEV_MODE
-        self.dev_ver = DEV_VER
+        self.dev_mode = get_addon().bl_info['dev_version'] > 0
+        self.dev_ver = get_addon().bl_info['dev_version']
 
         preview_collections = get_icons()
         pcoll = preview_collections['main']
@@ -183,16 +186,19 @@ class SEUT_AddonPreferences(AddonPreferences):
         link.section = 'reference/'
         link.page = 'preferences'
 
-        row = layout.row()
-        row.label(text="Update Status:")
-
-        if wm.seut.needs_update:
-            row.alert = True
-            row.label(text=wm.seut.update_message, icon='ERROR')
-            row.operator('wm.get_update', icon='IMPORT')
+        if 'blender_addon_updater' in sys.modules and __package__ in wm.bau.addons:
+            draw_bau_ui(self, context)
         else:
-            row.label(text=wm.seut.update_message, icon='CHECKMARK')
-            row.operator('wm.get_update', text="Releases", icon='IMPORT')
+            row = layout.row()
+            row.label(text="Update Status:")
+
+            if wm.seut.needs_update:
+                row.alert = True
+                row.label(text=wm.seut.update_message, icon='ERROR')
+                row.operator('wm.get_update', icon='IMPORT')
+            else:
+                row.label(text=wm.seut.update_message, icon='CHECKMARK')
+                row.operator('wm.get_update', text="Releases", icon='IMPORT')
 
         if self.dev_mode:
             layout.operator('wm.set_dev_paths', icon='FILEBROWSER')
@@ -230,8 +236,8 @@ def verify_tool_path(self, context, path: str, name: str, filename: str) -> str:
 
     # If it's a directory but appending the name gives a valid path, do that. Else, error.
     if os.path.isdir(path):
-        if os.path.exists(path + "\\" + filename):
-            return path + "\\" + filename
+        if os.path.exists(os.path.join(path, filename)):
+            return os.path.join(path, filename)
         else:
             seut_report(self, context, 'ERROR', False, 'E030')
             return ""
@@ -255,34 +261,30 @@ def get_addon_version():
 
 def save_addon_prefs():
 
-    path = os.path.join(bpy.utils.user_resource('CONFIG'), 'seut_preferences.cfg')
+    path = os.path.join(bpy.utils.user_resource('CONFIG'), 'space-engineers-utilities.cfg')
     preferences = get_preferences()
 
-    data = {}
-    data['seut_preferences'] = []
-    data['seut_preferences'].append({
-        'materials_path': preferences.materials_path,
-        'mwmb_path': preferences.mwmb_path,
-        'fbx_importer_path': preferences.fbx_importer_path,
-        'havok_path': preferences.havok_path
-    })
+    data = get_config()
     
     with open(path, 'w') as cfg_file:
         json.dump(data, cfg_file, indent = 4)
 
+    if 'blender_addon_updater' in sys.modules and __package__ in wm.bau.addons:
+        bpy.ops.wm.bau_save_config(name=__package__, config=data)
+
 
 def load_addon_prefs():
 
-    path = os.path.join(bpy.utils.user_resource('CONFIG'), 'seut_preferences.cfg')
-    preferences = get_preferences()
+    if 'blender_addon_updater' in sys.modules and __package__ in wm.bau.addons:
+        config = wm.bau.addons[__package__].config
+        if config != "":
+            set_config(config)
 
-    if os.path.exists(path):
-        with open(path) as cfg_file:
-            data = json.load(cfg_file)
+    else:
+        path = os.path.join(bpy.utils.user_resource('CONFIG'), 'space-engineers-utilities.cfg')
+        preferences = get_preferences()
 
-            if 'seut_preferences' in data:
-                cfg = data['seut_preferences'][0]
-                preferences.materials_path = cfg['materials_path']
-                preferences.mwmb_path = cfg['mwmb_path']
-                preferences.fbx_importer_path = cfg['fbx_importer_path']
-                preferences.havok_path = cfg['havok_path']
+        if os.path.exists(path):
+            with open(path) as cfg_file:
+                data = json.load(cfg_file)
+                set_config(data)
