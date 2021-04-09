@@ -16,7 +16,7 @@ bl_info = {
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie",
     "version": (0, 9, 95),
-    "dev_version": 1,
+    "dev_version": 2,
     "dev_tag": "rc",
     "blender": (2, 92, 0),
     "location": "View3D > Tools",
@@ -122,6 +122,7 @@ from .seut_window_manager               import SEUT_IssueProperty
 from .seut_window_manager               import SEUT_MatLibProps
 from .seut_window_manager               import SEUT_WindowManager
 from .seut_utils                        import get_preferences
+
 
 classes = (
     SEUT_AddonPreferences,

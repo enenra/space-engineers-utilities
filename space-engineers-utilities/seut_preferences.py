@@ -131,9 +131,6 @@ class SEUT_AddonPreferences(AddonPreferences):
     dev_mode: BoolProperty(
         default = get_addon().bl_info['dev_version'] > 0
     )
-    dev_ver: IntProperty(
-        default = get_addon().bl_info['dev_version']
-    )
     materials_path: StringProperty(
         name="Materials Folder",
         description="This folder contains material information in the form of XML libraries as well as BLEND MatLibs",
@@ -174,7 +171,6 @@ class SEUT_AddonPreferences(AddonPreferences):
         addon = sys.modules.get(__package__)
 
         self.dev_mode = get_addon().bl_info['dev_version'] > 0
-        self.dev_ver = get_addon().bl_info['dev_version']
 
         preview_collections = get_icons()
         pcoll = preview_collections['main']
@@ -200,6 +196,13 @@ class SEUT_AddonPreferences(AddonPreferences):
             else:
                 row.label(text=wm.seut.update_message, icon='CHECKMARK')
                 row.operator('wm.get_update', text="Releases", icon='IMPORT')
+
+            box = layout.box()
+            box.label(text="Install the Blender Addon Updater to easily update SEUT:", icon='FILE_REFRESH')
+            row = box.row()
+            row.scale_y = 2.0
+            op = row.operator('wm.url_open', text="Blender Addon Updater", icon='URL')
+            op.url = "https://github.com/enenra/blender_addon_updater/releases/"
 
         if self.dev_mode:
             layout.operator('wm.set_dev_paths', icon='FILEBROWSER')
@@ -262,6 +265,7 @@ def get_addon_version():
 
 def save_addon_prefs():
 
+    wm = bpy.context.window_manager
     path = os.path.join(bpy.utils.user_resource('CONFIG'), 'space-engineers-utilities.cfg')
     preferences = get_preferences()
 
@@ -276,6 +280,7 @@ def save_addon_prefs():
 
 def load_addon_prefs():
 
+    wm = bpy.context.window_manager
     if addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
         config = wm.bau.addons[__package__].config
         if config != "":

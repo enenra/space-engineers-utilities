@@ -4,6 +4,9 @@ import json
 import addon_utils
 import time
 
+from bpy.types      import Operator
+from bpy.props      import StringProperty
+
 from .seut_utils    import get_preferences
 
 
@@ -49,18 +52,23 @@ def draw_bau_ui(self, context, element=None):
                 op = split.operator('wm.bau_update_addon', text="Update available: " + bau_entry.latest_rel_ver_name, icon='IMPORT')
                 op.name = __package__
                 op.config = str(get_config())
+                op.display_instructions = True
 
             elif bau_entry.dev_mode and bau_entry.dev_ver_needs_update:
                 split.alert = True
                 op = split.operator('wm.bau_update_addon', text="Update available: " + bau_entry.latest_dev_ver_name, icon='IMPORT')
                 op.name = __package__
                 op.config = str(get_config())
+                op.display_instructions = True
 
             else:
                 if not preferences.dev_mode:
                     split.operator('wm.bau_update_addon', text="Up to date: " + current_version_name, icon='CHECKMARK')
                 else:
                     split.operator('wm.bau_update_addon', text="Up to date: " + current_version_name + "-" + addon.bl_info['dev_tag'] + "." + str(addon.bl_info['dev_version']), icon='CHECKMARK')
+                split.enabled = False
+
+            if bau_entry.display_instructions:
                 split.enabled = False
 
             split = row.split(align=True)
@@ -78,11 +86,14 @@ def draw_bau_ui(self, context, element=None):
             else:
                 row.label(text= "Last check: " + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(bau_entry.last_check)))
 
-            if not bau_entry.dev_mode and bau_entry.rel_ver_needs_update:
-                show_changelog(addon, box, bau_entry.rel_changelog, bau_entry.latest_rel_ver_name)
+            if bau_entry.display_instructions:
+                show_instructions(box)
+            else:
+                if not bau_entry.dev_mode and bau_entry.rel_ver_needs_update:
+                    show_changelog(addon, box, bau_entry.rel_changelog, bau_entry.latest_rel_ver_name)
 
-            elif bau_entry.dev_mode and bau_entry.dev_ver_needs_update:
-                show_changelog(addon, box, bau_entry.dev_changelog, bau_entry.latest_dev_ver_name)
+                elif bau_entry.dev_mode and bau_entry.dev_ver_needs_update:
+                    show_changelog(addon, box, bau_entry.dev_changelog, bau_entry.latest_dev_ver_name)
         
         else:
             col = row.column(align=True)
@@ -92,11 +103,36 @@ def draw_bau_ui(self, context, element=None):
             op.dev_mode = preferences.dev_mode
 
 
+def show_instructions(box):
+    box = box.box()
+
+    row = box.row()
+    row.alert = True
+    row.label(text="Installation Instructions", icon='ERROR')
+
+    row = box.row()
+    row.scale_y = 0.5
+    row.label(text="Only perform this update in a fresh, empty BLEND file!")
+    row = box.row()
+    row.scale_y = 0.5
+    row.label(text="Otherwise, there is a chance that data may be lost or corrupted.")
+    
+    box.separator()
+
+    row = box.row(align=True)
+    row.scale_y = 2.0
+    op = row.operator('wm.bau_update_addon', text="Everything is ready - Update!", icon='IMPORT')
+    op.name = __package__
+    op.config = str(get_config())
+    op.display_instructions = False
+
+
 def show_changelog(addon, box, changelog, latest_ver_name):
 
     if changelog != "":
         text = json.loads(changelog)
 
+        box = box.box()
         row = box.row(align=True)
         row.label(text="Changelog", icon='FILE_TEXT')
 
@@ -106,7 +142,7 @@ def show_changelog(addon, box, changelog, latest_ver_name):
                 split = box.split(factor=0.75)
                 split.label(text="...")
 
-                op = split.operator('wm.url_open', text="More", emboss=False)
+                op = split.operator('wm.url_open', text="Read More")
                 op.url = addon.bl_info['git_url'] + "/releases/" + "v" + latest_ver_name
                 break
 
