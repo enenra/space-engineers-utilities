@@ -61,6 +61,7 @@ warnings = {
     'W009': "Scene '{variable_1}'  is of type '{variable_2}' but contains armatures.",
     'W010': "Library '{variable_1}' could not be relocated in '{variable_2}'.",
     'W011': "Loading of image '{variable_1}' failed.",
+    'W012': "Material '{variable_1}' is a DLC material. Keen requires any model using it to be DLC-locked.",
 }
 
 infos = {

@@ -12,6 +12,23 @@ from bpy.props      import (EnumProperty,
                             BoolProperty)
 
 
+dlc_materials = [
+    "Cooker",
+    "Console",
+    "ClothStripe",
+    "Dirt",
+    "SmallTiresMotion",
+    "Grating",
+    "GratingMetallic",
+    "FoodDispenser",
+    "PlasticWhite",
+    "LabEquipmentScreen_01",
+    "Astronaut_Damaged",
+    "ArmsDamaged",
+    "RightArmDamaged"
+]
+
+
 class SEUT_Materials(PropertyGroup):
     """Holder for the varios material properties"""
     
