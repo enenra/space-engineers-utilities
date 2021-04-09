@@ -18,6 +18,10 @@
 * Added: `emitter` dummy for exhaust-type blocks.
 * Added: `RotatingLightDummy` subpart empty type.
 * Added: SEUT now automatically sorts collections in Outliner when "Recreate Collections" is pressed. Also in some other scenarios.
+* Added: Warning when exporting a model using DLC materials.
+* Added: `FOLIAGE` Material Technique.
+* Added: Integration of BAU - Blender Addon Updater.
+* Added: SEUT now saves the paths in the Addon Preferences to a config file and loads them from there if the addon is updated.
 * Improved: Main collection is set to active after scene is initialized.
 * Improved: Selecting a file inside the `Materials`-folder will still correctly set the `Materials` path.
 * Changed #255: MP and BS numbers now formatted in 0.00-style in SBC.
