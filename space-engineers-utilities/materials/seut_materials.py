@@ -15,7 +15,6 @@ from bpy.props      import (EnumProperty,
 dlc_materials = [
     "Cooker",
     "Console",
-    "ClothStripe",
     "Dirt",
     "SmallTiresMotion",
     "Grating",
