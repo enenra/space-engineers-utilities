@@ -274,7 +274,7 @@ def save_addon_prefs():
         json.dump(data, cfg_file, indent = 4)
 
     if addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
-        bpy.ops.wm.bau_save_config(name=__package__, config=data)
+        bpy.ops.wm.bau_save_config(name=__package__, config=str(data))
 
 
 def load_addon_prefs():
