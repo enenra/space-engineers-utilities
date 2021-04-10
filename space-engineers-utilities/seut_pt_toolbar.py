@@ -1,4 +1,5 @@
 import bpy
+import addon_utils
 
 from bpy.types  import Panel
 
@@ -18,19 +19,19 @@ class SEUT_PT_Panel(Panel):
         layout = self.layout
         scene = context.scene
         wm = context.window_manager
-
-        if wm.seut.needs_update:
-            row = layout.row()
-            row.alert = True
-            row.label(text=wm.seut.update_message, icon='ERROR')
-            row.operator('wm.get_update', icon='IMPORT', text="")
         
-        elif addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
+        if addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
             row = layout.row()
             row.alert = True
             row.label(text="SEUT Update Available", icon='ERROR')
             row = layout.row()
             row.label(text="Go to Preferences to update.")
+
+        elif wm.seut.needs_update:
+            row = layout.row()
+            row.alert = True
+            row.label(text=wm.seut.update_message, icon='ERROR')
+            row.operator('wm.get_update', icon='IMPORT', text="")
 
         if not 'SEUT' in scene.view_layers:
             row = layout.row()

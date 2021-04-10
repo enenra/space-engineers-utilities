@@ -183,9 +183,8 @@ class SEUT_AddonPreferences(AddonPreferences):
         link.section = 'reference/'
         link.page = 'preferences'
 
-        if addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
-            draw_bau_ui(self, context)
-        else:
+        draw_bau_ui(self, context)
+        if addon_utils.check('blender_addon_updater') != (True, True):
             row = layout.row()
             row.label(text="Update Status:")
 
