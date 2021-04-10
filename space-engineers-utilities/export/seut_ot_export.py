@@ -100,8 +100,7 @@ def export(self, context):
         
         export_all(self, context)
 
-    # Resetting the variables
-    if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+        # Resetting the variables
         scene.seut.subtypeId = subtype_id
         scene.seut.gridScale = grid_scale
         scene.seut.export_rescaleFactor = rescale_factor
@@ -122,8 +121,7 @@ def export(self, context):
         
         export_all(self, context)
 
-    # Resetting the variables
-    if scene.seut.export_largeGrid and scene.seut.export_smallGrid:
+        # Resetting the variables
         scene.seut.subtypeId = subtype_id
         scene.seut.gridScale = grid_scale
         scene.seut.export_rescaleFactor = rescale_factor
