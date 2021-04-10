@@ -24,6 +24,13 @@ class SEUT_PT_Panel(Panel):
             row.alert = True
             row.label(text=wm.seut.update_message, icon='ERROR')
             row.operator('wm.get_update', icon='IMPORT', text="")
+        
+        elif addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
+            row = layout.row()
+            row.alert = True
+            row.label(text="SEUT Update Available", icon='ERROR')
+            row = layout.row()
+            row.label(text="Go to Preferences to update.")
 
         if not 'SEUT' in scene.view_layers:
             row = layout.row()

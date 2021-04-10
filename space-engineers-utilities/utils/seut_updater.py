@@ -109,7 +109,7 @@ def check_update(current_version):
             else:
                 if preferences.dev_mode:
 
-                    addon = context.preferences.addons.get(__package__.split(".")[0])
+                    addon = bpy.context.preferences.addons.get(__package__.split(".")[0])
                     
                     # Version number is the same and latest is not a dev version.
                     if is_dev == -1:
