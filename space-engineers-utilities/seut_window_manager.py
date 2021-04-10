@@ -115,6 +115,12 @@ class SEUT_WindowManager(PropertyGroup):
         update=update_simpleNavigationToggle
     )
 
+    better_fbx: BoolProperty(
+        name = "Better FBX",
+        description = "Whether SEUT should be using the Better FBX Importer",
+        default = False
+    )
+
     bBoxToggle: EnumProperty(
         name='Bounding Box',
         items=(

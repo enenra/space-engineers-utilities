@@ -1,4 +1,5 @@
 import bpy
+import addon_utils
 
 from bpy.props import (StringProperty,
                        BoolProperty,
@@ -65,7 +66,10 @@ def import_fbx(self, context, filepath):
     existing_objects = set(context.scene.objects)
 
     try:
-        result = bpy.ops.import_scene.fbx(filepath=filepath)
+        if addon_utils.check("better_fbx") == (True, True) and wm.seut.better_fbx:
+            result = bpy.ops.better_import.fbx(filepath=filepath)
+        else:
+            result = bpy.ops.import_scene.fbx(filepath=filepath)
     except RuntimeError as error:
         seut_report(self, context, 'ERROR', True, 'E036', str(error))
         return {'CANCELLED'}

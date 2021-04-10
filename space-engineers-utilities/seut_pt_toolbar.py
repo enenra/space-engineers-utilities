@@ -391,14 +391,20 @@ class SEUT_PT_Panel_Import(Panel):
         layout = self.layout
 
         # Import
+
         row = layout.row()
         row.scale_y = 2.0
         row.operator('scene.import', icon='IMPORT')
+
         layout.operator('scene.import_complete', icon='IMPORT')
         
         box = layout.box()
         box.label(text='Options', icon='SETTINGS')
-        box.prop(wm.seut, 'fix_scratched_materials', expand=True)
+
+        if addon_utils.check("better_fbx") == (True, True):
+            box.prop(wm.seut, 'better_fbx', icon='CHECKMARK')
+
+        box.prop(wm.seut, 'fix_scratched_materials', icon='MATERIAL')
 
         # Repair
         box = layout.box()
