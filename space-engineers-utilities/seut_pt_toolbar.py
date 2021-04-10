@@ -21,11 +21,13 @@ class SEUT_PT_Panel(Panel):
         wm = context.window_manager
         
         if addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
-            row = layout.row()
-            row.alert = True
-            row.label(text="SEUT Update Available", icon='ERROR')
-            row = layout.row()
-            row.label(text="Go to Preferences to update.")
+            bau_entry = wm.bau.addons[__package__]
+            if not bau_entry.dev_mode and bau_entry.rel_ver_needs_update or bau_entry.dev_mode and bau_entry.rel_ver_needs_update:
+                row = layout.row()
+                row.alert = True
+                row.label(text="SEUT Update Available", icon='ERROR')
+                row = layout.row()
+                row.label(text="Go to Preferences to update.")
 
         elif wm.seut.needs_update:
             row = layout.row()
