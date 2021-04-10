@@ -16,7 +16,7 @@ bl_info = {
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie",
     "version": (0, 9, 95),
-    "dev_version": 2,
+    "dev_version": 3,
     "dev_tag": "rc",
     "blender": (2, 92, 0),
     "location": "View3D > Tools",
@@ -260,7 +260,8 @@ def load_handler(dummy):
         
     # This exists to avoid errors on startup
     try:
-        bpy.ops.wm.refresh_matlibs()
+        if seut_preferences.materials_path is not None:
+            bpy.ops.wm.refresh_matlibs()
     except:
         pass
     

@@ -7,10 +7,18 @@ from bpy.types              import Operator
 
 from ..seut_utils           import get_preferences
 
+
 url_releases = "https://api.github.com/repos/enenra/space-engineers-utilities/releases"
 url_tags = "https://api.github.com/repos/enenra/space-engineers-utilities/tags"
-rel_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+")
-dev_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+\-DEV[0-9]")
+rel_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+$")
+dev_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+\-\w+\.[0-9]{1,}$")
+
+tags = {
+    'dev': 0,
+    'alpha': 1,
+    'beta': 2,
+    'rc': 3
+}
 
 
 class SEUT_OT_GetUpdate(Operator):
@@ -70,15 +78,19 @@ def check_update(current_version):
                                 versions.append(name_tag)
                         break
             
-            # For testing
-            # versions.append('v0.9.95')
-            
             latest_version_name = sorted(versions, reverse=True)[0][1:]
 
             is_dev = -1
-            if latest_version_name.find("-DEV") != -1:
+            if dev_ver.match("v" + latest_version_name):
                 is_dev = int(re.search("(\d+)(?!.*\d)", latest_version_name)[0])
+                dev_tag = latest_version_name[latest_version_name.find("-") + 1:]
+                dev_tag = dev_tag[:dev_tag.find(".")]
+
+                if dev_tag not in tags:
+                    is_dev = -1
+
                 latest_version = tuple(map(int, latest_version_name.split('-')[0].split('.')))
+
             else:
                 latest_version = tuple(map(int, latest_version_name.split('.')))
 
@@ -96,6 +108,8 @@ def check_update(current_version):
 
             else:
                 if preferences.dev_mode:
+
+                    addon = context.preferences.addons.get(__package__.split(".")[0])
                     
                     # Version number is the same and latest is not a dev version.
                     if is_dev == -1:
@@ -104,7 +118,7 @@ def check_update(current_version):
                         wm.seut.needs_update = True
 
                     # Version number is the same but latest is a newer dev version.
-                    elif preferences.dev_ver < is_dev:
+                    elif tags[addon.bl_info['dev_tag']] < tags[dev_tag] or tags[addon.bl_info['dev_tag']] == tags[dev_tag] and addon.bl_info['dev_version'] < is_dev:
                         outdated = f"SEUT {latest_version_name} available!"
                         wm.seut.update_message = outdated
                         wm.seut.needs_update = True
@@ -121,5 +135,6 @@ def check_update(current_version):
         elif response_tags.status_code == 403 or response_releases.status_code == 403:
             wm.seut.update_message = "Rate limit exceeded!"
 
-    except:
+    except Exception as e:
+        print(e)
         wm.seut.update_message = "Connection Failed!"
