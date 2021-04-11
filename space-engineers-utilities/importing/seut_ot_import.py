@@ -99,10 +99,9 @@ def import_fbx(self, context, filepath):
                     break
 
             # Empties are imported at 2x the size they should be, this fixes that issue
-            if 'MaxHandle' not in obj and 'file' not in obj:
-                obj.scale.x *= 0.5
-                obj.scale.y *= 0.5
-                obj.scale.z *= 0.5
+            obj.scale.x *= 0.5
+            obj.scale.y *= 0.5
+            obj.scale.z *= 0.5
 
             if 'file' in obj and obj['file'] in bpy.data.scenes:
                 obj.seut.linkedScene = bpy.data.scenes[obj['file']]
@@ -125,6 +124,7 @@ def import_fbx(self, context, filepath):
     if wm.seut.fix_scratched_materials:
         for obj in imported_objects:
             recursive_fix_scratched(obj)
+        remap_materials(self, context)
 
     seut_report(self, context, 'INFO', True, 'I014', filepath)
 

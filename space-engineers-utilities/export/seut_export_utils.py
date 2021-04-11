@@ -309,10 +309,10 @@ def export_fbx(self, context, collection) -> str:
                 unlink_subpart_scene(empty)
             
             # Blender FBX export halves empty size on export, this works around it
-            if 'MaxHandle' not in empty and 'file' not in empty:
-                empty.scale.x *= 2
-                empty.scale.y *= 2
-                empty.scale.z *= 2
+            empty.scale.x *= 2
+            empty.scale.y *= 2
+            empty.scale.z *= 2
+            context.view_layer.update()
 
     # Prepare materials for export
     for mat in bpy.data.materials:
@@ -355,10 +355,9 @@ def export_fbx(self, context, collection) -> str:
                     empty['file'] = reference
 
             # Resetting empty size
-            if 'MaxHandle' not in empty and 'file' not in empty:
-                empty.scale.x *= 0.5
-                empty.scale.y *= 0.5
-                empty.scale.z *= 0.5
+            empty.scale.x *= 0.5
+            empty.scale.y *= 0.5
+            empty.scale.z *= 0.5
 
     bpy.context.scene.collection.children.unlink(collection)
 
