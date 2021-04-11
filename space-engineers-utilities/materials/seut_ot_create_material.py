@@ -155,32 +155,35 @@ def create_seut_nodegroup(node):
     node_input.label = 'Input'
     node_input.location = (-1512.5000, 0.0000)
     node_group.inputs.new('NodeSocketColor', "CM Color")
-    node_group.inputs[0].hide_value = True
     links.new(node_input.outputs[0], node_add_paint.inputs[1])
     node_group.inputs.new('NodeSocketColor', "CM Alpha")
-    node_group.inputs[1].hide_value = True
     links.new(node_input.outputs[1], node_bsdf.inputs[4])
     node_group.inputs.new('NodeSocketColor', "ADD Color")
-    node_group.inputs[2].hide_value = True
     links.new(node_input.outputs[2], node_separate_rgb.inputs[0])
     links.new(node_input.outputs[2], node_add_switch.inputs[0])
     node_group.inputs.new('NodeSocketColor', "ADD Alpha")
-    node_group.inputs[3].hide_value = True
     links.new(node_input.outputs[3], node_add_paint.inputs[0])
     node_group.inputs.new('NodeSocketColor', "NG Color")
-    node_group.inputs[4].hide_value = True
     links.new(node_input.outputs[4], node_normal_map.inputs[1])
     node_group.inputs.new('NodeSocketColor', "NG Alpha")
-    node_group.inputs[5].hide_value = True
     links.new(node_input.outputs[5], node_gloss_rough.inputs[1])
     node_group.inputs.new('NodeSocketColor', "AM Color")
-    node_group.inputs[6].hide_value = True
     links.new(node_input.outputs[6], node_bsdf.inputs[18])
     node_group.inputs.new('NodeSocketColor', "Paint Color")
-    node_group.inputs[7].hide_value = True
     links.new(node_input.outputs[7], node_add_paint.inputs[2])
 
     # Backwards compatability
+    
+    if bpy.app.version >= (2, 90, 0):
+        node_group.inputs[0].hide_value = True
+        node_group.inputs[1].hide_value = True
+        node_group.inputs[2].hide_value = True
+        node_group.inputs[3].hide_value = True
+        node_group.inputs[4].hide_value = True
+        node_group.inputs[5].hide_value = True
+        node_group.inputs[6].hide_value = True
+        node_group.inputs[7].hide_value = True
+
     if bpy.app.version >= (2, 91, 0):
         node_group.inputs.new('NodeSocketFloat', "Emission Strength")
         links.new(node_input.outputs[8], node_bsdf.inputs[18])
