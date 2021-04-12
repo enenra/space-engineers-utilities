@@ -32,10 +32,12 @@ class SEUT_OT_MatCreate(Operator):
         return {'FINISHED'}
     
 
-def create_material():
+def create_material(material=None):
     """Creates a SEUT Material"""
 
-    material = bpy.data.materials.new(name="SEUT_TEMP")
+    if material is None:
+        material = bpy.data.materials.new(name="SEUT_TEMP")
+        
     material.use_nodes = True
     material.use_backface_culling = True
     material.blend_method = 'BLEND'

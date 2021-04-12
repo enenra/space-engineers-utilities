@@ -1,4 +1,5 @@
 import bpy
+import os
 import addon_utils
 
 from bpy.props import (StringProperty,
@@ -17,6 +18,7 @@ from bpy.types import (Panel,
 
 from bpy.types                  import Operator
 
+from .seut_ot_import_materials              import import_materials
 from ..empties.seut_empties                 import empty_types
 from ..materials.seut_ot_remap_materials    import remap_materials
 from ..seut_errors                          import seut_report
@@ -126,6 +128,10 @@ def import_fbx(self, context, filepath):
             recursive_fix_scratched(obj)
         remap_materials(self, context)
 
+    xml_path = os.path.splitext(filepath)[0] + '.xml'
+    if os.path.exists(xml_path):
+        import_materials(self, context, xml_path)
+
     seut_report(self, context, 'INFO', True, 'I014', filepath)
 
     return {'FINISHED'}
@@ -140,14 +146,14 @@ def recursive_fix_scratched(obj):
 def fix_scratched_materials(obj):
     for slot in obj.material_slots:
 
-        if slot.material == bpy.data.materials['PaintedMetalScratched_Colorable'] and 'PaintedMetal_Colorable' in bpy.data.materials:
+        if 'PaintedMetal_Colorable' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_Colorable']:
             slot.material = bpy.data.materials['PaintedMetal_Colorable']
 
-        elif slot.material == bpy.data.materials['PaintedMetalScratched_Yellow'] and 'PaintedMetal_Yellow' in bpy.data.materials:
+        elif 'PaintedMetal_Yellow' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_Yellow']:
             slot.material = bpy.data.materials['PaintedMetal_Yellow']
 
-        elif slot.material == bpy.data.materials['PaintedMetalScratched_Darker'] and 'PaintedMetal_Darker' in bpy.data.materials:
+        elif 'PaintedMetal_Darker' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_Darker']:
             slot.material = bpy.data.materials['PaintedMetal_Darker']
 
-        elif slot.material == bpy.data.materials['PaintedMetalScratched_VeryDark'] and 'PaintedMetal_VeryDark' in bpy.data.materials:
+        elif 'PaintedMetal_VeryDark' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_VeryDark']:
             slot.material = bpy.data.materials['PaintedMetal_VeryDark']
