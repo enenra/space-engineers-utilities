@@ -94,7 +94,8 @@ def setup_mirroring(self, context):
     collection = create_seut_collection(collections['seut'], 'Mirroring' + tag)
     collection.seut.col_type = 'mirroring'
     collection.seut.scene = scene
-    collection.color_tag = colors[collection.seut.col_type]
+    if bpy.app.version >= (2, 91, 0):
+        collection.color_tag = colors[collection.seut.col_type]
     
     # Compile rotation / position / size information
     empty_x_rot_raw = mirroring_presets[scene.seut.mirroring_X]

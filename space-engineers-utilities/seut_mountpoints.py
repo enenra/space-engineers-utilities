@@ -36,7 +36,8 @@ def setup_mountpoints(self, context):
     collection = create_seut_collection(collections['seut'], 'Mountpoints' + tag)
     collection.seut.col_type = 'mountpoints'
     collection.seut.scene = scene
-    collection.color_tag = colors[collection.seut.col_type]
+    if bpy.app.version >= (2, 91, 0):
+        collection.color_tag = colors[collection.seut.col_type]
 
     # Create empty tree for sides
     if scene.seut.gridScale == 'small':

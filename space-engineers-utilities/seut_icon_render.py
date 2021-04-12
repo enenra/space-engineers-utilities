@@ -31,7 +31,8 @@ def setup_icon_render(self, context):
     collection = create_seut_collection(collections['seut'], 'Render' + tag)
     collection.seut.col_type = 'render'
     collection.seut.scene = scene
-    collection.color_tag = colors[collection.seut.col_type]
+    if bpy.app.version >= (2, 91, 0):
+        collection.color_tag = colors[collection.seut.col_type]
     
     if scene.render.filepath == '/tmp\\':
         scene.render.filepath = '//'
