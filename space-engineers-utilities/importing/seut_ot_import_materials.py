@@ -50,14 +50,16 @@ class SEUT_OT_Import_Materials(Operator):
             return {'CANCELLED'}
 
         root = tree.getroot()
-
-        if not root.tag == 'MaterialsLib':
+        if not root.tag == 'MaterialsLib' and not root.tag == 'Model':
             seut_report(self, context, 'ERROR', True, 'E040')
             return {'CANCELLED'}
 
         imported = []
 
         for mat in root:
+            if mat.tag != 'Material':
+                continue
+
             if mat.attrib['Name'] in bpy.data.materials:
                 seut_report(self, context, 'INFO', True, 'I020', mat.attrib['Name'])
                 continue
