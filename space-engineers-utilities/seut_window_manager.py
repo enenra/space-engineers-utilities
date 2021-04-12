@@ -52,12 +52,13 @@ def update_enabled(self, context):
                             keep_img.append(node.image.name)
 
             for img in data_from.images:
-                image = bpy.data.images[img]
-                if image.name in bpy.data.images and image.library is not None and image.library.name == self.name:
-                    if image.name in keep_img:
-                        image.make_local()
-                    else:
-                        bpy.data.images.remove(image, do_unlink=True)
+                if img in bpy.data.images:
+                    image = bpy.data.images[img]
+                    if image.name in bpy.data.images and image.library is not None and image.library.name == self.name:
+                        if image.name in keep_img:
+                            image.make_local()
+                        else:
+                            bpy.data.images.remove(image, do_unlink=True)
 
             for ng in data_from.node_groups:
                 node_group = bpy.data.node_groups[ng]
