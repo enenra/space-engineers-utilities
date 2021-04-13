@@ -1,11 +1,11 @@
 # Changelog
 * Added: Support for using Better FBX importer code in SEUT import.
-* Added: Import materials from model XMLs
-* Added: Automatic material import from model XMLs during FBX import (only materials defined in that XML, not MaterialRefs)
+* Added: Import materials from model XMLs.
+* Added: Automatic material import from model XMLs during FBX import (only materials defined in that XML, not MaterialRefs).
 * Fixed: Empty resizing after export.
 * Fixed: Rare issue when fixing scratched materials on import.
 * Fixed: Rare issue when grid scale would be changed after export.
-* Fixed: Rare issue with MatLib linking / unlinking
+* Fixed: Rare issue with MatLib linking / unlinking.
 * Fixed: Issues with different modes and pre 2.91 Blender.
 * Fixed: issues with material creation and pre 2.90 Blender.
 

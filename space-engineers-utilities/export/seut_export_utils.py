@@ -275,10 +275,13 @@ def export_fbx(self, context, collection) -> str:
             # Remove numbers
             # To ensure they work ingame (where duplicate names are no issue) this will remove the ".001" etc. from the name (and cause another empty to get this numbering)
             if re.search("\.[0-9]{3}", empty.name[-4:]) != None and empty.name.find("(L)") == -1:
-                temp_obj = bpy.data.objects[empty.name[:-4]]
-                temp_obj.name = empty.name + " TEMP"
-                empty.name = empty.name[:-4]
-                temp_obj.name = temp_obj.name[:-len(" TEMP")]
+                if empty.name[:-4] in bpy.data.objects:
+                    temp_obj = bpy.data.objects[empty.name[:-4]]
+                    temp_obj.name = empty.name + " TEMP"
+                    empty.name = empty.name[:-4]
+                    temp_obj.name = temp_obj.name[:-len(" TEMP")]
+                else:
+                    empty.name = empty.name[:-4]
 
             # Check parenting
             if empty.parent is None:
