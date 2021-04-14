@@ -51,7 +51,7 @@ def export(self, context):
 
     current_area = prep_context(context)
 
-    scene.seut.mountpointToggle == 'off'
+    scene.seut.mountpointToggle = 'off'
     scene.seut.mirroringToggle = 'off'
     scene.seut.renderToggle = 'off'
 
