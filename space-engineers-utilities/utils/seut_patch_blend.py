@@ -56,6 +56,10 @@ def patch_collections():
             else:
                 temp_type = str(temp_type.group(0).lower())
 
+            # Parses indexes of collections of the same type (LOD1, LOD2, etc.)
+            if len(temp_type) != len(raw_type):
+                col.seut.type_index = int(raw_type[len(temp_type):])
+
             # Assigns HKT and BS_LOD collections to default collections
             if temp_type == 'collision':
                 col.seut.col_type = 'hkt'
@@ -79,10 +83,6 @@ def patch_collections():
 
             else:
                 col.seut.col_type = temp_type
-
-            # Parses indexes of collections of the same type (LOD1, LOD2, etc.)
-            if len(temp_type) != len(raw_type):
-                col.seut.type_index = int(raw_type[len(temp_type):])
         
             col.seut.scene = scn
         

@@ -4,6 +4,7 @@
 * Added: Automatic material import from model XMLs during FBX import (only materials defined in that XML, not MaterialRefs).
 * Fixed: Empty resizing after export.
 * Fixed: Mountpoints not being saved on export if MP mode is still active.
+* Fixed: LOD distances not getting patched to new format properly
 * Fixed: Error on export when no highlight object is assigned to a highlight empty
 * Fixed: Export issue when a "myempty.001"-empty existed but not a "myempty".
 * Fixed: Rare issue when fixing scratched materials on import.
