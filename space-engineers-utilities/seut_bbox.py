@@ -100,6 +100,11 @@ class SEUT_OT_BBox(Operator):
         y = scene.seut.bBox_Y * factor
         z = scene.seut.bBox_Z * factor
 
+        if not scene.seut.sceneType == 'mainScene':
+            x = 0
+            y = 0
+            z = 0
+
         self.coords = (
             (-x/2, -y/2, -z/2), (+x/2, -y/2, -z/2),
             (-x/2, +y/2, -z/2), (+x/2, +y/2, -z/2),
