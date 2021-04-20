@@ -62,6 +62,7 @@ warnings = {
     'W010': "Library '{variable_1}' could not be relocated in '{variable_2}'.",
     'W011': "Loading of image '{variable_1}' failed.",
     'W012': "Material '{variable_1}' is a DLC material. Keen requires any model using it to be DLC-locked.",
+    'W013': "Subpart scene '{variable_1}' does not have the same grid size export settings as the scene of the subpart empty ('{variable_2}') it is referenced in. This may cause the subpart to display in an unintended size ingame.",
 }
 
 infos = {

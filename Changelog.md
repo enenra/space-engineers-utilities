@@ -3,6 +3,7 @@
 * Added: Import materials from model XMLs.
 * Improved: Code around creation of subpart empties. Now handles targeted objects better.
 * Added: Automatic material import from model XMLs during FBX import (only materials defined in that XML, not MaterialRefs).
+* Added: Warning for main- and subpart-scene having different `Grid Export`-settings.
 * Changed: Bounding box is no longer displayed in anything but the main scene type.
 * Fixed: Empty resizing after export.
 * Fixed: Mountpoints not being saved on export if MP mode is still active.
