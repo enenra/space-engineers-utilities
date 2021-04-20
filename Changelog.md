@@ -1,6 +1,7 @@
 # Changelog
 * Added: Support for using Better FBX importer code in SEUT import.
 * Added: Import materials from model XMLs.
+* Improved: Code around creation of subpart empties. Now handles targeted objects better.
 * Added: Automatic material import from model XMLs during FBX import (only materials defined in that XML, not MaterialRefs).
 * Changed: Bounding box is no longer displayed in anything but the main scene type.
 * Fixed: Empty resizing after export.

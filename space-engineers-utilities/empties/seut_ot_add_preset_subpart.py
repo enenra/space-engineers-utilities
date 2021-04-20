@@ -16,11 +16,6 @@ class SEUT_OT_AddPresetSubpart(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
 
-    @classmethod
-    def poll(cls, context):
-        return len(context.selected_objects) != 0
-
-
     # pistons probably missing, hangar doors too
     detector_type: EnumProperty(
         name='Subpart Type',
@@ -60,7 +55,10 @@ class SEUT_OT_AddPresetSubpart(Operator):
 
     def execute(self, context):
         scene = context.scene
-        target_object = context.selected_objects[0]
+
+        target_object = None
+        if 0 in context.selected_objects:
+            target_object = context.selected_objects[0]
 
         # Determine name strings.
         empty_name = ""
@@ -142,9 +140,9 @@ class SEUT_OT_AddPresetSubpart(Operator):
             
         if target_object != None:
             empty.parent = target_object
-        if target_object.users_collection[0] != None:
-            empty.users_collection[0].objects.unlink(empty)
-            target_object.users_collection[0].objects.link(empty)
+            if target_object.users_collection[0] != None:
+                empty.users_collection[0].objects.unlink(empty)
+                target_object.users_collection[0].objects.link(empty)
 
         bpy.data.objects[empty.name][custom_prop_name] = ""
         

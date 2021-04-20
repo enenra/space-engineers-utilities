@@ -26,14 +26,17 @@ class SEUT_OT_AddCustomSubpart(Operator):
         scene = context.scene
             
         custom_prop_name = "file"
-        selected_object = context.view_layer.objects.active
+
+        target_object = None
+        if 0 in context.selected_objects:
+            target_object = context.selected_objects[0]
 
         bpy.ops.object.add(type='EMPTY')
         empty = context.view_layer.objects.active
         empty.name = self.name
 
-        if not selected_object is None:
-            empty.parent = selected_object
+        if not target_object is None:
+            empty.parent = target_object
 
         empty.empty_display_type = 'ARROWS'
         bpy.data.objects[empty.name][custom_prop_name] = ""
