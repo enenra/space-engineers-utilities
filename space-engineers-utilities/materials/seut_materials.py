@@ -83,6 +83,124 @@ class SEUT_Materials(PropertyGroup):
         default=""
     )
 
+    # TransparentMaterial properties
+
+    alpha_misting_enable: BoolProperty(
+        name="Enable Alpha Misting",
+        description="Start and end values determine the distance in meters at which a material's transparency is rendered",
+        default=False
+    )
+    alpha_misting_start: BoolProperty(
+        name="Alpha Misting Start",
+        description="The distance at which the material starts to fade in",
+        unit='LENGTH',
+        default=0.0
+    )
+    alpha_misting_end: BoolProperty(
+        name="Alpha Misting End",
+        description="The distance at which the material finishes fading in",
+        unit='LENGTH',
+        default=0.0
+    )
+    alpha_saturation: FloatProperty(
+        name="Alpha Saturation",
+        description="UNKNOWN",
+        default=1.0,
+        min=0.0,
+        max=1.0
+    )
+    affected_by_other_lights: BoolProperty(
+        name="Affected by Other Lights",
+        description="Whether or not other lights will cast light onto this texture",
+        default=False
+    )
+    soft_particle_distance_scale: FloatProperty(
+        name="Soft Particle Distance Scale",
+        description="Changes the way normals are applied to a transparent surface, making it appear to have smoother transitions between hard surfaces",
+        default=1.0,
+        min=0.0
+    )
+    # Texture from CM
+    # GlossTexture from NG
+    color: FloatVectorProperty(
+        name="Color",
+        description="Overrides the color of the CM texture",
+        subtype='COLOR_GAMMA',
+        size=4,
+        default=(0.0, 0.0, 0.0, 1.0)
+    )
+    color_add: FloatVectorProperty(
+        name="Color Add",
+        description="This color is added on top of the color of the CM texture",
+        subtype='COLOR_GAMMA',
+        size=4,
+        default=(0.0, 0.0, 0.0, 0.1)
+    )
+    color_emission_multiplier: FloatProperty(
+        name="Emission Multiplier",
+        description="Makes the material more emissive in the Color / Color Add defined",
+        default=0.0,
+        min=0.0,
+        max=50.0
+    )
+    shadow_multiplier: FloatVectorProperty(
+        name="Shadow Multiplier",
+        description="Controls the contribution of the color in shadowed areas",
+        subtype='COLOR_GAMMA',
+        size=4,
+        default=(0.0, 0.0, 0.0, 0.0)
+    )
+    light_multiplier: FloatVectorProperty(
+        name="Light Multiplier",
+        description="Controls the contribution of the sun to the lighting",
+        subtype='COLOR_GAMMA',
+        size=4,
+        default=(0.0, 0.0, 0.0, 0.0)
+    )
+    reflectivity: FloatProperty(
+        name="Reflectivity",
+        description="If Fresnel and Reflectivity are greater than 0, there can be a reflection. Increase Reflectivity if you want reflections at all angles.",
+        default=0.6,
+        min=0.0,
+        max=1.0
+    )
+    fresnel: FloatProperty(
+        name="Fresnel",
+        description="If Fresnel and Reflectivity are greater than 0, there can be a reflection. Increase Fresnel if you want reflections at glancing angles.",
+        default=1.0
+    )
+    reflection_shadow: FloatProperty(
+        name="Reflection Shadow",
+        description="Controls how intense the reflection is in the shadowed part of the block. Intensity is always 1 in the unshadowed part",
+        default=0.1,
+        min=0.0,
+        max=1.0
+    )
+    gloss_texture_add: FloatProperty(
+        name="Gloss Texture Add",
+        description="Increases the gloss defined by the NG texture of the material. If both are zero, the reflection devolves into ambient color",
+        default=0.55,
+        min=0.0,
+        max=1.0
+    )
+    gloss: FloatProperty(
+        name="Gloss",
+        description="How clear the reflected sun can be seen on the material",
+        default=0.4,
+        min=0.0,
+        max=1.0
+    )
+    specular_color_factor: FloatProperty(
+        name="Specular Color Factor",
+        description="Increases the specularity of the color (the size of the sun glare)",
+        default=0.0
+    )
+    is_flare_occluder: BoolProperty(
+        name="Is Flare Occluder",
+        description="Hides sprite flares of the sun, lights, thrusters, etc",
+        default=False
+    )
+
 
 class SEUT_UL_MatLib(UIList):
     """Creates the MatLib UI list"""
