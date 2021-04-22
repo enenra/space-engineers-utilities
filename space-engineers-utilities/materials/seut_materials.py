@@ -90,13 +90,13 @@ class SEUT_Materials(PropertyGroup):
         description="Start and end values determine the distance in meters at which a material's transparency is rendered",
         default=False
     )
-    alpha_misting_start: BoolProperty(
+    alpha_misting_start: FloatProperty(
         name="Alpha Misting Start",
         description="The distance at which the material starts to fade in",
         unit='LENGTH',
         default=0.0
     )
-    alpha_misting_end: BoolProperty(
+    alpha_misting_end: FloatProperty(
         name="Alpha Misting End",
         description="The distance at which the material finishes fading in",
         unit='LENGTH',
