@@ -86,7 +86,7 @@ class SEUT_Materials(PropertyGroup):
     # TransparentMaterial properties
 
     alpha_misting_enable: BoolProperty(
-        name="Enable Alpha Misting",
+        name="Alpha Misting",
         description="Start and end values determine the distance in meters at which a material's transparency is rendered",
         default=False
     )
@@ -123,22 +123,26 @@ class SEUT_Materials(PropertyGroup):
     # Texture from CM
     # GlossTexture from NG
     color: FloatVectorProperty(
-        name="Color",
+        name="Color Override",
         description="Overrides the color of the CM texture",
         subtype='COLOR_GAMMA',
         size=4,
+        min=0.0,
+        max=1.0,
         default=(0.0, 0.0, 0.0, 1.0)
     )
     color_add: FloatVectorProperty(
-        name="Color Add",
+        name="Color Overlay",
         description="This color is added on top of the color of the CM texture",
         subtype='COLOR_GAMMA',
         size=4,
+        min=0.0,
+        max=1.0,
         default=(0.0, 0.0, 0.0, 0.1)
     )
     color_emission_multiplier: FloatProperty(
         name="Emission Multiplier",
-        description="Makes the material more emissive in the Color / Color Add defined",
+        description="Makes the material more emissive in the Color Override / Color Overlay defined",
         default=0.0,
         min=0.0,
         max=50.0
@@ -148,6 +152,8 @@ class SEUT_Materials(PropertyGroup):
         description="Controls the contribution of the color in shadowed areas",
         subtype='COLOR_GAMMA',
         size=4,
+        min=0.0,
+        max=1.0,
         default=(0.0, 0.0, 0.0, 0.0)
     )
     light_multiplier: FloatVectorProperty(
@@ -155,6 +161,8 @@ class SEUT_Materials(PropertyGroup):
         description="Controls the contribution of the sun to the lighting",
         subtype='COLOR_GAMMA',
         size=4,
+        min=0.0,
+        max=1.0,
         default=(0.0, 0.0, 0.0, 0.0)
     )
     reflectivity: FloatProperty(
@@ -196,7 +204,7 @@ class SEUT_Materials(PropertyGroup):
         default=0.0
     )
     is_flare_occluder: BoolProperty(
-        name="Is Flare Occluder",
+        name="Flare Occluder",
         description="Hides sprite flares of the sun, lights, thrusters, etc",
         default=False
     )
@@ -257,6 +265,48 @@ class SEUT_PT_Panel_Materials(Panel):
             
             box.prop(material.seut, 'windScale', icon='SORTSIZE')
             box.prop(material.seut, 'windFrequency', icon='GROUP')
+
+            if material.seut.technique == 'GLASS':
+                box = layout.box()
+                box.label(text="Transparent Material Options", icon='SETTINGS')
+
+                col = box.column(align=True)
+                col.prop(material.seut, 'alpha_misting_enable', icon='ZOOM_ALL')
+                if material.seut.alpha_misting_enable:
+                    row = col.row(align=True)
+                    row.prop(material.seut, 'alpha_misting_start', text="Start")
+                    row.prop(material.seut, 'alpha_misting_end', text="End")
+                
+                box.prop(material.seut, 'alpha_saturation', slider=True)
+                box.prop(material.seut, 'affected_by_other_lights', icon='LIGHT')
+                box.prop(material.seut, 'soft_particle_distance_scale')
+
+                box2 = box.box()
+                box2.label(text="Color Adjustments", icon='COLOR')
+                col = box2.column(align=True)
+                col.prop(material.seut, 'color', text="")
+                col.prop(material.seut, 'color_add', text="")
+                col.prop(material.seut, 'color_emission_multiplier', slider=True)
+                col = box2.column(align=True)
+                col.prop(material.seut, 'shadow_multiplier', text="")
+                col.prop(material.seut, 'light_multiplier', text="")
+                
+                box2 = box.box()
+                box2.label(text="Reflection Adjustments", icon='MOD_MIRROR')
+                
+                col = box2.column(align=True)
+                col.prop(material.seut, 'reflectivity')
+                col.prop(material.seut, 'fresnel')
+                col.prop(material.seut, 'reflection_shadow')
+
+                box2.prop(material.seut, 'gloss_texture_add', slider=True)
+
+                col = box2.column(align=True)
+                col.prop(material.seut, 'is_flare_occluder', icon='LIGHT_SUN')
+                if not material.seut.is_flare_occluder:
+                    col.prop(material.seut, 'gloss')
+                    col.prop(material.seut, 'specular_color_factor')
+
 
         box = layout.box()
 
