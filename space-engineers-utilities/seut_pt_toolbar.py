@@ -159,8 +159,7 @@ class SEUT_PT_Panel_BoundingBox(Panel):
             row.prop(scene.seut, "bBox_Z")
 
             row = box.row()
-            # row.prop(wm.seut, 'bboxColor', text="")
-            # row.prop(wm.seut, 'bboxTransparency', text="")
+            row.prop(wm.seut, 'bboxColor', text="")
             
             row = box.row()
             row.operator('object.bbox_auto', icon='AUTO')
