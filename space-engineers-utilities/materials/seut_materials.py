@@ -41,7 +41,7 @@ class SEUT_Materials(PropertyGroup):
         description="The technique with which the material is rendered ingame",
         items=(
             ('MESH', 'MESH', 'The standard technique'),
-            ('DECAL', 'DECAL', "Makes the material look like it's part of the model behind it"),
+            ('DECAL', 'DECAL', "Makes the material look like it's part of the model behind it. Does not support transparency"),
             ('DECAL_NOPREMULT', 'DECAL_NOPREMULT', "Higher accuracy of transparency than 'DECAL', but same visual style"),
             ('DECAL_CUTOUT', 'DECAL_CUTOUT', "Makes the material look like it cuts into the model behind it"),
             ('GLASS', 'GLASS', 'Transparent material - requires additional values to be set in TransparentMaterials.sbc'),
