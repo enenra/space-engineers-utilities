@@ -87,7 +87,7 @@ class SEUT_Materials(PropertyGroup):
 
     alpha_misting_enable: BoolProperty(
         name="Alpha Misting",
-        description="Start and end values determine the distance in meters at which a material's transparency is rendered",
+        description="Start and end values determine the distance in meters at which a material's transparency is rendered.\nNote: Only works on billboards spawned by code, not on models",
         default=False
     )
     alpha_misting_start: FloatProperty(
@@ -111,12 +111,12 @@ class SEUT_Materials(PropertyGroup):
     )
     affected_by_other_lights: BoolProperty(
         name="Affected by Other Lights",
-        description="Whether or not other lights will cast light onto this texture",
+        description="Whether or not other lights will cast light onto this texture.\nNote: Only works on billboards spawned by code, not on models",
         default=False
     )
     soft_particle_distance_scale: FloatProperty(
         name="Soft Particle Distance Scale",
-        description="Changes the way normals are applied to a transparent surface, making it appear to have smoother transitions between hard surfaces",
+        description="Changes the way normals are applied to a transparent surface, making it appear to have smoother transitions between hard surfaces.\nNote: Only works on billboards spawned by code, not on models",
         default=1.0,
         min=0.0
     )
@@ -205,7 +205,7 @@ class SEUT_Materials(PropertyGroup):
     )
     is_flare_occluder: BoolProperty(
         name="Flare Occluder",
-        description="Hides sprite flares of the sun, lights, thrusters, etc",
+        description="Whether sprite flares of the sun, lights, thrusters, etc. can be seen through the Transparent Material",
         default=False
     )
 
@@ -266,20 +266,11 @@ class SEUT_PT_Panel_Materials(Panel):
             box.prop(material.seut, 'windScale', icon='SORTSIZE')
             box.prop(material.seut, 'windFrequency', icon='GROUP')
 
-            if material.seut.technique == 'GLASS':
+            if material.seut.technique == 'GLASS' or material.seut.technique == 'HOLO' or material.seut.technique == 'SHIELD':
                 box = layout.box()
                 box.label(text="Transparent Material Options", icon='SETTINGS')
-
-                col = box.column(align=True)
-                col.prop(material.seut, 'alpha_misting_enable', icon='ZOOM_ALL')
-                if material.seut.alpha_misting_enable:
-                    row = col.row(align=True)
-                    row.prop(material.seut, 'alpha_misting_start', text="Start")
-                    row.prop(material.seut, 'alpha_misting_end', text="End")
                 
                 box.prop(material.seut, 'alpha_saturation', slider=True)
-                box.prop(material.seut, 'affected_by_other_lights', icon='LIGHT')
-                box.prop(material.seut, 'soft_particle_distance_scale')
 
                 box2 = box.box()
                 box2.label(text="Color Adjustments", icon='COLOR')
@@ -302,10 +293,20 @@ class SEUT_PT_Panel_Materials(Panel):
                 box2.prop(material.seut, 'gloss_texture_add', slider=True)
 
                 col = box2.column(align=True)
+                col.prop(material.seut, 'gloss')
+                col.prop(material.seut, 'specular_color_factor')
                 col.prop(material.seut, 'is_flare_occluder', icon='LIGHT_SUN')
-                if not material.seut.is_flare_occluder:
-                    col.prop(material.seut, 'gloss')
-                    col.prop(material.seut, 'specular_color_factor')
+
+                box2 = box.box()
+                box2.label(text="Billboards", icon='IMAGE_PLANE')
+                col = box2.column(align=True)
+                col.prop(material.seut, 'alpha_misting_enable', icon='ZOOM_ALL')
+                if material.seut.alpha_misting_enable:
+                    row = col.row(align=True)
+                    row.prop(material.seut, 'alpha_misting_start', text="Start")
+                    row.prop(material.seut, 'alpha_misting_end', text="End")
+                box2.prop(material.seut, 'soft_particle_distance_scale')
+                box2.prop(material.seut, 'affected_by_other_lights', icon='LIGHT')
 
 
         box = layout.box()
