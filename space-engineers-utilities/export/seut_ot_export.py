@@ -14,7 +14,7 @@ from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, pro
 from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_loose_files, create_relative_path
 from .seut_export_utils             import correct_for_export_type, export_xml, export_fbx, export_collection
-from ..seut_preferences             import get_addon_version
+from ..seut_preferences             import get_addon_version, get_addon
 from ..seut_collections             import get_collections, names
 from ..seut_errors                  import *
 from ..seut_utils                   import prep_context, get_preferences
@@ -47,7 +47,12 @@ def export(self, context):
     collections = get_collections(scene)
     preferences = get_preferences()
 
-    print("\n============================================================ Exporting Scene '" + scene.name + "' with SEUT " + str(get_addon_version()) + ".")
+    bl_info = get_addon().bl_info
+    version = str(bl_info['version']).replace("(","").replace(")","").replace(", ",".")
+    if bl_info['dev_version'] > 0:
+        version = version + "-" + str(bl_info['dev_tag']) + "." + str(bl_info['dev_version'])
+
+    print("\n============================================================ Exporting Scene '" + scene.name + "' with SEUT " + version + ".")
 
     current_area = prep_context(context)
 
