@@ -100,8 +100,8 @@ def export(self, context):
         else:
             scene.seut.export_rescaleFactor = 1.0
 
-        if scene.seut.export_exportPath.find("/small/") != -1:
-            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("/small/", "/large/")
+        if scene.seut.export_exportPath.find("\small\\") != -1:
+            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\small\\", "\large\\")
         
         export_all(self, context)
 
@@ -121,8 +121,8 @@ def export(self, context):
         else:
             scene.seut.export_rescaleFactor = 1.0
 
-        if scene.seut.export_exportPath.find("/large/") != -1:
-            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("/large/", "/small/")
+        if scene.seut.export_exportPath.find("\large\\") != -1:
+            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\large\\", "\small\\")
         
         export_all(self, context)
 
