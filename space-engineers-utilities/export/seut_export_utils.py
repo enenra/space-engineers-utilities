@@ -290,6 +290,7 @@ def export_fbx(self, context, collection) -> str:
                 seut_report(self, context, 'WARNING', True, 'W006', empty.name, empty.parent.name, collection.name)
 
             # Additional parenting checks
+            rescale = False
             if 'highlight' in empty and len(empty.seut.highlight_objects) > 0:
 
                 highlights = ""
@@ -304,6 +305,8 @@ def export_fbx(self, context, collection) -> str:
                             highlights = highlights + ';' + entry.obj.name
 
                 empty['highlight'] = highlights
+
+                rescale = True
             
             elif 'file' in empty and empty.seut.linkedScene is not None:
                 linked_scene = empty.seut.linkedScene
@@ -315,12 +318,15 @@ def export_fbx(self, context, collection) -> str:
                 reference = correct_for_export_type(scene, reference)
                 empty['file'] = reference
                 unlink_subpart_scene(empty)
+
+                rescale = True
             
             # Blender FBX export halves empty size on export, this works around it
-            empty.scale.x *= 2
-            empty.scale.y *= 2
-            empty.scale.z *= 2
-            context.view_layer.update()
+            if rescale:
+                empty.scale.x *= 2
+                empty.scale.y *= 2
+                empty.scale.z *= 2
+                context.view_layer.update()
 
     # Prepare materials for export
     for mat in bpy.data.materials:
