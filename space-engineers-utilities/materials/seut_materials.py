@@ -28,6 +28,74 @@ dlc_materials = [
 ]
 
 
+def update_color(self, context):
+    nodes = context.active_object.active_material.node_tree.nodes
+
+    ng = None
+    for node in nodes:
+        if node.name == 'SEUT_NODE_GROUP':
+            ng = node
+    if ng is None:
+        return
+    
+    override = None
+    alpha = None
+    for i in ng.inputs:
+        if i.name == 'Color Override':
+            override = i
+        elif i.name == 'Color Override Alpha':
+            alpha = i
+    if override is None or alpha is None:
+        return
+
+    override.default_value = self.color
+    alpha.default_value = self.color[3]
+
+
+def update_color_add(self, context):
+    nodes = context.active_object.active_material.node_tree.nodes
+
+    ng = None
+    for node in nodes:
+        if node.name == 'SEUT_NODE_GROUP':
+            ng = node
+    if ng is None:
+        return
+    
+    overlay = None
+    alpha = None
+    for i in ng.inputs:
+        if i.name == 'Color Overlay':
+            overlay = i
+        elif i.name == 'Color Overlay Alpha':
+            alpha = i
+    if overlay is None or alpha is None:
+        return
+
+    overlay.default_value = self.color_add
+    alpha.default_value = self.color_add[3]
+
+
+def update_emission_mult(self, context):
+    nodes = context.active_object.active_material.node_tree.nodes
+
+    ng = None
+    for node in nodes:
+        if node.name == 'SEUT_NODE_GROUP':
+            ng = node
+    if ng is None:
+        return
+    
+    mult = None
+    for i in ng.inputs:
+        if i.name == 'Emission Strength':
+            mult = i
+    if mult is None:
+        return
+
+    mult.default_value = self.color_emission_multiplier
+
+
 class SEUT_Materials(PropertyGroup):
     """Holder for the varios material properties"""
     
@@ -129,7 +197,8 @@ class SEUT_Materials(PropertyGroup):
         size=4,
         min=0.0,
         max=1.0,
-        default=(0.0, 0.0, 0.0, 1.0)
+        default=(0.0, 0.0, 0.0, 0.0),
+        update=update_color
     )
     color_add: FloatVectorProperty(
         name="Color Overlay",
@@ -138,14 +207,16 @@ class SEUT_Materials(PropertyGroup):
         size=4,
         min=0.0,
         max=1.0,
-        default=(0.0, 0.0, 0.0, 0.1)
+        default=(0.0, 0.0, 0.0, 0.0),
+        update=update_color_add
     )
     color_emission_multiplier: FloatProperty(
         name="Emission Multiplier",
         description="Makes the material more emissive in the Color Override / Color Overlay defined",
         default=0.0,
         min=0.0,
-        max=50.0
+        max=50.0,
+        update=update_emission_mult
     )
     shadow_multiplier: FloatVectorProperty(
         name="Shadow Multiplier",
@@ -167,14 +238,14 @@ class SEUT_Materials(PropertyGroup):
     )
     reflectivity: FloatProperty(
         name="Reflectivity",
-        description="If Fresnel and Reflectivity are greater than 0, there can be a reflection. Increase Reflectivity if you want reflections at all angles.",
+        description="If Fresnel and Reflectivity are greater than 0, there can be a reflection. Increase Reflectivity if you want reflections at all angles",
         default=0.6,
         min=0.0,
         max=1.0
     )
     fresnel: FloatProperty(
         name="Fresnel",
-        description="If Fresnel and Reflectivity are greater than 0, there can be a reflection. Increase Fresnel if you want reflections at glancing angles.",
+        description="If Fresnel and Reflectivity are greater than 0, there can be a reflection. Increase Fresnel if you want reflections at glancing angles",
         default=1.0
     )
     reflection_shadow: FloatProperty(
