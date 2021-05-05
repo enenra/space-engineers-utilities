@@ -369,9 +369,10 @@ def export_fbx(self, context, collection) -> str:
                     empty['file'] = reference
 
             # Resetting empty size
-            empty.scale.x *= 0.5
-            empty.scale.y *= 0.5
-            empty.scale.z *= 0.5
+            if 'file' in empty or 'highlight' in empty :
+                empty.scale.x *= 0.5
+                empty.scale.y *= 0.5
+                empty.scale.z *= 0.5
 
     bpy.context.scene.collection.children.unlink(collection)
 
