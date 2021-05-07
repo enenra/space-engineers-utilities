@@ -52,7 +52,7 @@ def update_enabled(self, context):
                             keep_img.append(node.image.name)
 
             for img in data_from.images:
-                if img in bpy.data.images:
+                if img in bpy.data.images and img is not None:
                     image = bpy.data.images[img]
                     if image.name in bpy.data.images and image.library is not None and image.library.name == self.name:
                         if image.name in keep_img:
