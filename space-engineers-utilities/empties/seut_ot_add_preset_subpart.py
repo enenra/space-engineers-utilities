@@ -116,6 +116,9 @@ class SEUT_OT_AddPresetSubpart(Operator):
         elif self.detector_type == 'PistonSubpart3':
             empty_name = "subpart_PistonSubpart3"
             uses_index = False
+        elif self.detector_type == 'TurbineRotor':
+            empty_name = "subpart_TurbineRotor"
+            uses_index = False
         elif self.detector_type == 'HangarDoor':
             empty_name = "subpart_HangarDoor_door"
             uses_index = True
