@@ -437,9 +437,9 @@ def export_sbc(self, context):
     def_SubtypeId.text = scene.seut.subtypeId
 
     def_DisplayName = ET.SubElement(def_definition, 'DisplayName')
-    def_DisplayName.text = 'DisplayName_' + scene.seut.subtypeId
+    def_DisplayName.text = '{LOC:DisplayName_' + scene.seut.subtypeId + '}'
     def_Description = ET.SubElement(def_definition, 'Description')
-    def_Description.text = 'Description_' + scene.seut.subtypeId
+    def_Description.text = '{LOC:Description_' + scene.seut.subtypeId + '}'
     
     def_Icon = ET.SubElement(def_definition, 'Icon')
     def_Icon.text = 'Textures\GUI\Icons\AstronautBackpack.dds'
