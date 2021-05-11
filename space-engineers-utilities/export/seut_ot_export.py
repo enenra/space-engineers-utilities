@@ -510,7 +510,8 @@ def export_sbc(self, context):
     
     if len(scene.seut.mountpointAreas) > 0:
 
-        if scene.seut.gridScale == 'small':
+        # gridScale here is modified when exporting both types, use rescaleFactor to determine original gridScale used to define mountpoints
+        if (scene.seut.gridScale == 'small' and scene.seut.export_rescaleFactor > 0.99) or (scene.seut.gridScale == "large" and scene.seut.export_rescaleFactor > 1.01):
             scale = 0.5
         else:
             scale = 2.5
