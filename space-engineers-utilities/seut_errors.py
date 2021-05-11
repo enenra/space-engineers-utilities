@@ -47,6 +47,8 @@ errors = {
     'E040': "Selected XML file could not be loaded as a MaterialsLib.",
     'E041': "No Materials were imported from MaterialsLib '{variable_1}'.",
     'E042': "No MatLibs enabled. Materials cannot be remapped.",
+    'E043': "An object within the file '{variable_1}' has invalid UV-Maps. Could not be converted to MWM.",
+    'E044': "An error ocurred during MWM conversion. See *.mwm.log file (generated if 'Delete Temp Files' is toggled off) for details.",
 }
 
 warnings = {

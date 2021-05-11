@@ -627,8 +627,20 @@ class ExportSettings:
                 logtextInspector(out)
 
             out_str = out.decode("utf-8")
-            if out_str.find("Assimp.AssimpException: Error loading unmanaged library from path: Assimp32.dll") != -1:
-                seut_report(self, context, 'ERROR', False, 'E039')
+            if out_str.find(": ERROR:") != -1:
+                if out_str.find("Assimp.AssimpException: Error loading unmanaged library from path: Assimp32.dll") != -1:
+                    seut_report(self, context, 'ERROR', False, 'E039')
+                    return False
+                    
+                elif out_str.find("System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.") != -1:
+                    temp_string = out_str[out_str.find("\\Models\\") + len("\\Models\\"):]
+                    temp_string = temp_string[:temp_string.find(".fbx")]
+                    seut_report(self, context, 'ERROR', False, 'E043', temp_string + ".fbx")
+                    return False
+            
+                else:
+                    seut_report(self, context, 'ERROR', False, 'E044')
+                    return False
 
             return True
 
