@@ -357,12 +357,13 @@ class SEUT_PT_Panel_Export(Panel):
         if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_anmiation':
             box2 = box.box()
             box2.label(text="Grid Export", icon='GRID')
-            row = box2.row()
-            row.prop(scene.seut, "export_largeGrid", icon='MESH_CUBE')
-            row.prop(scene.seut, "export_smallGrid", icon='META_CUBE')
+            split = box2.split(factor=0.5)
+            col = split.column(align=True)
+            col.prop(scene.seut, "export_largeGrid", icon='MESH_CUBE')
+            col = split.column(align=True)
+            col.prop(scene.seut, "export_smallGrid", icon='META_CUBE')
             if scene.seut.export_smallGrid and scene.seut.export_largeGrid:
-                row2 = box2.row()
-                row2.prop(scene.seut, "export_medium_grid", icon='CUBE')
+                col.prop(scene.seut, "export_medium_grid", icon='CUBE')
         
         split = box.split(factor=0.85)
         col = split.column()

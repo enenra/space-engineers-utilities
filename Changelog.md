@@ -2,6 +2,7 @@
 * Added: Support for using Better FBX importer code in SEUT import.
 * Added: Import materials from model XMLs.
 * Added: Ability to customize bounding box color and transparency.
+* Added: Ability to export to "medium grid". (Thanks to @dbenson24)
 * Improved: Code around creation of subpart empties. Now handles targeted objects better.
 * Improved: Clarified functionality of `DECAL` material technique.
 * Improved: Export log now outputs the current dev version as well.
