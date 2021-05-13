@@ -19,12 +19,6 @@ class SEUT_OT_SimpleNavigation(Operator):
         wm = context.window_manager
 
         if not wm.seut.simpleNavigationToggle:
-            for scn in bpy.data.scenes:
-                collections = get_collections(scn)
-                for col in bpy.data.collections:
-                    if col is not None and col.seut.scene is scn and col.seut.col_type != 'seut':
-                        seut_layer_col = scn.view_layers['SEUT'].layer_collection.children[collections['seut'].name]
-                        seut_layer_col.children[col.name].hide_viewport = False
             return {'FINISHED'}
 
         check = False
@@ -50,9 +44,6 @@ class SEUT_OT_SimpleNavigation(Operator):
         active_col = context.view_layer.active_layer_collection
 
         if not wm.seut.simpleNavigationToggle:
-            for col in bpy.data.collections:
-                if col is not None and col.seut.scene is scene and col.seut.col_type != 'seut':
-                    context.view_layer.layer_collection.children[collections['seut'].name].children[col.name].hide_viewport = False
             return {'FINISHED'}
 
         if active_col.hide_viewport:
