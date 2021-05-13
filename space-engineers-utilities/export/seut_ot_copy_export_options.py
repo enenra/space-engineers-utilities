@@ -25,6 +25,7 @@ class SEUT_OT_CopyExportOptions(Operator):
             scn.seut.export_deleteLooseFiles = scene.seut.export_deleteLooseFiles
             scn.seut.export_largeGrid = scene.seut.export_largeGrid
             scn.seut.export_smallGrid = scene.seut.export_smallGrid
+            scn.seut.export_medium_grid = scene.seut.export_medium_grid
             scn.seut.export_sbc = scene.seut.export_sbc
             scn.seut.export_exportPath = scene.seut.export_exportPath
         
