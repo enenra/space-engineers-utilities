@@ -97,6 +97,8 @@ def export(self, context):
 
         if grid_scale == 'small':
             scene.seut.export_rescaleFactor = 5.0
+            if scene.seut.export_medium_grid:
+                scene.seut.export_rescaleFactor = 3.0
         else:
             scene.seut.export_rescaleFactor = 1.0
 
@@ -118,6 +120,8 @@ def export(self, context):
 
         if grid_scale == 'large':
             scene.seut.export_rescaleFactor = 0.2
+            if scene.seut.export_medium_grid:
+                scene.seut.export_rescaleFactor = 0.6
         else:
             scene.seut.export_rescaleFactor = 1.0
 
@@ -446,20 +450,26 @@ def export_sbc(self, context):
     
     def_CubeSize = ET.SubElement(def_definition, 'CubeSize')
 
+    medium_grid_scalar = 1.0 # default to doing nothing unless the 3to5 mode is detected
+
     if scene.seut.gridScale == 'large':
         def_CubeSize.text = 'Large'
         grid_size = 2.5
+        if (abs(scene.seut.export_rescaleFactor - 3) < 0.01): # floating point comparison
+            medium_grid_scalar = 0.6 # Large grid block is going to be 3/5 of the expected size
     elif scene.seut.gridScale == 'small':
         def_CubeSize.text = 'Small'
         grid_size = 0.5
+        if (abs(scene.seut.export_rescaleFactor - 0.6) < 0.01): # floating point comparison
+            medium_grid_scalar = 3.0 # Small grid block is going to be 3 times larger than expected
     
     def_BlockTopology = ET.SubElement(def_definition, 'BlockTopology')
     def_BlockTopology.text = 'TriangleMesh'
 
     def_Size = ET.SubElement(def_definition, 'Size')
-    def_Size.set('x', str(scene.seut.bBox_X))
-    def_Size.set('y', str(scene.seut.bBox_Z))   # This looks wrong but it's correct: Blender has different forward than SE.
-    def_Size.set('z', str(scene.seut.bBox_Y))
+    def_Size.set('x', str(scene.seut.bBox_X * medium_grid_scalar))
+    def_Size.set('y', str(scene.seut.bBox_Z * medium_grid_scalar))   # This looks wrong but it's correct: Blender has different forward than SE.
+    def_Size.set('z', str(scene.seut.bBox_Y * medium_grid_scalar))
 
     center_empty = None
     for obj in collections['main'].objects:
@@ -481,9 +491,9 @@ def export_sbc(self, context):
             parent_obj = parent_obj.parent
 
         def_Center = ET.SubElement(def_definition, 'Center')
-        def_Center.set('x', str(round(center_loc_x / grid_size)))
-        def_Center.set('y', str(round(center_loc_z / grid_size)))   # This looks wrong but it's correct: Blender has different forward than SE.
-        def_Center.set('z', str(round(center_loc_y / grid_size)))
+        def_Center.set('x', str(round(medium_grid_scalar * center_loc_x / grid_size)))
+        def_Center.set('y', str(round(medium_grid_scalar * center_loc_z / grid_size)))   # This looks wrong but it's correct: Blender has different forward than SE.
+        def_Center.set('z', str(round(medium_grid_scalar * center_loc_y / grid_size)))
 
     def_ModelOffset = ET.SubElement(def_definition, 'ModelOffset')
     def_ModelOffset.set('x', '0')
@@ -587,10 +597,10 @@ def export_sbc(self, context):
 
                 # Need to do this to prevent ET from auto-rearranging keys.
                 def_Mountpoint.set('a_Side', side_name)
-                def_Mountpoint.set('b_StartX', str("{:.2f}".format(round(start_x, 2))))
-                def_Mountpoint.set('c_StartY', str("{:.2f}".format(round(start_y, 2))))
-                def_Mountpoint.set('d_EndX', str("{:.2f}".format(round(end_x, 2))))
-                def_Mountpoint.set('e_EndY', str("{:.2f}".format(round(end_y, 2))))
+                def_Mountpoint.set('b_StartX', str("{:.2f}".format(round(start_x * medium_grid_scalar, 2))))
+                def_Mountpoint.set('c_StartY', str("{:.2f}".format(round(start_y * medium_grid_scalar, 2))))
+                def_Mountpoint.set('d_EndX', str("{:.2f}".format(round(end_x * medium_grid_scalar, 2))))
+                def_Mountpoint.set('e_EndY', str("{:.2f}".format(round(end_y * medium_grid_scalar, 2))))
 
                 if area.default:
                     def_Mountpoint.set('f_Default', str(area.default).lower())

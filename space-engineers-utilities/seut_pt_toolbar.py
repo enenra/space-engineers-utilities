@@ -360,6 +360,9 @@ class SEUT_PT_Panel_Export(Panel):
             row = box2.row()
             row.prop(scene.seut, "export_largeGrid", icon='MESH_CUBE')
             row.prop(scene.seut, "export_smallGrid", icon='META_CUBE')
+            if scene.seut.export_smallGrid and scene.seut.export_largeGrid:
+                row2 = box2.row()
+                row2.prop(scene.seut, "export_medium_grid", icon='CUBE')
         
         split = box.split(factor=0.85)
         col = split.column()

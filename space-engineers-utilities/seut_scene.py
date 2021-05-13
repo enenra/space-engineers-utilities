@@ -228,6 +228,11 @@ def update_export_smallGrid(self, context):
         self.export_largeGrid = True
 
 
+def update_export_grid3To5Ratio(self, context):
+    scene = context.scene
+    self.export_grid3To5Ratio  = not self.export_grid3To5Ratio
+
+
 def update_export_exportPath(self, context):
     scene = context.scene
 
@@ -483,6 +488,12 @@ class SEUT_Scene(PropertyGroup):
         description="Whether to export to small grid",
         default=False,
         update=update_export_smallGrid
+    )
+    export_medium_grid: BoolProperty(
+        name="Medium",
+        description="Use a 3:5 ratio when exporting to small grid instead of 1:5",
+        default=False,
+        update=update_export_medium_grid
     )
     export_sbc: BoolProperty(
         name="SBC",
