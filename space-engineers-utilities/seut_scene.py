@@ -489,11 +489,11 @@ class SEUT_Scene(PropertyGroup):
         default=False,
         update=update_export_smallGrid
     )
-    export_grid3To5Ratio: BoolProperty(
-        name="3:5 Ratio",
+    export_medium_grid: BoolProperty(
+        name="Medium",
         description="Use a 3:5 ratio when exporting to small grid instead of 1:5",
         default=False,
-        update=update_export_grid3To5Ratio
+        update=update_export_medium_grid
     )
     export_sbc: BoolProperty(
         name="SBC",
