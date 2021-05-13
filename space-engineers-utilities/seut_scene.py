@@ -219,9 +219,6 @@ def update_export_largeGrid(self, context):
 
     if not self.export_smallGrid and not self.export_largeGrid:
         self.export_smallGrid = True
-    
-    if not self.export_largeGrid and self.export_medium_grid:
-        self.export_medium_grid = False
 
 
 def update_export_smallGrid(self, context):

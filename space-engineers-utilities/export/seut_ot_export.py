@@ -467,9 +467,9 @@ def export_sbc(self, context):
     def_BlockTopology.text = 'TriangleMesh'
 
     def_Size = ET.SubElement(def_definition, 'Size')
-    def_Size.set('x', str(scene.seut.bBox_X * medium_grid_scalar))
-    def_Size.set('y', str(scene.seut.bBox_Z * medium_grid_scalar))   # This looks wrong but it's correct: Blender has different forward than SE.
-    def_Size.set('z', str(scene.seut.bBox_Y * medium_grid_scalar))
+    def_Size.set('x', str(round(scene.seut.bBox_X * medium_grid_scalar)))
+    def_Size.set('y', str(round(scene.seut.bBox_Z * medium_grid_scalar)))   # This looks wrong but it's correct: Blender has different forward than SE.
+    def_Size.set('z', str(round(scene.seut.bBox_Y * medium_grid_scalar)))
 
     center_empty = None
     for obj in collections['main'].objects:
