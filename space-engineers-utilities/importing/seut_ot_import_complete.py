@@ -70,7 +70,7 @@ class SEUT_OT_ImportComplete(Operator):
             if os.path.isdir(f) or (os.path.splitext(f)[1] != ".fbx" and os.path.splitext(f)[1] != ".FBX"):
                 continue
 
-            if basename + "." not in f and basename + "Construction_" not in f and basename + "_" not in f:
+            if basename != f[:f.find(".")] and basename + "Construction" != f[:f.find("_")] and basename != f[:f.find("_")]:
                 continue
 
             fbx_type = determine_fbx_type(f)
