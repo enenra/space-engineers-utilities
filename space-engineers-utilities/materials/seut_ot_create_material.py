@@ -40,7 +40,7 @@ def create_material(material=None):
         
     material.use_nodes = True
     material.use_backface_culling = True
-    material.blend_method = 'BLEND'
+    material.blend_method = 'CLIP'
 
     nodes = material.node_tree.nodes
 
