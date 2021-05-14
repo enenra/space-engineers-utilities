@@ -457,22 +457,22 @@ def create_internal_material(context, mat_type: str):
 
     if mat_type == 'MOUNTPOINT':
         node_bsdf.inputs[0].default_value = (0.03899, 1.0, 0.348069, 1)
-        node_bsdf.inputs[18].default_value = 0.75
+        node_bsdf.inputs['Alpha'].default_value = 0.75
         material.name = "SMAT_Mountpoint"
 
     elif mat_type == 'MIRROR_X':
         node_bsdf.inputs[0].default_value = (0.715694, 0.0368895, 0.0802198, 1)
-        node_bsdf.inputs[18].default_value = 0.75
+        node_bsdf.inputs['Alpha'].default_value = 0.75
         material.name = "SMAT_Mirror_X"
         
     elif mat_type == 'MIRROR_Y':
         node_bsdf.inputs[0].default_value = (0.23074, 0.533276, 0.00477695, 1)
-        node_bsdf.inputs[18].default_value = 0.75
+        node_bsdf.inputs['Alpha'].default_value = 0.75
         material.name = "SMAT_Mirror_Y"
         
     elif mat_type == 'MIRROR_Z':
         node_bsdf.inputs[0].default_value = (0.0395462, 0.300544, 0.64448, 1)
-        node_bsdf.inputs[18].default_value = 0.75     
+        node_bsdf.inputs['Alpha'].default_value = 0.75     
         material.name = "SMAT_Mirror_Z"
 
     return material
