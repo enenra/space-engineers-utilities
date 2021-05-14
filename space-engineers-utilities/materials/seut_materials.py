@@ -98,6 +98,12 @@ def update_emission_mult(self, context):
 
 class SEUT_Materials(PropertyGroup):
     """Holder for the varios material properties"""
+
+    version: IntProperty(
+        name="SEUT Material Version",
+        description="Used as a reference to patch the SEUT material properties to newer versions",
+        default=1
+    )
     
     overrideMatLib: BoolProperty(
         name="Override MatLib",

@@ -289,6 +289,12 @@ class SEUT_MountpointAreas(PropertyGroup):
 class SEUT_Scene(PropertyGroup):
     """Holder for the various scene properties"""
 
+    version: IntProperty(
+        name="SEUT Scene Version",
+        description="Used as a reference to patch the SEUT scene propertiesto newer versions",
+        default=1
+    )
+
     sceneType: EnumProperty(
         name='Type',
         items=(

@@ -79,6 +79,12 @@ def update_lod_distance(self, context):
 
 class SEUT_Collection(PropertyGroup):
     """Holder for the varios collection properties"""
+
+    version: IntProperty(
+        name="SEUT Collection Version",
+        description="Used as a reference to patch the SEUT collection properties to newer versions",
+        default=1
+    )
     
     scene: PointerProperty(
         type = bpy.types.Scene

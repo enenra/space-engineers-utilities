@@ -109,6 +109,12 @@ class SEUT_MatLibProps(PropertyGroup):
 class SEUT_WindowManager(PropertyGroup):
     """Holder for the various properties saved to the BLEND file"""
 
+    version: IntProperty(
+        name="SEUT WM Version",
+        description="Used as a reference to patch the SEUT window manager properties to newer versions",
+        default=1
+    )
+
     simpleNavigationToggle: BoolProperty(
         name="Simple Navigation",
         description="Automatically sets all non-active collections to hidden",
