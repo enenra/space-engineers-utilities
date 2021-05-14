@@ -241,7 +241,6 @@ def update_export_exportPath(self, context):
         if check_export(self, context, False) == {'CANCELLED'}:
             self.export_exportPath = ""
 
-
 def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'mainScene'
 
@@ -249,16 +248,16 @@ def poll_linkedScene(self, object):
 class SEUT_MountpointAreas(PropertyGroup):
     
     side: EnumProperty(
-    name='Side',
-    items=(
-        ('front', 'Front', ''),
-        ('back', 'Back', ''),
-        ('left', 'Left', ''),
-        ('right', 'Right', ''),
-        ('top', 'Top', ''),
-        ('bottom', 'Bottom', '')
-        ),
-    default='front'        
+        name='Side',
+        items=(
+            ('front', 'Front', ''),
+            ('back', 'Back', ''),
+            ('left', 'Left', ''),
+            ('right', 'Right', ''),
+            ('top', 'Top', ''),
+            ('bottom', 'Bottom', '')
+            ),
+        default='front'        
     )
     x: FloatProperty(
         name="Location X",
@@ -283,6 +282,22 @@ class SEUT_MountpointAreas(PropertyGroup):
     pressurized: BoolProperty(
         name="Pressurized",
         default=False
+    )
+    enabled: BoolProperty(
+        name="Enabled",
+        default=True
+    )
+    exclusion_mask: IntProperty(
+        name="Exclusion Mask",
+        default=0,
+        min=0,
+        max=255
+    )
+    properties_mask: IntProperty(
+        name="Properties Mask",
+        default=0,
+        min=0,
+        max=255
     )
 
 

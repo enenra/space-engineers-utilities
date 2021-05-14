@@ -10,6 +10,9 @@ from .seut_errors                   import check_collection, check_collection_ex
 from .seut_utils                    import prep_context, to_radians, clear_selection, create_seut_collection, lock_object
 
 
+valid_masks = ['0:0', '0:1', '0:2', '1:2', '3:3']
+
+
 def setup_mountpoints(self, context):
     """Sets up mountpoint utilities"""
 
@@ -116,6 +119,13 @@ def setup_mountpoints(self, context):
             plane.location.y = area.y
             plane.seut.default = area.default
             plane.seut.pressurized = area.pressurized
+            plane.seut.enabled = area.enabled
+            plane.seut.exclusion_mask = area.exclusion_mask
+            plane.seut.properties_mask = area.properties_mask
+
+            mask = str(area.exclusion_mask) + ":" + str(area.properties_mask)
+            if mask in valid_masks:
+                plane.seut.mask_preset = mask
 
     clear_selection(context)
     scene.cursor.location = cursor_location
@@ -205,9 +215,12 @@ def save_mountpoint(self, context, collection):
                 item.yDim = child.dimensions.y
                 item.default = child.seut.default
                 item.pressurized = child.seut.pressurized
+                item.enabled = child.seut.enabled
+                item.exclusion_mask = child.seut.exclusion_mask
+                item.properties_mask = child.seut.properties_mask
 
     for area in areas:
-        seut_report(self, context, 'INFO', False, 'I017', area.side, "Location x: " + str(area.x) + " Location y: " + str(area.y) + " Dimension x: " + str(area.xDim) + " Dimension y: " + str(area.yDim), "Default: " + str(area.default) + " PressurizedWhenOpen: " + str(area.pressurized))
+        seut_report(self, context, 'INFO', False, 'I017', area.side, "Location x: " + str(area.x) + " Location y: " + str(area.y) + " Dimension x: " + str(area.xDim) + " Dimension y: " + str(area.yDim), "Default: " + str(area.default) + " PressurizedWhenOpen: " + str(area.pressurized) + " Enabled: " + str(area.enabled) + " ExclusionMask: " + str(area.exclusion_mask) + " PropertiesMask: " + str(area.properties_mask))
 
 
 def clean_mountpoints(self, context):

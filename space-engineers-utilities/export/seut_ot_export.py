@@ -602,10 +602,16 @@ def export_sbc(self, context):
                 def_Mountpoint.set('d_EndX', str("{:.2f}".format(round(end_x * medium_grid_scalar, 2))))
                 def_Mountpoint.set('e_EndY', str("{:.2f}".format(round(end_y * medium_grid_scalar, 2))))
 
+                if area.properties_mask:
+                    def_Mountpoint.set('f_PropertiesMask', str(area.properties_mask).lower())
+                if area.exclusion_mask:
+                    def_Mountpoint.set('g_ExclusionMask', str(area.exclusion_mask).lower())
                 if area.default:
-                    def_Mountpoint.set('f_Default', str(area.default).lower())
+                    def_Mountpoint.set('h_Default', str(area.default).lower())
+                if area.enabled:
+                    def_Mountpoint.set('i_Enabled', str(area.enabled).lower())
                 if area.pressurized:
-                    def_Mountpoint.set('g_PressurizedWhenOpen', str(area.pressurized).lower())
+                    def_Mountpoint.set('j_PressurizedWhenOpen', str(area.pressurized).lower())
 
     
     # Build Stages
@@ -672,8 +678,11 @@ def export_sbc(self, context):
     xml_formatted = xml_formatted.replace("c_StartY", "StartY")
     xml_formatted = xml_formatted.replace("d_EndX", "EndX")
     xml_formatted = xml_formatted.replace("e_EndY", "EndY")
-    xml_formatted = xml_formatted.replace("f_Default", "Default")
-    xml_formatted = xml_formatted.replace("g_PressurizedWhenOpen", "PressurizedWhenOpen")
+    xml_formatted = xml_formatted.replace("f_PropertiesMask", "PropertiesMask")
+    xml_formatted = xml_formatted.replace("g_ExclusionMask", "ExclusionMask")
+    xml_formatted = xml_formatted.replace("h_Enabled", "Enabled")
+    xml_formatted = xml_formatted.replace("i_Default", "Default")
+    xml_formatted = xml_formatted.replace("j_PressurizedWhenOpen", "PressurizedWhenOpen")
 
     filename = scene.seut.subtypeId
 

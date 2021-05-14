@@ -231,9 +231,16 @@ class SEUT_PT_Panel_Mountpoints(Panel):
             if not context.active_object is None and context.active_object.name in bpy.data.collections['Mountpoints (' + scene.seut.subtypeId + ')'].objects and not context.active_object.type == 'EMPTY':
                 box = layout.box()
                 box.label(text="Area", icon='MESH_PLANE')
-                row = box.row()
-                row.prop(context.active_object.seut, 'default', icon='PINNED', text="Default")
-                row.prop(context.active_object.seut, 'pressurized', icon='LOCKED', text="Pressurized")
+                box.prop(context.active_object.seut, 'enabled', icon='CHECKBOX_HLT')
+                if context.active_object.seut.enabled:
+                    row = box.row()
+                    row.prop(context.active_object.seut, 'default', icon='PINNED')
+                    row.prop(context.active_object.seut, 'pressurized', icon='LOCKED', text="Pressurized")
+
+                    box.prop(context.active_object.seut, 'mask_preset', text="Mask")
+                    if context.active_object.seut.mask_preset == 'custom':
+                        box.prop(context.active_object.seut, 'exclusion_mask')
+                        box.prop(context.active_object.seut, 'properties_mask')
                 
             layout.operator('scene.add_mountpoint_area', icon='ADD')
         else:

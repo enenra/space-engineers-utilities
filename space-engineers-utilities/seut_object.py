@@ -55,6 +55,16 @@ def update_default(self, context):
                 obj.seut.default = False
 
 
+def update_mask_preset(self, context):
+
+    preset = self.mask_preset
+
+    if preset != "custom":
+        split = preset.split(":")
+        self.exclusion_mask = int(split[0])
+        self.properties_mask = int(split[1])
+
+
 # These prevent the selected scene from being the current scene and the selected object being the current object
 def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'subpart'
@@ -103,6 +113,43 @@ class SEUT_Object(PropertyGroup):
         name='Pressurized When Open',
         description="Whether a mountpoint on a door block stays pressurized when the door is opened",
         default=False
+    )
+
+    enabled: BoolProperty(
+        name="Enabled",
+        description="Whether a mountpoint area should be enabled or not. Disabled areas provide airtightness but don't allow blocks to be placed onto them",
+        default=True
+    )
+
+    mask_preset: EnumProperty(
+        name='Mask Preset',
+        description="Masks determine which blocks' mountpoints can be mounted onto this mountpoint area",
+        items=(
+            ('0:0', 'None', 'No mountpoint mask is used'),
+            ('0:1', 'Protrudes', 'The geometry behind this mountpoint portrudes out of its block bounds'),
+            ('0:2', 'Narrow', 'Used for window edges and other narrow surfaces at the side of the block'),
+            ('1:2', 'Thin', 'Used for catwalks and other thin mountpoints at the side of the block'),
+            ('3:3', 'Central', 'Mountpoint in the center of a side but not its edges, used on Sensors, Cameras, Interior Lights etc'),
+            ('custom', 'Custom', 'Define custom values for the Exclusion and Properties Mask')
+            ),
+        default='0:0',
+        update=update_mask_preset
+    )
+
+    exclusion_mask: IntProperty(
+        name="Exclusion Mask",
+        description="",
+        default=0,
+        min=0,
+        max=255
+    )
+
+    properties_mask: IntProperty(
+        name="Properties Mask",
+        description="",
+        default=0,
+        min=0,
+        max=255
     )
 
     # Particles
