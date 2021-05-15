@@ -99,7 +99,6 @@ def create_seut_nodegroup(node):
     node_bsdf = nodes.new(type='ShaderNodeBsdfPrincipled')
     node_bsdf.label = 'Principled BSDF'
     node_bsdf.location = (-400.0000, 0.0000)
-    links.new(node_bsdf.outputs[0], node_output.inputs[0])
     
     node_add_ao = nodes.new(type='ShaderNodeMixRGB')
     node_add_ao.label = 'Add AO'
@@ -194,6 +193,8 @@ def create_seut_nodegroup(node):
     else:
         links.new(node_input.outputs[6], node_bsdf.inputs[18])
         links.new(node_normal_map.outputs[0], node_bsdf.inputs[19])
+        
+    links.new(node_bsdf.outputs[0], node_output.inputs[0])
 
     return node_group
 
