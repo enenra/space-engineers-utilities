@@ -606,10 +606,10 @@ def export_sbc(self, context):
                     def_Mountpoint.set('f_PropertiesMask', str(area.properties_mask).lower())
                 if area.exclusion_mask:
                     def_Mountpoint.set('g_ExclusionMask', str(area.exclusion_mask).lower())
+                if not area.enabled:
+                    def_Mountpoint.set('h_Enabled', str(area.enabled).lower())
                 if area.default:
-                    def_Mountpoint.set('h_Default', str(area.default).lower())
-                if area.enabled:
-                    def_Mountpoint.set('i_Enabled', str(area.enabled).lower())
+                    def_Mountpoint.set('i_Default', str(area.default).lower())
                 if area.pressurized:
                     def_Mountpoint.set('j_PressurizedWhenOpen', str(area.pressurized).lower())
 
