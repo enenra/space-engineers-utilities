@@ -1,5 +1,6 @@
 import bpy
 import os
+import re
 import glob
 import subprocess
 import xml.etree.ElementTree as ET
@@ -14,11 +15,11 @@ from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, pro
 from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_loose_files, create_relative_path
 from .seut_export_utils             import correct_for_export_type, export_xml, export_fbx, export_collection
+from ..utils.seut_xml_utils         import *
 from ..seut_preferences             import get_addon_version, get_addon
 from ..seut_collections             import get_collections, names
 from ..seut_errors                  import *
 from ..seut_utils                   import prep_context, get_preferences
-
 
 class SEUT_OT_Export(Operator):
     """Exports all collections in the current scene and compiles them to MWM.\nScene needs to be in Object mode for export to be available"""
@@ -438,49 +439,55 @@ def export_sbc(self, context):
                 return {'CANCELLED'}
 
     # Create XML tree and add initial parameters.
-    definitions = ET.Element('Definitions')
-    definitions.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-    definitions.set('xmlns:xsd', 'http://www.w3.org/2001/XMLSchema')
+    output = get_relevant_sbc(path_data, 'CubeBlocks', scene.seut.subtypeId)
+    if output is not None:
+        print(output)
+        file_to_update = output[0]
+        root = output[1]
+        element = output[2]
 
-    cube_blocks = ET.SubElement(definitions, 'CubeBlocks')
-    def_definition = ET.SubElement(cube_blocks, 'Definition')
-    
-    def_Id = ET.SubElement(def_definition, 'Id')
-    def_TypeId = ET.SubElement(def_Id, 'TypeId')
-    def_TypeId.text = 'CubeBlock'
-    def_SubtypeId = ET.SubElement(def_Id, 'SubtypeId')
-    def_SubtypeId.text = scene.seut.subtypeId
+    if output is None:
+        definitions = ET.Element('Definitions')
+        add_attrib(definitions, 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+        add_attrib(definitions, 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema')
 
-    def_DisplayName = ET.SubElement(def_definition, 'DisplayName')
-    def_DisplayName.text = '{LOC:DisplayName_' + scene.seut.subtypeId + '}'
-    def_Description = ET.SubElement(def_definition, 'Description')
-    def_Description.text = '{LOC:Description_' + scene.seut.subtypeId + '}'
+        cube_blocks = add_subelement(definitions, 'CubeBlocks')
+        def_definition = add_subelement(cube_blocks, 'CubeBlock')
+        update = False
     
-    def_Icon = ET.SubElement(def_definition, 'Icon')
-    def_Icon.text = 'Textures\GUI\Icons\AstronautBackpack.dds'
+    else:
+        definitions = root
+        def_definition = element
+        update = True
     
-    def_CubeSize = ET.SubElement(def_definition, 'CubeSize')
+    def_Id = add_subelement(def_definition, 'Id')
+    add_subelement(def_Id, 'TypeId', 'CubeBlock')
+    add_subelement(def_Id, 'SubtypeId', scene.seut.subtypeId)
+
+    add_subelement(def_definition, 'DisplayName', '{LOC:DisplayName_' + scene.seut.subtypeId + '}')
+    add_subelement(def_definition, 'Description', '{LOC:Description_' + scene.seut.subtypeId + '}')
+    
+    add_subelement(def_definition, 'Icon', 'Textures\GUI\Icons\AstronautBackpack.dds')
 
     medium_grid_scalar = 1.0 # default to doing nothing unless the 3to5 mode is detected
 
     if scene.seut.gridScale == 'large':
-        def_CubeSize.text = 'Large'
+        add_subelement(def_definition, 'CubeSize', 'Large', True)
         grid_size = 2.5
         if (abs(scene.seut.export_rescaleFactor - 3) < 0.01): # floating point comparison
             medium_grid_scalar = 0.6 # Large grid block is going to be 3/5 of the expected size
     elif scene.seut.gridScale == 'small':
-        def_CubeSize.text = 'Small'
+        add_subelement(def_definition, 'CubeSize', 'Small', True)
         grid_size = 0.5
         if (abs(scene.seut.export_rescaleFactor - 0.6) < 0.01): # floating point comparison
             medium_grid_scalar = 3.0 # Small grid block is going to be 3 times larger than expected
     
-    def_BlockTopology = ET.SubElement(def_definition, 'BlockTopology')
-    def_BlockTopology.text = 'TriangleMesh'
+    add_subelement(def_definition, 'BlockTopology', 'TriangleMesh')
 
-    def_Size = ET.SubElement(def_definition, 'Size')
-    def_Size.set('x', str(round(scene.seut.bBox_X * medium_grid_scalar)))
-    def_Size.set('y', str(round(scene.seut.bBox_Z * medium_grid_scalar)))   # This looks wrong but it's correct: Blender has different forward than SE.
-    def_Size.set('z', str(round(scene.seut.bBox_Y * medium_grid_scalar)))
+    def_Size = add_subelement(def_definition, 'Size')
+    add_attrib(def_Size, 'x', round(scene.seut.bBox_X * medium_grid_scalar), True)
+    add_attrib(def_Size, 'y', round(scene.seut.bBox_Z * medium_grid_scalar), True)   # This looks wrong but it's correct: Blender has different forward than SE.
+    add_attrib(def_Size, 'z', round(scene.seut.bBox_Y * medium_grid_scalar), True)
 
     center_empty = None
     for obj in collections['main'].objects:
@@ -501,29 +508,28 @@ def export_sbc(self, context):
             center_loc_z += parent_obj.location.z
             parent_obj = parent_obj.parent
 
-        def_Center = ET.SubElement(def_definition, 'Center')
-        def_Center.set('x', str(round(medium_grid_scalar * center_loc_x / grid_size)))
-        def_Center.set('y', str(round(medium_grid_scalar * center_loc_z / grid_size)))   # This looks wrong but it's correct: Blender has different forward than SE.
-        def_Center.set('z', str(round(medium_grid_scalar * center_loc_y / grid_size)))
+        def_Center = add_subelement(def_definition, 'Center')
+        add_attrib(def_Center, 'x', round(medium_grid_scalar * center_loc_x / grid_size), True)
+        add_attrib(def_Center, 'y', round(medium_grid_scalar * center_loc_z / grid_size), True)   # This looks wrong but it's correct: Blender has different forward than SE.
+        add_attrib(def_Center, 'z', round(medium_grid_scalar * center_loc_y / grid_size), True)
 
-    def_ModelOffset = ET.SubElement(def_definition, 'ModelOffset')
-    def_ModelOffset.set('x', '0')
-    def_ModelOffset.set('y', '0')
-    def_ModelOffset.set('z', '0')
+    def_ModelOffset = add_subelement(def_definition, 'ModelOffset')
+    add_attrib(def_ModelOffset, 'x', 0)
+    add_attrib(def_ModelOffset, 'y', 0)
+    add_attrib(def_ModelOffset, 'z', 0)
 
     # Model
-    def_Model = ET.SubElement(def_definition, 'Model')
-    def_Model.text = os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '.mwm')
+    add_subelement(def_definition, 'Model', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '.mwm'), True)
 
     # Components
-    def_Components = ET.SubElement(def_definition, 'Components')
-    def_Component = ET.SubElement(def_Components, 'Component')
-    def_Component.set('Subtype', 'SteelPlate')
-    def_Component.set('Count', '10')
+    def_Components = add_subelement(def_definition, 'Components')
+    def_Component = add_subelement(def_Components, 'Component')
+    add_attrib(def_Component, 'Subtype', 'SteelPlate')
+    add_attrib(def_Component, 'Count', 10)
 
-    def_CriticalComponent = ET.SubElement(def_definition, 'CriticalComponent')
-    def_CriticalComponent.set('Subtype', 'SteelPlate')
-    def_CriticalComponent.set('Index', '0')
+    def_CriticalComponent = add_subelement(def_definition, 'CriticalComponent')
+    add_attrib(def_CriticalComponent, 'Subtype', 'SteelPlate')
+    add_attrib(def_CriticalComponent, 'Index', 0)
 
     # Mountpoints
     if collections['mountpoints'] != None:
@@ -541,12 +547,12 @@ def export_sbc(self, context):
         bbox_y = scene.seut.bBox_Y * scale
         bbox_z = scene.seut.bBox_Z * scale
 
-        def_Mountpoints = ET.SubElement(def_definition, 'MountPoints')
+        def_Mountpoints = add_subelement(def_definition, 'MountPoints')
 
         for area in scene.seut.mountpointAreas:
             if area is not None:
 
-                def_Mountpoint = ET.SubElement(def_Mountpoints, 'MountPoint')
+                def_Mountpoint = add_subelement(def_Mountpoints, 'MountPoint')
                 side_name = area.side.capitalize()
 
                 if area.side == 'front' or area.side == 'back':
@@ -607,22 +613,22 @@ def export_sbc(self, context):
                         end_y = scene.seut.bBox_Y
 
                 # Need to do this to prevent ET from auto-rearranging keys.
-                def_Mountpoint.set('a_Side', side_name)
-                def_Mountpoint.set('b_StartX', str("{:.2f}".format(round(start_x * medium_grid_scalar, 2))))
-                def_Mountpoint.set('c_StartY', str("{:.2f}".format(round(start_y * medium_grid_scalar, 2))))
-                def_Mountpoint.set('d_EndX', str("{:.2f}".format(round(end_x * medium_grid_scalar, 2))))
-                def_Mountpoint.set('e_EndY', str("{:.2f}".format(round(end_y * medium_grid_scalar, 2))))
+                add_attrib(def_Mountpoint, 'a_Side', side_name)
+                add_attrib(def_Mountpoint, 'b_StartX', "{:.2f}".format(round(start_x * medium_grid_scalar, 2)), True)
+                add_attrib(def_Mountpoint, 'c_StartY', "{:.2f}".format(round(start_y * medium_grid_scalar, 2)), True)
+                add_attrib(def_Mountpoint, 'd_EndX', "{:.2f}".format(round(end_x * medium_grid_scalar, 2)), True)
+                add_attrib(def_Mountpoint, 'e_EndY', "{:.2f}".format(round(end_y * medium_grid_scalar, 2)), True)
 
                 if area.properties_mask:
-                    def_Mountpoint.set('f_PropertiesMask', str(area.properties_mask).lower())
+                    add_attrib(def_Mountpoint, 'f_PropertiesMask', str(area.properties_mask).lower(), True)
                 if area.exclusion_mask:
-                    def_Mountpoint.set('g_ExclusionMask', str(area.exclusion_mask).lower())
+                    add_attrib(def_Mountpoint, 'g_ExclusionMask', str(area.exclusion_mask).lower(), True)
                 if not area.enabled:
-                    def_Mountpoint.set('h_Enabled', str(area.enabled).lower())
+                    add_attrib(def_Mountpoint, 'h_Enabled', str(area.enabled).lower(), True)
                 if area.default:
-                    def_Mountpoint.set('i_Default', str(area.default).lower())
+                    add_attrib(def_Mountpoint, 'i_Default', str(area.default).lower(), True)
                 if area.pressurized:
-                    def_Mountpoint.set('j_PressurizedWhenOpen', str(area.pressurized).lower())
+                    add_attrib(def_Mountpoint, 'j_PressurizedWhenOpen', str(area.pressurized).lower(), True)
 
     
     # Build Stages
@@ -636,7 +642,7 @@ def export_sbc(self, context):
                     counter += 1
 
         if counter > 0:
-            def_BuildProgressModels = ET.SubElement(def_definition, 'BuildProgressModels')
+            def_BuildProgressModels = add_subelement(def_definition, 'BuildProgressModels')
 
             percentage = 1 / counter
 
@@ -645,34 +651,29 @@ def export_sbc(self, context):
 
                 # This makes sure the last build stage is set to upper bound 1.0
                 if bs + 1 == counter:
-                    def_BS_Model.set('BuildPercentUpperBound', str("{:.2f}".format(1.0)))
+                    add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format(1.0), True)
                 else:
-                    def_BS_Model.set('BuildPercentUpperBound', str("{:.2f}".format((bs + 1) * percentage)[:4]))
+                    add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format((bs + 1) * percentage)[:4], True)
 
-                def_BS_Model.set('File', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm'))
+                add_attrib(def_BS_Model, 'File', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm'), True)
 
     # BlockPairName
-    def_BlockPairName = ET.SubElement(def_definition, 'BlockPairName')
-    def_BlockPairName.text = scene.seut.subtypeId
+    add_subelement(def_definition, 'BlockPairName', scene.seut.subtypeId)
 
     # Mirroring
     if collections['mirroring'] != None:
         scene.seut.mirroringToggle == 'off'
 
     if scene.seut.mirroring_X != 'None':
-        def_MirroringX = ET.SubElement(def_definition, 'MirroringX')
-        def_MirroringX.text = scene.seut.mirroring_X
+        add_subelement(def_definition, 'MirroringX', scene.seut.mirroring_X)
     if scene.seut.mirroring_Z != 'None':                                # This looks wrong but SE works with different Axi than Blender
-        def_MirroringY = ET.SubElement(def_definition, 'MirroringY')
-        def_MirroringY.text = scene.seut.mirroring_Z
+        add_subelement(def_definition, 'MirroringY', scene.seut.mirroring_Z)
     if scene.seut.mirroring_Y != 'None':
-        def_MirroringZ = ET.SubElement(def_definition, 'MirroringZ')
-        def_MirroringZ.text = scene.seut.mirroring_Y
+        add_subelement(def_definition, 'MirroringZ', scene.seut.mirroring_Y)
     
     # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
     if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
-        def_MirroringBlock = ET.SubElement(def_definition, 'MirroringBlock')
-        def_MirroringBlock.text = scene.seut.mirroringScene.seut.subtypeId
+        add_subelement(def_definition, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId)
 
     # Write to file, place in export folder
     temp_string = ET.tostring(definitions, 'utf-8')
@@ -694,10 +695,17 @@ def export_sbc(self, context):
     xml_formatted = xml_formatted.replace("h_Enabled", "Enabled")
     xml_formatted = xml_formatted.replace("i_Default", "Default")
     xml_formatted = xml_formatted.replace("j_PressurizedWhenOpen", "PressurizedWhenOpen")
+    
+    xml_formatted = re.sub(r'\n\s*\n', '\n', xml_formatted)
 
     filename = scene.seut.subtypeId
 
-    exported_xml = open(os.path.join(path_data, filename + ".sbc"), "w")
+    if update:
+        target_file = file_to_update
+    else:
+        target_file = os.path.join(path_data, filename + ".sbc")
+
+    exported_xml = open(target_file, "w")
     exported_xml.write(xml_formatted)
 
     seut_report(self, context, 'INFO', False, 'I004', os.path.join(path_data, filename + ".sbc"))
