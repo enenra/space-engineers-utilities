@@ -439,7 +439,7 @@ def export_sbc(self, context):
                 return {'CANCELLED'}
 
     # Create XML tree and add initial parameters.
-    output = get_relevant_sbc(path_data, 'CubeBlocks', scene.seut.subtypeId)
+    output = get_relevant_sbc(os.path.dirname(path_data), 'CubeBlocks', scene.seut.subtypeId)
     if output is not None:
         file_to_update = output[0]
         root = output[1]
@@ -550,7 +550,7 @@ def export_sbc(self, context):
         for elem in def_definition:
             if elem.tag == 'MountPoints':
                 def_definition.remove(elem)
-                
+
         def_Mountpoints = add_subelement(def_definition, 'MountPoints')
 
         for area in scene.seut.mountpointAreas:
@@ -707,11 +707,11 @@ def export_sbc(self, context):
     if update:
         target_file = file_to_update
     else:
-        target_file = os.path.join(path_data, filename + ".sbc")
+        target_file = os.path.join(path_data, "CubeBlocks", filename + ".sbc")
 
     exported_xml = open(target_file, "w")
     exported_xml.write(xml_formatted)
 
-    seut_report(self, context, 'INFO', False, 'I004', os.path.join(path_data, filename + ".sbc"))
+    seut_report(self, context, 'INFO', False, 'I004', target_file)
 
     return {'FINISHED'}

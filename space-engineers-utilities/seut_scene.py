@@ -264,6 +264,11 @@ def update_mod_path(self, context):
         self.export_exportPath = os.path.join(self.mod_path, "Models", "Cubes", self.gridScale)
     else:
         self.export_exportPath = os.path.join(self.mod_path, self.export_exportPath[self.export_exportPath.find("Models"):])
+    
+    if scene.render.filepath == "":
+        scene.render.filepath = os.path.join(self.mod_path, "Textures", "GUI", "Icons", "Cubes")
+    else:
+        scene.render.filepath = os.path.join(self.mod_path, scene.render.filepath[scene.render.filepath.find("Textures"):])
 
 
 def poll_linkedScene(self, object):
