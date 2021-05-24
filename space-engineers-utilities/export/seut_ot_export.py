@@ -60,10 +60,17 @@ def export(self, context):
     scene.seut.mirroringToggle = 'off'
     scene.seut.renderToggle = 'off'
 
+    if not os.path.isdir(scene.seut.mod_path):
+        seut_report(self, context, 'ERROR', True, 'E019', "Mod", scene.name)
+        return {'CANCELLED'}
+
     # Checks export path and whether SubtypeId exists
     result = check_export(self, context)
     if not result == {'CONTINUE'}:
         return result
+        
+    if not os.path.exists(get_abs_path(scene.seut.export_exportPath)):
+        os.makedirs(get_abs_path(scene.seut.export_exportPath))
 
     # Check for availability of FBX Importer
     result = check_toolpath(self, context, preferences.fbx_importer_path, "Custom FBX Importer", "FBXImporter.exe")
@@ -405,7 +412,11 @@ def export_sbc(self, context):
     scene = context.scene
     collections = get_collections(scene)
     preferences = get_preferences()
-    path = get_abs_path(scene.seut.export_exportPath) + "\\"
+    path_data = os.path.join(get_abs_path(scene.seut.mod_path), "Data", "CubeBlocks")
+    path_models = get_abs_path(scene.seut.export_exportPath)
+        
+    if not os.path.exists(path_data):
+        os.makedirs(path_data)
 
     # Checks whether collection exists, is excluded or is empty
     result = check_collection(self, context, scene, collections['main'], False)
@@ -502,7 +513,7 @@ def export_sbc(self, context):
 
     # Model
     def_Model = ET.SubElement(def_definition, 'Model')
-    def_Model.text = create_relative_path(path, "Models") + scene.seut.subtypeId + '.mwm'
+    def_Model.text = os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '.mwm')
 
     # Components
     def_Components = ET.SubElement(def_definition, 'Components')
@@ -638,7 +649,7 @@ def export_sbc(self, context):
                 else:
                     def_BS_Model.set('BuildPercentUpperBound', str("{:.2f}".format((bs + 1) * percentage)[:4]))
 
-                def_BS_Model.set('File', create_relative_path(path, "Models") + scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')
+                def_BS_Model.set('File', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm'))
 
     # BlockPairName
     def_BlockPairName = ET.SubElement(def_definition, 'BlockPairName')
@@ -686,9 +697,9 @@ def export_sbc(self, context):
 
     filename = scene.seut.subtypeId
 
-    exported_xml = open(path + filename + ".sbc", "w")
+    exported_xml = open(os.path.join(path_data, filename + ".sbc"), "w")
     exported_xml.write(xml_formatted)
 
-    seut_report(self, context, 'INFO', False, 'I004', path + filename + ".sbc")
+    seut_report(self, context, 'INFO', False, 'I004', os.path.join(path_data, filename + ".sbc"))
 
     return {'FINISHED'}

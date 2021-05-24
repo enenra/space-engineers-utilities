@@ -194,6 +194,7 @@ def create_seut_nodegroup(node):
         links.new(node_input.outputs[6], node_bsdf.inputs[18])
         links.new(node_normal_map.outputs[0], node_bsdf.inputs[19])
         
+    # Moving this down here fixed a crash on scene initialization.
     links.new(node_bsdf.outputs[0], node_output.inputs[0])
 
     return node_group

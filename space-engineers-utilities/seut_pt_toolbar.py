@@ -372,9 +372,10 @@ class SEUT_PT_Panel_Export(Panel):
             if scene.seut.export_smallGrid and scene.seut.export_largeGrid:
                 col.prop(scene.seut, "export_medium_grid", icon='CUBE')
         
+        box.prop(scene.seut, "mod_path", text="Mod")
         split = box.split(factor=0.85)
         col = split.column()
-        col.prop(scene.seut, "export_exportPath", text="Folder", expand=True)
+        col.prop(scene.seut, "export_exportPath", text="Model")
         col = split.column()
         col.operator('scene.copy_export_options', text="", icon='PASTEDOWN')
 

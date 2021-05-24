@@ -1,9 +1,12 @@
 import bpy
 import re
+import os
 
 from ..seut_collections     import names
 from ..seut_collections     import colors
 from ..seut_collections     import rename_collections
+from ..seut_errors          import get_abs_path
+
 
 def apply_patches():
 
@@ -11,6 +14,9 @@ def apply_patches():
     patch_view_layers()
     patch_collections()
     patch_highlight_empty_references()
+
+    # SEUT 0.9.96
+    patch_mod_folder()
 
 
 def patch_view_layers():
@@ -121,3 +127,25 @@ def patch_highlight_empty_references():
                 obj.seut.linkedObject = None
                 new = obj.seut.highlight_objects.add()
                 new.obj = ref
+
+
+def patch_mod_folder():
+    """Introduce mod folder with default being derived from mod folder"""
+
+    if not bpy.data.is_saved:
+        return
+
+    for scn in bpy.data.scenes:
+        # Since the version system is introduced with this patch, the versioning will be a bit strange for this first usage.
+        if scn.seut.version <= 2:
+            path = get_abs_path(scn.seut.export_exportPath)
+            
+            while os.path.basename(path) != "Models":
+                if os.path.dirname(path) == path:
+                    break
+
+                path = get_abs_path(os.path.dirname(path))
+            
+            scn.seut.mod_path = os.path.dirname(path)
+            scn.seut.version = 2
+            

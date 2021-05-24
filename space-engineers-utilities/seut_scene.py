@@ -16,7 +16,7 @@ from .seut_mirroring                import clean_mirroring, setup_mirroring
 from .seut_mountpoints              import clean_mountpoints, setup_mountpoints
 from .seut_icon_render              import clean_icon_render, setup_icon_render
 from .seut_collections              import get_collections, rename_collections, names
-from .seut_errors                   import seut_report, check_export
+from .seut_errors                   import get_abs_path, seut_report, check_export
 from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, to_radians, get_parent_collection, toggle_scene_modes
 
 
@@ -237,9 +237,34 @@ def update_export_exportPath(self, context):
     if self.export_exportPath == "":
         return
 
-    if os.path.isdir(bpy.path.abspath(self.export_exportPath)):
-        if check_export(self, context, False) == {'CANCELLED'}:
-            self.export_exportPath = ""
+    path = get_abs_path(self.export_exportPath)
+
+    if not path.startswith(get_abs_path(self.mod_path)):
+        seut_report(self, context, 'ERROR', False, 'E045', get_abs_path(self.mod_path))
+        self.export_exportPath = ""
+
+    if path.find("Models\\") != -1 or (path + "\\").find("Models\\") != -1:
+        pass
+    else:
+        seut_report(self, context, 'ERROR', False, 'E014', path, scene.name)
+        self.export_exportPath = ""
+
+
+def update_mod_path(self, context):
+    scene = context.scene
+
+    if self.mod_path == "":
+        return
+
+    if not os.path.isdir(get_abs_path(self.mod_path)):
+        seut_report(self, context, 'ERROR', False, 'E003', "Mod", self.mod_path)
+        self.mod_path = ""
+    
+    if self.export_exportPath == "":
+        self.export_exportPath = os.path.join(self.mod_path, "Models", "Cubes", self.gridScale)
+    else:
+        self.export_exportPath = os.path.join(self.mod_path, self.export_exportPath[self.export_exportPath.find("Models"):])
+
 
 def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'mainScene'
@@ -307,7 +332,7 @@ class SEUT_Scene(PropertyGroup):
     version: IntProperty(
         name="SEUT Scene Version",
         description="Used as a reference to patch the SEUT scene propertiesto newer versions",
-        default=1
+        default=2
     )
 
     sceneType: EnumProperty(
@@ -529,6 +554,12 @@ class SEUT_Scene(PropertyGroup):
         description="What folder to export to",
         subtype="DIR_PATH",
         update=update_export_exportPath
+    )
+    mod_path: StringProperty(
+        name="Mod Folder",
+        description="The root folder of the mod",
+        subtype="DIR_PATH",
+        update=update_mod_path
     )
 
     # These are pre 0.9.95 legacy, not directly used anymore --> moved to being saved onto collections

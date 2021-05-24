@@ -23,7 +23,7 @@ errors = {
     'E016': "Scene '{variable_1}' could not be exported.",
     'E017': "A RunTimeError has occurred in the FBX exporter. Try exiting Edit-Mode before exporting.",
     'E018': "Cannot set SubtypeId to a SubtypeId that has already been used for another scene in the same BLEND file.",
-    'E019': "No export folder defined for scene '{variable_1}'.",
+    'E019': "No {variable_1} folder defined for scene '{variable_2}'.",
     'E020': "Deletion of temporary files failed.",
     'E021': "Available MatLibs could not be refreshed.",
     'E022': "Too many objects in '{variable_1}'-collection. Collection contains {variable_2} but Space Engineers only supports a maximum of 16.",
@@ -49,6 +49,7 @@ errors = {
     'E042': "No MatLibs enabled. Materials cannot be remapped.",
     'E043': "An object within the file '{variable_1}' has invalid UV-Maps. Could not be converted to MWM.",
     'E044': "An error ocurred during MWM conversion. See *.mwm.log file (generated if 'Delete Temp Files' is toggled off) for details.",
+    'E045': "Model path must be located within the Mod's directory ('{variable_1}').",
 }
 
 warnings = {
@@ -103,11 +104,12 @@ def check_export(self, context, can_report=True):
         seut_report(self, context, 'ERROR', can_report, 'E008')
         return {'CANCELLED'}
 
-    if os.path.exists(path) == False:
-        seut_report(self, context, 'ERROR', can_report, 'E003', "Export", path)
-        return {'CANCELLED'}
     elif path == "":
-        seut_report(self, context, 'ERROR', can_report, 'E019', scene.name)
+        seut_report(self, context, 'ERROR', can_report, 'E019', "Export", scene.name)
+        return {'CANCELLED'}
+    
+    if not path.startswith(get_abs_path(scene.seut.mod_path)):
+        seut_report(self, context, 'ERROR', can_report, 'E045', get_abs_path(scene.seut.mod_path))
         return {'CANCELLED'}
 
     if path.find("Models\\") != -1 or (path + "\\").find("Models\\") != -1:
