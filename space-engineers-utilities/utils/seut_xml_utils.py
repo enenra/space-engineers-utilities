@@ -1,5 +1,3 @@
-from re import sub
-import bpy
 import os
 
 import xml.etree.ElementTree as ET
@@ -31,14 +29,17 @@ def get_relevant_sbc(path: str, sbc_type: str, subtype_id: str):
 
 def add_subelement(parent, name: str, value=None, override=False):
     """Adds a subelement to XML definition."""
+
+    ignore_dupes = ['MountPoint']
     
-    for elem in parent:
-        if elem.tag == name:
-            if override and value is not None:
-                elem.text = str(value)
-                return elem
-            else:
-                return elem
+    if not name in ignore_dupes:
+        for elem in parent:
+            if elem.tag == name:
+                if override and value is not None:
+                    elem.text = str(value)
+                    return elem
+                else:
+                    return elem
 
     if value is None:
         return ET.SubElement(parent, name)
@@ -57,7 +58,5 @@ def add_attrib(element, name: str, value, override=False):
                 return elem.set(name, str(value))
             else:
                 return elem
-
-    # special case for mountpoints
 
     return element.set(name, str(value))

@@ -441,7 +441,6 @@ def export_sbc(self, context):
     # Create XML tree and add initial parameters.
     output = get_relevant_sbc(path_data, 'CubeBlocks', scene.seut.subtypeId)
     if output is not None:
-        print(output)
         file_to_update = output[0]
         root = output[1]
         element = output[2]
@@ -547,6 +546,11 @@ def export_sbc(self, context):
         bbox_y = scene.seut.bBox_Y * scale
         bbox_z = scene.seut.bBox_Z * scale
 
+        # Wipe existing ones.
+        for elem in def_definition:
+            if elem.tag == 'MountPoints':
+                def_definition.remove(elem)
+                
         def_Mountpoints = add_subelement(def_definition, 'MountPoints')
 
         for area in scene.seut.mountpointAreas:
