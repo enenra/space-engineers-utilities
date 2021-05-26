@@ -413,11 +413,8 @@ def export_sbc(self, context):
     scene = context.scene
     collections = get_collections(scene)
     preferences = get_preferences()
-    path_data = os.path.join(get_abs_path(scene.seut.mod_path), "Data", "CubeBlocks")
+    path_data = os.path.join(get_abs_path(scene.seut.mod_path), "Data")
     path_models = get_abs_path(scene.seut.export_exportPath)
-        
-    if not os.path.exists(path_data):
-        os.makedirs(path_data)
 
     # Checks whether collection exists, is excluded or is empty
     result = check_collection(self, context, scene, collections['main'], False)
@@ -439,13 +436,16 @@ def export_sbc(self, context):
                 return {'CANCELLED'}
 
     # Create XML tree and add initial parameters.
+    file_to_update = None
+    root = None
+    element = None
     output = get_relevant_sbc(os.path.dirname(path_data), 'CubeBlocks', scene.seut.subtypeId)
     if output is not None:
         file_to_update = output[0]
         root = output[1]
         element = output[2]
 
-    if output is None:
+    if element is None:
         definitions = ET.Element('Definitions')
         add_attrib(definitions, 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
         add_attrib(definitions, 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema')
@@ -708,6 +708,8 @@ def export_sbc(self, context):
         target_file = file_to_update
     else:
         target_file = os.path.join(path_data, "CubeBlocks", filename + ".sbc")
+        if not os.path.exists(os.path.join(path_data, "CubeBlocks")):
+            os.makedirs(os.path.join(path_data, "CubeBlocks"))
 
     exported_xml = open(target_file, "w")
     exported_xml.write(xml_formatted)

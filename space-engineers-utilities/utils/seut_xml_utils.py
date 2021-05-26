@@ -7,8 +7,12 @@ import xml.dom.minidom
 def get_relevant_sbc(path: str, sbc_type: str, subtype_id: str):
     """Returns the relevant element of an existing entry, if found."""
 
+    cubeblock_match = None
+
     for path, subdirs, files in os.walk(path):
         for name in files:
+            if not name.endswith(".sbc"):
+                continue
             with open(os.path.join(path, name)) as f:
                 lines = f.read()
                 if '<' + sbc_type + '>' in lines:
@@ -24,7 +28,9 @@ def get_relevant_sbc(path: str, sbc_type: str, subtype_id: str):
                                         for entry in id:
                                             if entry.tag == 'SubtypeId':
                                                 if entry.text == subtype_id:
-                                                    return [os.path.join(path, name), root, cubeblock]
+                                                    cubeblock_match = cubeblock
+
+                                    return [os.path.join(path, name), root, cubeblock_match]
 
 
 def add_subelement(parent, name: str, value=None, override=False):
