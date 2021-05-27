@@ -112,16 +112,16 @@ def import_materials(self, context, filepath):
                 material.seut.technique = param.text
 
             elif param.attrib['Name'] == 'ColorMetalTexture':
-                cm_img = load_image(param.text, materials_path)
+                cm_img = load_image(self, context, param.text, materials_path)
 
             elif param.attrib['Name'] == 'NormalGlossTexture':
-                ng_img = load_image(param.text, materials_path)
+                ng_img = load_image(self, context, param.text, materials_path)
 
             elif param.attrib['Name'] == 'AddMapsTexture':
-                add_img = load_image(param.text, materials_path)
+                add_img = load_image(self, context, param.text, materials_path)
 
             elif param.attrib['Name'] == 'AlphamaskTexture':
-                am_img = load_image(param.text, materials_path)
+                am_img = load_image(self, context, param.text, materials_path)
 
             elif param.attrib['Name'] == 'Facing':
                 material.seut.facing = param.text
@@ -171,7 +171,7 @@ def import_materials(self, context, filepath):
         return {'FINISHED'}
 
 
-def load_image(path: str, materials_path: str):
+def load_image(self, context, path: str, materials_path: str):
     """Returns image by first checking if it already is in Blender, if not, loading it from the given path."""
 
     seut_path = os.path.dirname(materials_path)
