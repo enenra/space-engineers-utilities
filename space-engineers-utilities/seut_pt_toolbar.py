@@ -308,16 +308,17 @@ class SEUT_PT_Panel_IconRender(Panel):
                 box.prop(scene.seut, 'renderEmptyRotation')
 
             box = layout.box()
-            box.label(text='Options', icon='SETTINGS')
+            split = box.split(factor=0.85)
+            col = split.column()
+            col.label(text='Options', icon='SETTINGS')
+            col = split.column()
+            col.operator('scene.copy_render_options', text="", icon='PASTEDOWN')
+
             box.prop(scene.seut, 'renderColorOverlay', invert_checkbox=True)
             box.prop(scene.seut, 'renderResolution')
             box.prop(scene.render.image_settings, 'file_format')
             
-            split = box.split(factor=0.85)
-            col = split.column()
-            col.prop(scene.render, 'filepath', text="Folder", expand=True)
-            col = split.column()
-            col.operator('scene.copy_render_options', text="", icon='PASTEDOWN')
+            box.prop(scene.render, 'filepath', text="Folder", expand=True)
 
 
 class SEUT_PT_Panel_Export(Panel):
@@ -352,7 +353,11 @@ class SEUT_PT_Panel_Export(Panel):
 
         # Options
         box = layout.box()
-        box.label(text="Options", icon='SETTINGS')
+        split = box.split(factor=0.85)
+        col = split.column()
+        col.label(text="Options", icon='SETTINGS')
+        col = split.column()
+        col.operator('scene.copy_export_options', text="", icon='PASTEDOWN')
     
         row = box.row()
         split = box.split(factor=0.70)
@@ -373,11 +378,7 @@ class SEUT_PT_Panel_Export(Panel):
                 col.prop(scene.seut, "export_medium_grid", icon='CUBE')
         
         box.prop(scene.seut, "mod_path", text="Mod")
-        split = box.split(factor=0.85)
-        col = split.column()
-        col.prop(scene.seut, "export_exportPath", text="Model")
-        col = split.column()
-        col.operator('scene.copy_export_options', text="", icon='PASTEDOWN')
+        box.prop(scene.seut, "export_exportPath", text="Model")
 
 
 class SEUT_PT_Panel_Import(Panel):
