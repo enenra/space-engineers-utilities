@@ -136,6 +136,10 @@ def patch_mod_folder():
         return
 
     for scn in bpy.data.scenes:
+
+        if scn.seut.export_exportPath == "":
+            continue
+
         # Since the version system is introduced with this patch, the versioning will be a bit strange for this first usage.
         if scn.seut.version <= 2:
             path = get_abs_path(scn.seut.export_exportPath)
