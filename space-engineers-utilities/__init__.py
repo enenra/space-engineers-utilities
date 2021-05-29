@@ -67,9 +67,11 @@ from .importing.seut_ot_import_materials        import SEUT_OT_Import_Materials
 from .materials.seut_materials                  import SEUT_Materials
 from .materials.seut_materials                  import SEUT_PT_Panel_Materials
 from .materials.seut_materials                  import SEUT_PT_Panel_MatLib
+from .materials.seut_materials                  import SEUT_PT_Panel_TextureConversion
 from .materials.seut_ot_remap_materials         import SEUT_OT_RemapMaterials
 from .materials.seut_ot_refresh_matlibs         import SEUT_OT_RefreshMatLibs
 from .materials.seut_ot_create_material         import SEUT_OT_MatCreate
+from .materials.seut_ot_texture_conversion      import SEUT_OT_ConvertTextures
 from .materials.seut_materials                  import SEUT_UL_MatLib
 from .particles.seut_particle_settings          import SEUT_ParticlePropertyKeys
 from .particles.seut_particle_settings          import SEUT_ParticlePropertyValue2D
@@ -141,6 +143,7 @@ classes = (
     SEUT_PT_Panel_ImportParticle,
     SEUT_PT_Panel_Materials,
     SEUT_PT_Panel_MatLib,
+    SEUT_PT_Panel_TextureConversion,
     SEUT_PT_EmptyLink,
     SEUT_EmptyHighlights,
     SEUT_OT_HighlightObjectAdd,
@@ -174,6 +177,7 @@ classes = (
     SEUT_OT_CreateCollection,
     SEUT_OT_SimpleNavigation,
     SEUT_OT_MatCreate,
+    SEUT_OT_ConvertTextures,
     SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
     SEUT_OT_IconRenderPreview,

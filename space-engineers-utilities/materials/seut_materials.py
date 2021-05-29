@@ -432,6 +432,58 @@ class SEUT_PT_Panel_MatLib(Panel):
         link.page = 'create-matlib'
 
 
+class SEUT_PT_Panel_TextureConversion(Panel):
+    """Creates the Texture Conversion panel for SEUT"""
+    bl_idname = "SEUT_PT_Panel_TextureConversion"
+    bl_label = "Texture Conversion"
+    bl_category = "SEUT"
+    bl_space_type = "NODE_EDITOR"
+    bl_region_type = "UI"
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return 'SEUT' in scene.view_layers
+
+
+    def draw(self, context):
+        layout = self.layout
+        wm = context.window_manager
+        scene = context.scene
+
+        layout.prop(wm.seut, 'texconv_preset')
+
+        box = layout.box()
+        box.label(text="Input", icon='IMPORT')
+
+        row = box.row()
+        if wm.seut.texconv_input_type == 'file':
+            row.prop(wm.seut, 'texconv_input_type', expand=True)
+            box.prop(wm.seut, 'texconv_input_file', text="File", icon='FILE_IMAGE')
+        else:
+            row.prop(wm.seut, 'texconv_input_type', expand=True)
+            box.prop(wm.seut, 'texconv_input_dir', text="Directory", icon='FILE_FOLDER')
+        if wm.seut.texconv_preset == 'custom':
+            box.prop(wm.seut, 'texconv_input_filetype', text="Type")
+
+        box = layout.box()
+        box.label(text="Output", icon='EXPORT')
+        box.prop(wm.seut, 'texconv_output_dir', text="Directory", icon='FILE_FOLDER')
+        if wm.seut.texconv_preset == 'custom':
+            box.prop(wm.seut, 'texconv_output_filetype', text="Type")
+
+            box = layout.box()
+            box.label(text="Options", icon='SETTINGS')
+            box.prop(wm.seut, 'texconv_format')
+            row = box.row()
+            row.prop(wm.seut, 'texconv_pmalpha')
+            row.prop(wm.seut, 'texconv_sepalpha')
+            box.prop(wm.seut, 'texconv_pdd')
+        
+        layout.operator('wm.convert_textures', icon='EXPORT')
+
+
 def create_internal_material(context, mat_type: str):
     """Creates a preset internal SEUT material"""
 

@@ -1,3 +1,4 @@
+from enum import Enum
 import bpy
 import os
 
@@ -64,6 +65,92 @@ def update_enabled(self, context):
                 node_group = bpy.data.node_groups[ng]
                 if node_group.name in bpy.data.node_groups and node_group.library is not None and node_group.library.name == self.name:
                     bpy.data.node_groups.remove(node_group, do_unlink=True)
+
+
+def update_texconv_preset(self, context):
+    wm = context.window_manager
+
+    if self.texconv_preset == 'icon':
+        self.texconv_output_filetype = 'dds'
+        self.texconv_input_filetype = 'png'
+        self.texconv_format = 'BC7_UNORM_SRGB'
+        self.texconv_pmalpha = True
+        self.texconv_sepalpha = False
+        self.texconv_pdd = False
+
+    elif self.texconv_preset == 'cm':
+        self.texconv_output_filetype = 'dds'
+        self.texconv_input_filetype = 'tif'
+        self.texconv_format = 'BC7_UNORM_SRGB'
+        self.texconv_pmalpha = False
+        self.texconv_sepalpha = True
+        self.texconv_pdd = False
+
+    elif self.texconv_preset == 'add':
+        self.texconv_output_filetype = 'dds'
+        self.texconv_input_filetype = 'tif'
+        self.texconv_format = 'BC7_UNORM_SRGB'
+        self.texconv_pmalpha = False
+        self.texconv_sepalpha = True
+        self.texconv_pdd = True
+
+    elif self.texconv_preset == 'ng':
+        self.texconv_output_filetype = 'dds'
+        self.texconv_input_filetype = 'tif'
+        self.texconv_format = 'BC7_UNORM'
+        self.texconv_pmalpha = False
+        self.texconv_sepalpha = True
+        self.texconv_pdd = False
+
+    elif self.texconv_preset == 'alphamask':
+        self.texconv_output_filetype = 'dds'
+        self.texconv_input_filetype = 'tif'
+        self.texconv_format == 'BC7_UNORM'
+        self.texconv_pmalpha == False
+        self.texconv_sepalpha == False
+        self.texconv_pdd == True
+
+    elif self.texconv_preset == 'tif':
+        self.texconv_output_filetype = 'tif'
+        self.texconv_input_filetype = 'dds'
+        self.texconv_format == 'NONE'
+        self.texconv_pmalpha == False
+        self.texconv_sepalpha == False
+        self.texconv_pdd == False
+
+
+def update_texconv_input_file(self, context):
+
+    if self.texconv_input_file == "":
+        return
+
+    if not os.path.isfile(self.texconv_input_file):
+        self.texconv_input_file = ""
+        #TODO: Report error
+    
+    if not self.texconv_input_file.endswith(self.texconv_input_filetype):
+        self.texconv_input_file = ""
+        #TODO: Report error
+
+
+def update_texconv_input_dir(self, context):
+
+    if self.texconv_input_dir == "":
+        return
+
+    if not os.path.isdir(self.texconv_input_dir):
+        self.texconv_input_dir = ""
+        #TODO: Report error
+
+
+def update_texconv_output_dir(self, context):
+
+    if self.texconv_output_dir == "":
+        return
+
+    if not os.path.isdir(self.texconv_output_dir):
+        self.texconv_output_dir = ""
+        #TODO: Report error
 
 
 class SEUT_IssueProperty(PropertyGroup):
@@ -160,6 +247,85 @@ class SEUT_WindowManager(PropertyGroup):
     matlib_index: IntProperty(
         name="Enable or Disable MatLibs in the Materials folder",
         default=0
+    )
+
+    # Texture Conversion
+    texconv_preset: EnumProperty(
+        name="Preset",
+        items=(
+            ('icon', 'Icon', ''),
+            ('cm', 'Color Metal', ''),
+            ('add', 'Add Maps', ''),
+            ('ng', 'Normal Gloss', ''),
+            ('alphamask', 'Alphamask', ''),
+            ('tif', 'TIF', ''),
+            ('custom', 'Custom', '')
+            ),
+        default='icon',
+        update=update_texconv_preset,
+    )
+    texconv_input_type: EnumProperty(
+        name="Input Type",
+        items=(
+            ('file', 'File', ''),
+            ('directory', 'Directory', '')
+            ),
+        default='directory',
+    )
+    texconv_input_dir: StringProperty(
+        name="Input Directory",
+        subtype="DIR_PATH",
+        update=update_texconv_input_dir,
+    )
+    texconv_input_file: StringProperty(
+        name="Input File",
+        subtype="FILE_PATH",
+        update=update_texconv_input_file,
+    )
+    texconv_input_filetype: EnumProperty(
+        name="Input Type",
+        items=(
+            ('dds', 'DDS', ''),
+            ('png', 'PNG', ''),
+            ('tif', 'TIF', '')
+            ),
+        default='tif',
+    )
+    texconv_output_dir: StringProperty(
+        name="Output Folder",
+        subtype="DIR_PATH",
+        update=update_texconv_output_dir,
+    )
+    texconv_output_filetype: EnumProperty(
+        name="Output Type",
+        items=(
+            ('dds', 'DDS', ''),
+            ('tif', 'TIF', '')
+            ),
+        default='dds',
+    )
+    texconv_format: EnumProperty(
+        name="Format",
+        items=(
+            ('NONE', 'None', ''),
+            ('BC7_UNORM', 'BC7_UNORM', ''),
+            ('BC7_UNORM_SRGB', 'BC7_UNORM_SRGB', '')
+            ),
+        default='BC7_UNORM_SRGB',
+    )
+    texconv_pmalpha: BoolProperty(
+        name="PM Alpha",
+        description="Convert final texture to use premultiplied alpha",
+        default=True,
+    )
+    texconv_sepalpha: BoolProperty(
+        name="Separate Alpha",
+        description="Resize / generate mips alpha channel separately from color channels",
+        default=True,
+    )
+    texconv_pdd: BoolProperty(
+        name="Point Dither Diffusion",
+        default=False,
     )
 
     # Updater
