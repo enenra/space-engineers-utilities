@@ -3,7 +3,7 @@ import os
 import subprocess
 
 from ..seut_preferences     import get_addon
-
+from ..seut_errors          import get_abs_path
 
 def call_tool(args: list, logfile=None) -> list:
 
@@ -24,7 +24,7 @@ def call_tool(args: list, logfile=None) -> list:
 
 def write_to_log(logfile: str, content: str, args: list, cwd=None):
 
-    with open(logfile, 'wb') as log:
+    with open(get_abs_path(logfile), 'wb') as log:
 
         if cwd:
             str = "Running from: %s \n" % (cwd)

@@ -4,9 +4,10 @@ import os
 from math           import pi
 from bpy.types      import Operator
 
-from .seut_collections              import get_collections, colors
-from .seut_errors                   import check_collection, check_collection_excluded, seut_report, get_abs_path
-from .seut_utils                    import to_radians, create_seut_collection, clear_selection, prep_context, seut_report
+from .materials.seut_ot_texture_conversion  import convert_texture
+from .seut_collections                      import get_collections, colors
+from .seut_errors                           import check_collection, check_collection_excluded, seut_report, get_abs_path
+from .seut_utils                            import to_radians, create_seut_collection, clear_selection, prep_context, seut_report
     
 
 def setup_icon_render(self, context):
@@ -234,7 +235,10 @@ class SEUT_OT_IconRenderPreview(Operator):
 
         # This path juggling is to prevent Blender from saving the default render output
         path = scene.render.filepath
-        scene.render.filepath = get_abs_path(scene.render.filepath) + "\\" + scene.seut.subtypeId + '.' + scene.render.image_settings.file_format.lower()
+        file_format = scene.seut.render_output_type.lower()
+        if file_format == 'dds':
+            file_format = 'png'
+        scene.render.filepath = get_abs_path(scene.render.filepath) + "\\" + scene.seut.subtypeId + '.' + file_format
 
         bpy.ops.render.render()
         bpy.ops.render.view_show('INVOKE_DEFAULT')
@@ -242,6 +246,11 @@ class SEUT_OT_IconRenderPreview(Operator):
         image = area.spaces.active.image
         area.spaces.active.image = bpy.data.images['Viewer Node']
         bpy.data.images['Viewer Node'].save_render(scene.render.filepath)
+
+        if scene.seut.render_output_type.lower() == 'dds':
+            result = convert_texture(scene.render.filepath, path, 'icon', [])
+            os.remove(scene.render.filepath)
+            os.rename(os.path.join(path, scene.seut.subtypeId + '.DDS'), os.path.splitext(scene.render.filepath)[0] + '.dds')
         
         for key, value in collections.items():
             if value is None:
@@ -265,9 +274,9 @@ class SEUT_OT_IconRenderPreview(Operator):
 
         wm.seut.simpleNavigationToggle = simple_nav
 
-        seut_report(self, context, 'INFO', True, 'I018', scene.render.filepath)
-
         scene.render.filepath = path
+
+        seut_report(self, context, 'INFO', True, 'I018', os.path.join(scene.render.filepath, scene.seut.subtypeId + '.' + scene.seut.render_output_type.lower()))
 
         return {'FINISHED'}
 
@@ -291,7 +300,7 @@ class SEUT_OT_CopyRenderOptions(Operator):
             scn.render.filepath = scene.render.filepath
             scn.seut.renderColorOverlay = scene.seut.renderColorOverlay
             scn.seut.renderResolution = scene.seut.renderResolution
-            scn.render.image_settings.file_format = scene.render.image_settings.file_format
+            scn.seut.render_output_type = scene.seut.render_output_type
         
         seut_report(self, context, 'INFO', True, 'I006', "Icon Render")
 

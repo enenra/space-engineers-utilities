@@ -316,7 +316,7 @@ class SEUT_PT_Panel_IconRender(Panel):
 
             box.prop(scene.seut, 'renderColorOverlay', invert_checkbox=True)
             box.prop(scene.seut, 'renderResolution')
-            box.prop(scene.render.image_settings, 'file_format')
+            box.prop(scene.seut, 'render_output_type')
             
             box.prop(scene.render, 'filepath', text="Folder", expand=True)
 

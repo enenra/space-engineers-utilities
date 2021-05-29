@@ -631,14 +631,14 @@ class SEUT_Scene(PropertyGroup):
         default='off',
         update=update_RenderToggle
     )
-    renderOutputFormat: EnumProperty(
+    render_output_type: EnumProperty(
         name='Format',
         items=(
             ('png', 'PNG', 'Render output will be in PNG format'),
             ('tif', 'TIF', 'Render output will be in TIF format'),
             ('dds', 'DDS', 'Render output will be in DDS format')
             ),
-        default='png'
+        default='dds'
     )
     renderColorOverlay: BoolProperty(
         name="Color Overlay",

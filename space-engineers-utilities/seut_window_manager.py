@@ -128,7 +128,7 @@ def update_texconv_input_file(self, context):
         self.texconv_input_file = ""
         #TODO: Report error
     
-    if not self.texconv_input_file.endswith(self.texconv_input_filetype):
+    if not self.texconv_input_file.endswith(self.texconv_input_filetype) and not self.texconv_input_file.endswith(self.texconv_input_filetype.upper()):
         self.texconv_input_file = ""
         #TODO: Report error
 
@@ -261,7 +261,7 @@ class SEUT_WindowManager(PropertyGroup):
             ('tif', 'TIF', ''),
             ('custom', 'Custom', '')
             ),
-        default='icon',
+        default='custom',
         update=update_texconv_preset,
     )
     texconv_input_type: EnumProperty(
