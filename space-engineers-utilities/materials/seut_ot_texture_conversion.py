@@ -94,4 +94,4 @@ def convert_texture(path_in: str, path_out: str, preset: str, settings: list):
         if preset == "custom":
             args.append(settings)
         
-        result = call_tool(args, path_out + 'conversion.log')
+        result = call_tool(args)
