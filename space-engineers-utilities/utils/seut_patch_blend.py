@@ -150,6 +150,7 @@ def patch_mod_folder():
 
                 path = get_abs_path(os.path.dirname(path))
             
-            scn.seut.mod_path = os.path.dirname(path)
+            if os.path.exists(os.path.dirname(path)):
+                scn.seut.mod_path = os.path.dirname(path)
             scn.seut.version = 2
             
