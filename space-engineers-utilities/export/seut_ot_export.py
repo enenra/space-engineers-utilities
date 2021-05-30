@@ -447,11 +447,11 @@ def export_sbc(self, context):
 
     if element is None:
         definitions = ET.Element('Definitions')
-        add_attrib(definitions, 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-        add_attrib(definitions, 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema')
+        add_attrib(definitions, 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance', True)
+        add_attrib(definitions, 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema', True)
 
         cube_blocks = add_subelement(definitions, 'CubeBlocks')
-        def_definition = add_subelement(cube_blocks, 'CubeBlock')
+        def_definition = add_subelement(cube_blocks, 'Definition')
         update = False
     
     else:
