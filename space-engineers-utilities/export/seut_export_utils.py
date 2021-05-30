@@ -154,15 +154,18 @@ def create_texture_entry(self, context, mat_entry, mat_name: str, images: dict, 
         seut_report(self, context, 'WARNING', True, 'W004', tex_name, mat_name, str(images[tex_type].size[0]) + "x" + str(images[tex_type].size[1]))
 
 
-def create_relative_path(path: str, foldername: str):
+def create_relative_path(path: str, folder_name: str):
     """Returns the path capped off before the last occurrence of the foldername, returns False if foldername is not found in path"""
     
-    offset = path.rfind(foldername + "\\")
+    offset = path.rfind(folder_name + "\\")
 
     if offset == -1:
-        return False
+        if path.endswith(folder_name):
+            return path[path.rfind(folder_name):]
+        else:
+            return False
     else:
-        return path[path.rfind(foldername + "\\"):]
+        return path[offset:]
 
 
 def is_valid_resolution(number: int) -> bool:
