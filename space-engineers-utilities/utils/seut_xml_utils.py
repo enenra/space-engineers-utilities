@@ -23,14 +23,15 @@ def get_relevant_sbc(path: str, sbc_type: str, subtype_id: str):
 
                         if root.tag == "Definitions":
                             for cubeblocks in root:
-                                for cubeblock in cubeblocks:
-                                    for id in cubeblock:
+                                for definition in cubeblocks:
+                                    for id in definition:
                                         for entry in id:
                                             if entry.tag == 'SubtypeId':
                                                 if entry.text == subtype_id:
-                                                    cubeblock_match = cubeblock
+                                                    cubeblock_match = definition
+                                                    break
 
-                                    return [os.path.join(path, name), root, cubeblock_match]
+                                return [os.path.join(path, name), root, cubeblock_match]
 
 
 def add_subelement(parent, name: str, value=None, override=False):
