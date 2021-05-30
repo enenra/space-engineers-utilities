@@ -47,6 +47,8 @@ class SEUT_OT_ConvertTextures(Operator):
             if wm.seut.texconv_format != 'NONE':
                 settings.append('-f')
                 settings.append(wm.seut.texconv_format)
+                if wm.seut.texconv_format == 'BC7_UNORM_SRGB':
+                    settings.append('-sRGB')
 
             if wm.seut.texconv_pmalpha:
                 settings.append('-pmalpha')
