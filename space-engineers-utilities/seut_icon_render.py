@@ -250,7 +250,7 @@ class SEUT_OT_IconRenderPreview(Operator):
         if scene.seut.render_output_type.lower() == 'dds':
             result = convert_texture(scene.render.filepath, path, 'icon', [])
             os.remove(scene.render.filepath)
-            os.rename(os.path.join(path, scene.seut.subtypeId + '.DDS'), os.path.splitext(scene.render.filepath)[0] + '.dds')
+            os.rename(os.path.join(get_abs_path(path), scene.seut.subtypeId + '.DDS'), os.path.splitext(scene.render.filepath)[0] + '.dds')
         
         for key, value in collections.items():
             if value is None:
