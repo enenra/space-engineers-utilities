@@ -61,7 +61,9 @@ def export(self, context):
     scene.seut.mirroringToggle = 'off'
     scene.seut.renderToggle = 'off'
 
-    if not os.path.isdir(scene.seut.mod_path):
+    if not os.path.isdir(get_abs_path(scene.seut.mod_path) + '\\'):
+        print(scene.seut.mod_path)
+        print(get_abs_path(scene.seut.mod_path) + '\\')
         seut_report(self, context, 'ERROR', True, 'E019', "Mod", scene.name)
         return {'CANCELLED'}
 
@@ -437,276 +439,291 @@ def export_sbc(self, context):
 
     # Create XML tree and add initial parameters.
     file_to_update = None
-    root = None
-    element = None
+    lines = None
     output = get_relevant_sbc(os.path.dirname(path_data), 'CubeBlocks', scene.seut.subtypeId)
     if output is not None:
         file_to_update = output[0]
-        root = output[1]
-        element = output[2]
+        lines = output[1]
+        start = output[2]
+        end = output[3]
 
-    if element is None:
+    # No file and no entry
+    if output is None or file_to_update is None:
         definitions = ET.Element('Definitions')
         add_attrib(definitions, 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance', True)
         add_attrib(definitions, 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema', True)
 
         cube_blocks = add_subelement(definitions, 'CubeBlocks')
         def_definition = add_subelement(cube_blocks, 'Definition')
-        update = False
+        method = 'full'
+
+    # File exists but does not have entry for that subtype
+    elif start is None or end is None:
+        def_definition = ET.Element('Definition')
+        method = 'file'
     
-    else:
-        definitions = root
-        def_definition = element
-        update = True
-    
-    def_Id = add_subelement(def_definition, 'Id')
-    add_subelement(def_Id, 'TypeId', 'CubeBlock')
-    add_subelement(def_Id, 'SubtypeId', scene.seut.subtypeId)
+    # File and entry exist
+    elif lines is not None:
+        lines_before = lines[:start]
+        lines_after = lines[end:]
+        lines_entry = lines[start:end]
+        method = 'entry'
 
-    add_subelement(def_definition, 'DisplayName', '{LOC:DisplayName_' + scene.seut.subtypeId + '}')
-    add_subelement(def_definition, 'Description', '{LOC:Description_' + scene.seut.subtypeId + '}')
-    
-    add_subelement(def_definition, 'Icon', 'Textures\GUI\Icons\AstronautBackpack.dds')
+    if method == 'full' or method == 'file':
+        def_Id = add_subelement(def_definition, 'Id')
+        add_subelement(def_Id, 'TypeId', 'CubeBlock')
+        add_subelement(def_Id, 'SubtypeId', scene.seut.subtypeId)
 
-    medium_grid_scalar = 1.0 # default to doing nothing unless the 3to5 mode is detected
+        add_subelement(def_definition, 'DisplayName', '{LOC:DisplayName_' + scene.seut.subtypeId + '}')
+        add_subelement(def_definition, 'Description', '{LOC:Description_' + scene.seut.subtypeId + '}')
+        
+        add_subelement(def_definition, 'Icon', 'Textures\GUI\Icons\AstronautBackpack.dds')
 
-    if scene.seut.gridScale == 'large':
-        add_subelement(def_definition, 'CubeSize', 'Large', True)
-        grid_size = 2.5
-        if (abs(scene.seut.export_rescaleFactor - 3) < 0.01): # floating point comparison
-            medium_grid_scalar = 0.6 # Large grid block is going to be 3/5 of the expected size
-    elif scene.seut.gridScale == 'small':
-        add_subelement(def_definition, 'CubeSize', 'Small', True)
-        grid_size = 0.5
-        if (abs(scene.seut.export_rescaleFactor - 0.6) < 0.01): # floating point comparison
-            medium_grid_scalar = 3.0 # Small grid block is going to be 3 times larger than expected
-    
-    add_subelement(def_definition, 'BlockTopology', 'TriangleMesh')
+        medium_grid_scalar = 1.0 # default to doing nothing unless the 3to5 mode is detected
 
-    def_Size = add_subelement(def_definition, 'Size')
-    add_attrib(def_Size, 'x', round(scene.seut.bBox_X * medium_grid_scalar), True)
-    add_attrib(def_Size, 'y', round(scene.seut.bBox_Z * medium_grid_scalar), True)   # This looks wrong but it's correct: Blender has different forward than SE.
-    add_attrib(def_Size, 'z', round(scene.seut.bBox_Y * medium_grid_scalar), True)
+        if scene.seut.gridScale == 'large':
+            add_subelement(def_definition, 'CubeSize', 'Large', True)
+            grid_size = 2.5
+            if (abs(scene.seut.export_rescaleFactor - 3) < 0.01): # floating point comparison
+                medium_grid_scalar = 0.6 # Large grid block is going to be 3/5 of the expected size
+        elif scene.seut.gridScale == 'small':
+            add_subelement(def_definition, 'CubeSize', 'Small', True)
+            grid_size = 0.5
+            if (abs(scene.seut.export_rescaleFactor - 0.6) < 0.01): # floating point comparison
+                medium_grid_scalar = 3.0 # Small grid block is going to be 3 times larger than expected
+        
+        add_subelement(def_definition, 'BlockTopology', 'TriangleMesh')
 
-    center_empty = None
-    for obj in collections['main'].objects:
-        if obj is not None and obj.type == 'EMPTY' and obj.name.startswith('Center'):
-            center_empty = obj
-            break
+        def_Size = add_subelement(def_definition, 'Size')
+        add_attrib(def_Size, 'x', round(scene.seut.bBox_X * medium_grid_scalar), True)
+        add_attrib(def_Size, 'y', round(scene.seut.bBox_Z * medium_grid_scalar), True)   # This looks wrong but it's correct: Blender has different forward than SE.
+        add_attrib(def_Size, 'z', round(scene.seut.bBox_Y * medium_grid_scalar), True)
 
-    if center_empty is not None:
-        center_loc_x = center_empty.location.x
-        center_loc_y = center_empty.location.y
-        center_loc_z = center_empty.location.z
+        center_empty = None
+        for obj in collections['main'].objects:
+            if obj is not None and obj.type == 'EMPTY' and obj.name.startswith('Center'):
+                center_empty = obj
+                break
 
-        parent_obj = center_empty.parent
+        if center_empty is not None:
+            center_loc_x = center_empty.location.x
+            center_loc_y = center_empty.location.y
+            center_loc_z = center_empty.location.z
 
-        while parent_obj is not None:
-            center_loc_x += parent_obj.location.x
-            center_loc_y += parent_obj.location.y
-            center_loc_z += parent_obj.location.z
-            parent_obj = parent_obj.parent
+            parent_obj = center_empty.parent
 
-        def_Center = add_subelement(def_definition, 'Center')
-        add_attrib(def_Center, 'x', round(medium_grid_scalar * center_loc_x / grid_size), True)
-        add_attrib(def_Center, 'y', round(medium_grid_scalar * center_loc_z / grid_size), True)   # This looks wrong but it's correct: Blender has different forward than SE.
-        add_attrib(def_Center, 'z', round(medium_grid_scalar * center_loc_y / grid_size), True)
+            while parent_obj is not None:
+                center_loc_x += parent_obj.location.x
+                center_loc_y += parent_obj.location.y
+                center_loc_z += parent_obj.location.z
+                parent_obj = parent_obj.parent
 
-    def_ModelOffset = add_subelement(def_definition, 'ModelOffset')
-    add_attrib(def_ModelOffset, 'x', 0)
-    add_attrib(def_ModelOffset, 'y', 0)
-    add_attrib(def_ModelOffset, 'z', 0)
+            def_Center = add_subelement(def_definition, 'Center')
+            add_attrib(def_Center, 'x', round(medium_grid_scalar * center_loc_x / grid_size), True)
+            add_attrib(def_Center, 'y', round(medium_grid_scalar * center_loc_z / grid_size), True)   # This looks wrong but it's correct: Blender has different forward than SE.
+            add_attrib(def_Center, 'z', round(medium_grid_scalar * center_loc_y / grid_size), True)
 
-    # Model
-    add_subelement(def_definition, 'Model', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '.mwm'), True)
+        def_ModelOffset = add_subelement(def_definition, 'ModelOffset')
+        add_attrib(def_ModelOffset, 'x', 0)
+        add_attrib(def_ModelOffset, 'y', 0)
+        add_attrib(def_ModelOffset, 'z', 0)
 
-    # Components
-    def_Components = add_subelement(def_definition, 'Components')
-    def_Component = add_subelement(def_Components, 'Component')
-    add_attrib(def_Component, 'Subtype', 'SteelPlate')
-    add_attrib(def_Component, 'Count', 10)
+        # Model
+        add_subelement(def_definition, 'Model', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '.mwm'), True)
 
-    def_CriticalComponent = add_subelement(def_definition, 'CriticalComponent')
-    add_attrib(def_CriticalComponent, 'Subtype', 'SteelPlate')
-    add_attrib(def_CriticalComponent, 'Index', 0)
+        # Components
+        def_Components = add_subelement(def_definition, 'Components')
+        def_Component = add_subelement(def_Components, 'Component')
+        add_attrib(def_Component, 'Subtype', 'SteelPlate')
+        add_attrib(def_Component, 'Count', 10)
 
-    # Mountpoints
-    if collections['mountpoints'] != None:
-        scene.seut.mountpointToggle == 'off'
-    
-    if len(scene.seut.mountpointAreas) > 0:
+        def_CriticalComponent = add_subelement(def_definition, 'CriticalComponent')
+        add_attrib(def_CriticalComponent, 'Subtype', 'SteelPlate')
+        add_attrib(def_CriticalComponent, 'Index', 0)
 
-        # gridScale here is modified when exporting both types, use rescaleFactor to determine original gridScale used to define mountpoints
-        if (scene.seut.gridScale == 'small' and scene.seut.export_rescaleFactor > 0.99) or (scene.seut.gridScale == "large" and scene.seut.export_rescaleFactor > 1.01):
-            scale = 0.5
-        else:
-            scale = 2.5
+        # Mountpoints
+        if collections['mountpoints'] != None:
+            scene.seut.mountpointToggle == 'off'
+        
+        if len(scene.seut.mountpointAreas) > 0:
 
-        bbox_x = scene.seut.bBox_X * scale
-        bbox_y = scene.seut.bBox_Y * scale
-        bbox_z = scene.seut.bBox_Z * scale
+            # gridScale here is modified when exporting both types, use rescaleFactor to determine original gridScale used to define mountpoints
+            if (scene.seut.gridScale == 'small' and scene.seut.export_rescaleFactor > 0.99) or (scene.seut.gridScale == "large" and scene.seut.export_rescaleFactor > 1.01):
+                scale = 0.5
+            else:
+                scale = 2.5
 
-        # Wipe existing ones.
-        for elem in def_definition:
-            if elem.tag == 'MountPoints':
-                def_definition.remove(elem)
+            bbox_x = scene.seut.bBox_X * scale
+            bbox_y = scene.seut.bBox_Y * scale
+            bbox_z = scene.seut.bBox_Z * scale
 
-        def_Mountpoints = add_subelement(def_definition, 'MountPoints')
+            # Wipe existing ones.
+            for elem in def_definition:
+                if elem.tag == 'MountPoints':
+                    def_definition.remove(elem)
 
-        for area in scene.seut.mountpointAreas:
-            if area is not None:
+            def_Mountpoints = add_subelement(def_definition, 'MountPoints')
 
-                def_Mountpoint = add_subelement(def_Mountpoints, 'MountPoint')
-                side_name = area.side.capitalize()
+            for area in scene.seut.mountpointAreas:
+                if area is not None:
 
-                if area.side == 'front' or area.side == 'back':
-                    if area.x + (area.xDim / 2) - (bbox_x / 2) > 0:
-                        start_x = 0.0
+                    def_Mountpoint = add_subelement(def_Mountpoints, 'MountPoint')
+                    side_name = area.side.capitalize()
+
+                    if area.side == 'front' or area.side == 'back':
+                        if area.x + (area.xDim / 2) - (bbox_x / 2) > 0:
+                            start_x = 0.0
+                        else:
+                            start_x = abs(area.x + (area.xDim / 2) - (bbox_x / 2)) / scale
+
+                        if area.y + (area.yDim / 2) - (bbox_z / 2) > 0:
+                            start_y = 0.0
+                        else:
+                            start_y = abs(area.y + (area.yDim / 2) - (bbox_z / 2)) / scale
+
+                        end_x = abs(area.x - (area.xDim / 2) - (bbox_x / 2)) / scale
+                        end_y = abs(area.y - (area.yDim / 2) - (bbox_z / 2)) / scale
+
+                        if end_x > scene.seut.bBox_X:
+                            end_x = scene.seut.bBox_X
+                        if end_y > scene.seut.bBox_Z:
+                            end_y = scene.seut.bBox_Z
+
+                    elif area.side == 'left' or area.side == 'right':
+                        if area.x + (area.xDim / 2) - (bbox_y / 2) > 0:
+                            start_x = 0.0
+                        else:
+                            start_x = abs(area.x + (area.xDim / 2) - (bbox_y / 2)) / scale
+
+                        if area.y + (area.yDim / 2) - (bbox_z / 2) > 0:
+                            start_y = 0.0
+                        else:
+                            start_y = abs(area.y + (area.yDim / 2) - (bbox_z / 2)) / scale
+                            
+                        end_x = abs(area.x - (area.xDim / 2) - (bbox_y / 2)) / scale
+                        end_y = abs(area.y - (area.yDim / 2) - (bbox_z / 2)) / scale
+
+                        if end_x > scene.seut.bBox_Y:
+                            end_x = scene.seut.bBox_Y
+                        if end_y > scene.seut.bBox_Z:
+                            end_y = scene.seut.bBox_Z
+
+                    elif area.side == 'top' or area.side == 'bottom':
+                        if area.x + (area.xDim / 2) - (bbox_x / 2) > 0:
+                            start_x = 0.0
+                        else:
+                            start_x = abs(area.x + (area.xDim / 2) - (bbox_x / 2)) / scale
+
+                        if area.y + (area.yDim / 2) - (bbox_y / 2) > 0:
+                            start_y = 0.0
+                        else:
+                            start_y = abs(area.y + (area.yDim / 2) - (bbox_y / 2)) / scale
+
+                        end_x = abs(area.x - (area.xDim / 2) - (bbox_x / 2)) / scale
+                        end_y = abs(area.y - (area.yDim / 2) - (bbox_y / 2)) / scale
+
+                        if end_x > scene.seut.bBox_X:
+                            end_x = scene.seut.bBox_X
+                        if end_y > scene.seut.bBox_Y:
+                            end_y = scene.seut.bBox_Y
+
+                    # Need to do this to prevent ET from auto-rearranging keys.
+                    add_attrib(def_Mountpoint, 'a_Side', side_name)
+                    add_attrib(def_Mountpoint, 'b_StartX', "{:.2f}".format(round(start_x * medium_grid_scalar, 2)), True)
+                    add_attrib(def_Mountpoint, 'c_StartY', "{:.2f}".format(round(start_y * medium_grid_scalar, 2)), True)
+                    add_attrib(def_Mountpoint, 'd_EndX', "{:.2f}".format(round(end_x * medium_grid_scalar, 2)), True)
+                    add_attrib(def_Mountpoint, 'e_EndY', "{:.2f}".format(round(end_y * medium_grid_scalar, 2)), True)
+
+                    if area.properties_mask:
+                        add_attrib(def_Mountpoint, 'f_PropertiesMask', str(area.properties_mask).lower(), True)
+                    if area.exclusion_mask:
+                        add_attrib(def_Mountpoint, 'g_ExclusionMask', str(area.exclusion_mask).lower(), True)
+                    if not area.enabled:
+                        add_attrib(def_Mountpoint, 'h_Enabled', str(area.enabled).lower(), True)
+                    if area.default:
+                        add_attrib(def_Mountpoint, 'i_Default', str(area.default).lower(), True)
+                    if area.pressurized:
+                        add_attrib(def_Mountpoint, 'j_PressurizedWhenOpen', str(area.pressurized).lower(), True)
+
+        
+        # Build Stages
+        if not collections['bs'] is None and len(collections['bs']) > 0:
+
+            counter = 0
+            if not collections['bs'] is None:
+                for key, value in collections['bs'].items():
+                    bs_col = value
+                    if len(bs_col.objects) > 0:
+                        counter += 1
+
+            if counter > 0:
+                def_BuildProgressModels = add_subelement(def_definition, 'BuildProgressModels')
+
+                percentage = 1 / counter
+
+                for bs in range(0, counter):
+                    def_BS_Model = ET.SubElement(def_BuildProgressModels, 'Model')
+
+                    # This makes sure the last build stage is set to upper bound 1.0
+                    if bs + 1 == counter:
+                        add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format(1.0), True)
                     else:
-                        start_x = abs(area.x + (area.xDim / 2) - (bbox_x / 2)) / scale
+                        add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format((bs + 1) * percentage)[:4], True)
 
-                    if area.y + (area.yDim / 2) - (bbox_z / 2) > 0:
-                        start_y = 0.0
-                    else:
-                        start_y = abs(area.y + (area.yDim / 2) - (bbox_z / 2)) / scale
+                    add_attrib(def_BS_Model, 'File', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm'), True)
 
-                    end_x = abs(area.x - (area.xDim / 2) - (bbox_x / 2)) / scale
-                    end_y = abs(area.y - (area.yDim / 2) - (bbox_z / 2)) / scale
+        # BlockPairName
+        add_subelement(def_definition, 'BlockPairName', scene.seut.subtypeId)
 
-                    if end_x > scene.seut.bBox_X:
-                        end_x = scene.seut.bBox_X
-                    if end_y > scene.seut.bBox_Z:
-                        end_y = scene.seut.bBox_Z
+        # Mirroring
+        if collections['mirroring'] != None:
+            scene.seut.mirroringToggle == 'off'
 
-                elif area.side == 'left' or area.side == 'right':
-                    if area.x + (area.xDim / 2) - (bbox_y / 2) > 0:
-                        start_x = 0.0
-                    else:
-                        start_x = abs(area.x + (area.xDim / 2) - (bbox_y / 2)) / scale
+        if scene.seut.mirroring_X != 'None':
+            add_subelement(def_definition, 'MirroringX', scene.seut.mirroring_X)
+        if scene.seut.mirroring_Z != 'None':                                # This looks wrong but SE works with different Axi than Blender
+            add_subelement(def_definition, 'MirroringY', scene.seut.mirroring_Z)
+        if scene.seut.mirroring_Y != 'None':
+            add_subelement(def_definition, 'MirroringZ', scene.seut.mirroring_Y)
+        
+        # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
+        if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
+            add_subelement(def_definition, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId)
 
-                    if area.y + (area.yDim / 2) - (bbox_z / 2) > 0:
-                        start_y = 0.0
-                    else:
-                        start_y = abs(area.y + (area.yDim / 2) - (bbox_z / 2)) / scale
-                        
-                    end_x = abs(area.x - (area.xDim / 2) - (bbox_y / 2)) / scale
-                    end_y = abs(area.y - (area.yDim / 2) - (bbox_z / 2)) / scale
+        # Write to file, place in export folder
+        temp_string = ET.tostring(definitions, 'utf-8')
+        try:
+            temp_string.decode('ascii')
+        except UnicodeDecodeError:
+            seut_report(self, context, 'ERROR', True, 'E033')
+        xml_string = xml.dom.minidom.parseString(temp_string)
+        xml_formatted = xml_string.toprettyxml()
 
-                    if end_x > scene.seut.bBox_Y:
-                        end_x = scene.seut.bBox_Y
-                    if end_y > scene.seut.bBox_Z:
-                        end_y = scene.seut.bBox_Z
+        # Fixing the entries
+        xml_formatted = xml_formatted.replace("a_Side", "Side")
+        xml_formatted = xml_formatted.replace("b_StartX", "StartX")
+        xml_formatted = xml_formatted.replace("c_StartY", "StartY")
+        xml_formatted = xml_formatted.replace("d_EndX", "EndX")
+        xml_formatted = xml_formatted.replace("e_EndY", "EndY")
+        xml_formatted = xml_formatted.replace("f_PropertiesMask", "PropertiesMask")
+        xml_formatted = xml_formatted.replace("g_ExclusionMask", "ExclusionMask")
+        xml_formatted = xml_formatted.replace("h_Enabled", "Enabled")
+        xml_formatted = xml_formatted.replace("i_Default", "Default")
+        xml_formatted = xml_formatted.replace("j_PressurizedWhenOpen", "PressurizedWhenOpen")
 
-                elif area.side == 'top' or area.side == 'bottom':
-                    if area.x + (area.xDim / 2) - (bbox_x / 2) > 0:
-                        start_x = 0.0
-                    else:
-                        start_x = abs(area.x + (area.xDim / 2) - (bbox_x / 2)) / scale
-
-                    if area.y + (area.yDim / 2) - (bbox_y / 2) > 0:
-                        start_y = 0.0
-                    else:
-                        start_y = abs(area.y + (area.yDim / 2) - (bbox_y / 2)) / scale
-
-                    end_x = abs(area.x - (area.xDim / 2) - (bbox_x / 2)) / scale
-                    end_y = abs(area.y - (area.yDim / 2) - (bbox_y / 2)) / scale
-
-                    if end_x > scene.seut.bBox_X:
-                        end_x = scene.seut.bBox_X
-                    if end_y > scene.seut.bBox_Y:
-                        end_y = scene.seut.bBox_Y
-
-                # Need to do this to prevent ET from auto-rearranging keys.
-                add_attrib(def_Mountpoint, 'a_Side', side_name)
-                add_attrib(def_Mountpoint, 'b_StartX', "{:.2f}".format(round(start_x * medium_grid_scalar, 2)), True)
-                add_attrib(def_Mountpoint, 'c_StartY', "{:.2f}".format(round(start_y * medium_grid_scalar, 2)), True)
-                add_attrib(def_Mountpoint, 'd_EndX', "{:.2f}".format(round(end_x * medium_grid_scalar, 2)), True)
-                add_attrib(def_Mountpoint, 'e_EndY', "{:.2f}".format(round(end_y * medium_grid_scalar, 2)), True)
-
-                if area.properties_mask:
-                    add_attrib(def_Mountpoint, 'f_PropertiesMask', str(area.properties_mask).lower(), True)
-                if area.exclusion_mask:
-                    add_attrib(def_Mountpoint, 'g_ExclusionMask', str(area.exclusion_mask).lower(), True)
-                if not area.enabled:
-                    add_attrib(def_Mountpoint, 'h_Enabled', str(area.enabled).lower(), True)
-                if area.default:
-                    add_attrib(def_Mountpoint, 'i_Default', str(area.default).lower(), True)
-                if area.pressurized:
-                    add_attrib(def_Mountpoint, 'j_PressurizedWhenOpen', str(area.pressurized).lower(), True)
-
-    
-    # Build Stages
-    if not collections['bs'] is None and len(collections['bs']) > 0:
-
-        counter = 0
-        if not collections['bs'] is None:
-            for key, value in collections['bs'].items():
-                bs_col = value
-                if len(bs_col.objects) > 0:
-                    counter += 1
-
-        if counter > 0:
-            def_BuildProgressModels = add_subelement(def_definition, 'BuildProgressModels')
-
-            percentage = 1 / counter
-
-            for bs in range(0, counter):
-                def_BS_Model = ET.SubElement(def_BuildProgressModels, 'Model')
-
-                # This makes sure the last build stage is set to upper bound 1.0
-                if bs + 1 == counter:
-                    add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format(1.0), True)
-                else:
-                    add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format((bs + 1) * percentage)[:4], True)
-
-                add_attrib(def_BS_Model, 'File', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm'), True)
-
-    # BlockPairName
-    add_subelement(def_definition, 'BlockPairName', scene.seut.subtypeId)
-
-    # Mirroring
-    if collections['mirroring'] != None:
-        scene.seut.mirroringToggle == 'off'
-
-    if scene.seut.mirroring_X != 'None':
-        add_subelement(def_definition, 'MirroringX', scene.seut.mirroring_X)
-    if scene.seut.mirroring_Z != 'None':                                # This looks wrong but SE works with different Axi than Blender
-        add_subelement(def_definition, 'MirroringY', scene.seut.mirroring_Z)
-    if scene.seut.mirroring_Y != 'None':
-        add_subelement(def_definition, 'MirroringZ', scene.seut.mirroring_Y)
-    
-    # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
-    if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
-        add_subelement(def_definition, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId)
-
-    # Write to file, place in export folder
-    temp_string = ET.tostring(definitions, 'utf-8')
-    try:
-        temp_string.decode('ascii')
-    except UnicodeDecodeError:
-        seut_report(self, context, 'ERROR', True, 'E033')
-    xml_string = xml.dom.minidom.parseString(temp_string)
-    xml_formatted = xml_string.toprettyxml()
-
-    # Fixing the entries
-    xml_formatted = xml_formatted.replace("a_Side", "Side")
-    xml_formatted = xml_formatted.replace("b_StartX", "StartX")
-    xml_formatted = xml_formatted.replace("c_StartY", "StartY")
-    xml_formatted = xml_formatted.replace("d_EndX", "EndX")
-    xml_formatted = xml_formatted.replace("e_EndY", "EndY")
-    xml_formatted = xml_formatted.replace("f_PropertiesMask", "PropertiesMask")
-    xml_formatted = xml_formatted.replace("g_ExclusionMask", "ExclusionMask")
-    xml_formatted = xml_formatted.replace("h_Enabled", "Enabled")
-    xml_formatted = xml_formatted.replace("i_Default", "Default")
-    xml_formatted = xml_formatted.replace("j_PressurizedWhenOpen", "PressurizedWhenOpen")
-    
-    xml_formatted = re.sub(r'\n\s*\n', '\n', xml_formatted)
-
-    filename = scene.seut.subtypeId
-
-    if update:
+    if method == 'entry':
         target_file = file_to_update
+        xml_formatted = lines_before + lines_after # TODO: Add in new entry
+
+    elif method == 'file':
+        target_file = file_to_update
+        start = lines.rfind('</Definition>') + len('</Definition>')
+        lines_before = lines[:start]
+        lines_after = lines[start:]
+        xml_formatted = lines_before + '\n' + a + '\n' + lines_after # TODO: add in entry
+
     else:
+        filename = scene.seut.subtypeId
         target_file = os.path.join(path_data, "CubeBlocks", filename + ".sbc")
         if not os.path.exists(os.path.join(path_data, "CubeBlocks")):
             os.makedirs(os.path.join(path_data, "CubeBlocks"))

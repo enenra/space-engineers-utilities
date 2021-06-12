@@ -13,6 +13,109 @@ from bpy.props  import (EnumProperty,
 
 from .materials.seut_ot_create_material import create_material
 
+seut_collections = {
+    'mainScene':{
+        'main': {
+            'name': 'Main', 
+            'color': 'COLOR_04', 
+            'type': 'single'
+            },
+        'hkt': {
+            'name': 'Collision', 
+            'color': 'COLOR_08', 
+            'type': 'array'
+            },
+        'lod': {
+            'name': 'LOD', 
+            'color': 'COLOR_01', 
+            'type': 'dict'
+            },
+        'bs': {
+            'name': 'BS', 
+            'color': 'COLOR_05', 
+            'type': 'dict'
+            },
+        'bs_lod': {
+            'name': 'BS_LOD', 
+            'color': 'COLOR_06', 
+            'type': 'dict'
+            },
+        'mountpoints': {
+            'name': 'Mountpoints', 
+            'color': 'COLOR_03', 
+            'type': 'temp'
+            },
+        'mirroring': {
+            'name': 'Mirroring', 
+            'color': 'COLOR_03', 
+            'type': 'temp'
+            },
+        'render': {
+            'name': 'Render', 
+            'color': 'COLOR_03', 
+            'type': 'temp'
+            }
+    },
+    'subpart': {
+        'main': {
+            'name': 'Main', 
+            'color': 'COLOR_04', 
+            'type': 'single'
+            },
+        'hkt': {
+            'name': 'Collision', 
+            'color': 'COLOR_08', 
+            'type': 'array'
+            },
+        'lod': {
+            'name': 'LOD', 
+            'color': 'COLOR_01', 
+            'type': 'dict'
+            },
+        'bs': {
+            'name': 'BS', 
+            'color': 'COLOR_05', 
+            'type': 'dict'
+            },
+        'bs_lod': {
+            'name': 'BS_LOD', 
+            'color': 'COLOR_06', 
+            'type': 'dict'
+            },
+    },
+    'character': {
+        'main': {
+            'name': 'Main', 
+            'color': 'COLOR_04', 
+            'type': 'single'
+            },
+        'hkt': {
+            'name': 'Collision', 
+            'color': 'COLOR_08', 
+            'type': 'array'
+            },
+        'lod': {
+            'name': 'LOD', 
+            'color': 'COLOR_01', 
+            'type': 'dict'
+            },
+    },
+    'character_animation': {
+        'main': {
+            'name': 'Main', 
+            'color': 'COLOR_04', 
+            'type': 'single'
+            },
+    },
+    'particle_effect': {
+        'main': {
+            'name': 'Main', 
+            'color': 'COLOR_04', 
+            'type': 'single'
+            },
+    }
+}
+
 
 names = {
     'seut': 'SEUT',

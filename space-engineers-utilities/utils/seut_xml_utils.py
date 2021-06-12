@@ -7,8 +7,6 @@ import xml.dom.minidom
 def get_relevant_sbc(path: str, sbc_type: str, subtype_id: str):
     """Returns the relevant element of an existing entry, if found."""
 
-    cubeblock_match = None
-
     for path, subdirs, files in os.walk(path):
         for name in files:
             if not name.endswith(".sbc"):
@@ -17,27 +15,19 @@ def get_relevant_sbc(path: str, sbc_type: str, subtype_id: str):
                 lines = f.read()
                 if '<' + sbc_type + '>' in lines:
                     if '<SubtypeId>' + subtype_id + '</SubtypeId>' in lines:
-
-                        tree = ET.parse(os.path.join(path, name))
-                        root = tree.getroot()
-
-                        if root.tag == "Definitions":
-                            for cubeblocks in root:
-                                for definition in cubeblocks:
-                                    for id in definition:
-                                        for entry in id:
-                                            if entry.tag == 'SubtypeId':
-                                                if entry.text == subtype_id:
-                                                    cubeblock_match = definition
-                                                    break
-
-                                return [os.path.join(path, name), root, cubeblock_match]
+                        
+                        start = lines.find('<SubtypeId>' + subtype_id + '</SubtypeId>')
+                        start = lines[:-start].rfind('<Definition')
+                        end = start + lines[start:].find('</Definition>') + len('</Definition>')
+                        return [os.path.join(path, name), lines, start, end]
+                else:
+                    return [os.path.join(path, name), lines, None, None]
 
 
 def add_subelement(parent, name: str, value=None, override=False):
     """Adds a subelement to XML definition."""
 
-    ignore_dupes = ['MountPoint']
+    ignore_dupes = ['MountPoint', 'Model']
     
     if not name in ignore_dupes:
         for elem in parent:
@@ -67,3 +57,8 @@ def add_attrib(element, name: str, value, override=False):
                 return elem
 
     return element.set(name, str(value))
+
+
+def update_subelement():
+
+    return
