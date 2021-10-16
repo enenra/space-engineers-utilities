@@ -10,6 +10,38 @@ from ..seut_utils                   import get_parent_collection
 from ..seut_errors                  import seut_report
 
 
+empties = {
+    'conveyorline': {'name': "dummy_detector_conveyorline_", 'index': True},
+    'conveyorline_small': {'name': "dummy_detector_conveyorline_small_", 'index': True},
+    'conveyorline_in': {'name': "dummy_detector_conveyorline_in_", 'index': True},
+    'conveyorline_out': {'name': "dummy_detector_conveyorline_out_", 'index': True},
+    'conveyorline_small_in': {'name': "dummy_detector_conveyorline_small_in_", 'index': True},
+    'conveyorline_small_out': {'name': "dummy_detector_conveyorline_small_out_", 'index': True},
+    'Connector': {'name': "dummy_detector_Connector_", 'index': True},
+    'ejector': {'name': "dummy_detector_ejector_", 'index': True},
+    'collector': {'name': "dummy_detector_collector_", 'index': True},
+    'merge': {'name': "detector_merge_", 'index': True},
+    'thruster_flame': {'name': "thruster_flame_", 'index': True},
+    'muzzle_missile': {'name': "muzzle_missile_", 'index': True},
+    'muzzle_projectile': {'name': "muzzle_projectile_", 'index': True},
+    'respawn': {'name': "dummy_detector_respawn", 'index': False},
+    'light': {'name': "light_", 'index': True},
+    'camera': {'name': "dummy_camera", 'index': False},
+    'upgrade': {'name': "detector_upgrade_", 'index': True},
+    'vent': {'name': "vent_", 'index': True},
+    'gear_lock': {'name': "gear_lock_", 'index': True},
+    'shiptool': {'name': "dummy_detector_shiptool_", 'index': True},
+    'electric_motor': {'name': "dummy_electric_motor", 'index': False},
+    'character': {'name': "dummy_character", 'index': False},
+    'particles1': {'name': "dummy_particles1", 'index': False},
+    'particles2': {'name': "dummy_particles2", 'index': False},
+    'TopBlock': {'name': "dummy_TopBlock", 'index': False},
+    'wheel': {'name': "dummy_wheel", 'index': False},
+    'center': {'name': "Center", 'index': False},
+    'emitter': {'name': "emitter", 'index': False}
+    }
+
+
 class SEUT_OT_AddDummy(Operator):
     """Adds a Space Engineers dummy"""
     bl_idname = "scene.add_dummy"
@@ -68,94 +100,9 @@ class SEUT_OT_AddDummy(Operator):
             return {'CANCELLED'}
         
         # Determine name strings.
-        empty_name = ""
-        uses_index = False
         display_type = 'CUBE'
-        
-        if self.detector_type == 'conveyorline':
-            empty_name = "dummy_detector_conveyorline_"
-            uses_index = True
-        elif self.detector_type == 'conveyorline_small':
-            empty_name = "dummy_detector_conveyorline_small_"
-            uses_index = True
-        elif self.detector_type == 'conveyorline_in':
-            empty_name = "dummy_detector_conveyorline_in_"
-            uses_index = True
-        elif self.detector_type == 'conveyorline_out':
-            empty_name = "dummy_detector_conveyorline_out_"
-            uses_index = True
-        elif self.detector_type == 'conveyorline_small_in':
-            empty_name = "dummy_detector_conveyorline_small_in_"
-            uses_index = True
-        elif self.detector_type == 'conveyorline_small_out':
-            empty_name = "dummy_detector_conveyorline_small_out_"
-            uses_index = True
-        elif self.detector_type == 'Connector':
-            empty_name = "dummy_detector_Connector_"
-            uses_index = True
-        elif self.detector_type == 'ejector':
-            empty_name = "dummy_detector_ejector_"
-            uses_index = True
-        elif self.detector_type == 'collector':
-            empty_name = "dummy_detector_collector_"
-            uses_index = True
-        elif self.detector_type == 'merge':
-            empty_name = "detector_merge_"
-            uses_index = True
-        elif self.detector_type == 'thruster_flame':
-            empty_name = "thruster_flame_"
-            uses_index = True
-        elif self.detector_type == 'muzzle_missile':
-            empty_name = "muzzle_missile_"
-            uses_index = True
-        elif self.detector_type == 'muzzle_projectile':
-            empty_name = "muzzle_projectile_"
-            uses_index = True
-        elif self.detector_type == 'respawn':
-            empty_name = "dummy_detector_respawn"
-            uses_index = False
-        elif self.detector_type == 'light':
-            empty_name = "light_"
-            uses_index = True
-        elif self.detector_type == 'camera':
-            empty_name = "dummy_camera"
-            uses_index = False
-        elif self.detector_type == 'upgrade':
-            empty_name = "detector_upgrade_"
-            uses_index = True
-        elif self.detector_type == 'vent':
-            empty_name = "vent_"
-            uses_index = True
-        elif self.detector_type == 'gear_lock':
-            empty_name = "gear_lock_"
-            uses_index = True
-        elif self.detector_type == 'shiptool':
-            empty_name = "dummy_detector_shiptool_"
-            uses_index = True
-        elif self.detector_type == 'electric_motor':
-            empty_name = "dummy_electric_motor"
-            uses_index = False
-        elif self.detector_type == 'character':
-            empty_name = "dummy_character"
-            uses_index = False
-        elif self.detector_type == 'particles1':
-            empty_name = "dummy_particles1"
-            uses_index = False
-        elif self.detector_type == 'particles2':
-            empty_name = "dummy_particles2"
-            uses_index = False
-        elif self.detector_type == 'TopBlock':
-            empty_name = "dummy_TopBlock"
-            uses_index = False
-        elif self.detector_type == 'wheel':
-            empty_name = "dummy_wheel"
-            uses_index = False
-        elif self.detector_type == 'center':
-            empty_name = "Center"
-            uses_index = False
-        elif self.detector_type == 'emitter':
-            empty_name = "emitter"
-            uses_index = False
+        empty_name = empties[self.detector_type]['name']
+        uses_index = empties[self.detector_type]['index']
         
         bpy.ops.object.add(type='EMPTY')
         empty = bpy.context.view_layer.objects.active

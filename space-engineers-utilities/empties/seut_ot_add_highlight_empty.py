@@ -25,6 +25,7 @@ empties = {
     'inventory': {'name': "detector_inventory_", 'index': True}
 }
 
+
 class SEUT_OT_AddHighlightEmpty(Operator):
     """Add highlight empty to selected object. \n Note: You must have a reference object selected"""
     bl_idname = "object.add_highlight_empty"
