@@ -10,6 +10,21 @@ from ..seut_utils                   import get_parent_collection
 from ..seut_errors                  import seut_report
 
 
+empties = {
+    'conveyor': {'name': "detector_conveyor_", 'index': True},
+    'conveyor_small': {'name': "detector_conveyor_small_", 'index': True},
+    'terminal': {'name': "detector_terminal_", 'index': True},
+    'textpanel': {'name': "detector_textpanel_", 'index': True},
+    'button': {'name': "dummy_detector_panel_button_", 'index': True},
+    'cockpit': {'name': "detector_cockpit_", 'index': True},
+    'door': {'name': "detector_door_", 'index': True},
+    'advanceddoor': {'name': "detector_advanceddoor_", 'index': True},
+    'block': {'name': "detector_block_", 'index': True},
+    'wardrobe': {'name': "detector_wardrobe", 'index': True},
+    'cryopod': {'name': "detector_cryopod_", 'index': True},
+    'inventory': {'name': "detector_inventory_", 'index': True}
+}
+
 class SEUT_OT_AddHighlightEmpty(Operator):
     """Add highlight empty to selected object. \n Note: You must have a reference object selected"""
     bl_idname = "object.add_highlight_empty"
@@ -72,47 +87,10 @@ class SEUT_OT_AddHighlightEmpty(Operator):
 
 
         # Determine name strings.
-        empty_name = ""
         object_name_addition = "_section_"
         custom_prop_name = "highlight"
-        uses_index = False
-        
-        if self.detector_type == 'conveyor':
-            empty_name = "detector_conveyor_"
-            uses_index = True
-        elif self.detector_type == 'conveyor_small':
-            empty_name = "detector_conveyor_small_"
-            uses_index = True
-        elif self.detector_type == 'terminal':
-            empty_name = "detector_terminal_"
-            uses_index = True
-        elif self.detector_type == 'textpanel':
-            empty_name = "detector_textpanel_"
-            uses_index = True
-        elif self.detector_type == 'button':
-            empty_name = "dummy_detector_panel_button_"
-            uses_index = True
-        elif self.detector_type == 'cockpit':
-            empty_name = "detector_cockpit_"
-            uses_index = True
-        elif self.detector_type == 'door':
-            empty_name = "detector_door_"
-            uses_index = True
-        elif self.detector_type == 'advanceddoor':
-            empty_name = "detector_advanceddoor_"
-            uses_index = True
-        elif self.detector_type == 'block':
-            empty_name = "detector_block_"
-            uses_index = True
-        elif self.detector_type == 'wardrobe':
-            empty_name = "detector_wardrobe"
-            uses_index = False
-        elif self.detector_type == 'cryopod':
-            empty_name = "detector_cryopod_"
-            uses_index = True
-        elif self.detector_type == 'inventory':
-            empty_name = "detector_inventory_"
-            uses_index = True
+        empty_name = empties[self.detector_type]['name']
+        uses_index = empties[self.detector_type]['index']
         
         # Spawn empty on world origin
         # Ideally I'd move it to the geometry of the selected object, but I cannot figure out how to place it while considering the origin
