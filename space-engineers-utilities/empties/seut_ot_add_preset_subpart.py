@@ -9,6 +9,33 @@ from ..seut_utils                   import get_parent_collection
 from ..seut_errors                  import seut_report
 
 
+empties = {
+    'DoorLeft': {'name': "subpart_DoorLeft", 'index': False},
+    'DoorRight': {'name': "subpart_DoorRight", 'index': False},
+    'DrillHead': {'name': "subpart_DrillHead", 'index': False},
+    'grinder1': {'name': "subpart_grinder1", 'index': False},
+    'grinder2': {'name': "subpart_grinder2", 'index': False},
+    'Propeller': {'name': "subpart_Propeller", 'index': False},
+    'InteriorTurretBase1': {'name': "subpart_InteriorTurretBase1", 'index': False},
+    'InteriorTurretBase2': {'name': "subpart_InteriorTurretBase2", 'index': False},
+    'MissileTurretBase1': {'name': "subpart_MissileTurretBase1", 'index': False},
+    'MissileTurretBarrels': {'name': "subpart_MissileTurretBarrels", 'index': False},
+    'GatlingTurretBase1': {'name': "subpart_GatlingTurretBase1", 'index': False},
+    'GatlingTurretBase2': {'name': "subpart_GatlingTurretBase2", 'index': False},
+    'GatlingBarrel': {'name': "subpart_GatlingBarrel", 'index': False},
+    'Barrel': {'name': "subpart_Barrel", 'index': False},
+    'PistonSubpart1': {'name': "subpart_PistonSubpart1", 'index': False},
+    'PistonSubpart2': {'name': "subpart_PistonSubpart2", 'index': False},
+    'PistonSubpart3': {'name': "subpart_PistonSubpart3", 'index': False},
+    'TurbineRotor': {'name': "subpart_TurbineRotor", 'index': False},
+    'HangarDoor': {'name': "subpart_HangarDoor_door", 'index': True},
+    'LaserComTurret': {'name': "subpart_LaserComTurret", 'index': False},
+    'LaserCom': {'name': "subpart_LaserCom", 'index': False},
+    'RotatingLightDummy': {'name': "subpart_RotatingLightDummy", 'index': False},
+    'magazine': {'name': "subpart_magazine", 'index': False}
+    }
+
+
 class SEUT_OT_AddPresetSubpart(Operator):
     """Adds a preset subpart"""
     bl_idname = "scene.add_preset_subpart"
@@ -62,79 +89,9 @@ class SEUT_OT_AddPresetSubpart(Operator):
             target_object = context.selected_objects[0]
 
         # Determine name strings.
-        empty_name = ""
         custom_prop_name = "file"
-        uses_index = False
-        
-        if self.detector_type == 'DoorLeft':
-            empty_name = "subpart_DoorLeft"
-            uses_index = False
-        elif self.detector_type == 'DoorRight':
-            empty_name = "subpart_DoorRight"
-            uses_index = False
-        elif self.detector_type == 'DrillHead':
-            empty_name = "subpart_DrillHead"
-            uses_index = False
-        elif self.detector_type == 'grinder1':
-            empty_name = "subpart_grinder1"
-            uses_index = False
-        elif self.detector_type == 'grinder2':
-            empty_name = "subpart_grinder2"
-            uses_index = False
-        elif self.detector_type == 'Propeller':
-            empty_name = "subpart_Propeller"
-            uses_index = False
-        elif self.detector_type == 'InteriorTurretBase1':
-            empty_name = "subpart_InteriorTurretBase1"
-            uses_index = False
-        elif self.detector_type == 'InteriorTurretBase2':
-            empty_name = "subpart_InteriorTurretBase2"
-            uses_index = False
-        elif self.detector_type == 'MissileTurretBase1':
-            empty_name = "subpart_MissileTurretBase1"
-            uses_index = False
-        elif self.detector_type == 'MissileTurretBarrels':
-            empty_name = "subpart_MissileTurretBarrels"
-            uses_index = False
-        elif self.detector_type == 'GatlingTurretBase1':
-            empty_name = "subpart_GatlingTurretBase1"
-            uses_index = False
-        elif self.detector_type == 'GatlingTurretBase2':
-            empty_name = "subpart_GatlingTurretBase2"
-            uses_index = False
-        elif self.detector_type == 'GatlingBarrel':
-            empty_name = "subpart_GatlingBarrel"
-            uses_index = False
-        elif self.detector_type == 'Barrel':
-            empty_name = "subpart_Barrel"
-            uses_index = False
-        elif self.detector_type == 'PistonSubpart1':
-            empty_name = "subpart_PistonSubpart1"
-            uses_index = False
-        elif self.detector_type == 'PistonSubpart2':
-            empty_name = "subpart_PistonSubpart2"
-            uses_index = False
-        elif self.detector_type == 'PistonSubpart3':
-            empty_name = "subpart_PistonSubpart3"
-            uses_index = False
-        elif self.detector_type == 'TurbineRotor':
-            empty_name = "subpart_TurbineRotor"
-            uses_index = False
-        elif self.detector_type == 'HangarDoor':
-            empty_name = "subpart_HangarDoor_door"
-            uses_index = True
-        elif self.detector_type == 'LaserComTurret':
-            empty_name = "subpart_LaserComTurret"
-            uses_index = False
-        elif self.detector_type == 'LaserCom':
-            empty_name = "subpart_LaserCom"
-            uses_index = False
-        elif self.detector_type == 'RotatingLightDummy':
-            empty_name = "subpart_RotatingLightDummy"
-            uses_index = False
-        elif self.detector_type == 'magazine':
-            empty_name = "subpart_magazine"
-            uses_index = False
+        empty_name = empties[self.detector_type]['name']
+        uses_index = empties[self.detector_type]['index']
 
         bpy.ops.object.add(type='EMPTY')
         empty = context.view_layer.objects.active
