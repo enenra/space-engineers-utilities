@@ -374,7 +374,7 @@ class SEUT_PT_Panel_Export(Panel):
             col.prop(scene.seut, "export_largeGrid", icon='MESH_CUBE')
             col = split.column(align=True)
             col.prop(scene.seut, "export_smallGrid", icon='META_CUBE')
-            if scene.seut.export_smallGrid and scene.seut.export_largeGrid:
+            if scene.seut.export_smallGrid:
                 col.prop(scene.seut, "export_medium_grid", icon='CUBE')
         
         box.prop(scene.seut, "mod_path", text="Mod")
