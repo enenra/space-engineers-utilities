@@ -268,7 +268,7 @@ class SEUT_OT_AddMountpointArea(Operator):
     def poll(cls, context):
         if len(context.selected_objects) > 0:
             selected_object = context.selected_objects[0]
-            return context.scene.seut.mountpointToggle == 'on' and selected_object.type == 'EMPTY' and selected_object.name.find("Mountpoints ") != -1
+            return context.scene.seut.mountpointToggle == 'on' and (selected_object.type == 'EMPTY' and selected_object.name.find("Mountpoints ") != -1) or (selected_object.parent.type =='EMPTY' and selected_object.parent.name.find("Mountpoints ") != -1)
 
 
     def execute(self, context):
@@ -291,6 +291,11 @@ class SEUT_OT_AddMountpointArea(Operator):
         sides = ['front', 'back', 'left', 'right', 'top', 'bottom']
 
         selected_object = context.selected_objects[0]
+
+        # In case a plane under the empty is selected, use the empty still.
+        if selected_object.type != 'EMPTY':
+            selected_object = selected_object.parent
+
         string = selected_object.name[len("Mountpoints "):].lower()
 
         if string in sides:
