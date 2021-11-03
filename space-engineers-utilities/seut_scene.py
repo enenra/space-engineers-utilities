@@ -181,7 +181,7 @@ def update_subtypeId(self, context):
             seut_report(self, context, 'ERROR', False, 'E018')
             return
 
-    if scene.seut.subtypeId != scene.seut.subtypeBefore and scene.seut.subtypeBefore is not "":
+    if scene.seut.subtypeId != scene.seut.subtypeBefore and scene.seut.subtypeBefore != "":
         rename_collections(scene)
         scene.seut.subtypeBefore = scene.seut.subtypeId
         

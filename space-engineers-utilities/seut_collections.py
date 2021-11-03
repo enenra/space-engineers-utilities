@@ -156,7 +156,7 @@ def poll_ref_col(self, object):
         if not col.seut is self and not col.seut.ref_col is None:
             has_hkt.append(col.seut.ref_col)
 
-    return self.scene == object.seut.scene and not object.seut.col_type is 'none' and object not in has_hkt and self.col_type == 'hkt' and (object.seut.col_type == 'main' or object.seut.col_type == 'bs')
+    return self.scene == object.seut.scene and object.seut.col_type != 'none' and object not in has_hkt and self.col_type == 'hkt' and (object.seut.col_type == 'main' or object.seut.col_type == 'bs')
 
 
 def update_lod_distance(self, context):
@@ -366,7 +366,7 @@ def get_collections(scene):
         if not col.seut.scene is scene:
             continue
         
-        if col.seut.col_type is 'none':
+        if col.seut.col_type == 'none':
             continue
 
         elif col.seut.col_type == 'hkt':
