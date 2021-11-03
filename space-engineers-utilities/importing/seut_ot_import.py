@@ -146,14 +146,14 @@ def recursive_fix_scratched(obj):
 def fix_scratched_materials(obj):
     for slot in obj.material_slots:
 
-        if 'PaintedMetal_Colorable' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_Colorable']:
+        if 'PaintedMetal_Colorable' in bpy.data.materials and 'PaintedMetalScratched_Colorable' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_Colorable']:
             slot.material = bpy.data.materials['PaintedMetal_Colorable']
 
-        elif 'PaintedMetal_Yellow' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_Yellow']:
+        elif 'PaintedMetal_Yellow' in bpy.data.materials and 'PaintedMetalScratched_Yellow' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_Yellow']:
             slot.material = bpy.data.materials['PaintedMetal_Yellow']
 
-        elif 'PaintedMetal_Darker' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_Darker']:
+        elif 'PaintedMetal_Darker' in bpy.data.materials and 'PaintedMetalScratched_Darker' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_Darker']:
             slot.material = bpy.data.materials['PaintedMetal_Darker']
 
-        elif 'PaintedMetal_VeryDark' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_VeryDark']:
+        elif 'PaintedMetal_VeryDark' in bpy.data.materials and 'PaintedMetalScratched_VeryDark' in bpy.data.materials and slot.material == bpy.data.materials['PaintedMetalScratched_VeryDark']:
             slot.material = bpy.data.materials['PaintedMetal_VeryDark']
