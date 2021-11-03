@@ -79,13 +79,13 @@ def convert_texture(path_in: str, path_out: str, preset: str, settings: list):
     path_out = get_abs_path(path_out)
 
     presets = {
-        "icon": [texconv, 'texconv', '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-pmalpha', '-sRGB', '-y', '-o', path_out, path_in],
-        "cm": [texconv, 'texconv', '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-sepalpha', '-sRGB', '-y', '-o', path_out, path_in],
-        "add": [texconv, 'texconv', '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-if', 'POINT_DITHER_DIFFUSION', '-sepalpha', '-sRGB', '-y', '-o', path_out, path_in],
-        "ng": [texconv, 'texconv', '-ft', 'DDS', '-f', 'BC7_UNORM', '-sepalpha', '-y', '-o', path_out, path_in],
-        "alphamask": [texconv, 'texconv', '-f', 'BC7_UNORM', '-if', 'POINT_DITHER_DIFFUSION', '-y', '-o', path_out, path_in],
-        "tif": [texconv, 'texconv', '-ft', 'TIF', '-o', path_out, path_in],
-        "custom": [texconv, 'texconv', '-o', path_out, path_in]
+        "icon": [texconv, 'texconv', path_in, '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-pmalpha', '-sRGB', '-y', '-o', path_out],
+        "cm": [texconv, 'texconv', path_in, '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-sepalpha', '-sRGB', '-y', '-o', path_out],
+        "add": [texconv, 'texconv', path_in, '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-if', 'POINT_DITHER_DIFFUSION', '-sepalpha', '-sRGB', '-y', '-o', path_out],
+        "ng": [texconv, 'texconv', path_in, '-ft', 'DDS', '-f', 'BC7_UNORM', '-sepalpha', '-y', '-o', path_out],
+        "alphamask": [texconv, 'texconv', path_in, '-ft', 'BC7_UNORM', '-if', 'POINT_DITHER_DIFFUSION', '-y', '-o', path_out],
+        "tif": [texconv, 'texconv', path_in, '-ft', 'TIF', '-o', path_out],
+        "custom": [texconv, 'texconv', path_in, '-o', path_out]
     }
 
     if preset in presets:
