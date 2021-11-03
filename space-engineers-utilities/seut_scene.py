@@ -177,8 +177,11 @@ def update_subtypeId(self, context):
     # If the subtypeId already exists for a scene in the file, prevent it from being set
     for scn in bpy.data.scenes:
         if scn is not scene and scn.seut.subtypeId == scene.seut.subtypeId:
-            scene.seut.subtypeId = scene.seut.subtypeBefore
-            seut_report(self, context, 'ERROR', False, 'E018')
+            if scene.seut.subtypeBefore == scene.seut.subtypeId:
+                scene.seut.subtypeId = scene.seut.subtypeId + " (" + scene.name + ")"
+            else:
+                scene.seut.subtypeId = scene.seut.subtypeBefore
+                seut_report(self, context, 'ERROR', False, 'E018')
             return
 
     if scene.seut.subtypeId != scene.seut.subtypeBefore and scene.seut.subtypeBefore != "":
