@@ -291,7 +291,7 @@ def export_hkt(self, context):
             if cancelled:
                 return {'CANCELLED'}
             
-            if len(hkt_col.objects) > 16:
+            if len(hkt_col.objects) > 10:
                 seut_report(self, context, 'ERROR', True, 'E022', hkt_col.name, len(hkt_col.objects))
                 continue
 

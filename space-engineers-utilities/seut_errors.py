@@ -26,7 +26,7 @@ errors = {
     'E019': "No {variable_1} folder defined for scene '{variable_2}'.",
     'E020': "Deletion of temporary files failed.",
     'E021': "Available MatLibs could not be refreshed.",
-    'E022': "Too many objects in '{variable_1}'-collection. Collection contains {variable_2} but Space Engineers only supports a maximum of 16.",
+    'E022': "Too many objects in '{variable_1}'-collection. Collection contains {variable_2} but Space Engineers only supports a maximum of 10.",
     'E023': "Empty '{variable_1}' has incorrect rotation value: {variable_2}",
     'E024': "Collection 'Mountpoints ({variable_1})' not found. Disable and then re-enable Mountpoint Mode to recreate!",
     'E025': "Cannot create highlight empty for object outside of 'Main' collection.",
