@@ -160,9 +160,6 @@ class SEUT_PT_Panel_BoundingBox(Panel):
 
             row = box.row()
             row.prop(wm.seut, 'bboxColor', text="")
-            
-            row = box.row()
-            row.operator('object.bbox_auto', icon='AUTO')
 
 
 class SEUT_PT_Panel_Mirroring(Panel):
