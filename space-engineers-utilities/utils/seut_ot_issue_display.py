@@ -89,7 +89,7 @@ class SEUT_OT_IssueDisplay(Operator):
             if issue.issue_type == 'ERROR':
                 row.alert = True
             if issue.issue_type == 'ERROR' or issue.issue_type == 'WARNING':
-                semref = row.operator('wm.semref_link', text="SEMREF", icon='INFO')
+                semref = row.operator('wm.semref_link', text="How to Fix", icon='INFO')
                 semref.section = ''
                 semref.page = 'troubleshooting'
                 semref.code = '#' + issue.code.lower()
