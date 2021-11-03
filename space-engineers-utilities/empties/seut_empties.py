@@ -140,10 +140,10 @@ class SEUT_PT_EmptyLink(Panel):
             row = layout.row()
             row.label(text="Subpart Scene:", icon = 'EMPTY_DATA')
 
-            col = row.column(align=True)
-            link = col.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'tutorials/'
-            link.page = 'subparts'
+            # col = row.column(align=True)
+            # link = col.operator('wm.semref_link', text="", icon='INFO')
+            # link.section = 'tutorials'
+            # link.page = 'subparts'
             
             layout.prop(empty.seut, 'linkedScene', text="",)
 
@@ -154,8 +154,8 @@ class SEUT_PT_EmptyLink(Panel):
             
             col = row.column(align=True)
             link = col.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'tutorials/'
-            link.page = 'interaction-highlights'
+            link.section = 'tutorials'
+            link.page = '6357205/Interaction+Highlight+Tutorial'
 
             layout.operator("object.highlight_object_add", text="Add")
 

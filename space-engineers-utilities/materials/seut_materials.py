@@ -334,8 +334,8 @@ class SEUT_PT_Panel_Materials(Panel):
             split = box.split(factor=0.85)
             split.label(text=material.name, icon_value=layout.icon(material))
             link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'reference/'
-            link.page = 'shader-editor-panel'
+            link.section = 'reference'
+            link.page = '6095000/SEUT+Shader+Editor'
 
             box.prop(material.seut, 'overrideMatLib')
             box.prop(material.seut, 'technique', icon='IMGDISPLAY')
@@ -392,8 +392,8 @@ class SEUT_PT_Panel_Materials(Panel):
         split = box.split(factor=0.85)
         split.label(text="Create SEUT Material", icon='MATERIAL')
         link = split.operator('wm.semref_link', text="", icon='INFO')
-        link.section = 'tutorials/'
-        link.page = 'create-material'
+        link.section = 'tutorials'
+        link.page = '6095265/Create+Material+Tutorial'
 
         box.operator('object.create_material', icon='ADD')
         box.operator('wm.import_materials', icon='IMPORT')
@@ -428,8 +428,8 @@ class SEUT_PT_Panel_MatLib(Panel):
         split = layout.split(factor=0.85)
         split.operator('scene.export_materials', icon='EXPORT')
         link = split.operator('wm.semref_link', text="", icon='INFO')
-        link.section = 'tutorials/'
-        link.page = 'create-matlib'
+        link.section = 'tutorials'
+        link.page = '6128098/Create+MatLib+Tutorial'
 
 
 class SEUT_PT_Panel_TextureConversion(Panel):

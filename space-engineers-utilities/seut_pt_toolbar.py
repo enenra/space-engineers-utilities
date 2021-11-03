@@ -53,8 +53,8 @@ class SEUT_PT_Panel(Panel):
             split = box.split(factor=0.85)
             split.label(text=scene.name, icon_value=layout.icon(scene))
             link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'reference/'
-            link.page = 'main-panel'
+            link.section = 'reference'
+            link.page = '6094866/SEUT+Main+Panel'
 
             box.prop(scene.seut, 'sceneType')
             if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart':
@@ -101,11 +101,11 @@ class SEUT_PT_Panel_Collections(Panel):
         scene = context.scene
         wm = context.window_manager
 
-        split = layout.split(factor=0.85)
-        split.operator('scene.recreate_collections', icon='COLLECTION_NEW')
-        link = split.operator('wm.semref_link', text="", icon='INFO')
-        link.section = 'reference/'
-        link.page = 'outliner'
+        # split = layout.split(factor=0.85)
+        # split.operator('scene.recreate_collections', icon='COLLECTION_NEW')
+        # link = split.operator('wm.semref_link', text="", icon='INFO')
+        # link.section = 'reference'
+        # link.page = 'outliner'
 
         layout.operator('scene.create_collection')
 
@@ -191,8 +191,8 @@ class SEUT_PT_Panel_Mirroring(Panel):
             row = split.row()
             row.prop(scene.seut, 'mirroringToggle', expand=True)
             link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'tutorials/'
-            link.page = 'mirroring'
+            link.section = 'tutorials'
+            link.page = '6095170/Mirroring+Tutorial'
             
             layout.prop(scene.seut, 'mirroringScene', text="Model", icon='MOD_MIRROR')
         else:
@@ -225,8 +225,8 @@ class SEUT_PT_Panel_Mountpoints(Panel):
             row = split.row()
             row.prop(scene.seut, 'mountpointToggle', expand=True)
             link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'tutorials/'
-            link.page = 'mountpoints'
+            link.section = 'tutorials'
+            link.page = '6160894/Mountpoint+Tutorial'
 
             if not context.active_object is None and context.active_object.name in bpy.data.collections['Mountpoints (' + scene.seut.subtypeId + ')'].objects and not context.active_object.type == 'EMPTY':
                 box = layout.box()

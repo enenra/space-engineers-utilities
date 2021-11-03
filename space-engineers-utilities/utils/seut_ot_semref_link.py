@@ -21,7 +21,7 @@ class SEUT_OT_SEMREFLink(Operator):
     def execute(self, context):
 
         wm = context.window_manager
-
-        webbrowser.open("https://space-engineers-modding.github.io/modding-reference/" + self.section + "tools/3d-modelling/seut/" + self.page + ".html" + self.code)
+        
+        webbrowser.open("https://semref.atlassian.net/wiki/spaces/" + self.section + "/pages/" + self.page + self.code)
         
         return {'FINISHED'}

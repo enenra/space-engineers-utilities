@@ -180,8 +180,8 @@ class SEUT_AddonPreferences(AddonPreferences):
         split = split.split(factor=0.5)
         split.operator('wm.discord_link', text="", icon_value=pcoll['discord'].icon_id)
         link = split.operator('wm.semref_link', text="", icon='INFO')
-        link.section = 'reference/'
-        link.page = 'preferences'
+        link.section = 'reference'
+        link.page = '6127826/SEUT+Preferences'
 
         draw_bau_ui(self, context)
         if addon_utils.check('blender_addon_updater') != (True, True):
