@@ -122,6 +122,7 @@ from .seut_object                       import SEUT_Object
 from .seut_window_manager               import SEUT_IssueProperty
 from .seut_window_manager               import SEUT_MatLibProps
 from .seut_window_manager               import SEUT_WindowManager
+from .seut_utils                        import SEUT_OT_UpdateSubpartInstances
 from .seut_utils                        import get_preferences
 
 
@@ -197,6 +198,7 @@ classes = (
     SEUT_UL_MatLib,
     SEUT_UL_ParticleProperties,
     SEUT_UL_ParticlePropertyValues2D,
+    SEUT_OT_UpdateSubpartInstances,
 )
 
 

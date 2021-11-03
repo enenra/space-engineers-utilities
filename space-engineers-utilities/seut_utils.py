@@ -1,10 +1,28 @@
 import bpy
 import os
 
-from math   import pi
+from bpy.types      import Operator
+from math           import pi
 
 from .seut_collections              import get_collections
 from .seut_errors                   import check_collection, seut_report
+
+
+class SEUT_OT_UpdateSubpartInstances(Operator):
+    """Updates the subpart instances in the scene"""
+    bl_idname = "scene.update_subpart_instances"
+    bl_label = "Update Subparts"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    def execute(self, context):
+
+        scene = context.scene
+
+        scene.seut.linkSubpartInstances == 'off'
+        scene.seut.linkSubpartInstances == 'on'
+
+        return {'FINISHED'}
 
 
 def link_subpart_scene(self, origin_scene, empty, target_collection):

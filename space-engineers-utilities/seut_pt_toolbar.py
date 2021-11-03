@@ -58,7 +58,13 @@ class SEUT_PT_Panel(Panel):
 
             box.prop(scene.seut, 'sceneType')
             if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart':
-                box.prop(scene.seut,'linkSubpartInstances')
+                if scene.seut.linkSubpartInstances:
+                    col = box.column(align=True)
+                    row = col.row(align=True)
+                    row.operator('scene.update_subpart_instances', icon='MOD_INSTANCE')
+                    row.prop(scene.seut,'linkSubpartInstances', text='', icon='UNLINKED')
+                else:
+                    box.prop(scene.seut,'linkSubpartInstances', icon='LINKED')
             
             box = layout.box()
             if scene.seut.sceneType == 'mainScene':
