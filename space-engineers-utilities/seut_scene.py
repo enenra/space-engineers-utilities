@@ -678,7 +678,7 @@ class SEUT_Scene(PropertyGroup):
         name="Distance",
         description="The distance of the camera and lights from origin",
         default=1,
-        min=1,
+        min=0,
         max=10,
         update=update_renderDistance
     )
