@@ -62,7 +62,7 @@ class SEUT_PT_Panel(Panel):
                     col = box.column(align=True)
                     row = col.row(align=True)
                     row.operator('scene.update_subpart_instances', icon='MOD_INSTANCE')
-                    row.prop(scene.seut,'linkSubpartInstances', text='', icon='UNLINKED')
+                    row.prop(scene.seut,'linkSubpartInstances', text='', icon='UNLINKED', invert_checkbox=True)
                 else:
                     box.prop(scene.seut,'linkSubpartInstances', icon='LINKED')
             
