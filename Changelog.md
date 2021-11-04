@@ -6,6 +6,7 @@
 * Improved: Code around creation of subpart empties. Now handles targeted objects better.
 * Improved: Clarified functionality of `DECAL` material technique.
 * Improved: Export log now outputs the current dev version as well.
+* Improved #288: First convert icon to grayscale, then overlay color to improve shading.
 * Added: Automatic material import from model XMLs during FBX import (only materials defined in that XML, not MaterialRefs).
 * Added: Warning for main- and subpart-scene having different `Grid Export`-settings.
 * Changed: Bounding box is no longer displayed in anything but the main scene type.
@@ -33,6 +34,7 @@
 * Fixed #296: Blender crash in some cases after renaming a copied scene.
 * Fixed #297: Simulteneous export sometimes did not correctly update the export path.
 * Fixed #286: Error when trying to fix scratched materials.
+* Fixed #295: Error when trying to create a new collection but no collection of that type existed before.
 
 # Installation
 Refer to the [install guide](https://space-engineers-modding.github.io/modding-reference/tutorials/tools/3d-modelling/seut/setup.html).
