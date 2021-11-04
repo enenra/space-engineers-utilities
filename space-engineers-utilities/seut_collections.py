@@ -152,9 +152,10 @@ def poll_ref_col(self, object):
 
     has_hkt = []
 
-    for col in collections['hkt']:
-        if not col.seut is self and not col.seut.ref_col is None:
-            has_hkt.append(col.seut.ref_col)
+    if collections['hkt'] != None:
+        for col in collections['hkt']:
+            if not col.seut is self and not col.seut.ref_col is None:
+                has_hkt.append(col.seut.ref_col)
 
     return self.scene == object.seut.scene and object.seut.col_type != 'none' and object not in has_hkt and self.col_type == 'hkt' and (object.seut.col_type == 'main' or object.seut.col_type == 'bs')
 
@@ -293,11 +294,11 @@ class SEUT_OT_CreateCollection(Operator):
         scene = context.scene
         tag = ' (' + scene.seut.subtypeId + ')'
         collections = get_collections(scene)
-
+        
         if self.col_type == 'lod' or self.col_type == 'bs' or self.col_type == 'bs_lod':
 
             # This handles the case in which collections are missing from the standard 3
-            if 1 not in collections[self.col_type]:
+            if collections[self.col_type] == None or 1 not in collections[self.col_type]:
                 index = 1
             elif 2 not in collections[self.col_type]:
                 index = 2
@@ -315,7 +316,7 @@ class SEUT_OT_CreateCollection(Operator):
             collection = bpy.data.collections.new(names[self.col_type] + str(index) + tag)
             collection.seut.type_index = index
 
-            if index - 1 in collections[self.col_type]:
+            if collections[self.col_type] != None and index - 1 in collections[self.col_type]:
                 collection.seut.lod_distance = collections[self.col_type][index - 1].seut.lod_distance + 1
         
         elif self.col_type == 'hkt':
@@ -327,10 +328,11 @@ class SEUT_OT_CreateCollection(Operator):
             if ref_col.seut is None or ref_col.seut.col_type == 'hkt':
                 ref_col = None
 
-            for col in collections['hkt']:
-                if col.seut.ref_col == ref_col:
-                    ref_col = None
-                    break
+            if collections[self.col_type] != None:
+                for col in collections['hkt']:
+                    if col.seut.ref_col == ref_col:
+                        ref_col = None
+                        break
 
             if ref_col is None:
                 collection = bpy.data.collections.new(names[self.col_type] + " - None" + tag)
@@ -594,7 +596,12 @@ def sort_collections(context):
 
 
 def get_hkt_col(collections, collection):
+
+    if collections['hkt'] == None:
+        return None
+
     for col in collections['hkt']:
         if col.seut.ref_col == collection:
             return col
+            
     return None
