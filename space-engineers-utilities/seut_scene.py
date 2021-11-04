@@ -135,6 +135,12 @@ def update_renderColorOverlay(self, context):
 
     if scene.node_tree.nodes['RGB'] is not None:
         scene.node_tree.nodes['RGB'].mute = scene.seut.renderColorOverlay
+    if scene.node_tree.nodes['RGB to BW'] is not None:
+        scene.node_tree.nodes['RGB to BW'].mute = scene.seut.renderColorOverlay
+    if scene.node_tree.nodes['Set Alpha'] is not None:
+        scene.node_tree.nodes['Set Alpha'].mute = scene.seut.renderColorOverlay
+    if scene.node_tree.nodes['Combine RGBA'] is not None:
+        scene.node_tree.nodes['Combine RGBA'].mute = scene.seut.renderColorOverlay
 
 
 def update_renderZoom(self, context):
