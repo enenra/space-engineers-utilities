@@ -473,6 +473,10 @@ def export_sbc(self, context):
         add_subelement(def_definition, 'DisplayName', '{LOC:DisplayName_' + scene.seut.subtypeId + '}')
         add_subelement(def_definition, 'Description', '{LOC:Description_' + scene.seut.subtypeId + '}')
 
+    icon_path = 'Textures\GUI\Icons\AstronautBackpack.dds'
+    icon_target_path = os.path.join(scene.render.filepath, scene.seut.subtypeId + '.dds')
+    if os.path.exists(icon_target_path) and icon_target_path.find('Textures') != -1:
+        icon_path = os.path.join('Textures', icon_target_path.split('Textures\\')[1])
     lines_entry = update_add_subelement(def_definition, 'Icon', icon_path, update_sbc, lines_entry)
 
     medium_grid_scalar = 1.0 # default to doing nothing unless the 3to5 mode is detected
