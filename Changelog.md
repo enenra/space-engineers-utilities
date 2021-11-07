@@ -2,19 +2,19 @@
 * Added: Support for using Better FBX importer code in SEUT import.
 * Added: Import materials from model XMLs.
 * Added: Ability to customize bounding box color and transparency.
-* Added: Ability to export to "medium grid". (Thanks to @dbenson24)
+* Added: Ability to export to "medium grid". (Thanks to @dbenson24) (Alpha 6)
 * Improved: Code around creation of subpart empties. Now handles targeted objects better.
 * Improved: Clarified functionality of `DECAL` material technique.
 * Improved: Export log now outputs the current dev version as well.
-* Improved #288: First convert icon to grayscale, then overlay color to improve shading.
+* Improved #288: First convert icon to grayscale, then overlay color to improve shading. (Alpha 6)
 * Added: Automatic material import from model XMLs during FBX import (only materials defined in that XML, not MaterialRefs).
 * Added: Warning for main- and subpart-scene having different `Grid Export`-settings.
 * Changed: Bounding box is no longer displayed in anything but the main scene type.
-* Changed: Labeling of SEMREF-button in SEUT Notification panel made more clear.
-* Changed #291: Reduced max allowed collision objects to 10 as per Keen change.
-* Changed #292: Switched all links to SEMREF to new SEMREF 2.0 website.
-* Changed #298: Removed Bounding Box Automatic. It was broken and not useful enough to invest time into fixing.
-* Changed #294: Display of Link Subpart Instances button - now has separate functionality to update and to unlink.
+* Changed: Labeling of SEMREF-button in SEUT Notification panel made more clear. (Alpha 6)
+* Changed #291: Reduced max allowed collision objects to 10 as per Keen change. (Alpha 6)
+* Changed #292: Switched all links to SEMREF to new SEMREF 2.0 website. (Alpha 6)
+* Changed #298: Removed Bounding Box Automatic. It was broken and not useful enough to invest time into fixing. (Alpha 6)
+* Changed #294: Display of Link Subpart Instances button - now has separate functionality to update and to unlink. (Alpha 6)
 * Fixed: Empty resizing after export.
 * Fixed: Mountpoints not being saved on export if MP mode is still active.
 * Fixed: LOD distances not getting patched to new format properly.
@@ -28,13 +28,13 @@
 * Fixed: Simultaneous export not properly correcting for export folder.
 * Fixed: Simulatneous export not properly adjusting subtype IDs.
 * Fixed: Nonstandard empties getting rescaled on export.
-* Fixed: Issue with textpanel empty not working correctly.
-* Fixed #283: Enabled mountpoint area creation when a side area is selected.
-* Fixed #287: Let users reduce icon render mode camera distance down to 0.
-* Fixed #296: Blender crash in some cases after renaming a copied scene.
-* Fixed #297: Simulteneous export sometimes did not correctly update the export path.
-* Fixed #286: Error when trying to fix scratched materials.
-* Fixed #295: Error when trying to create a new collection but no collection of that type existed before.
+* Fixed: Issue with textpanel empty not working correctly. (Alpha 6)
+* Fixed #283: Enabled mountpoint area creation when a side area is selected. (Alpha 6)
+* Fixed #287: Let users reduce icon render mode camera distance down to 0. (Alpha 6)
+* Fixed #296: Blender crash in some cases after renaming a copied scene. (Alpha 6)
+* Fixed #297: Simulteneous export sometimes did not correctly update the export path. (Alpha 6)
+* Fixed #286: Error when trying to fix scratched materials. (Alpha 6)
+* Fixed #295: Error when trying to create a new collection but no collection of that type existed before. (Alpha 6)
 
 # Installation
 Refer to the [install guide](https://space-engineers-modding.github.io/modding-reference/tutorials/tools/3d-modelling/seut/setup.html).
