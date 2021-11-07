@@ -472,18 +472,18 @@ def export_sbc(self, context):
 
         add_subelement(def_definition, 'DisplayName', '{LOC:DisplayName_' + scene.seut.subtypeId + '}')
         add_subelement(def_definition, 'Description', '{LOC:Description_' + scene.seut.subtypeId + '}')
-        
-    update_add_subelement(def_definition, 'Icon', 'Textures\GUI\Icons\AstronautBackpack.dds', update_sbc, lines_entry)
+
+    lines_entry = update_add_subelement(def_definition, 'Icon', icon_path, update_sbc, lines_entry)
 
     medium_grid_scalar = 1.0 # default to doing nothing unless the 3to5 mode is detected
 
     if scene.seut.gridScale == 'large':
-        update_add_subelement(def_definition, 'CubeSize', 'Large', update_sbc, lines_entry)
+        lines_entry = update_add_subelement(def_definition, 'CubeSize', 'Large', update_sbc, lines_entry)
         grid_size = 2.5
         if (abs(scene.seut.export_rescaleFactor - 3) < 0.01): # floating point comparison
             medium_grid_scalar = 0.6 # Large grid block is going to be 3/5 of the expected size
     elif scene.seut.gridScale == 'small':
-        update_add_subelement(def_definition, 'CubeSize', 'Small', update_sbc, lines_entry)
+        lines_entry = update_add_subelement(def_definition, 'CubeSize', 'Small', update_sbc, lines_entry)
         grid_size = 0.5
         if (abs(scene.seut.export_rescaleFactor - 0.6) < 0.01): # floating point comparison
             medium_grid_scalar = 3.0 # Small grid block is going to be 3 times larger than expected
@@ -529,7 +529,7 @@ def export_sbc(self, context):
         add_attrib(def_ModelOffset, 'z', 0)
 
     # Model
-    update_add_subelement(def_definition, 'Model', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '.mwm'), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'Model', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '.mwm'), update_sbc, lines_entry)
 
     # Components
     if not update_sbc:
