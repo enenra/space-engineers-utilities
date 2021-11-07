@@ -268,7 +268,7 @@ class SEUT_OT_AddMountpointArea(Operator):
     def poll(cls, context):
         if len(context.selected_objects) > 0:
             selected_object = context.selected_objects[0]
-            return context.scene.seut.mountpointToggle == 'on' and (selected_object.type == 'EMPTY' and selected_object.name.find("Mountpoints ") != -1) or (selected_object.parent.type =='EMPTY' and selected_object.parent.name.find("Mountpoints ") != -1)
+            return context.scene.seut.mountpointToggle == 'on' and (selected_object.type == 'EMPTY' and selected_object.name.find("Mountpoints ") != -1) or (selected_object.parent is not None and selected_object.parent.type =='EMPTY' and selected_object.parent.name.find("Mountpoints ") != -1)
 
 
     def execute(self, context):
