@@ -699,42 +699,50 @@ def export_sbc(self, context):
 
         # All of this is a nightmare I need to redo
         if scene.seut.mirroring_X != 'None':
-            
             if update_sbc:
                 if get_subelement(lines_entry, 'MirroringX') == -1:
-                    lines_entry.replace('</Definitions>', '\t\t\t<MirroringX>' + scene.seut.mirroring_X + '</MirroringX>\n</Definitions>')
+                    lines_entry = lines_entry.replace('</Definition>', '\t<MirroringX>' + scene.seut.mirroring_X + '</MirroringX>\n\t\t</Definition>')
                 else:
                     update_subelement(lines_entry, 'MirroringX', scene.seut.mirroring_X)
             else:
                 add_subelement(def_definition, 'MirroringX', scene.seut.mirroring_X)
+        elif update_sbc and scene.seut.mirroring_X == 'None' and get_subelement(lines_entry, 'MirroringX') != -1:
+            print(get_subelement(lines_entry, 'MirroringX'))
+            lines_entry = lines_entry.replace("\t\t\t" + get_subelement(lines_entry, 'MirroringX') + "\n","")
 
         if scene.seut.mirroring_Z != 'None':                                # This looks wrong but SE works with different Axi than Blender
             if update_sbc:
                 if get_subelement(lines_entry, 'MirroringY') == -1:
-                    lines_entry.replace('</Definitions>', '\t\t\t<MirroringY>' + scene.seut.mirroring_Z + '</MirroringY>\n</Definitions>')
+                    lines_entry = lines_entry.replace('</Definition>', '\t<MirroringY>' + scene.seut.mirroring_Z + '</MirroringY>\n\t\t</Definition>')
                 else:
                     update_subelement(lines_entry, 'MirroringY', scene.seut.mirroring_Z)
             else:
                 add_subelement(def_definition, 'MirroringY', scene.seut.mirroring_Z)
+        elif update_sbc and scene.seut.mirroring_Z == 'None' and get_subelement(lines_entry, 'MirroringY') != -1:
+            lines_entry = lines_entry.replace("\t\t\t" + get_subelement(lines_entry, 'MirroringY') + "\n","")
 
         if scene.seut.mirroring_Y != 'None':
             if update_sbc:
                 if get_subelement(lines_entry, 'MirroringZ') == -1:
-                    lines_entry.replace('</Definitions>', '\t\t\t<MirroringZ>' + scene.seut.mirroring_Y + '</MirroringZ>\n</Definitions>')
+                    lines_entry = lines_entry.replace('</Definition>', '\t<MirroringZ>' + scene.seut.mirroring_Y + '</MirroringZ>\n\t\t</Definition>')
                 else:
                     update_subelement(lines_entry, 'MirroringZ', scene.seut.mirroring_Y)
             else:
                 add_subelement(def_definition, 'MirroringZ', scene.seut.mirroring_Y)
+        elif update_sbc and scene.seut.mirroring_Y == 'None' and get_subelement(lines_entry, 'MirroringZ') != -1:
+            lines_entry = lines_entry.replace("\t\t\t" + get_subelement(lines_entry, 'MirroringZ') + "\n","")
         
         # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
         if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
             if update_sbc:
                 if get_subelement(lines_entry, 'MirroringBlock') == -1:
-                    lines_entry.replace('</Definitions>', '\t\t\t<MirroringBlock>' + scene.seut.mirroringScene.seut.subtypeId + '</MirroringBlock>\n</Definitions>')
+                    lines_entry = lines_entry.replace('</Definition>', '\t<MirroringBlock>' + scene.seut.mirroringScene.seut.subtypeId + '</MirroringBlock>\n\t\t</Definition>')
                 else:
                     update_subelement(lines_entry, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId)
             else:
                 add_subelement(def_definition, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId)
+        elif update_sbc and scene.seut.mirroringScene == 'None' and get_subelement(lines_entry, 'MirroringBlock') != -1:
+            lines_entry = lines_entry.replace("\t\t\t" + get_subelement(lines_entry, 'MirroringBlock') + "\n","")
 
         # Write to file, place in export folder
         if not update_sbc:
@@ -761,6 +769,9 @@ def export_sbc(self, context):
         xml_formatted = xml_formatted.replace("h_Enabled", "Enabled")
         xml_formatted = xml_formatted.replace("i_Default", "Default")
         xml_formatted = xml_formatted.replace("j_PressurizedWhenOpen", "PressurizedWhenOpen")
+
+    print(xml_formatted)
+    return
 
     if update_sbc:
         target_file = file_to_update

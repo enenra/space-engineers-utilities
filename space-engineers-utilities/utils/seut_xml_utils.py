@@ -59,24 +59,25 @@ def update_subelement(lines, name: str, value):
     """Updates an existing subelements to a new value."""
 
     entry = get_subelement(lines, name)
-    entry_updated = str(value)
+    entry_updated = '<' + name + '>' + str(value) + '</' + name + '>'
     return lines.replace(entry, str(entry_updated))
 
 
 def get_subelement(lines: str, name: str):
     """Returns the specified subelement. -1 if not found."""
 
-    if '<' + name in lines:
-        start = lines.find('<' + name)
-        if '</' + name + '>' in lines[start:]:
-            start = lines[start:].find('>') + 1
-            end = start + lines[start:].find('</' + name + '>')
-            return lines[start:end]
-        else:
-            end = start + lines[start:].find('/>') + 2
-            return lines[start:end]
+    if '<' + name + '>' in lines:
+        start = lines.find('<' + name + '>')
+        end = start + lines[start:].find('</' + name + '>') + len('</' + name + '>')
+        return lines[start:end]
+
+    elif '<' + name + ' ' in lines:
+        start = lines.find('<' + name + ' ')
+        end = start + lines[start:].find('/>') + 2
+        return lines[start:end]
+
     else:
-        return [-1]
+        return -1
 
 
 def update_add_attrib(element, name: str, value=None, update=False, lines=None):
