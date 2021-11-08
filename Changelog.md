@@ -2,14 +2,16 @@
 * Added: Support for using Better FBX importer code in SEUT import.
 * Added: Import materials from model XMLs.
 * Added: Ability to customize bounding box color and transparency.
+* Added: Automatic material import from model XMLs during FBX import (only materials defined in that XML, not MaterialRefs).
+* Added: Warning for main- and subpart-scene having different `Grid Export`-settings.
+* Added: Updating existing SBC definitions on export. (Alpha 6)
 * Added: Ability to export to "medium grid". (Thanks to @dbenson24) (Alpha 6)
+* Added: If an icon was already rendered, the SBC entry will point to it. (Alpha 6)
 * Improved: Code around creation of subpart empties. Now handles targeted objects better.
 * Improved: Clarified functionality of `DECAL` material technique.
 * Improved: Export log now outputs the current dev version as well.
 * Improved #288: First convert icon to grayscale, then overlay color to improve shading. (Alpha 6)
-* Added: Automatic material import from model XMLs during FBX import (only materials defined in that XML, not MaterialRefs).
-* Added: Warning for main- and subpart-scene having different `Grid Export`-settings.
-* Added: If an icon was already rendered, the SBC entry will point to it. (Alpha 6)
+* Changed: Users must now specify a mod folder, as a result SBC files are directly placed and updated in the `Data`-folder.
 * Changed: Bounding box is no longer displayed in anything but the main scene type.
 * Changed: Labeling of SEMREF-button in SEUT Notification panel made more clear. (Alpha 6)
 * Changed #291: Reduced max allowed collision objects to 10 as per Keen change. (Alpha 6)
@@ -36,6 +38,7 @@
 * Fixed #297: Simulteneous export sometimes did not correctly update the export path. (Alpha 6)
 * Fixed #286: Error when trying to fix scratched materials. (Alpha 6)
 * Fixed #295: Error when trying to create a new collection but no collection of that type existed before. (Alpha 6)
+* Fixed #293: Error when trying to import a material from an XML that only contains MaterialRefs.
 
 # Installation
 Refer to the [install guide](https://space-engineers-modding.github.io/modding-reference/tutorials/tools/3d-modelling/seut/setup.html).
