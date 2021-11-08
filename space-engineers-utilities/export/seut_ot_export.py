@@ -697,49 +697,24 @@ def export_sbc(self, context):
         if collections['mirroring'] != None:
             scene.seut.mirroringToggle == 'off'
 
-        # TODO: This should be made into a function and also utilize regex to be more flexible with user-edited lines. Possibly do indenting and fixing empty lines at the end for the whole entry.
         if scene.seut.mirroring_X != 'None':
-            if update_sbc:
-                if get_subelement(lines_entry, 'MirroringX') == -1:
-                    lines_entry = lines_entry.replace('</Definition>', '<MirroringX>' + scene.seut.mirroring_X + '</MirroringX></Definition>')
-                else:
-                    update_subelement(lines_entry, 'MirroringX', scene.seut.mirroring_X)
-            else:
-                add_subelement(def_definition, 'MirroringX', scene.seut.mirroring_X)
+            lines_entry = update_add_optional_subelement(def_definition, 'MirroringX', scene.seut.mirroring_X, update_sbc, lines_entry)
         elif update_sbc and scene.seut.mirroring_X == 'None' and get_subelement(lines_entry, 'MirroringX') != -1:
             lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringX'),"")
 
         if scene.seut.mirroring_Z != 'None':                                # This looks wrong but SE works with different Axi than Blender
-            if update_sbc:
-                if get_subelement(lines_entry, 'MirroringY') == -1:
-                    lines_entry = lines_entry.replace('</Definition>', '<MirroringY>' + scene.seut.mirroring_Z + '</MirroringY></Definition>')
-                else:
-                    update_subelement(lines_entry, 'MirroringY', scene.seut.mirroring_Z)
-            else:
-                add_subelement(def_definition, 'MirroringY', scene.seut.mirroring_Z)
+            lines_entry = update_add_optional_subelement(def_definition, 'MirroringY', scene.seut.mirroring_Z, update_sbc, lines_entry)
         elif update_sbc and scene.seut.mirroring_Z == 'None' and get_subelement(lines_entry, 'MirroringY') != -1:
             lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringY'),"")
 
         if scene.seut.mirroring_Y != 'None':
-            if update_sbc:
-                if get_subelement(lines_entry, 'MirroringZ') == -1:
-                    lines_entry = lines_entry.replace('</Definition>', '<MirroringZ>' + scene.seut.mirroring_Y + '</MirroringZ></Definition>')
-                else:
-                    update_subelement(lines_entry, 'MirroringZ', scene.seut.mirroring_Y)
-            else:
-                add_subelement(def_definition, 'MirroringZ', scene.seut.mirroring_Y)
+            lines_entry = update_add_optional_subelement(def_definition, 'MirroringZ', scene.seut.mirroring_Y, update_sbc, lines_entry)
         elif update_sbc and scene.seut.mirroring_Y == 'None' and get_subelement(lines_entry, 'MirroringZ') != -1:
             lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringZ'),"")
         
         # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
         if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
-            if update_sbc:
-                if get_subelement(lines_entry, 'MirroringBlock') == -1:
-                    lines_entry = lines_entry.replace('</Definition>', '<MirroringBlock>' + scene.seut.mirroringScene.seut.subtypeId + '</MirroringBlock></Definition>')
-                else:
-                    update_subelement(lines_entry, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId)
-            else:
-                add_subelement(def_definition, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId)
+            lines_entry = update_add_optional_subelement(def_definition, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId, update_sbc, lines_entry)
         elif update_sbc and scene.seut.mirroringScene == 'None' and get_subelement(lines_entry, 'MirroringBlock') != -1:
             lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringBlock'),"")
 

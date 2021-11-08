@@ -62,6 +62,15 @@ def update_subelement(lines, name: str, value):
     entry_updated = '<' + name + '>' + str(value) + '</' + name + '>'
     return lines.replace(entry, str(entry_updated))
 
+def update_add_optional_subelement(parent, name: str, value, update_sbc, lines):
+    if update_sbc:
+        if get_subelement(lines, name) == -1:
+            return lines.replace('</Definition>', '<' + name + '>' + str(value) + '</' + name + '>\n</Definition>')
+        else:
+            return update_subelement(lines, name, str(value))
+    else:
+        return add_subelement(parent, name, str(value))
+
 
 def get_subelement(lines: str, name: str):
     """Returns the specified subelement. -1 if not found."""
