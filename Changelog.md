@@ -9,6 +9,7 @@
 * Improved #288: First convert icon to grayscale, then overlay color to improve shading. (Alpha 6)
 * Added: Automatic material import from model XMLs during FBX import (only materials defined in that XML, not MaterialRefs).
 * Added: Warning for main- and subpart-scene having different `Grid Export`-settings.
+* Added: If an icon was already rendered, the SBC entry will point to it. (Alpha 6)
 * Changed: Bounding box is no longer displayed in anything but the main scene type.
 * Changed: Labeling of SEMREF-button in SEUT Notification panel made more clear. (Alpha 6)
 * Changed #291: Reduced max allowed collision objects to 10 as per Keen change. (Alpha 6)
