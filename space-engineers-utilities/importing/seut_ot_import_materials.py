@@ -155,8 +155,9 @@ def import_materials(self, context, filepath):
         
         imported.append(material.name)
         
-    if len(imported) == 0:
+    if len(imported) <= 0:
         seut_report(self, context, 'INFO', True, 'E041', filepath)
+        return {'FINISHED'}
 
     else:
         materials_string = ""
