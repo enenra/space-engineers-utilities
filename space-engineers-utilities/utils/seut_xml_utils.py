@@ -17,7 +17,7 @@ def get_relevant_sbc(path: str, sbc_type: str, subtype_id: str):
                     if '<SubtypeId>' + subtype_id + '</SubtypeId>' in lines:
                         
                         start = lines.find('<SubtypeId>' + subtype_id + '</SubtypeId>')
-                        start = lines[:-start].rfind('<Definition')
+                        start = lines[:start].rfind('<Definition')
                         end = start + lines[start:].find('</Definition>') + len('</Definition>')
                         return [os.path.join(path, name), lines, start, end]
                 else:
