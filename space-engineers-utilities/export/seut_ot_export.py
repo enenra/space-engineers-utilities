@@ -697,52 +697,51 @@ def export_sbc(self, context):
         if collections['mirroring'] != None:
             scene.seut.mirroringToggle == 'off'
 
-        # All of this is a nightmare I need to redo
+        # TODO: This should be made into a function and also utilize regex to be more flexible with user-edited lines. Possibly do indenting and fixing empty lines at the end for the whole entry.
         if scene.seut.mirroring_X != 'None':
             if update_sbc:
                 if get_subelement(lines_entry, 'MirroringX') == -1:
-                    lines_entry = lines_entry.replace('</Definition>', '\t<MirroringX>' + scene.seut.mirroring_X + '</MirroringX>\n\t\t</Definition>')
+                    lines_entry = lines_entry.replace('</Definition>', '<MirroringX>' + scene.seut.mirroring_X + '</MirroringX></Definition>')
                 else:
                     update_subelement(lines_entry, 'MirroringX', scene.seut.mirroring_X)
             else:
                 add_subelement(def_definition, 'MirroringX', scene.seut.mirroring_X)
         elif update_sbc and scene.seut.mirroring_X == 'None' and get_subelement(lines_entry, 'MirroringX') != -1:
-            print(get_subelement(lines_entry, 'MirroringX'))
-            lines_entry = lines_entry.replace("\t\t\t" + get_subelement(lines_entry, 'MirroringX') + "\n","")
+            lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringX'),"")
 
         if scene.seut.mirroring_Z != 'None':                                # This looks wrong but SE works with different Axi than Blender
             if update_sbc:
                 if get_subelement(lines_entry, 'MirroringY') == -1:
-                    lines_entry = lines_entry.replace('</Definition>', '\t<MirroringY>' + scene.seut.mirroring_Z + '</MirroringY>\n\t\t</Definition>')
+                    lines_entry = lines_entry.replace('</Definition>', '<MirroringY>' + scene.seut.mirroring_Z + '</MirroringY></Definition>')
                 else:
                     update_subelement(lines_entry, 'MirroringY', scene.seut.mirroring_Z)
             else:
                 add_subelement(def_definition, 'MirroringY', scene.seut.mirroring_Z)
         elif update_sbc and scene.seut.mirroring_Z == 'None' and get_subelement(lines_entry, 'MirroringY') != -1:
-            lines_entry = lines_entry.replace("\t\t\t" + get_subelement(lines_entry, 'MirroringY') + "\n","")
+            lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringY'),"")
 
         if scene.seut.mirroring_Y != 'None':
             if update_sbc:
                 if get_subelement(lines_entry, 'MirroringZ') == -1:
-                    lines_entry = lines_entry.replace('</Definition>', '\t<MirroringZ>' + scene.seut.mirroring_Y + '</MirroringZ>\n\t\t</Definition>')
+                    lines_entry = lines_entry.replace('</Definition>', '<MirroringZ>' + scene.seut.mirroring_Y + '</MirroringZ></Definition>')
                 else:
                     update_subelement(lines_entry, 'MirroringZ', scene.seut.mirroring_Y)
             else:
                 add_subelement(def_definition, 'MirroringZ', scene.seut.mirroring_Y)
         elif update_sbc and scene.seut.mirroring_Y == 'None' and get_subelement(lines_entry, 'MirroringZ') != -1:
-            lines_entry = lines_entry.replace("\t\t\t" + get_subelement(lines_entry, 'MirroringZ') + "\n","")
+            lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringZ'),"")
         
         # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
         if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
             if update_sbc:
                 if get_subelement(lines_entry, 'MirroringBlock') == -1:
-                    lines_entry = lines_entry.replace('</Definition>', '\t<MirroringBlock>' + scene.seut.mirroringScene.seut.subtypeId + '</MirroringBlock>\n\t\t</Definition>')
+                    lines_entry = lines_entry.replace('</Definition>', '<MirroringBlock>' + scene.seut.mirroringScene.seut.subtypeId + '</MirroringBlock></Definition>')
                 else:
                     update_subelement(lines_entry, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId)
             else:
                 add_subelement(def_definition, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId)
         elif update_sbc and scene.seut.mirroringScene == 'None' and get_subelement(lines_entry, 'MirroringBlock') != -1:
-            lines_entry = lines_entry.replace("\t\t\t" + get_subelement(lines_entry, 'MirroringBlock') + "\n","")
+            lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringBlock'),"")
 
         # Write to file, place in export folder
         if not update_sbc:
@@ -756,6 +755,7 @@ def export_sbc(self, context):
         
         else:
             xml_formatted = lines.replace(lines[start:end], lines_entry)
+            xml_formatted = format_entry(xml_formatted)
             target_file = file_to_update
 
         # Fixing the entries
@@ -787,33 +787,3 @@ def export_sbc(self, context):
     seut_report(self, context, 'INFO', False, 'I004', target_file)
 
     return {'FINISHED'}
-
-
-def indent_entry(entry: str) -> str:
-    """Indents a given entry."""
-
-    indent = "\t\t\t"
-    lines = entry.splitlines()
-    entry = ""
-    for line in lines:
-        if line != lines[0]:
-            line = indent + line
-        if line.strip() != lines[-1].strip():
-            line = line + "\n"
-        entry += line
-    
-    return entry
-
-
-def convert_back_xml(element, name: str, lines_entry: str) -> str:
-    """Converts a temp xml entry back and replaces it inside the larger xml entry."""
-
-    entry = ET.tostring(element, 'utf-8')
-    entry = xml.dom.minidom.parseString(entry).toprettyxml()
-    entry = entry[entry.find("\n") + 1:]
-    entry = indent_entry(entry)
-
-    mp_start = lines_entry.find('<' + name + '>')
-    mp_end = lines_entry.find('</' + name + '>') + len('</' + name + '>')
-
-    return lines_entry.replace(lines_entry[mp_start:mp_end], entry)

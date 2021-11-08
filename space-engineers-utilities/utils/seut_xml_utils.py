@@ -122,3 +122,59 @@ def get_attrib(entry: str, name: str):
         return entry[start:end]
     else:
         return -1
+
+
+def convert_back_xml(element, name: str, lines_entry: str) -> str:
+    """Converts a temp xml entry back and replaces it inside the larger xml entry."""
+
+    entry = ET.tostring(element, 'utf-8')
+    entry = xml.dom.minidom.parseString(entry).toprettyxml()
+    entry = entry[entry.find("\n") + 1:]
+
+    start = lines_entry.find('<' + name + '>')
+    end = lines_entry.find('</' + name + '>') + len('</' + name + '>')
+
+    return lines_entry.replace(lines_entry[start:end], entry)
+
+
+def format_entry(lines: str, depth=0) -> str:
+    """Formats a given xml entry to a specified depth."""
+
+    indent = "\t"
+    lines_arr = lines.splitlines()
+    entry = ""
+
+    for line in lines_arr:
+        
+        remove = False
+        line = indent * depth + line.strip()
+            
+        start = line.find('<')
+        end = line.rfind('>')
+        
+        if line.count('<') <= 0 and line.count('>') <= 0:
+            if line.strip() == "":
+                remove = True
+        elif line[start:start+4] == '<!--' and line[end-2:end+1] == '-->':
+            pass
+        elif line[end-1:end+1] == '/>':
+            pass
+        elif line.find('<!--') != -1 and line.find('/>') != -1:
+            pass
+        elif line[start:start+2] == '<?' and line[end-1:end+1] == '?>':
+            pass
+        elif line.count('<') >= 2 and line.count('>') >= 2 and line.count('</') == 1:
+            pass
+        elif line[start:start+2] == '</':
+            depth -= 1
+            line = line[1:]
+        else:
+            depth += 1
+        
+        if line.strip() != lines_arr[-1].strip():
+            line = line + "\n"
+        
+        if not remove:
+            entry += line
+
+    return entry
