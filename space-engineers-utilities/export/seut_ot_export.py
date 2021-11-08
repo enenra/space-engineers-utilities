@@ -745,9 +745,6 @@ def export_sbc(self, context):
         xml_formatted = xml_formatted.replace("i_Default", "Default")
         xml_formatted = xml_formatted.replace("j_PressurizedWhenOpen", "PressurizedWhenOpen")
 
-    print(xml_formatted)
-    return
-
     if update_sbc:
         target_file = file_to_update
     else:
