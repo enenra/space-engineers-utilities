@@ -22,6 +22,8 @@ def get_relevant_sbc(path: str, sbc_type: str, subtype_id: str):
                         return [os.path.join(path, name), lines, start, end]
                 else:
                     return [os.path.join(path, name), lines, None, None]
+    
+    return [None, None, None, None]
 
 
 def update_add_subelement(parent, name: str, value=None, update=False, lines=None):
