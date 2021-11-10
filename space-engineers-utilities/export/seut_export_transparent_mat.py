@@ -143,8 +143,6 @@ def export_transparent_mat(self, context, subtype_id):
             os.makedirs(path_data)
     elif file_to_update is not None and start is None and end is None:
         target_file = os.path.join(path_data, file_to_update)
-        if not os.path.exists(path_data):
-            os.makedirs(path_data)
     else:
         target_file = file_to_update
 
