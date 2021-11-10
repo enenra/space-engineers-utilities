@@ -177,13 +177,6 @@ class SEUT_Materials(PropertyGroup):
         unit='LENGTH',
         default=0.0
     )
-    alpha_saturation: FloatProperty(
-        name="Alpha Saturation",
-        description="UNKNOWN",
-        default=1.0,
-        min=0.0,
-        max=1.0
-    )
     affected_by_other_lights: BoolProperty(
         name="Affected by Other Lights",
         description="Whether or not other lights will cast light onto this texture.\nNote: Only works on billboards spawned by code, not on models",
@@ -226,71 +219,53 @@ class SEUT_Materials(PropertyGroup):
         update=update_emission_mult
     )
     shadow_multiplier_x: FloatProperty(
-        name="Shadow Multiplier X",
-        description="",
+        name="UV Scale",
+        description="Multiplies the scale of the UV Map",
         default=0.0,
         min=0.0
     )
     shadow_multiplier_y: FloatProperty(
-        name="Shadow Multiplier Y",
-        description="",
+        name="Speed",
+        description="Controls the speed at which the UV Map moves",
         default=0.0,
         min=0.0
     )
-    shadow_multiplier_z: FloatProperty(
-        name="Shadow Multiplier Z",
-        description="",
-        default=0.0,
-        min=0.0
+    shadow_multiplier: FloatVectorProperty(
+        name="Shadow Multiplier",
+        description="Controls the contribution of the color in shadowed areas",
+        subtype='COLOR_GAMMA',
+        size=4,
+        min=0.0,
+        max=1.0,
+        default=(0.0, 0.0, 0.0, 0.0)
     )
-    shadow_multiplier_w: FloatProperty(
-        name="Shadow Multiplier W",
-        description="",
-        default=0.0,
-        min=0.0
-    )
-    #shadow_multiplier: FloatVectorProperty(
-    #    name="Shadow Multiplier",
-    #    description="Controls the contribution of the color in shadowed areas",
-    #    subtype='COLOR_GAMMA',
-    #    size=4,
-    #    min=0.0,
-    #    max=1.0,
-    #    default=(0.0, 0.0, 0.0, 0.0)
-    #)
     light_multiplier_x: FloatProperty(
-        name="Light Multiplier X",
-        description="",
+        name="Emissivity Strength",
+        description="Controls the strength of the emissivity",
         default=0.0,
         min=0.0
     )
     light_multiplier_y: FloatProperty(
-        name="Light Multiplier Y",
-        description="",
+        name="Backlight Falloff",
+        description="Controls how quickly the backlight disappears at distance",
         default=0.0,
         min=0.0
     )
     light_multiplier_z: FloatProperty(
-        name="Light Multiplier Z",
-        description="",
+        name="Backlight Strength",
+        description="Controls the strength of the backlight",
         default=0.0,
         min=0.0
     )
-    light_multiplier_w: FloatProperty(
-        name="Light Multiplier W",
-        description="",
-        default=0.0,
-        min=0.0
+    light_multiplier: FloatVectorProperty(
+        name="Light Multiplier",
+        description="Controls the contribution of the sun to the lighting",
+        subtype='COLOR_GAMMA',
+        size=4,
+        min=0.0,
+        max=1.0,
+        default=(0.0, 0.0, 0.0, 0.0)
     )
-    #light_multiplier: FloatVectorProperty(
-    #    name="Light Multiplier",
-    #    description="Controls the contribution of the sun to the lighting",
-    #    subtype='COLOR_GAMMA',
-    #    size=4,
-    #    min=0.0,
-    #    max=1.0,
-    #    default=(0.0, 0.0, 0.0, 0.0)
-    #)
     reflectivity: FloatProperty(
         name="Reflectivity",
         description="If Fresnel and Reflectivity are greater than 0, there can be a reflection. Increase Reflectivity if you want reflections at all angles",
@@ -319,7 +294,7 @@ class SEUT_Materials(PropertyGroup):
     )
     gloss: FloatProperty(
         name="Gloss",
-        description="How clear the reflected sun can be seen on the material",
+        description="How clearly the reflected sun can be seen on the material",
         default=0.4,
         min=0.0,
         max=1.0
@@ -389,14 +364,13 @@ class SEUT_PT_Panel_Materials(Panel):
             box.prop(material.seut, 'technique', icon='IMGDISPLAY')
             box.prop(material.seut, 'facing')
             
-            box.prop(material.seut, 'windScale', icon='SORTSIZE')
-            box.prop(material.seut, 'windFrequency', icon='GROUP')
+            if material.seut.technique == 'FOLIAGE':
+                box.prop(material.seut, 'windScale', icon='SORTSIZE')
+                box.prop(material.seut, 'windFrequency', icon='GROUP')
 
             if material.seut.technique == 'GLASS' or material.seut.technique == 'HOLO' or material.seut.technique == 'SHIELD':
                 box = layout.box()
                 box.label(text="Transparent Material Options", icon='SETTINGS')
-                
-                box.prop(material.seut, 'alpha_saturation', slider=True)
 
                 box2 = box.box()
                 box2.label(text="Color Adjustments", icon='COLOR')
@@ -404,15 +378,24 @@ class SEUT_PT_Panel_Materials(Panel):
                 col.prop(material.seut, 'color', text="")
                 col.prop(material.seut, 'color_add', text="")
                 col.prop(material.seut, 'color_emission_multiplier', slider=True)
-                col = box2.column(align=True)
-                col.prop(material.seut, 'shadow_multiplier_x', text="")
-                col.prop(material.seut, 'shadow_multiplier_y', text="")
-                col.prop(material.seut, 'shadow_multiplier_z', text="")
-                col.prop(material.seut, 'shadow_multiplier_w', text="")
-                col.prop(material.seut, 'light_multiplier_x', text="")
-                col.prop(material.seut, 'light_multiplier_y', text="")
-                col.prop(material.seut, 'light_multiplier_z', text="")
-                col.prop(material.seut, 'light_multiplier_w', text="")
+
+                if not material.seut.technique == 'SHIELD':
+                    col.prop(material.seut, 'shadow_multiplier', text="")
+                    col.prop(material.seut, 'light_multiplier', text="")
+
+                else:
+                    box3 = box.box()
+                    box3.label(text="UV Options", icon='UV')
+                    col = box3.column(align=True)
+                    col.prop(material.seut, 'shadow_multiplier_x')
+                    col.prop(material.seut, 'shadow_multiplier_y')
+                    
+                    box4 = box.box()
+                    box4.label(text="Light Influence", icon='LIGHT_POINT')
+                    col = box4.column(align=True)
+                    col.prop(material.seut, 'light_multiplier_x')
+                    col.prop(material.seut, 'light_multiplier_y')
+                    col.prop(material.seut, 'light_multiplier_z')
                 
                 box2 = box.box()
                 box2.label(text="Reflection Adjustments", icon='MOD_MIRROR')

@@ -51,8 +51,6 @@ def export_transparent_mat(self, context, subtype_id):
     lines_entry = update_add_subelement(def_definition, 'AlphaMistingStart', material.seut.alpha_misting_start, update, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'AlphaMistingEnd', material.seut.alpha_misting_end, update, lines_entry)
     
-    lines_entry = update_add_subelement(def_definition, 'AlphaSaturation', material.seut.alpha_saturation, update, lines_entry)
-    
     lines_entry = update_add_subelement(def_definition, 'CanBeAffectedByOtherLights', material.seut.affected_by_other_lights, update, lines_entry)
     
     lines_entry = update_add_subelement(def_definition, 'SoftParticleDistanceScale', material.seut.soft_particle_distance_scale, update, lines_entry)
@@ -62,6 +60,7 @@ def export_transparent_mat(self, context, subtype_id):
     cm_path = create_relative_path(cm_path, 'Textures')
     lines_entry = update_add_subelement(def_definition, 'Texture', cm_path, update, lines_entry)
     
+
     if not update:
         def_color = add_subelement(def_definition, 'Color')
     else:
@@ -72,7 +71,7 @@ def export_transparent_mat(self, context, subtype_id):
     add_subelement(def_color, 'W', material.seut.color[3] * (1 + material.seut.color_emission_multiplier))
     if update:
         lines_entry = convert_back_xml(def_color, 'Color', lines_entry)
-    
+
     if not update:
         def_color_add = add_subelement(def_definition, 'ColorAdd')
     else:
@@ -83,15 +82,21 @@ def export_transparent_mat(self, context, subtype_id):
     add_subelement(def_color_add, 'W', material.seut.color_add[3] * (1 + material.seut.color_emission_multiplier))
     if update:
         lines_entry = convert_back_xml(def_color, 'ColorAdd', lines_entry)
-    
+
     if not update:
         def_shadow_multiplier = add_subelement(def_definition, 'ShadowMultiplier')
     else:
         def_shadow_multiplier = ET.Element(def_definition, 'ShadowMultiplier')
-    add_subelement(def_shadow_multiplier, 'X', material.seut.shadow_multiplier_x)
-    add_subelement(def_shadow_multiplier, 'Y', material.seut.shadow_multiplier_y)
-    add_subelement(def_shadow_multiplier, 'Z', material.seut.shadow_multiplier_z)
-    add_subelement(def_shadow_multiplier, 'W', material.seut.shadow_multiplier_w)
+    if material.seut.technique == 'SHIELD':
+        add_subelement(def_shadow_multiplier, 'X', material.seut.shadow_multiplier_x)
+        add_subelement(def_shadow_multiplier, 'Y', material.seut.shadow_multiplier_y)
+        add_subelement(def_shadow_multiplier, 'Z', material.seut.shadow_multiplier_z)
+        add_subelement(def_shadow_multiplier, 'W', material.seut.shadow_multiplier_w)
+    else:
+        add_subelement(def_shadow_multiplier, 'X', material.seut.shadow_multiplier[0])
+        add_subelement(def_shadow_multiplier, 'Y', material.seut.shadow_multiplier[1])
+        add_subelement(def_shadow_multiplier, 'Z', 0) # unused
+        add_subelement(def_shadow_multiplier, 'W', 0) # unused
     if update:
         lines_entry = convert_back_xml(def_shadow_multiplier, 'ShadowMultiplier', lines_entry)
     
@@ -99,10 +104,16 @@ def export_transparent_mat(self, context, subtype_id):
         def_light_multiplier = add_subelement(def_definition, 'LightMultiplier')
     else:
         def_light_multiplier = ET.Element(def_definition, 'LightMultiplier')
-    add_subelement(def_light_multiplier, 'X', material.seut.light_multiplier_x)
-    add_subelement(def_light_multiplier, 'Y', material.seut.light_multiplier_y)
-    add_subelement(def_light_multiplier, 'Z', material.seut.light_multiplier_z)
-    add_subelement(def_light_multiplier, 'W', material.seut.light_multiplier_w)
+    if material.seut.technique == 'SHIELD':
+        add_subelement(def_light_multiplier, 'X', material.seut.light_multiplier_x)
+        add_subelement(def_light_multiplier, 'Y', material.seut.light_multiplier_y)
+        add_subelement(def_light_multiplier, 'Z', material.seut.light_multiplier_z)
+        add_subelement(def_light_multiplier, 'W', material.seut.light_multiplier_w)
+    else:
+        add_subelement(def_light_multiplier, 'X', material.seut.light_multiplier[0])
+        add_subelement(def_light_multiplier, 'Y', material.seut.light_multiplier[1])
+        add_subelement(def_light_multiplier, 'Z', material.seut.light_multiplier[2])
+        add_subelement(def_light_multiplier, 'W', 0) # unused
     if update:
         lines_entry = convert_back_xml(def_light_multiplier, 'LightMultiplier', lines_entry)
     
