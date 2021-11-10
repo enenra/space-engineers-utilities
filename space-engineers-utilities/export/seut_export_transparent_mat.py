@@ -2,9 +2,10 @@ import bpy
 import os
 import re
 
-from ..utils.seut_xml_utils import *
-from ..seut_errors          import *
-from ..seut_utils           import get_preferences
+from ..materials.seut_materials import get_seut_texture_path
+from ..utils.seut_xml_utils     import *
+from ..seut_errors              import *
+from .seut_export_utils         import create_relative_path
 
 
 def export_transparent_mat(self, context, subtype_id):
@@ -55,8 +56,11 @@ def export_transparent_mat(self, context, subtype_id):
     lines_entry = update_add_subelement(def_definition, 'CanBeAffectedByOtherLights', material.seut.affected_by_other_lights, update, lines_entry)
     
     lines_entry = update_add_subelement(def_definition, 'SoftParticleDistanceScale', material.seut.soft_particle_distance_scale, update, lines_entry)
-    # TODO: CM texture reference
-    lines_entry = update_add_subelement(def_definition, 'Texture', 'placeholder', update, lines_entry)
+
+    cm_path = get_seut_texture_path('CM', material)
+    cm_path = os.path.join(os.path.splitext(cm_path)[0], ".dds")
+    cm_path = create_relative_path(cm_path, 'Textures')
+    lines_entry = update_add_subelement(def_definition, 'Texture', cm_path, update, lines_entry)
     
     if not update:
         def_color = add_subelement(def_definition, 'Color')
@@ -107,8 +111,11 @@ def export_transparent_mat(self, context, subtype_id):
     lines_entry = update_add_subelement(def_definition, 'ReflectionShadow', material.seut.reflection_shadow, update, lines_entry)
 
     lines_entry = update_add_subelement(def_definition, 'GlossTextureAdd', material.seut.gloss_texture_add, update, lines_entry)
-    # TODO: NG texture reference
-    lines_entry = update_add_subelement(def_definition, 'Gloss', 'placeholder', update, lines_entry)
+
+    ng_path = get_seut_texture_path('NG', material)
+    ng_path = os.path.join(os.path.splitext(ng_path)[0], ".dds")
+    ng_path = create_relative_path(ng_path, 'Textures')
+    lines_entry = update_add_subelement(def_definition, 'Gloss', ng_path, update, lines_entry)
 
     lines_entry = update_add_subelement(def_definition, 'SpecularColorFactor', material.seut.specular_color_factor, update, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'IsFlareOccluder', material.seut.is_flare_occluder, update, lines_entry)

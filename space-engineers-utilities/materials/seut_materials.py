@@ -225,24 +225,72 @@ class SEUT_Materials(PropertyGroup):
         max=50.0,
         update=update_emission_mult
     )
-    shadow_multiplier: FloatVectorProperty(
-        name="Shadow Multiplier",
-        description="Controls the contribution of the color in shadowed areas",
-        subtype='COLOR_GAMMA',
-        size=4,
-        min=0.0,
-        max=1.0,
-        default=(0.0, 0.0, 0.0, 0.0)
+    shadow_multiplier_x: FloatProperty(
+        name="Shadow Multiplier X",
+        description="",
+        default=0.0,
+        min=0.0
     )
-    light_multiplier: FloatVectorProperty(
-        name="Light Multiplier",
-        description="Controls the contribution of the sun to the lighting",
-        subtype='COLOR_GAMMA',
-        size=4,
-        min=0.0,
-        max=1.0,
-        default=(0.0, 0.0, 0.0, 0.0)
+    shadow_multiplier_y: FloatProperty(
+        name="Shadow Multiplier Y",
+        description="",
+        default=0.0,
+        min=0.0
     )
+    shadow_multiplier_z: FloatProperty(
+        name="Shadow Multiplier Z",
+        description="",
+        default=0.0,
+        min=0.0
+    )
+    shadow_multiplier_w: FloatProperty(
+        name="Shadow Multiplier W",
+        description="",
+        default=0.0,
+        min=0.0
+    )
+    #shadow_multiplier: FloatVectorProperty(
+    #    name="Shadow Multiplier",
+    #    description="Controls the contribution of the color in shadowed areas",
+    #    subtype='COLOR_GAMMA',
+    #    size=4,
+    #    min=0.0,
+    #    max=1.0,
+    #    default=(0.0, 0.0, 0.0, 0.0)
+    #)
+    light_multiplier_x: FloatProperty(
+        name="Light Multiplier X",
+        description="",
+        default=0.0,
+        min=0.0
+    )
+    light_multiplier_y: FloatProperty(
+        name="Light Multiplier Y",
+        description="",
+        default=0.0,
+        min=0.0
+    )
+    light_multiplier_z: FloatProperty(
+        name="Light Multiplier Z",
+        description="",
+        default=0.0,
+        min=0.0
+    )
+    light_multiplier_w: FloatProperty(
+        name="Light Multiplier W",
+        description="",
+        default=0.0,
+        min=0.0
+    )
+    #light_multiplier: FloatVectorProperty(
+    #    name="Light Multiplier",
+    #    description="Controls the contribution of the sun to the lighting",
+    #    subtype='COLOR_GAMMA',
+    #    size=4,
+    #    min=0.0,
+    #    max=1.0,
+    #    default=(0.0, 0.0, 0.0, 0.0)
+    #)
     reflectivity: FloatProperty(
         name="Reflectivity",
         description="If Fresnel and Reflectivity are greater than 0, there can be a reflection. Increase Reflectivity if you want reflections at all angles",
@@ -357,8 +405,14 @@ class SEUT_PT_Panel_Materials(Panel):
                 col.prop(material.seut, 'color_add', text="")
                 col.prop(material.seut, 'color_emission_multiplier', slider=True)
                 col = box2.column(align=True)
-                col.prop(material.seut, 'shadow_multiplier', text="")
-                col.prop(material.seut, 'light_multiplier', text="")
+                col.prop(material.seut, 'shadow_multiplier_x', text="")
+                col.prop(material.seut, 'shadow_multiplier_y', text="")
+                col.prop(material.seut, 'shadow_multiplier_z', text="")
+                col.prop(material.seut, 'shadow_multiplier_w', text="")
+                col.prop(material.seut, 'light_multiplier_x', text="")
+                col.prop(material.seut, 'light_multiplier_y', text="")
+                col.prop(material.seut, 'light_multiplier_z', text="")
+                col.prop(material.seut, 'light_multiplier_w', text="")
                 
                 box2 = box.box()
                 box2.label(text="Reflection Adjustments", icon='MOD_MIRROR')
@@ -528,3 +582,15 @@ def create_internal_material(context, mat_type: str):
         material.name = "SMAT_Mirror_Z"
 
     return material
+
+
+def get_seut_texture_path(texture_type: str, material) -> str:
+    """Returns the path to a material's texture of a specified type. Valid is CM, NG, ADD, AM."""
+
+    path = None
+    for node in material.node_tree.nodes:
+        if node.type == 'IMAGE' and node.label == texture_type and node.name == texture_type:
+            image = node.image
+            path = bpy.data.images[image].filepath
+
+    return path
