@@ -61,26 +61,6 @@ def update_color(self, context):
         mult.default_value = 0
 
 
-def update_emission_mult(self, context):
-    nodes = context.active_object.active_material.node_tree.nodes
-
-    ng = None
-    for node in nodes:
-        if node.name == 'SEUT_NODE_GROUP':
-            ng = node
-    if ng is None:
-        return
-    
-    mult = None
-    for i in ng.inputs:
-        if i.name == 'Emission Strength':
-            mult = i
-    if mult is None:
-        return
-
-    mult.default_value = self.color_emission_multiplier
-
-
 class SEUT_Materials(PropertyGroup):
     """Holder for the varios material properties"""
 
@@ -207,14 +187,6 @@ class SEUT_Materials(PropertyGroup):
         max=100.0,
         default=(0.0, 0.0, 0.0, 0.0),
         update=update_color
-    )
-    color_emission_multiplier: FloatProperty(
-        name="Emission Multiplier",
-        description="Makes the material more emissive in the Color Override / Color Overlay defined",
-        default=0.0,
-        min=0.0,
-        max=50.0,
-        update=update_emission_mult
     )
     shadow_multiplier_x: FloatProperty(
         name="UV Scale",
@@ -379,9 +351,9 @@ class SEUT_PT_Panel_Materials(Panel):
                 col = box2.column(align=True)
                 col.prop(material.seut, 'color', text="")
                 col.prop(material.seut, 'color_add', text="")
-                col.prop(material.seut, 'color_emission_multiplier', slider=True)
 
                 if not material.seut.technique == 'SHIELD':
+                    col = box2.column(align=True)
                     col.prop(material.seut, 'shadow_multiplier', text="")
                     col.prop(material.seut, 'light_multiplier', text="")
 
