@@ -206,7 +206,7 @@ class SEUT_Materials(PropertyGroup):
         subtype='COLOR_GAMMA',
         size=4,
         min=0.0,
-        max=1.0,
+        max=100.0,
         default=(0.0, 0.0, 0.0, 0.0)
     )
     light_multiplier_x: FloatProperty(
@@ -233,7 +233,7 @@ class SEUT_Materials(PropertyGroup):
         subtype='COLOR_GAMMA',
         size=4,
         min=0.0,
-        max=1.0,
+        max=100.0,
         default=(0.0, 0.0, 0.0, 0.0)
     )
     reflectivity: FloatProperty(
