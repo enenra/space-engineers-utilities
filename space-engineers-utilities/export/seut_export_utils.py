@@ -15,6 +15,7 @@ from ..export.seut_custom_fbx_exporter      import save_single
 from ..seut_collections                     import get_collections, names
 from ..seut_utils                           import link_subpart_scene, unlink_subpart_scene, get_parent_collection, get_preferences
 from ..seut_errors                          import seut_report, get_abs_path
+from .seut_export_transparent_mat           import export_transparent_mat
 
 def export_xml(self, context, collection) -> str:
     """Exports the XML definition for a collection"""
@@ -74,6 +75,8 @@ def export_xml(self, context, collection) -> str:
             # Material is a local material
             if is_unique:
                 create_mat_entry(self, context, model, mat)
+                if mat.seut.technique in ['GLASS', 'HOLO', 'SHIELD']:
+                    export_transparent_mat(self, context, mat.name)
             
             else:
                 matRef = ET.SubElement(model, 'MaterialRef')
