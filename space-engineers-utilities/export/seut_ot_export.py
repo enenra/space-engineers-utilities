@@ -62,8 +62,6 @@ def export(self, context):
     scene.seut.renderToggle = 'off'
 
     if not os.path.isdir(get_abs_path(scene.seut.mod_path) + '\\'):
-        print(scene.seut.mod_path)
-        print(get_abs_path(scene.seut.mod_path) + '\\')
         seut_report(self, context, 'ERROR', True, 'E019', "Mod", scene.name)
         return {'CANCELLED'}
 
