@@ -89,13 +89,13 @@ def export_transparent_mat(self, context, subtype_id):
     if material.seut.technique == 'SHIELD':
         add_subelement(def_shadow_multiplier, 'X', material.seut.shadow_multiplier_x)
         add_subelement(def_shadow_multiplier, 'Y', material.seut.shadow_multiplier_y)
-        add_subelement(def_shadow_multiplier, 'Z', material.seut.shadow_multiplier_z)
-        add_subelement(def_shadow_multiplier, 'W', material.seut.shadow_multiplier_w)
+        add_subelement(def_shadow_multiplier, 'Z', 0) # unused
+        add_subelement(def_shadow_multiplier, 'W', 0) # unused
     else:
         add_subelement(def_shadow_multiplier, 'X', material.seut.shadow_multiplier[0])
         add_subelement(def_shadow_multiplier, 'Y', material.seut.shadow_multiplier[1])
-        add_subelement(def_shadow_multiplier, 'Z', 0) # unused
-        add_subelement(def_shadow_multiplier, 'W', 0) # unused
+        add_subelement(def_shadow_multiplier, 'Z', material.seut.shadow_multiplier[2])
+        add_subelement(def_shadow_multiplier, 'W', material.seut.shadow_multiplier[3])
     if update:
         lines_entry = convert_back_xml(def_shadow_multiplier, 'ShadowMultiplier', lines_entry)
     
@@ -107,12 +107,12 @@ def export_transparent_mat(self, context, subtype_id):
         add_subelement(def_light_multiplier, 'X', material.seut.light_multiplier_x)
         add_subelement(def_light_multiplier, 'Y', material.seut.light_multiplier_y)
         add_subelement(def_light_multiplier, 'Z', material.seut.light_multiplier_z)
-        add_subelement(def_light_multiplier, 'W', material.seut.light_multiplier_w)
+        add_subelement(def_light_multiplier, 'W', 0) # unused
     else:
         add_subelement(def_light_multiplier, 'X', material.seut.light_multiplier[0])
         add_subelement(def_light_multiplier, 'Y', material.seut.light_multiplier[1])
         add_subelement(def_light_multiplier, 'Z', material.seut.light_multiplier[2])
-        add_subelement(def_light_multiplier, 'W', 0) # unused
+        add_subelement(def_light_multiplier, 'W', material.seut.light_multiplier[3])
     if update:
         lines_entry = convert_back_xml(def_light_multiplier, 'LightMultiplier', lines_entry)
     
