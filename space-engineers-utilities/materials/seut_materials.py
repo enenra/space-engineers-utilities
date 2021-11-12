@@ -39,41 +39,33 @@ def update_color(self, context):
         return
     
     override = None
-    alpha = None
+    override_alpha = None
+    overlay = None
+    overlay_alpha = None
+    mult = None
     for i in ng.inputs:
         if i.name == 'Color Override':
             override = i
         elif i.name == 'Color Override Alpha':
-            alpha = i
-    if override is None or alpha is None:
-        return
-
-    override.default_value = self.color
-    alpha.default_value = self.color[3]
-
-
-def update_color_add(self, context):
-    nodes = context.active_object.active_material.node_tree.nodes
-
-    ng = None
-    for node in nodes:
-        if node.name == 'SEUT_NODE_GROUP':
-            ng = node
-    if ng is None:
-        return
-    
-    overlay = None
-    alpha = None
-    for i in ng.inputs:
-        if i.name == 'Color Overlay':
+            override_alpha = i
+        elif i.name == 'Color Overlay':
             overlay = i
         elif i.name == 'Color Overlay Alpha':
-            alpha = i
-    if overlay is None or alpha is None:
-        return
+            overlay_alpha = i
+        elif i.name == 'Emission Strength':
+            mult = i
 
+    override.default_value = self.color
+    override_alpha.default_value = self.color[3]
     overlay.default_value = self.color_add
-    alpha.default_value = self.color_add[3]
+    overlay_alpha.default_value = self.color_add[3]
+
+    max_emission = max(set([self.color[0], self.color[1], self.color[2], self.color_add[0], self.color_add[1], self.color_add[2]]))
+
+    if max_emission > 1:
+        mult.default_value = max_emission - 1
+    else:
+        mult.default_value = 0
 
 
 def update_emission_mult(self, context):
@@ -196,7 +188,7 @@ class SEUT_Materials(PropertyGroup):
         subtype='COLOR_GAMMA',
         size=4,
         min=0.0,
-        max=1.0,
+        max=100.0,
         default=(0.0, 0.0, 0.0, 0.0),
         update=update_color
     )
@@ -206,9 +198,9 @@ class SEUT_Materials(PropertyGroup):
         subtype='COLOR_GAMMA',
         size=4,
         min=0.0,
-        max=1.0,
+        max=100.0,
         default=(0.0, 0.0, 0.0, 0.0),
-        update=update_color_add
+        update=update_color
     )
     color_emission_multiplier: FloatProperty(
         name="Emission Multiplier",

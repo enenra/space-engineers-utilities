@@ -67,7 +67,7 @@ def export_transparent_mat(self, context, subtype_id):
     add_subelement(def_color, 'X', material.seut.color[0])
     add_subelement(def_color, 'Y', material.seut.color[1])
     add_subelement(def_color, 'Z', material.seut.color[2])
-    add_subelement(def_color, 'W', material.seut.color[3] * (1 + material.seut.color_emission_multiplier))
+    add_subelement(def_color, 'W', material.seut.color[3])
     if update:
         lines_entry = convert_back_xml(def_color, 'Color', lines_entry)
 
@@ -78,7 +78,7 @@ def export_transparent_mat(self, context, subtype_id):
     add_subelement(def_color_add, 'X', material.seut.color_add[0])
     add_subelement(def_color_add, 'Y', material.seut.color_add[1])
     add_subelement(def_color_add, 'Z', material.seut.color_add[2])
-    add_subelement(def_color_add, 'W', material.seut.color_add[3] * (1 + material.seut.color_emission_multiplier))
+    add_subelement(def_color_add, 'W', material.seut.color_add[3])
     if update:
         lines_entry = convert_back_xml(def_color, 'ColorAdd', lines_entry)
 
