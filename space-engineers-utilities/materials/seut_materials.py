@@ -12,6 +12,32 @@ from bpy.props      import (EnumProperty,
                             BoolProperty)
 
 
+def update_technique(self, context):
+    nodes = context.active_object.active_material.node_tree.nodes
+    material = context.active_object.active_material
+
+    ng = None
+    for node in nodes:
+        if node.name == 'SEUT_NODE_GROUP':
+            ng = node
+    if ng is None:
+        return
+
+    switch = None
+    for i in ng.inputs:
+        if i.name == 'TM Switch':
+            switch = i
+    if switch is None:
+        return
+    
+    if self.technique in ['GLASS', 'HOLO', 'SHIELD']:
+        switch.default_value = 1
+        material.blend_method = 'BLEND'
+    else:
+        switch.default_value = 0
+        material.blend_method = 'CLIP'
+
+
 def update_vanilla_dlc(self, context):
 
     if self.dlc and not self.vanilla:
@@ -103,7 +129,8 @@ class SEUT_Materials(PropertyGroup):
             ('HOLO', 'HOLO', 'Transparent LCD screen texture'),
             ('FOLIAGE', 'FOLIAGE', 'Used for half-transparent textures like leaves - shadows observe transparency in texture')
             ),
-        default='MESH'
+        default='MESH',
+        update=update_technique
     )
     facing: EnumProperty(
         name='Facing',
@@ -170,7 +197,7 @@ class SEUT_Materials(PropertyGroup):
     # GlossTexture from NG
     color: FloatVectorProperty(
         name="Color Override",
-        description="Overrides the color of the CM texture",
+        description="Overrides the color of the CM texture.\nValues over 1.0 will result in the material becoming emissive in that color",
         subtype='COLOR_GAMMA',
         size=4,
         min=0.0,
@@ -180,7 +207,7 @@ class SEUT_Materials(PropertyGroup):
     )
     color_add: FloatVectorProperty(
         name="Color Overlay",
-        description="This color is added on top of the color of the CM texture",
+        description="This color is added on top of the color of the CM texture\nValues over 1.0 will result in the material becoming emissive in that color",
         subtype='COLOR_GAMMA',
         size=4,
         min=0.0,

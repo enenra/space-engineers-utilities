@@ -13,7 +13,7 @@ from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..export.seut_custom_fbx_exporter      import save_single
 from ..seut_collections                     import get_collections, names
-from ..seut_utils                           import link_subpart_scene, unlink_subpart_scene, get_parent_collection, get_preferences
+from ..seut_utils                           import *
 from ..seut_errors                          import seut_report, get_abs_path
 from .seut_export_transparent_mat           import export_transparent_mat
 
@@ -154,20 +154,6 @@ def create_texture_entry(self, context, mat_entry, mat_name: str, images: dict, 
     
     if not is_valid_resolution(images[tex_type].size[0]) or not is_valid_resolution(images[tex_type].size[1]):
         seut_report(self, context, 'WARNING', True, 'W004', tex_name, mat_name, str(images[tex_type].size[0]) + "x" + str(images[tex_type].size[1]))
-
-
-def create_relative_path(path: str, folder_name: str):
-    """Returns the path capped off before the last occurrence of the foldername, returns False if foldername is not found in path"""
-    
-    offset = path.rfind(folder_name + "\\")
-
-    if offset == -1:
-        if path.endswith(folder_name):
-            return path[path.rfind(folder_name):]
-        else:
-            return False
-    else:
-        return path[offset:]
 
 
 def is_valid_resolution(number: int) -> bool:

@@ -19,7 +19,7 @@ from ..utils.seut_xml_utils         import *
 from ..seut_preferences             import get_addon_version, get_addon
 from ..seut_collections             import get_collections, names
 from ..seut_errors                  import *
-from ..seut_utils                   import prep_context, get_preferences
+from ..seut_utils                   import prep_context, get_preferences, create_relative_path
 
 class SEUT_OT_Export(Operator):
     """Exports all collections in the current scene and compiles them to MWM.\nScene needs to be in Object mode for export to be available"""

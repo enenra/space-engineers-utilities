@@ -5,7 +5,7 @@ import re
 from ..materials.seut_materials import get_seut_texture_path
 from ..utils.seut_xml_utils     import *
 from ..seut_errors              import *
-from .seut_export_utils         import create_relative_path
+from ..seut_utils               import create_relative_path
 
 
 def export_transparent_mat(self, context, subtype_id):
