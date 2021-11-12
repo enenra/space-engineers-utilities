@@ -60,7 +60,6 @@ def export_transparent_mat(self, context, subtype_id):
     cm_path = create_relative_path(cm_path, 'Textures')
     lines_entry = update_add_subelement(def_definition, 'Texture', cm_path, update, lines_entry)
     
-
     if not update:
         def_color = add_subelement(def_definition, 'Color')
     else:

@@ -476,6 +476,7 @@ class SEUT_PT_Panel_TextureConversion(Panel):
     bl_category = "SEUT"
     bl_space_type = "NODE_EDITOR"
     bl_region_type = "UI"
+    bl_options = {'DEFAULT_CLOSED'}
 
 
     @classmethod
