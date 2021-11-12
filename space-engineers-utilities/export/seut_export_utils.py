@@ -12,7 +12,6 @@ from mathutils                              import Matrix
 from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..export.seut_custom_fbx_exporter      import save_single
-from ..materials.seut_materials             import dlc_materials
 from ..seut_collections                     import get_collections, names
 from ..seut_utils                           import link_subpart_scene, unlink_subpart_scene, get_parent_collection, get_preferences
 from ..seut_errors                          import seut_report, get_abs_path
@@ -52,7 +51,7 @@ def export_xml(self, context, collection) -> str:
         if mat.name[:5] == 'SMAT_':
             continue
 
-        if mat.name in dlc_materials:
+        if mat.seut.dlc:
             seut_report(self, context, 'WARNING', False, 'W012', mat.name)
         
         elif mat.library == None:

@@ -12,20 +12,13 @@ from bpy.props      import (EnumProperty,
                             BoolProperty)
 
 
-dlc_materials = [
-    "Cooker",
-    "Console",
-    "Dirt",
-    "SmallTiresMotion",
-    "Grating",
-    "GratingMetallic",
-    "FoodDispenser",
-    "PlasticWhite",
-    "LabEquipmentScreen_01",
-    "Astronaut_Damaged",
-    "ArmsDamaged",
-    "RightArmDamaged"
-]
+def update_vanilla_dlc(self, context):
+
+    if self.dlc and not self.vanilla:
+        self.vanilla = True
+    
+    elif not self.vanilla and self.dlc:
+        self.dlc = False
 
 
 def update_color(self, context):
@@ -95,6 +88,19 @@ class SEUT_Materials(PropertyGroup):
         name="SEUT Material Version",
         description="Used as a reference to patch the SEUT material properties to newer versions",
         default=1
+    )
+    
+    vanilla: BoolProperty(
+        name="Vanilla",
+        description="Whether the material is a vanilla Space Engineers material",
+        default=False,
+        update=update_vanilla_dlc
+    )
+    dlc: BoolProperty(
+        name="DLC",
+        description="Whether the material is a DLC material",
+        default=False,
+        update=update_vanilla_dlc
     )
     
     overrideMatLib: BoolProperty(
@@ -352,7 +358,11 @@ class SEUT_PT_Panel_Materials(Panel):
             link.section = 'reference'
             link.page = '6095000/SEUT+Shader+Editor'
 
-            box.prop(material.seut, 'overrideMatLib')
+            col = box.column(align=True)
+            col.prop(material.seut, 'overrideMatLib', icon='LIBRARY_DATA_OVERRIDE')
+            row = col.row(align=True)
+            row.prop(material.seut, 'vanilla', icon='DOT')
+            row.prop(material.seut, 'dlc', icon='ADD')
             box.prop(material.seut, 'technique', icon='IMGDISPLAY')
             box.prop(material.seut, 'facing')
             
