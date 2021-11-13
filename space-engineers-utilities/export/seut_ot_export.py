@@ -440,7 +440,7 @@ def export_sbc(self, context):
     # 3 options: no file and no entry, file but no entry, file and entry
 
     # Create XML tree and add initial parameters.
-    output = get_relevant_sbc(os.path.dirname(path_data), 'CubeBlocks', scene.seut.subtypeId)
+    output = get_relevant_sbc(os.path.dirname(path_data), 'CubeBlocks', 'Definition', scene.seut.subtypeId)
     if output is not None:
         file_to_update = output[0]
         lines = output[1]

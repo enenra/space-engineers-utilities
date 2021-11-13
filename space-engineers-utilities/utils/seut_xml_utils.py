@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
 
-def get_relevant_sbc(path: str, sbc_type: str, subtype_id: str):
+def get_relevant_sbc(path: str, sbc_type: str, container_name: str, subtype_id: str):
     """Returns the relevant element of an existing entry, if found."""
 
     for path, subdirs, files in os.walk(path):
@@ -14,11 +14,15 @@ def get_relevant_sbc(path: str, sbc_type: str, subtype_id: str):
             with open(os.path.join(path, name)) as f:
                 lines = f.read()
                 if '<' + sbc_type + '>' in lines:
-                    if '<SubtypeId>' + subtype_id + '</SubtypeId>' in lines:
-                        start = lines.find('<SubtypeId>' + subtype_id + '</SubtypeId>')
-                        start = lines[:start].rfind('<Definition')
-                        end = start + lines[start:].find('</Definition>') + len('</Definition>')
-                        return [os.path.join(path, name), lines, start, end]
+                    entries_start = lines.find('<' + sbc_type + '>') + len('<' + sbc_type + '>')
+                    entries_end = lines.find('</' + sbc_type + '>')
+                    entries = lines[entries_start:entries_end]
+
+                    if '<SubtypeId>' + subtype_id + '</SubtypeId>' in entries:
+                        start = entries.find('<SubtypeId>' + subtype_id + '</SubtypeId>')
+                        start = entries[:start].rfind('<' + container_name)
+                        end = start + entries[start:].find('</' + container_name + '>') + len('</' + container_name + '>')
+                        return [os.path.join(path, name), lines, entries_start + start, entries_end + end]
                     else:
                         return [os.path.join(path, name), lines, None, None]
     
@@ -61,7 +65,7 @@ def update_subelement(lines, name: str, value):
 
     entry = get_subelement(lines, name)
     entry_updated = '<' + name + '>' + str(value) + '</' + name + '>'
-    return lines.replace(entry, str(entry_updated))
+    return lines.replace(str(entry), str(entry_updated))
 
 def update_add_optional_subelement(parent, name: str, value, update_sbc, lines):
     if update_sbc:
@@ -120,7 +124,7 @@ def update_attrib(lines, element, name: str, value):
 
     entry_updated = entry.replace(name + "=\"" + attrib + "\"", name + "=\"" + str(value) + "\"")
 
-    return lines.replace(entry, entry_updated)
+    return lines.replace(str(entry), entry_updated)
 
 
 def get_attrib(entry: str, name: str):

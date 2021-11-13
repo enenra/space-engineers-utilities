@@ -574,8 +574,8 @@ def get_seut_texture_path(texture_type: str, material) -> str:
 
     path = None
     for node in material.node_tree.nodes:
-        if node.type == 'IMAGE' and node.label == texture_type and node.name == texture_type:
-            image = node.image
+        if node.type == 'TEX_IMAGE' and node.label == texture_type and node.name == texture_type:
+            image = node.image.name
             path = bpy.data.images[image].filepath
 
     return path
