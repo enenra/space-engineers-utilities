@@ -15,13 +15,12 @@ def get_relevant_sbc(path: str, sbc_type: str, subtype_id: str):
                 lines = f.read()
                 if '<' + sbc_type + '>' in lines:
                     if '<SubtypeId>' + subtype_id + '</SubtypeId>' in lines:
-                        
                         start = lines.find('<SubtypeId>' + subtype_id + '</SubtypeId>')
                         start = lines[:start].rfind('<Definition')
                         end = start + lines[start:].find('</Definition>') + len('</Definition>')
                         return [os.path.join(path, name), lines, start, end]
-                else:
-                    return [os.path.join(path, name), lines, None, None]
+                    else:
+                        return [os.path.join(path, name), lines, None, None]
     
     return [None, None, None, None]
 
