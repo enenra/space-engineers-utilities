@@ -94,11 +94,34 @@ def create_seut_nodegroup(node):
 
     node_output = nodes.new(type='NodeGroupOutput')
     node_output.label = 'Output'
-    node_output.location = (0.0000, 0.0000)
+    node_output.location = (500.0, 0.0)
     
     node_bsdf = nodes.new(type='ShaderNodeBsdfPrincipled')
     node_bsdf.label = 'Principled BSDF'
-    node_bsdf.location = (-400.0000, 0.0000)
+    node_bsdf.location = (140.0, 0.0)
+
+    node_switch_alpha = nodes.new(type='ShaderNodeMixRGB')
+    node_switch_alpha.label = 'Switch Alpha'
+    node_switch_alpha.location = (-280.0, 240.0)
+    node_switch_alpha.use_clamp = True
+    links.new(node_switch_alpha.outputs[0], node_bsdf.inputs['Alpha'])
+
+    node_switch_color = nodes.new(type='ShaderNodeMixRGB')
+    node_switch_color.label = 'Switch Color'
+    node_switch_color.location = (-100.0, 440.0)
+    node_switch_color.use_clamp = True
+    links.new(node_switch_color.outputs[0], node_bsdf.inputs['Base Color'])
+
+    node_color_overlay = nodes.new(type='ShaderNodeMixRGB')
+    node_color_overlay.label = 'Color Overlay'
+    node_color_overlay.location = (-280.0, 440.0)
+    node_color_overlay.blend_type = 'OVERLAY'
+    links.new(node_color_overlay.outputs[0], node_switch_color.inputs[2])
+
+    node_color_override = nodes.new(type='ShaderNodeMixRGB')
+    node_color_override.label = 'Color Override'
+    node_color_override.location = (-460.0, 240.0)
+    links.new(node_color_override.outputs[0], node_color_overlay.inputs[1])
     
     node_add_ao = nodes.new(type='ShaderNodeMixRGB')
     node_add_ao.label = 'Add AO'
@@ -106,21 +129,23 @@ def create_seut_nodegroup(node):
     node_add_ao.blend_type = 'MULTIPLY'
     node_add_ao.use_clamp = True
     node_add_ao.inputs[0].default_value = 1.0
-    links.new(node_add_ao.outputs[0], node_bsdf.inputs[0])
+    links.new(node_add_ao.outputs[0], node_color_override.inputs[1])
+    links.new(node_add_ao.outputs[0], node_switch_color.inputs[1])
     
     node_gloss_rough = nodes.new(type='ShaderNodeInvert')
     node_gloss_rough.label = 'Gloss to Roughness'
     node_gloss_rough.location = (-687.5000, -231.0000)
-    links.new(node_gloss_rough.outputs[0], node_bsdf.inputs[7])
+    links.new(node_gloss_rough.outputs[0], node_bsdf.inputs['Roughness'])
     
     node_emission_color = nodes.new(type='ShaderNodeMixRGB')
     node_emission_color.label = 'Emission Color'
     node_emission_color.location = (-687.5000, -370.2500)
-    links.new(node_emission_color.outputs[0], node_bsdf.inputs[17])
+    links.new(node_emission_color.outputs[0], node_bsdf.inputs['Emission'])
     
     node_normal_map = nodes.new(type='ShaderNodeNormalMap')
     node_normal_map.label = 'Normal Map'
     node_normal_map.location = (-687.5000, -600.4375)
+    links.new(node_normal_map.outputs[0], node_bsdf.inputs['Normal'])
     
     node_add_switch = nodes.new(type='ShaderNodeMath')
     node_add_switch.label = 'ADD Switch'
@@ -151,48 +176,87 @@ def create_seut_nodegroup(node):
     links.new(node_separate_rgb.outputs[0], node_add_ao.inputs[2])
     links.new(node_separate_rgb.outputs[1], node_emission_switch.inputs[0])
     links.new(node_separate_rgb.outputs[1], node_emission_color.inputs[1])
+
+    node_restrict_to_alpha = nodes.new(type='ShaderNodeMath')
+    node_restrict_to_alpha.label = 'Restrict to Alpha'
+    node_restrict_to_alpha.location = (-460.0, 440.0)
+    links.new(node_restrict_to_alpha.outputs[0], node_color_overlay.inputs[0])
+
+    node_invert_alpha = nodes.new(type='ShaderNodeInvert')
+    node_invert_alpha.label = 'Invert Alpha'
+    node_invert_alpha.location = (-640.0, 440.0)
+    links.new(node_invert_alpha.outputs[0], node_restrict_to_alpha.inputs[1])
     
     node_input = nodes.new(type='NodeGroupInput')
     node_input.label = 'Input'
     node_input.location = (-1512.5000, 0.0000)
-    node_group.inputs.new('NodeSocketColor', "CM Color")
-    links.new(node_input.outputs[0], node_add_paint.inputs[1])
-    node_group.inputs.new('NodeSocketColor', "CM Alpha")
-    links.new(node_input.outputs[1], node_bsdf.inputs[4])
-    node_group.inputs.new('NodeSocketColor', "ADD Color")
-    links.new(node_input.outputs[2], node_separate_rgb.inputs[0])
-    links.new(node_input.outputs[2], node_add_switch.inputs[0])
-    node_group.inputs.new('NodeSocketColor', "ADD Alpha")
-    links.new(node_input.outputs[3], node_add_paint.inputs[0])
-    node_group.inputs.new('NodeSocketColor', "NG Color")
-    links.new(node_input.outputs[4], node_normal_map.inputs[1])
-    node_group.inputs.new('NodeSocketColor', "NG Alpha")
-    links.new(node_input.outputs[5], node_gloss_rough.inputs[1])
-    node_group.inputs.new('NodeSocketColor', "AM Color")
-    links.new(node_input.outputs[6], node_bsdf.inputs[18])
-    node_group.inputs.new('NodeSocketColor', "Paint Color")
-    links.new(node_input.outputs[7], node_add_paint.inputs[2])
+
+    node_group.inputs.new('NodeSocketColor', 'CM Color')
+    links.new(node_input.outputs['CM Color'], node_add_paint.inputs[1])
+
+    node_group.inputs.new('NodeSocketColor', 'CM Alpha')
+    links.new(node_input.outputs['CM Alpha'], node_bsdf.inputs['Metallic'])
+    links.new(node_input.outputs['CM Alpha'], node_switch_alpha.inputs[2])
+
+    node_group.inputs.new('NodeSocketColor', 'ADD Color')
+    links.new(node_input.outputs['ADD Color'], node_separate_rgb.inputs[0])
+    links.new(node_input.outputs['ADD Color'], node_add_switch.inputs[0])
+
+    node_group.inputs.new('NodeSocketColor', 'ADD Alpha')
+    links.new(node_input.outputs['ADD Alpha'], node_add_paint.inputs[0])
+
+    node_group.inputs.new('NodeSocketColor', 'NG Color')
+    links.new(node_input.outputs['NG Color'], node_normal_map.inputs[1])
+
+    node_group.inputs.new('NodeSocketColor', 'NG Alpha')
+    links.new(node_input.outputs['NG Alpha'], node_gloss_rough.inputs[1])
+
+    node_group.inputs.new('NodeSocketColor', 'AM Color')
+    links.new(node_input.outputs['AM Color'], node_switch_alpha.inputs[1])
+    links.new(node_input.outputs['AM Color'], node_invert_alpha.inputs[1])
+
+    node_group.inputs.new('NodeSocketColor', 'Paint Color')
+    links.new(node_input.outputs['Paint Color'], node_add_paint.inputs[2])
+
+    node_group.inputs.new('NodeSocketFloat', 'TM Switch')
+    node_group.inputs[8].default_value = 1
+    node_group.inputs[8].min_value = 0
+    node_group.inputs[8].max_value = 1
+    links.new(node_input.outputs['TM Switch'], node_switch_color.inputs[0])
+    links.new(node_input.outputs['TM Switch'], node_switch_alpha.inputs[0])
+
+    node_group.inputs.new('NodeSocketColor', 'Color Override')
+    links.new(node_input.outputs['Color Override'], node_color_override.inputs[2])
+
+    node_group.inputs.new('NodeSocketColor', 'Color Override Alpha')
+    links.new(node_input.outputs['Color Override Alpha'], node_color_override.inputs[0])
+
+    node_group.inputs.new('NodeSocketColor', 'Color Overlay')
+    links.new(node_input.outputs['Color Overlay'], node_color_overlay.inputs[2])
+
+    node_group.inputs.new('NodeSocketColor', 'Color Overlay Alpha')
+    links.new(node_input.outputs['Color Overlay Alpha'], node_restrict_to_alpha.inputs[0])
 
     # Backwards compatability
     
     if bpy.app.version >= (2, 90, 0):
-        node_group.inputs[0].hide_value = True
-        node_group.inputs[1].hide_value = True
-        node_group.inputs[2].hide_value = True
-        node_group.inputs[3].hide_value = True
-        node_group.inputs[4].hide_value = True
-        node_group.inputs[5].hide_value = True
-        node_group.inputs[6].hide_value = True
-        node_group.inputs[7].hide_value = True
+        node_group.inputs['CM Color'].hide_value = True
+        node_group.inputs['CM Alpha'].hide_value = True
+        node_group.inputs['ADD Color'].hide_value = True
+        node_group.inputs['ADD Alpha'].hide_value = True
+        node_group.inputs['NG Color'].hide_value = True
+        node_group.inputs['NG Alpha'].hide_value = True
+        node_group.inputs['AM Color'].hide_value = True
+        node_group.inputs['Paint Color'].hide_value = True
+        node_group.inputs['TM Switch'].hide_value = True
+        node_group.inputs['Color Override'].hide_value = True
+        node_group.inputs['Color Override Alpha'].hide_value = True
+        node_group.inputs['Color Overlay'].hide_value = True
+        node_group.inputs['Color Overlay Alpha'].hide_value = True
 
     if bpy.app.version >= (2, 91, 0):
-        node_group.inputs.new('NodeSocketFloat', "Emission Strength")
-        links.new(node_input.outputs[8], node_bsdf.inputs[18])
-        links.new(node_input.outputs[6], node_bsdf.inputs[19])
-        links.new(node_normal_map.outputs[0], node_bsdf.inputs[20])
-    else:
-        links.new(node_input.outputs[6], node_bsdf.inputs[18])
-        links.new(node_normal_map.outputs[0], node_bsdf.inputs[19])
+        node_group.inputs.new('NodeSocketFloat', 'Emission Strength')
+        links.new(node_input.outputs['Emission Strength'], node_bsdf.inputs['Emission Strength'])
         
     # Moving this down here fixed a crash on scene initialization.
     links.new(node_bsdf.outputs[0], node_output.inputs[0])
