@@ -174,4 +174,9 @@ def export_transparent_mat(self, context, subtype_id):
     exported_xml = open(target_file, "w")
     exported_xml.write(xml_formatted)
 
+    if file_to_update is None:
+        seut_report(self, context, 'INFO', False, 'I004', target_file)
+    else:
+        seut_report(self, context, 'INFO', False, 'I022', subtype_id, target_file)
+
     return {'FINISHED'}

@@ -90,6 +90,7 @@ infos = {
     'I019': "Successfully imported {variable_1} materials from '{variable_2}': {variable_3}",
     'I020': "Material '{variable_1}' was skipped because it already exists in the BLEND file.",
     'I021': "{variable_1} of {variable_2} files successfully imported. Refer to Blender System Console for details.",
+    'I022': "Entry for '{variable_1}' has been created / updated in file '{variable_2}'.",
 }
 
 

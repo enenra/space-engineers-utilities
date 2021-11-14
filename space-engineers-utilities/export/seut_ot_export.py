@@ -754,6 +754,9 @@ def export_sbc(self, context):
     exported_xml = open(target_file, "w")
     exported_xml.write(xml_formatted)
 
-    seut_report(self, context, 'INFO', False, 'I004', target_file)
+    if not update_sbc:
+        seut_report(self, context, 'INFO', False, 'I004', target_file)
+    else:
+        seut_report(self, context, 'INFO', False, 'I022', scene.seut.subtypeId, target_file)
 
     return {'FINISHED'}
