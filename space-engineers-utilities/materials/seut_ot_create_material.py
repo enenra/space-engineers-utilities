@@ -257,6 +257,8 @@ def create_seut_nodegroup(node):
     if bpy.app.version >= (2, 91, 0):
         node_group.inputs.new('NodeSocketFloat', 'Emission Strength')
         links.new(node_input.outputs['Emission Strength'], node_bsdf.inputs['Emission Strength'])
+        node_group.inputs['Emission Strength'].default_value = 5
+        node_group.inputs['Emission Strength'].hide_value = True
         
     # Moving this down here fixed a crash on scene initialization.
     links.new(node_bsdf.outputs[0], node_output.inputs[0])
