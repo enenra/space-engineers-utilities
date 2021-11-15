@@ -39,12 +39,7 @@ A Blender 2.8+ addon to streamline working on assets for Space Engineers.
 * Full support for creating **character models** and **character poses & animations**.
 
 ## Installation
-Please follow the [installation guide](https://space-engineers-modding.github.io/modding-reference/tutorials/tools/3d-modelling/seut/setup.html).
-
-## Support	
-Please consider supporting the development of this addon by becoming one of Stollie's patreons! Without him, the development of the addon would never have gotten this far.	
-
-[![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Patreon_logo_with_wordmark.svg/256px-Patreon_logo_with_wordmark.svg.png)](https://www.patreon.com/Stollie)
+Please follow the [installation guide](https://semref.atlassian.net/wiki/spaces/tutorials/pages/131411/SEUT+Installation+Guide).
 
 ## Credits	
 * **Stollie** - So much general help but also writing everything character, export and MWM-related, which I wouldn't have been able to do at all.	
