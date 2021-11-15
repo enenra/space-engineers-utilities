@@ -243,6 +243,7 @@ class SEUT_OT_RecreateCollections(Operator):
 
         if not 'SEUT' in scene.view_layers:
             scene.view_layers[0].name = 'SEUT'
+            scene.eevee.use_bloom = True
 
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
