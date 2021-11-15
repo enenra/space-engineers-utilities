@@ -114,11 +114,12 @@ class SEUT_PT_Panel_Collections(Panel):
         # link.section = 'reference'
         # link.page = 'outliner'
 
-        box = layout.box()
-        box.label(text=active_col.name, icon='COLLECTION_' + colors[active_col.seut.col_type])
-        col = box.column(align=True)
-        col.label(text="Type: " + names[active_col.seut.col_type])
-        col.label(text="Scene: " + active_col.seut.scene.name)
+        if active_col.seut.col_type != 'none':
+            box = layout.box()
+            box.label(text=active_col.name, icon='COLLECTION_' + colors[active_col.seut.col_type])
+            col = box.column(align=True)
+            col.label(text="Type: " + names[active_col.seut.col_type])
+            col.label(text="Scene: " + active_col.seut.scene.name)
         layout.operator('scene.create_collection')
 
         if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod' or active_col.seut.col_type == 'hkt' or active_col.seut.col_type == 'bs_lod':
