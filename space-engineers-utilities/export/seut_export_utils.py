@@ -262,6 +262,9 @@ def export_fbx(self, context, collection) -> str:
     # Prepare empties for export
     for empty in collection.objects:
         if empty is not None and empty.type == 'EMPTY':
+
+            # This not being 1.0 can cause some issues ingame.
+            empty.empty_display_size = 1.0
             
             # Remove numbers
             # To ensure they work ingame (where duplicate names are no issue) this will remove the ".001" etc. from the name (and cause another empty to get this numbering)
