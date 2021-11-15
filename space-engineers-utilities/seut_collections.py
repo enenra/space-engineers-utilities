@@ -296,7 +296,10 @@ class SEUT_OT_CreateCollection(Operator):
         tag = ' (' + scene.seut.subtypeId + ')'
         collections = get_collections(scene)
         
-        if self.col_type == 'lod' or self.col_type == 'bs' or self.col_type == 'bs_lod':
+        if self.col_type == 'none':
+            return {'CANCELLED'}
+            
+        elif self.col_type == 'lod' or self.col_type == 'bs' or self.col_type == 'bs_lod':
 
             # This handles the case in which collections are missing from the standard 3
             if collections[self.col_type] == None or 1 not in collections[self.col_type]:
@@ -341,6 +344,8 @@ class SEUT_OT_CreateCollection(Operator):
 
                 if ref_col.seut.col_type == 'lod' or ref_col.seut.col_type == 'bs' or ref_col.seut.col_type == 'bs_lod':
                     collection = bpy.data.collections.new(names[self.col_type] + " - " + names[ref_col.seut.col_type] + str(ref_col.seut.type_index) + tag)
+                elif ref_col.seut.col_type == 'none':
+                    return {'CANCELLED'}
                 else:
                     collection = bpy.data.collections.new(names[self.col_type] + " - " + names[ref_col.seut.col_type] + tag)
 
