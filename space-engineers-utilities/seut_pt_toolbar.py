@@ -3,7 +3,7 @@ import addon_utils
 
 from bpy.types  import Panel
 
-from .seut_collections              import get_collections
+from .seut_collections              import get_collections, names, colors
 
 
 class SEUT_PT_Panel(Panel):
@@ -106,6 +106,7 @@ class SEUT_PT_Panel_Collections(Panel):
         layout = self.layout
         scene = context.scene
         wm = context.window_manager
+        active_col = context.view_layer.active_layer_collection.collection
 
         # split = layout.split(factor=0.85)
         # split.operator('scene.recreate_collections', icon='COLLECTION_NEW')
@@ -113,9 +114,12 @@ class SEUT_PT_Panel_Collections(Panel):
         # link.section = 'reference'
         # link.page = 'outliner'
 
+        box = layout.box()
+        box.label(text=active_col.name, icon='COLLECTION_' + colors[active_col.seut.col_type])
+        col = box.column(align=True)
+        col.label(text="Type: " + names[active_col.seut.col_type])
+        col.label(text="Scene: " + active_col.seut.scene.name)
         layout.operator('scene.create_collection')
-
-        active_col = context.view_layer.active_layer_collection.collection
 
         if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod' or active_col.seut.col_type == 'hkt' or active_col.seut.col_type == 'bs_lod':
             box = layout.box()
