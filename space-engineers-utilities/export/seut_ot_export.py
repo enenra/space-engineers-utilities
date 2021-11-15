@@ -655,93 +655,93 @@ def export_sbc(self, context):
         if update_sbc:
             lines_entry = convert_back_xml(def_Mountpoints, 'MountPoints', lines_entry)
         
-        # Build Stages
-        if not collections['bs'] is None and len(collections['bs']) > 0:
+    # Build Stages
+    if not collections['bs'] is None and len(collections['bs']) > 0:
 
-            counter = 0
-            if not collections['bs'] is None:
-                for key, value in collections['bs'].items():
-                    bs_col = value
-                    if len(bs_col.objects) > 0:
-                        counter += 1
+        counter = 0
+        if not collections['bs'] is None:
+            for key, value in collections['bs'].items():
+                bs_col = value
+                if len(bs_col.objects) > 0:
+                    counter += 1
 
-            if counter > 0:
-                if not update_sbc:
-                    def_BuildProgressModels = add_subelement(def_definition, 'BuildProgressModels')
+        if counter > 0:
+            if not update_sbc:
+                def_BuildProgressModels = add_subelement(def_definition, 'BuildProgressModels')
+            else:
+                def_BuildProgressModels = ET.Element('BuildProgressModels')
+
+            percentage = 1 / counter
+
+            for bs in range(0, counter):
+                def_BS_Model = ET.SubElement(def_BuildProgressModels, 'Model')
+
+                # This makes sure the last build stage is set to upper bound 1.0
+                if bs + 1 == counter:
+                    add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format(1.0))
                 else:
-                    def_BuildProgressModels = ET.Element('BuildProgressModels')
+                    add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format((bs + 1) * percentage)[:4])
 
-                percentage = 1 / counter
+                add_attrib(def_BS_Model, 'File', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm'))
+            
+            if update_sbc:
+                lines_entry = convert_back_xml(def_BuildProgressModels, 'BuildProgressModels', lines_entry)
 
-                for bs in range(0, counter):
-                    def_BS_Model = ET.SubElement(def_BuildProgressModels, 'Model')
+    # BlockPairName
+    if not update_sbc:
+        add_subelement(def_definition, 'BlockPairName', scene.seut.subtypeId)
 
-                    # This makes sure the last build stage is set to upper bound 1.0
-                    if bs + 1 == counter:
-                        add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format(1.0))
-                    else:
-                        add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format((bs + 1) * percentage)[:4])
+    # Mirroring
+    if collections['mirroring'] != None:
+        scene.seut.mirroringToggle == 'off'
 
-                    add_attrib(def_BS_Model, 'File', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm'))
-                
-                if update_sbc:
-                    lines_entry = convert_back_xml(def_BuildProgressModels, 'BuildProgressModels', lines_entry)
+    if scene.seut.mirroring_X != 'None':
+        lines_entry = update_add_optional_subelement(def_definition, 'MirroringX', scene.seut.mirroring_X, update_sbc, lines_entry)
+    elif update_sbc and scene.seut.mirroring_X == 'None' and get_subelement(lines_entry, 'MirroringX') != -1:
+        lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringX'),"")
 
-        # BlockPairName
-        if not update_sbc:
-            add_subelement(def_definition, 'BlockPairName', scene.seut.subtypeId)
+    if scene.seut.mirroring_Z != 'None':                                # This looks wrong but SE works with different Axi than Blender
+        lines_entry = update_add_optional_subelement(def_definition, 'MirroringY', scene.seut.mirroring_Z, update_sbc, lines_entry)
+    elif update_sbc and scene.seut.mirroring_Z == 'None' and get_subelement(lines_entry, 'MirroringY') != -1:
+        lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringY'),"")
 
-        # Mirroring
-        if collections['mirroring'] != None:
-            scene.seut.mirroringToggle == 'off'
+    if scene.seut.mirroring_Y != 'None':
+        lines_entry = update_add_optional_subelement(def_definition, 'MirroringZ', scene.seut.mirroring_Y, update_sbc, lines_entry)
+    elif update_sbc and scene.seut.mirroring_Y == 'None' and get_subelement(lines_entry, 'MirroringZ') != -1:
+        lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringZ'),"")
+    
+    # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
+    if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
+        lines_entry = update_add_optional_subelement(def_definition, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId, update_sbc, lines_entry)
+    elif update_sbc and scene.seut.mirroringScene == 'None' and get_subelement(lines_entry, 'MirroringBlock') != -1:
+        lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringBlock'),"")
 
-        if scene.seut.mirroring_X != 'None':
-            lines_entry = update_add_optional_subelement(def_definition, 'MirroringX', scene.seut.mirroring_X, update_sbc, lines_entry)
-        elif update_sbc and scene.seut.mirroring_X == 'None' and get_subelement(lines_entry, 'MirroringX') != -1:
-            lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringX'),"")
+    # Write to file, place in export folder
+    if not update_sbc:
+        temp_string = ET.tostring(definitions, 'utf-8')
+        try:
+            temp_string.decode('ascii')
+        except UnicodeDecodeError:
+            seut_report(self, context, 'ERROR', True, 'E033')
+        xml_string = xml.dom.minidom.parseString(temp_string)
+        xml_formatted = xml_string.toprettyxml()
+    
+    else:
+        xml_formatted = lines.replace(lines[start:end], lines_entry)
+        xml_formatted = format_entry(xml_formatted)
+        target_file = file_to_update
 
-        if scene.seut.mirroring_Z != 'None':                                # This looks wrong but SE works with different Axi than Blender
-            lines_entry = update_add_optional_subelement(def_definition, 'MirroringY', scene.seut.mirroring_Z, update_sbc, lines_entry)
-        elif update_sbc and scene.seut.mirroring_Z == 'None' and get_subelement(lines_entry, 'MirroringY') != -1:
-            lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringY'),"")
-
-        if scene.seut.mirroring_Y != 'None':
-            lines_entry = update_add_optional_subelement(def_definition, 'MirroringZ', scene.seut.mirroring_Y, update_sbc, lines_entry)
-        elif update_sbc and scene.seut.mirroring_Y == 'None' and get_subelement(lines_entry, 'MirroringZ') != -1:
-            lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringZ'),"")
-        
-        # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
-        if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
-            lines_entry = update_add_optional_subelement(def_definition, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId, update_sbc, lines_entry)
-        elif update_sbc and scene.seut.mirroringScene == 'None' and get_subelement(lines_entry, 'MirroringBlock') != -1:
-            lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringBlock'),"")
-
-        # Write to file, place in export folder
-        if not update_sbc:
-            temp_string = ET.tostring(definitions, 'utf-8')
-            try:
-                temp_string.decode('ascii')
-            except UnicodeDecodeError:
-                seut_report(self, context, 'ERROR', True, 'E033')
-            xml_string = xml.dom.minidom.parseString(temp_string)
-            xml_formatted = xml_string.toprettyxml()
-        
-        else:
-            xml_formatted = lines.replace(lines[start:end], lines_entry)
-            xml_formatted = format_entry(xml_formatted)
-            target_file = file_to_update
-
-        # Fixing the entries
-        xml_formatted = xml_formatted.replace("a_Side", "Side")
-        xml_formatted = xml_formatted.replace("b_StartX", "StartX")
-        xml_formatted = xml_formatted.replace("c_StartY", "StartY")
-        xml_formatted = xml_formatted.replace("d_EndX", "EndX")
-        xml_formatted = xml_formatted.replace("e_EndY", "EndY")
-        xml_formatted = xml_formatted.replace("f_PropertiesMask", "PropertiesMask")
-        xml_formatted = xml_formatted.replace("g_ExclusionMask", "ExclusionMask")
-        xml_formatted = xml_formatted.replace("h_Enabled", "Enabled")
-        xml_formatted = xml_formatted.replace("i_Default", "Default")
-        xml_formatted = xml_formatted.replace("j_PressurizedWhenOpen", "PressurizedWhenOpen")
+    # Fixing the entries
+    xml_formatted = xml_formatted.replace("a_Side", "Side")
+    xml_formatted = xml_formatted.replace("b_StartX", "StartX")
+    xml_formatted = xml_formatted.replace("c_StartY", "StartY")
+    xml_formatted = xml_formatted.replace("d_EndX", "EndX")
+    xml_formatted = xml_formatted.replace("e_EndY", "EndY")
+    xml_formatted = xml_formatted.replace("f_PropertiesMask", "PropertiesMask")
+    xml_formatted = xml_formatted.replace("g_ExclusionMask", "ExclusionMask")
+    xml_formatted = xml_formatted.replace("h_Enabled", "Enabled")
+    xml_formatted = xml_formatted.replace("i_Default", "Default")
+    xml_formatted = xml_formatted.replace("j_PressurizedWhenOpen", "PressurizedWhenOpen")
 
     if update_sbc:
         target_file = file_to_update
