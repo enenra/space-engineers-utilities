@@ -50,6 +50,7 @@ errors = {
     'E043': "An object within the file '{variable_1}' has invalid UV-Maps. Could not be converted to MWM.",
     'E044': "An error ocurred during MWM conversion. See *.mwm.log file (generated if 'Delete Temp Files' is toggled off) for details.",
     'E045': "Model path must be located within the Mod's directory ('{variable_1}').",
+    'E046': "Could not export '{variable_1}'-texture of material '{variable_2}' to DDS.\n{variable_3}",
 }
 
 warnings = {
@@ -70,7 +71,7 @@ warnings = {
 
 infos = {
     'I001': "Local material '{variable_1}' does not contain any valid textures. Skipping XML entry.",
-    'I002': "Local material '{variable_1}' saved. Don't forget to include relevant DDS texture files in mod!",
+    'I002': "Successfully converted '{variable_1}'-texture of material '{variable_2}' to DDS.",
     'I003': "Collection '{variable_1}' not found or empty. Skipping XML entry.",
     'I004': "'{variable_1}' has been created.",
     'I005': "IndexError at material '{variable_1}'.",

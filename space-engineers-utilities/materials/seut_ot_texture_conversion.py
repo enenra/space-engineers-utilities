@@ -1,5 +1,6 @@
 import bpy
 import os
+import unicodedata
 
 from bpy.types  import Operator
 
@@ -71,7 +72,7 @@ class SEUT_OT_ConvertTextures(Operator):
         return {'FINISHED'}
 
 
-def convert_texture(path_in: str, path_out: str, preset: str, settings: list):
+def convert_texture(path_in: str, path_out: str, preset: str, settings=[]):
 
     texconv = os.path.join(get_tool_dir(), 'texconv.exe')
 
@@ -79,13 +80,13 @@ def convert_texture(path_in: str, path_out: str, preset: str, settings: list):
     path_out = get_abs_path(path_out)
 
     presets = {
-        "icon": [texconv, 'texconv', path_in, '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-pmalpha', '-sRGB', '-y', '-o', path_out],
-        "cm": [texconv, 'texconv', path_in, '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-sepalpha', '-sRGB', '-y', '-o', path_out],
-        "add": [texconv, 'texconv', path_in, '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-if', 'POINT_DITHER_DIFFUSION', '-sepalpha', '-sRGB', '-y', '-o', path_out],
-        "ng": [texconv, 'texconv', path_in, '-ft', 'DDS', '-f', 'BC7_UNORM', '-sepalpha', '-y', '-o', path_out],
-        "alphamask": [texconv, 'texconv', path_in, '-ft', 'BC7_UNORM', '-if', 'POINT_DITHER_DIFFUSION', '-y', '-o', path_out],
-        "tif": [texconv, 'texconv', path_in, '-ft', 'TIF', '-o', path_out],
-        "custom": [texconv, 'texconv', path_in, '-o', path_out]
+        "icon": [texconv, path_in, '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-pmalpha', '-sRGB', '-y', '-o', path_out],
+        "cm": [texconv, path_in, '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-sepalpha', '-sRGB', '-y', '-o', path_out],
+        "add": [texconv, path_in, '-ft', 'DDS', '-f', 'BC7_UNORM_SRGB', '-if', 'POINT_DITHER_DIFFUSION', '-sepalpha', '-sRGB', '-y', '-o', path_out],
+        "ng": [texconv, path_in, '-ft', 'DDS', '-f', 'BC7_UNORM', '-sepalpha', '-y', '-o', path_out],
+        "alphamask": [texconv, path_in, '-ft', 'BC7_UNORM', '-if', 'POINT_DITHER_DIFFUSION', '-y', '-o', path_out],
+        "tif": [texconv, path_in, '-ft', 'TIF', '-o', path_out],
+        "custom": [texconv, path_in, '-o', path_out]
     }
 
     if preset in presets:
@@ -95,3 +96,5 @@ def convert_texture(path_in: str, path_out: str, preset: str, settings: list):
             args.append(settings)
         
         result = call_tool(args)
+        result[1] = result[1].decode("utf-8", "ignore")
+        return result

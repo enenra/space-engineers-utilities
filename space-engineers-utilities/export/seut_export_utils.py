@@ -11,11 +11,12 @@ from os.path                                import join
 from mathutils                              import Matrix	
 from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
-from ..export.seut_custom_fbx_exporter      import save_single
 from ..seut_collections                     import get_collections, names
 from ..seut_utils                           import *
 from ..seut_errors                          import seut_report, get_abs_path
+from .seut_custom_fbx_exporter              import save_single
 from .seut_export_transparent_mat           import export_transparent_mat
+from .seut_export_texture                   import export_material_textures
 
 def export_xml(self, context, collection) -> str:
     """Exports the XML definition for a collection"""
@@ -75,6 +76,7 @@ def export_xml(self, context, collection) -> str:
             # Material is a local material
             if is_unique:
                 create_mat_entry(self, context, model, mat)
+                export_material_textures(self, context, mat)
                 if mat.seut.technique in ['GLASS', 'HOLO', 'SHIELD']:
                     export_transparent_mat(self, context, mat.name)
             
@@ -211,8 +213,6 @@ def create_mat_entry(self, context, tree, mat):
             create_texture_entry(self, context, mat_entry, mat.name, images, 'add', 'ADD', 'AddMapsTexture')
         if not images['am'] == None:
             create_texture_entry(self, context, mat_entry, mat.name, images, 'am', 'ALPHAMASK', 'AlphamaskTexture')
-        
-        seut_report(self, context, 'INFO', False, 'I002', mat.name)
 
 
 def create_lod_entry(scene, tree, distance: int, path: str, lod_type: str):
