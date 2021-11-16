@@ -1,10 +1,12 @@
 import bpy
+import os
 
 from bpy.types  import Operator
 
-from .seut_ot_export    import export
-from ..seut_errors      import *
-from ..seut_utils       import prep_context, get_preferences
+from ..utils.seut_tool_utils    import get_tool_dir
+from ..seut_errors              import *
+from ..seut_utils               import prep_context, get_preferences
+from .seut_ot_export            import export
 
 
 class SEUT_OT_ExportAllScenes(Operator):
@@ -25,7 +27,7 @@ class SEUT_OT_ExportAllScenes(Operator):
         preferences = get_preferences()
 
         # Check for availability of FBX Importer
-        result = check_toolpath(self, context, preferences.fbx_importer_path, "Custom FBX Importer", "FBXImporter.exe")
+        result = check_toolpath(self, context, os.path.join(get_tool_dir(), 'FBXImporter.exe'), "Custom FBX Importer", "FBXImporter.exe")
         if not result == {'CONTINUE'}:
             return result
 

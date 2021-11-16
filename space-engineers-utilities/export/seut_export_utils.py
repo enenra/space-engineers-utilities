@@ -11,6 +11,7 @@ from os.path                                import join
 from mathutils                              import Matrix	
 from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
+from ..utils.seut_tool_utils                import get_tool_dir
 from ..seut_collections                     import get_collections, names
 from ..seut_utils                           import *
 from ..seut_errors                          import seut_report, get_abs_path
@@ -597,7 +598,7 @@ class ExportSettings:
     @property
     def fbximporter(self):
         if self._fbximporter == None:
-            self._fbximporter = tool_path('fbx_importer_path', 'Custom FBX Importer')
+            self._fbximporter = os.path.join(get_tool_dir(), 'FBXImporter.exe')
         return self._fbximporter
 
     @property

@@ -32,14 +32,12 @@ class SEUT_OT_SetDevPaths(Operator):
         if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\Materials\\"):
             preferences.materials_path = "D:\\Modding\\Space Engineers\\SEUT\\Materials\\"
             preferences.mwmb_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\StollieMWMBuilder\\MwmBuilder.exe"
-            preferences.fbx_importer_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\FBXImporter.exe"
             preferences.havok_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
         
         # Stollie
         elif os.path.isdir("C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"):
             preferences.materials_path = "C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"
             preferences.mwmb_path = "C:\\3D_Projects\\BlenderPlugins\\StollieMWMBuilder\\MwmBuilder.exe"
-            preferences.fbx_importer_path = "C:\\3D_Projects\\BlenderPlugins\\HavokFBXImporter\\FBXImporter.exe"
             preferences.havok_path = "C:\\3D_Projects\\BlenderPlugins\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
         
         else:
@@ -69,22 +67,6 @@ def update_materials_path(self, context):
           seut_report(self, context, 'ERROR', False, 'E003', 'Materials', path)
           self.materials_path = ""
     
-    save_addon_prefs()
-    
-
-def update_fbx_importer_path(self, context):
-    filename = 'FBXImporter.exe'
-
-    if self.fbx_importer_path == "":
-        return
-    elif self.fbx_importer_path == self.fbx_importer_path_before:
-        return
-    
-    path = get_abs_path(self.fbx_importer_path)
-    
-    self.fbx_importer_path_before = verify_tool_path(self, context, path, "Custom FBX Importer", filename)
-    self.fbx_importer_path = verify_tool_path(self, context, path, "Custom FBX Importer", filename)
-
     save_addon_prefs()
 
 
@@ -136,15 +118,6 @@ class SEUT_AddonPreferences(AddonPreferences):
         description="This folder contains material information in the form of XML libraries as well as BLEND MatLibs",
         subtype='FILE_PATH',
         update=update_materials_path
-    )
-    fbx_importer_path: StringProperty(
-        name="Custom FBX Importer",
-        description="Despite its name, this tool is mainly used to export models to the FBX format",
-        subtype='FILE_PATH',
-        update=update_fbx_importer_path
-    )
-    fbx_importer_path_before: StringProperty(
-        subtype='FILE_PATH'
     )
     havok_path: StringProperty(
         name="Havok Standalone Filter Manager",
@@ -210,7 +183,6 @@ class SEUT_AddonPreferences(AddonPreferences):
         box = layout.box()
         box.label(text="External Tools")
         box.prop(self, "mwmb_path", expand=True)
-        box.prop(self, "fbx_importer_path", expand=True)
         box.prop(self, "havok_path", expand=True)
 
 

@@ -20,6 +20,7 @@ from ..seut_preferences             import get_addon_version, get_addon
 from ..seut_collections             import get_collections, names
 from ..seut_errors                  import *
 from ..seut_utils                   import prep_context, get_preferences, create_relative_path
+from ..utils.seut_tool_utils        import get_tool_dir
 
 class SEUT_OT_Export(Operator):
     """Exports all collections in the current scene and compiles them to MWM.\nScene needs to be in Object mode for export to be available"""
@@ -74,7 +75,7 @@ def export(self, context):
         os.makedirs(get_abs_path(scene.seut.export_exportPath))
 
     # Check for availability of FBX Importer
-    result = check_toolpath(self, context, preferences.fbx_importer_path, "Custom FBX Importer", "FBXImporter.exe")
+    result = check_toolpath(self, context, os.path.join(get_tool_dir(), 'FBXImporter.exe'), "Custom FBX Importer", "FBXImporter.exe")
     if not result == {'CONTINUE'}:
         return result
 

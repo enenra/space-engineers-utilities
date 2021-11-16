@@ -160,7 +160,6 @@ def get_config():
     data['space-engineers-utilities'].append({
         'materials_path': preferences.materials_path,
         'mwmb_path': preferences.mwmb_path,
-        'fbx_importer_path': preferences.fbx_importer_path,
         'havok_path': preferences.havok_path
     })
     
@@ -174,7 +173,6 @@ def set_config(data):
         cfg = data['space-engineers-utilities'][0]
         preferences.materials_path = cfg['materials_path']
         preferences.mwmb_path = cfg['mwmb_path']
-        preferences.fbx_importer_path = cfg['fbx_importer_path']
         preferences.havok_path = cfg['havok_path']
 
 
