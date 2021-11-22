@@ -95,6 +95,7 @@ from .utils.seut_updater                        import SEUT_OT_GetUpdate
 from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
 from .utils.seut_ot_discord_link                import SEUT_OT_DiscordLink
 from .utils.seut_ot_issue_display               import SEUT_OT_IssueDisplay
+from .utils.seut_ot_issue_display               import SEUT_OT_DeleteIssue
 from .utils.seut_ot_issue_display               import SEUT_OT_ClearIssues
 
 from .seut_preferences                  import SEUT_AddonPreferences
@@ -154,6 +155,7 @@ classes = (
     SEUT_OT_SEMREFLink,
     SEUT_OT_DiscordLink,
     SEUT_OT_IssueDisplay,
+    SEUT_OT_DeleteIssue,
     SEUT_OT_ClearIssues,
     SEUT_OT_AddHighlightEmpty,
     SEUT_OT_AddDummy,
