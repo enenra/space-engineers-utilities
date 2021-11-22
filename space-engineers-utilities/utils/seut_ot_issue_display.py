@@ -6,6 +6,7 @@ from bpy.props              import StringProperty, IntProperty
 
 from ..seut_utils       import wrap_text
 
+
 class SEUT_OT_IssueDisplay(Operator):
     """Displays a list of the last 10 notifications originating from SEUT"""
     bl_idname = "wm.issue_display"
@@ -66,10 +67,14 @@ class SEUT_OT_IssueDisplay(Operator):
             row = split.row()
             if issue.issue_type == 'ERROR':
                 row.alert = True
+            elif issue.issue_type == 'INFO':
+                row.active = False
             row.label(text=str(index + 1))
                 
             split = split.split(factor=0.70)
             row = split.row()
+            if issue.issue_type == 'INFO':
+                row.active = False
 
             if issue.issue_type == 'ERROR':
                 row.alert = True
@@ -89,6 +94,8 @@ class SEUT_OT_IssueDisplay(Operator):
             for text in wrap_text(issue.text, 110):
                 row = col.row()
                 row.scale_y = 0.75
+                if issue.issue_type == 'INFO':
+                    row.active = False
                 row.label(text=text)
 
             split = split.split(factor=0.85)
