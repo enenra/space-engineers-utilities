@@ -72,6 +72,7 @@ from .materials.seut_ot_remap_materials         import SEUT_OT_RemapMaterials
 from .materials.seut_ot_refresh_matlibs         import SEUT_OT_RefreshMatLibs
 from .materials.seut_ot_create_material         import SEUT_OT_MatCreate
 from .materials.seut_ot_texture_conversion      import SEUT_OT_ConvertTextures
+from .materials.seut_ot_texture_conversion      import SEUT_OT_MassConvertTextures
 from .materials.seut_materials                  import SEUT_UL_MatLib
 from .particles.seut_particle_settings          import SEUT_ParticlePropertyKeys
 from .particles.seut_particle_settings          import SEUT_ParticlePropertyValue2D
@@ -177,6 +178,7 @@ classes = (
     SEUT_OT_SimpleNavigation,
     SEUT_OT_MatCreate,
     SEUT_OT_ConvertTextures,
+    SEUT_OT_MassConvertTextures,
     SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
     SEUT_OT_IconRenderPreview,
@@ -264,7 +266,7 @@ def load_handler(dummy):
         
     # This exists to avoid errors on startup
     try:
-        if seut_preferences.materials_path is not None:
+        if seut_preferences.asset_path is not None:
             bpy.ops.wm.refresh_matlibs()
     except:
         pass

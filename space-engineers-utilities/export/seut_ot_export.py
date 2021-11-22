@@ -85,10 +85,12 @@ def export(self, context):
         return result
 
     # Check materials path
-    materials_path = get_abs_path(preferences.materials_path)
-    if preferences.materials_path == "" or os.path.isdir(materials_path) == False:
-        seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
+    materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
+    if preferences.asset_path == "":
+        seut_report(self, context, 'ERROR', True, 'E012', "Asset Directory", get_abs_path(preferences.asset_path))
         return {'CANCELLED'}
+    elif not os.path.isdir(materials_path):
+        os.makedirs(materials_path, exist_ok=True)
     
     # Character animations need at least one keyframe
     if scene.seut.sceneType == 'character_animation' and len(scene.timeline_markers) <= 0:
@@ -396,7 +398,7 @@ def export_mwm(self, context):
     collections = get_collections(scene)
     preferences = get_preferences()
     path = get_abs_path(scene.seut.export_exportPath) + "\\"
-    materials_path = get_abs_path(preferences.materials_path)
+    materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
     settings = ExportSettings(scene, None)
         
     mwmfile = join(path, scene.seut.subtypeId + ".mwm")

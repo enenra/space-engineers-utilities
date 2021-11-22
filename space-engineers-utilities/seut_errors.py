@@ -34,7 +34,7 @@ errors = {
     'E027': "'Mountpoints {variable_1}' not found. Disable and then re-enable Mountpoint Mode to recreate!",
     'E028': "Object is not an Armature.",
     'E029': "No Armature selected.",
-    'E030': "Path is directory, not EXE.",
+    'E030': "Path is {variable_1}, not {variable_2}.",
     'E031': "Cannot export collection '{variable_1}' if it has more than one top-level (unparented) object.",
     'E032': "Object '{variable_1}' does not have valid UV-Maps. This will crash Space Engineers.",
     'E033': "Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, material names and object names.",
@@ -51,6 +51,7 @@ errors = {
     'E044': "An error ocurred during MWM conversion. See *.mwm.log file (generated if 'Delete Temp Files' is toggled off) for details.",
     'E045': "Model path must be located within the Mod's directory ('{variable_1}').",
     'E046': "Could not export '{variable_1}'-texture of material '{variable_2}' to DDS.\n{variable_3}",
+    'E047': "Invalid {variable_1} filetype: Must be '{variable_2}'.",
 }
 
 warnings = {
@@ -92,6 +93,8 @@ infos = {
     'I020': "Material '{variable_1}' was skipped because it already exists in the BLEND file.",
     'I021': "{variable_1} of {variable_2} files successfully imported. Refer to Blender System Console for details.",
     'I022': "Entry for '{variable_1}' has been created / updated in file '{variable_2}'.",
+    'I023': "Texture conversion completed: {variable_1}/{variable_2} files have been converted in {variable_3}.",
+    'I024': "All textures are up to date.",
 }
 
 

@@ -7,10 +7,10 @@ import addon_utils
 from bpy.types  import Operator, AddonPreferences
 from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
 
-from .utils.seut_updater    import check_update
-from .seut_errors           import seut_report, get_abs_path
-from .seut_utils            import get_preferences
-from .seut_bau              import draw_bau_ui, get_config, set_config
+from .utils.seut_updater            import check_update
+from .seut_errors                   import seut_report, get_abs_path
+from .seut_utils                    import get_preferences
+from .seut_bau                      import draw_bau_ui, get_config, set_config
 
 
 preview_collections = {}
@@ -30,13 +30,14 @@ class SEUT_OT_SetDevPaths(Operator):
 
         # enenra
         if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\Materials\\"):
-            preferences.materials_path = "D:\\Modding\\Space Engineers\\SEUT\\Materials\\"
+            preferences.game_path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SpaceEngineers\\"
+            preferences.asset_path = "D:\\Modding\\Space Engineers\\SEUT\\"
             preferences.mwmb_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\StollieMWMBuilder\\MwmBuilder.exe"
             preferences.havok_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
         
         # Stollie
         elif os.path.isdir("C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"):
-            preferences.materials_path = "C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"
+            preferences.asset_path = "C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\"
             preferences.mwmb_path = "C:\\3D_Projects\\BlenderPlugins\\StollieMWMBuilder\\MwmBuilder.exe"
             preferences.havok_path = "C:\\3D_Projects\\BlenderPlugins\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
         
@@ -46,26 +47,39 @@ class SEUT_OT_SetDevPaths(Operator):
         return {'FINISHED'}
 
 
-def update_materials_path(self, context):
+def update_game_path(self, context):
     scene = context.scene
 
-    if self.materials_path == "":
+    if self.game_path == "":
         return
     
-    path = get_abs_path(self.materials_path)
+    path = get_abs_path(self.game_path)
 
     if os.path.isdir(path):
-        if not path[-9:] == 'Materials':
-            seut_report(self, context, 'ERROR', False, 'E012', "Materials Folder", path)
-            self.materials_path = ""
-        else:
-            bpy.ops.wm.refresh_matlibs()
+        if not path.endswith('SpaceEngineers'):
+            seut_report(self, context, 'ERROR', False, 'E012', "Game Directory", path)
+            self.game_path = ""
     else:
-        if os.path.basename(os.path.dirname(path)) == 'Materials':
-          self.materials_path = os.path.dirname(path) + '\\'
+        if os.path.basename(os.path.dirname(path)) == 'SpaceEngineers':
+          self.game_path = os.path.dirname(path) + '\\'
         else:
-          seut_report(self, context, 'ERROR', False, 'E003', 'Materials', path)
-          self.materials_path = ""
+          seut_report(self, context, 'ERROR', False, 'E003', 'SpaceEngineers', path)
+          self.game_path = ""
+    
+    save_addon_prefs()
+
+
+def update_asset_path(self, context):
+    scene = context.scene
+
+    if self.asset_path == "":
+        return
+    
+    path = get_abs_path(self.asset_path)
+
+    if os.path.isdir(path):
+        os.makedirs(os.path.join(path, 'Materials'), exist_ok=True)
+        bpy.ops.wm.refresh_matlibs()
     
     save_addon_prefs()
 
@@ -113,11 +127,17 @@ class SEUT_AddonPreferences(AddonPreferences):
     dev_mode: BoolProperty(
         default = get_addon().bl_info['dev_version'] > 0
     )
-    materials_path: StringProperty(
-        name="Materials Folder",
-        description="This folder contains material information in the form of XML libraries as well as BLEND MatLibs",
-        subtype='FILE_PATH',
-        update=update_materials_path
+    asset_path: StringProperty(
+        name="Asset Directory",
+        description="This directory contains all SEUT assets. It contains both a Materials- and a Textures-folder",
+        subtype='DIR_PATH',
+        update=update_asset_path
+    )
+    game_path: StringProperty(
+        name="Game Directory",
+        description="This is the path to the directory where Space Engineers is installed",
+        subtype='DIR_PATH',
+        update=update_game_path
     )
     havok_path: StringProperty(
         name="Havok Standalone Filter Manager",
@@ -179,9 +199,16 @@ class SEUT_AddonPreferences(AddonPreferences):
         if self.dev_mode:
             layout.operator('wm.set_dev_paths', icon='FILEBROWSER')
 
-        layout.prop(self, "materials_path", expand=True)
+        layout.prop(self, "game_path", expand=True)
+
         box = layout.box()
-        box.label(text="External Tools")
+        split = box.split(factor=0.65)
+        split.label(text="Assets", icon='ASSET_MANAGER')
+        split.operator('wm.mass_convert_textures', icon='FILE_REFRESH')
+        box.prop(self, "asset_path", expand=True)
+
+        box = layout.box()
+        box.label(text="External Tools", icon='TOOL_SETTINGS')
         box.prop(self, "mwmb_path", expand=True)
         box.prop(self, "havok_path", expand=True)
 
@@ -214,7 +241,7 @@ def verify_tool_path(self, context, path: str, name: str, filename: str) -> str:
         if os.path.exists(os.path.join(path, filename)):
             return os.path.join(path, filename)
         else:
-            seut_report(self, context, 'ERROR', False, 'E030')
+            seut_report(self, context, 'ERROR', False, 'E030', 'directory', 'EXE')
             return ""
 
     # If it's not a directory and the path doesn't exist, error. If the basename is equal to the name, use the path. If the basename is not equal, error.

@@ -28,18 +28,20 @@ def update_simpleNavigationToggle(self, context):
 def update_enabled(self, context):
     wm = context.window_manager
     preferences = get_preferences()
-    materials_path = get_abs_path(preferences.materials_path)
+    materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
 
-    if preferences.materials_path == "" or os.path.isdir(materials_path) == False:
-        seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
+    if preferences.asset_path == "":
+        seut_report(self, context, 'ERROR', True, 'E012', "Asset Directory", get_abs_path(preferences.asset_path))
         return
+    elif not os.path.isdir(materials_path):
+        os.makedirs(materials_path, exist_ok=True)
 
     if self.enabled:
-        with bpy.data.libraries.load(materials_path + "\\" + self.name, link=True) as (data_from, data_to):
+        with bpy.data.libraries.load(os.path.join(materials_path, self.name), link=True) as (data_from, data_to):
             data_to.materials = data_from.materials
 
     else:
-        with bpy.data.libraries.load(materials_path + "\\" + self.name, link=True) as (data_from, data_to):
+        with bpy.data.libraries.load(os.path.join(materials_path, self.name), link=True) as (data_from, data_to):
             keep_img = []
             for mat in data_from.materials:
                 material = bpy.data.materials[mat]
@@ -123,35 +125,10 @@ def update_texconv_input_file(self, context):
 
     if self.texconv_input_file == "":
         return
-
-    if not os.path.isfile(self.texconv_input_file):
-        self.texconv_input_file = ""
-        #TODO: Report error
     
     if not self.texconv_input_file.endswith(self.texconv_input_filetype) and not self.texconv_input_file.endswith(self.texconv_input_filetype.upper()):
         self.texconv_input_file = ""
-        #TODO: Report error
-
-
-def update_texconv_input_dir(self, context):
-
-    if self.texconv_input_dir == "":
-        return
-
-    if not os.path.isdir(self.texconv_input_dir):
-        self.texconv_input_dir = ""
-        #TODO: Report error
-
-
-def update_texconv_output_dir(self, context):
-
-    if self.texconv_output_dir == "":
-        return
-
-    if not os.path.isdir(self.texconv_output_dir):
-        self.texconv_output_dir = ""
-        #TODO: Report error
-
+        seut_report(self, context, 'ERROR', False, 'E047', 'Input', self.texconv_input_filetype)
 
 class SEUT_IssueProperty(PropertyGroup):
     """Holder for issue information"""
@@ -275,7 +252,6 @@ class SEUT_WindowManager(PropertyGroup):
     texconv_input_dir: StringProperty(
         name="Input Directory",
         subtype="DIR_PATH",
-        update=update_texconv_input_dir,
     )
     texconv_input_file: StringProperty(
         name="Input File",
@@ -294,7 +270,6 @@ class SEUT_WindowManager(PropertyGroup):
     texconv_output_dir: StringProperty(
         name="Output Folder",
         subtype="DIR_PATH",
-        update=update_texconv_output_dir,
     )
     texconv_output_filetype: EnumProperty(
         name="Output Type",

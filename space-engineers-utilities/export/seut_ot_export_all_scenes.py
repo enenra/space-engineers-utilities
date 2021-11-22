@@ -37,10 +37,12 @@ class SEUT_OT_ExportAllScenes(Operator):
             return result
 
         # Check materials path
-        materials_path = get_abs_path(preferences.materials_path)
-        if preferences.materials_path == "" or os.path.isdir(materials_path) == False:
-            seut_report(self, context, 'ERROR', True, 'E012', "Materials Folder", materials_path)
+        materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
+        if preferences.asset_path == "":
+            seut_report(self, context, 'ERROR', True, 'E012', "Asset Directory", get_abs_path(preferences.asset_path))
             return {'CANCELLED'}
+        elif not os.path.isdir(materials_path):
+            os.makedirs(materials_path, exist_ok=True)
 
         # Checks export path and whether SubtypeId exists
         result = check_export(self, context)
