@@ -15,7 +15,7 @@ from bpy.props  import (EnumProperty,
 from .seut_mirroring                import clean_mirroring, setup_mirroring
 from .seut_mountpoints              import clean_mountpoints, setup_mountpoints
 from .seut_icon_render              import clean_icon_render, setup_icon_render
-from .seut_collections              import get_collections, rename_collections, names
+from .seut_collections              import get_collections, rename_collections
 from .seut_errors                   import get_abs_path, seut_report, check_export
 from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, to_radians, get_parent_collection, toggle_scene_modes
 

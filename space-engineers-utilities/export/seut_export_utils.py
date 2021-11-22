@@ -12,7 +12,7 @@ from mathutils                              import Matrix
 from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..utils.seut_tool_utils                import get_tool_dir
-from ..seut_collections                     import get_collections, names
+from ..seut_collections                     import get_collections
 from ..seut_utils                           import *
 from ..seut_errors                          import seut_report, get_abs_path
 from .seut_custom_fbx_exporter              import save_single
@@ -347,6 +347,7 @@ def export_fbx(self, context, collection) -> str:
     except KeyError as error:
         seut_report(self, context, 'ERROR', True, 'E038', error)
 
+    # TODO: put this into the excepts
     # Revert materials back to original form
     for mat in bpy.data.materials:
         if mat is not None and mat.node_tree is not None:
@@ -386,7 +387,7 @@ def get_subpart_reference(empty, collections: dict) -> str:
     if parent_collection.seut.col_type == 'bs':
         for bs in collections['bs'].values():
             if parent_collection == bs:
-                return empty.seut.linkedScene.seut.subtypeId + "_" + names['bs'] + str(bs.seut.type_index)
+                return f"{empty.seut.linkedScene.seut.subtypeId}_BS{bs.seut.type_index}"
 
     return empty.seut.linkedScene.seut.subtypeId
 

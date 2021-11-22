@@ -5,7 +5,7 @@ from bpy.types      import Operator
 from bpy.props      import EnumProperty
 
 from .materials.seut_materials      import create_internal_material
-from .seut_collections              import get_collections, colors
+from .seut_collections              import get_collections, seut_collections
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
 from .seut_utils                    import prep_context, to_radians, clear_selection, create_seut_collection, lock_object
 
@@ -40,7 +40,7 @@ def setup_mountpoints(self, context):
     collection.seut.col_type = 'mountpoints'
     collection.seut.scene = scene
     if bpy.app.version >= (2, 91, 0):
-        collection.color_tag = colors[collection.seut.col_type]
+        collection.color_tag = seut_collections[scene.seut.sceneType][collection.seut.col_type]['color']
 
     # Create empty tree for sides
     if scene.seut.gridScale == 'small':

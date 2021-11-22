@@ -3,7 +3,7 @@ import addon_utils
 
 from bpy.types  import Panel
 
-from .seut_collections              import get_collections, names, colors
+from .seut_collections              import get_collections, seut_collections
 
 
 class SEUT_PT_Panel(Panel):
@@ -116,9 +116,9 @@ class SEUT_PT_Panel_Collections(Panel):
 
         if active_col.seut.col_type != 'none':
             box = layout.box()
-            box.label(text=active_col.name, icon='COLLECTION_' + colors[active_col.seut.col_type])
+            box.label(text=active_col.name, icon='COLLECTION_' + seut_collections[scene.seut.sceneType][active_col.seut.col_type]['color'])
             col = box.column(align=True)
-            col.label(text="Type: " + names[active_col.seut.col_type])
+            col.label(text="Type: " + seut_collections[scene.seut.sceneType][active_col.seut.col_type]['name'])
             col.label(text="Scene: " + active_col.seut.scene.name)
         layout.operator('scene.create_collection')
 
@@ -126,15 +126,15 @@ class SEUT_PT_Panel_Collections(Panel):
             box = layout.box()
             box.label(text='Options', icon='SETTINGS')
 
-            if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod':
-                box.prop(active_col.seut,'lod_distance')
-
-            if active_col.seut.col_type == 'hkt':
+            if active_col.seut.col_type == 'hkt' or active_col.seut.col_type == 'lod':
                 split = box.split(factor=0.40)
                 col = split.column()
                 col.label(text="Reference:")
                 col = split.column()
                 col.prop(active_col.seut,'ref_col', text="")
+
+            if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod':
+                box.prop(active_col.seut,'lod_distance')
 
 
 class SEUT_PT_Panel_BoundingBox(Panel):

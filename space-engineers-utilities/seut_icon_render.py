@@ -5,7 +5,7 @@ from math           import pi
 from bpy.types      import Operator
 
 from .materials.seut_ot_texture_conversion  import convert_texture
-from .seut_collections                      import get_collections, colors
+from .seut_collections                      import get_collections, seut_collections
 from .seut_errors                           import check_collection, check_collection_excluded, seut_report, get_abs_path
 from .seut_utils                            import to_radians, create_seut_collection, clear_selection, prep_context, seut_report
     
@@ -33,7 +33,7 @@ def setup_icon_render(self, context):
     collection.seut.col_type = 'render'
     collection.seut.scene = scene
     if bpy.app.version >= (2, 91, 0):
-        collection.color_tag = colors[collection.seut.col_type]
+        collection.color_tag = seut_collections[scene.seut.sceneType][collection.seut.col_type]['color']
     
     if scene.render.filepath == '/tmp\\':
         scene.render.filepath = '//'

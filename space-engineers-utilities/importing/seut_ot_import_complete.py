@@ -19,7 +19,7 @@ from bpy.types import (Panel,
 from bpy.types                  import Operator
 
 from .seut_ot_import        import import_fbx
-from ..seut_collections     import get_collections, create_seut_collection, sort_collections, names
+from ..seut_collections     import get_collections, create_seut_collection, sort_collections
 from ..seut_errors          import seut_report
 
 
@@ -82,13 +82,13 @@ class SEUT_OT_ImportComplete(Operator):
                 if fbx_type['col_type'] in collections and fbx_type['type_index'] in collections[fbx_type['col_type']]:
                     col = collections[fbx_type['col_type']][fbx_type['type_index']]
                 else:
-                    col = create_seut_collection(context, fbx_type['col_type'], fbx_type['type_index'], None)
+                    col = create_seut_collection(context, fbx_type['col_type'], fbx_type['type_index'], None) # TODO: Fix this so it uses a separate function to find a collection
 
             elif fbx_type['col_type'] == 'main':
                 if fbx_type['col_type'] in collections:
                     col = collections[fbx_type['col_type']]
                 else:
-                    col = create_seut_collection(context, fbx_type['col_type'], fbx_type['type_index'], None)
+                    col = create_seut_collection(context, fbx_type['col_type'], fbx_type['type_index'], None) # TODO: Fix this so it uses a separate function to find a collection
             
             col_counter += 1
             context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children[col.name]

@@ -17,7 +17,7 @@ from .seut_export_utils             import ExportSettings, export_to_fbxfile, de
 from .seut_export_utils             import correct_for_export_type, export_xml, export_fbx, export_collection
 from ..utils.seut_xml_utils         import *
 from ..seut_preferences             import get_addon_version, get_addon
-from ..seut_collections             import get_collections, names
+from ..seut_collections             import get_collections
 from ..seut_errors                  import *
 from ..seut_utils                   import prep_context, get_preferences, create_relative_path
 from ..utils.seut_tool_utils        import get_tool_dir
@@ -304,7 +304,7 @@ def export_hkt(self, context):
 
             tag = ""
             if ref_col.seut.col_type == 'bs':
-                tag = "_" + names[ref_col.seut.col_type] + str(ref_col.seut.type_index)
+                tag = f"_BS{ref_col.seut.type_index}"
 
             fbx_hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt.fbx")
             hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt")

@@ -16,129 +16,94 @@ from .materials.seut_ot_create_material import create_material
 seut_collections = {
     'mainScene':{
         'main': {
-            'name': 'Main', 
-            'color': 'COLOR_04', 
-            'type': 'single'
+            'name': 'Main',
+            'schema': 'Main ({subtpye_id})',
+            'color': 'COLOR_04'
             },
         'hkt': {
-            'name': 'Collision', 
-            'color': 'COLOR_08', 
-            'type': 'array'
+            'name': 'Collision',
+            'schema': 'Collision - {ref_col_name}{ref_col_type_index} ({subtpye_id})',
+            'color': 'COLOR_08'
             },
         'lod': {
-            'name': 'LOD', 
-            'color': 'COLOR_01', 
-            'type': 'dict'
+            'name': 'LOD',
+            'schema': 'LOD{type_index} ({subtpye_id})',
+            'color': 'COLOR_01'
             },
         'bs': {
-            'name': 'BS', 
-            'color': 'COLOR_05', 
-            'type': 'dict'
-            },
-        'bs_lod': {
-            'name': 'BS_LOD', 
-            'color': 'COLOR_06', 
-            'type': 'dict'
+            'name': 'BS',
+            'schema': 'BS{type_index} ({subtpye_id})',
+            'color': 'COLOR_05'
             },
         'mountpoints': {
-            'name': 'Mountpoints', 
-            'color': 'COLOR_03', 
-            'type': 'temp'
+            'name': 'Mountpoints',
+            'schema': 'Mountpoints ({subtpye_id})',
+            'color': 'COLOR_03'
             },
         'mirroring': {
-            'name': 'Mirroring', 
-            'color': 'COLOR_03', 
-            'type': 'temp'
+            'name': 'Mirroring',
+            'schema': 'Mirroring ({subtpye_id})',
+            'color': 'COLOR_03'
             },
         'render': {
-            'name': 'Render', 
-            'color': 'COLOR_03', 
-            'type': 'temp'
+            'name': 'Render',
+            'schema': 'Render ({subtpye_id})',
+            'color': 'COLOR_03'
             }
     },
     'subpart': {
         'main': {
-            'name': 'Main', 
-            'color': 'COLOR_04', 
-            'type': 'single'
+            'name': 'Main',
+            'schema': 'Main ({subtpye_id})',
+            'color': 'COLOR_04'
             },
         'hkt': {
-            'name': 'Collision', 
-            'color': 'COLOR_08', 
-            'type': 'array'
+            'name': 'Collision',
+            'schema': 'Collision - {ref_col_name}{ref_col_type_index} ({subtpye_id})',
+            'color': 'COLOR_08'
             },
         'lod': {
-            'name': 'LOD', 
-            'color': 'COLOR_01', 
-            'type': 'dict'
+            'name': 'LOD',
+            'schema': 'LOD{type_index} ({subtpye_id})',
+            'color': 'COLOR_01'
             },
         'bs': {
-            'name': 'BS', 
-            'color': 'COLOR_05', 
-            'type': 'dict'
-            },
-        'bs_lod': {
-            'name': 'BS_LOD', 
-            'color': 'COLOR_06', 
-            'type': 'dict'
-            },
+            'name': 'BS',
+            'schema': 'BS{type_index} ({subtpye_id})',
+            'color': 'COLOR_05'
+            }
     },
     'character': {
         'main': {
-            'name': 'Main', 
-            'color': 'COLOR_04', 
-            'type': 'single'
+            'name': 'Main',
+            'schema': 'Main ({subtpye_id})',
+            'color': 'COLOR_04'
             },
         'hkt': {
-            'name': 'Collision', 
-            'color': 'COLOR_08', 
-            'type': 'array'
+            'name': 'Collision',
+            'schema': 'Collision - {ref_col_name}{ref_col_type_index} ({subtpye_id})',
+            'color': 'COLOR_08'
             },
         'lod': {
-            'name': 'LOD', 
-            'color': 'COLOR_01', 
-            'type': 'dict'
+            'name': 'LOD',
+            'schema': 'LOD{type_index} ({subtpye_id})',
+            'color': 'COLOR_01'
             },
     },
     'character_animation': {
         'main': {
-            'name': 'Main', 
-            'color': 'COLOR_04', 
-            'type': 'single'
+            'name': 'Main',
+            'schema': 'Main ({subtpye_id})',
+            'color': 'COLOR_04'
             },
     },
     'particle_effect': {
         'main': {
-            'name': 'Main', 
-            'color': 'COLOR_04', 
-            'type': 'single'
+            'name': 'Main',
+            'schema': 'Main ({subtpye_id})',
+            'color': 'COLOR_04'
             },
     }
-}
-
-
-names = {
-    'seut': 'SEUT',
-    'main': 'Main',
-    'hkt': 'Collision',
-    'lod': 'LOD',
-    'bs': 'BS',
-    'bs_lod': 'BS_LOD',
-    'mountpoints': 'Mountpoints',
-    'mirroring': 'Mirroring',
-    'render': 'Render'
-}
-
-colors = {
-    'seut': 'COLOR_02',
-    'main': 'COLOR_04',
-    'hkt': 'COLOR_08',
-    'lod': 'COLOR_01',
-    'bs': 'COLOR_05',
-    'bs_lod': 'COLOR_06',
-    'mountpoints': 'COLOR_03',
-    'mirroring': 'COLOR_03',
-    'render': 'COLOR_03'
 }
 
 
@@ -150,33 +115,36 @@ def update_ref_col(self, context):
 def poll_ref_col(self, object):
     collections = get_collections(self.scene)
 
-    has_hkt = []
+    check = self.scene == object.seut.scene and object.seut.col_type != 'none' and object.seut.col_type in ['main', 'bs']
 
-    if collections['hkt'] != None:
-        for col in collections['hkt']:
-            if not col.seut is self and not col.seut.ref_col is None:
-                has_hkt.append(col.seut.ref_col)
-
-    return self.scene == object.seut.scene and object.seut.col_type != 'none' and object not in has_hkt and self.col_type == 'hkt' and (object.seut.col_type == 'main' or object.seut.col_type == 'bs')
+    if self.col_type == 'hkt':
+        return check and get_rev_ref_col(collections, self.ref_col, 'hkt') is None
+    
+    elif self.col_type == 'lod':
+        return check
 
 
 def update_lod_distance(self, context):
     scene = context.scene
-    collections = get_collections(scene)
 
     if self.col_type is None or self.col_type == 'none':
         return
 
-    if not collections[self.col_type] is None:
+    ref_col = None
+    if self.ref_col is not None:
+        ref_col = self.ref_col
+    cols = get_cols_by_type(scene, self.col_type, ref_col.seut.col_type)
+
+    if cols != {}:
         # This is to avoid a non-critical error where Blender expects a string for the contains check only in this particular instance. For reasons beyond human understanding.
         try:
-            if self.type_index - 1 in collections[self.col_type]:
-                if self.lod_distance <= collections[self.col_type][self.type_index - 1].seut.lod_distance:
-                    self.lod_distance = collections[self.col_type][self.type_index - 1].seut.lod_distance + 1
+            if self.type_index - 1 in cols:
+                if self.lod_distance <= cols[self.type_index - 1].seut.lod_distance:
+                    self.lod_distance = cols[self.type_index - 1].seut.lod_distance + 1
 
-            if self.type_index + 1 in collections[self.col_type]:
-                if self.lod_distance >= collections[self.col_type][self.type_index + 1].seut.lod_distance:
-                    collections[self.col_type][self.type_index + 1].seut.lod_distance = self.lod_distance + 1
+            if self.type_index + 1 in cols:
+                if self.lod_distance >= cols[self.type_index + 1].seut.lod_distance:
+                    cols[self.type_index + 1].seut.lod_distance = self.lod_distance + 1
         except TypeError:
             pass
 
@@ -202,7 +170,6 @@ class SEUT_Collection(PropertyGroup):
             ('hkt', 'Collision', ''),
             ('lod', 'LOD', ''),
             ('bs', 'BS', ''),
-            ('bs_lod', 'BS_LOD', ''),
             ('mountpoints', 'Mountpoints', ''),
             ('mirroring', 'Mirroring', ''),
             ('render', 'Render', ''),
@@ -284,7 +251,6 @@ class SEUT_OT_CreateCollection(Operator):
             ('hkt', 'Collision', 'A collection containing collision objects, assigned to another collection in the scene'),
             ('lod', 'LOD', 'A Level of Detail (LOD) collection'),
             ('bs', 'BS', 'A Build Stage (BS) collection'),
-            ('bs_lod', 'BS_LOD', 'A Build Stage Level of Detail (BS_LOD) collection'),
             ),
         name = "Collection Type"
     )
@@ -293,79 +259,46 @@ class SEUT_OT_CreateCollection(Operator):
     def execute(self, context):
 
         scene = context.scene
-        tag = ' (' + scene.seut.subtypeId + ')'
         collections = get_collections(scene)
         
         if self.col_type == 'none':
             return {'CANCELLED'}
+
+        index = None
+        ref_col = None
+
+        if scene.seut.sceneType == 'mainScene':
+                
+            if self.col_type == 'hkt':
+                ref_col = context.view_layer.active_layer_collection.collection
+
+                if ref_col.seut is None or ref_col.seut.col_type in ['hkt', 'lod']:
+                    ref_col = None
+                
+                if get_rev_ref_col(collections, ref_col, 'hkt') is not None:
+                    return {'FINISHED'}
             
-        elif self.col_type == 'lod' or self.col_type == 'bs' or self.col_type == 'bs_lod':
+            elif self.col_type == 'lod':
+                ref_col = context.view_layer.active_layer_collection.collection
 
-            # This handles the case in which collections are missing from the standard 3
-            if collections[self.col_type] == None or 1 not in collections[self.col_type]:
-                index = 1
-            elif 2 not in collections[self.col_type]:
-                index = 2
-            elif 3 not in collections[self.col_type]:
-                index = 3
+                if ref_col.seut is None or ref_col.seut.col_type in ['hkt', 'lod']:
+                    ref_col = None
+
+                index = get_first_free_index(get_cols_by_type(scene, self.col_type))
+            
             else:
-                if len(collections[self.col_type]) + 1 in collections[self.col_type]:
-                    temp_key = 4
-                    while temp_key in collections[self.col_type]:
-                        temp_key += 1
-                    index = temp_key
-                else:
-                    index = len(collections[self.col_type]) + 1
+                index = get_first_free_index(get_cols_by_type(scene, self.col_type))
 
-            collection = bpy.data.collections.new(names[self.col_type] + str(index) + tag)
-            collection.seut.type_index = index
-
-            if collections[self.col_type] != None and index - 1 in collections[self.col_type]:
-                collection.seut.lod_distance = collections[self.col_type][index - 1].seut.lod_distance + 1
-        
-        elif self.col_type == 'hkt':
-            if get_hkt_col(collections, context.view_layer.active_layer_collection.collection) is not None:
-                return {'FINISHED'}
-
-            ref_col = context.view_layer.active_layer_collection.collection
-
-            if ref_col.seut is None or ref_col.seut.col_type == 'hkt':
-                ref_col = None
-
-            if collections[self.col_type] != None:
-                for col in collections['hkt']:
-                    if col.seut.ref_col == ref_col:
-                        ref_col = None
-                        break
-
-            if ref_col is None:
-                collection = bpy.data.collections.new(names[self.col_type] + " - None" + tag)
-            else:
-
-                if ref_col.seut.col_type == 'lod' or ref_col.seut.col_type == 'bs' or ref_col.seut.col_type == 'bs_lod':
-                    collection = bpy.data.collections.new(names[self.col_type] + " - " + names[ref_col.seut.col_type] + str(ref_col.seut.type_index) + tag)
-                elif ref_col.seut.col_type == 'none':
-                    return {'CANCELLED'}
-                else:
-                    collection = bpy.data.collections.new(names[self.col_type] + " - " + names[ref_col.seut.col_type] + tag)
-
-                collection.seut.ref_col = ref_col
-
-        collection.seut.col_type = self.col_type
-        collection.seut.scene = scene
-        if bpy.app.version >= (2, 91, 0):
-            collection.color_tag = colors[self.col_type]
-        collections['seut'].children.link(collection)
+        create_seut_collection(context, self.col_type, index, ref_col)
 
         return {'FINISHED'}
 
 
-def get_collections(scene):
-    """Scans existing collections to find the SEUT ones"""
+def get_collections(scene: object) -> dict:
+    """Scans the existing collections of a scene to find the SEUT ones."""
 
-    # Use the keys of names to create a new dict
     collections = {}
-    for key in names.keys():
+    for key in seut_collections[scene.seut.sceneType].keys():
         collections[key] = None
 
     for col in bpy.data.collections:
@@ -376,29 +309,16 @@ def get_collections(scene):
         
         if col.seut.col_type == 'none':
             continue
-
-        elif col.seut.col_type == 'hkt':
+        else:
             if collections[col.seut.col_type] is None:
                 collections[col.seut.col_type] = []
-
             collections[col.seut.col_type].append(col)
-
-        elif col.seut.col_type == 'lod' or col.seut.col_type == 'bs' or col.seut.col_type == 'bs_lod':
-            if collections[col.seut.col_type] is None:
-                collections[col.seut.col_type] = {}
-
-            collections[col.seut.col_type][col.seut.type_index] = col
-
-        else:
-            collections[col.seut.col_type] = col
     
     return collections
 
 
-def rename_collections(scene):
-    """Scans existing collections to find the SEUT ones and renames them if the tag has changed"""
-
-    tag = ' (' + scene.seut.subtypeId + ')'
+def rename_collections(scene: object):
+    """Scans existing collections to find the SEUT ones and renames them if the tag has changed."""
     
     # This ensures that after a full copy of a scene, the collections are reassigned to the new scene
     if scene.view_layers['SEUT'].layer_collection.children[0].collection.name.startswith("SEUT "):
@@ -415,30 +335,34 @@ def rename_collections(scene):
 
         if col.seut.col_type == 'none':
             continue
+
+        name = seut_collections[scene.seut.sceneType][col.seut.col_type]['schema']
+        color = seut_collections[scene.seut.sceneType][col.seut.col_type]['color']
+
+        type_index = ""
+        if col.seut.type_index != 0:
+            type_index = col.seut.type_index
+
+        ref_col = None
+        if col.seut.ref_col is not None:
+            ref_col = col.seut.ref_col
+            ref_col_type = ref_col.seut.col_type
+            ref_col_name = seut_collections[scene.seut.sceneType][ref_col_type]['name']
+
+        if col.seut.col_type == 'lod':
+            if col.seut.ref_col.seut.col_type != 'main':
+                name = f"{ref_col_name}{ref_col.seut.type_index}_{seut_collections[scene.seut.sceneType]['lod']['name']}{type_index} ({scene.seut.subtypeId})"
+                color = 'COLOR_06'
         
-        elif col.seut.col_type == 'lod' or col.seut.col_type == 'bs' or col.seut.col_type == 'bs_lod':
-            col.name = names[col.seut.col_type] + str(col.seut.type_index) + " (" + col.seut.scene.seut.subtypeId + ")"
-
-        elif col.seut.col_type == 'hkt':
-
-            if col.seut.ref_col is None:
-                col.name = names[col.seut.col_type] + " - None" + " (" + col.seut.scene.seut.subtypeId + ")"
-
-            else:
-                if col.seut.ref_col.seut.col_type == 'lod' or col.seut.ref_col.seut.col_type == 'bs' or col.seut.ref_col.seut.col_type == 'bs_lod':
-                    col.name = names[col.seut.col_type] + " - " + names[col.seut.ref_col.seut.col_type] + str(col.seut.ref_col.seut.type_index) + " (" + col.seut.scene.seut.subtypeId + ")"
-                else:
-                    col.name = names[col.seut.col_type] + " - " + names[col.seut.ref_col.seut.col_type] + " (" + col.seut.scene.seut.subtypeId + ")"
-        
-        else:
-            col.name = names[col.seut.col_type] + " (" + col.seut.scene.seut.subtypeId + ")"
+        col.name = name.format(subtpye_id=scene.seut.subtypeId, ref_col_name=ref_col.seut.col_type, ref_col_type_index=ref_col.seut.type_index, type_index=type_index)
+        if bpy.app.version >= (2, 91, 0):
+            col.color_tag = color
 
 
 def create_collections(context):
     """Recreates the collections SEUT requires"""
 
     scene = context.scene
-    tag = ' (' + scene.seut.subtypeId + ')'
     collections = get_collections(scene)
 
     for key in collections.keys():
@@ -446,126 +370,124 @@ def create_collections(context):
 
             if key == 'seut':
 
-                collections[key] = bpy.data.collections.new(names[key] + tag)
-                collections[key].seut.scene = scene
-                collections[key].seut.col_type = key
+                collections['seut'] = bpy.data.collections.new(f"SEUT ({scene.seut.subtypeId})")
+                collections['seut'].seut.scene = scene
+                collections['seut'].seut.col_type = 'seut'
                 if bpy.app.version >= (2, 91, 0):
-                    collections[key].color_tag = colors[key]
-                scene.collection.children.link(collections[key])
-
+                    collections['seut'].color_tag = 'COLOR_02'
+                scene.collection.children.link(collections['seut'])
+            
             elif key == 'main':
-                collections[key] = bpy.data.collections.new(names[key] + tag)
-                collections[key].seut.scene = scene
-                collections[key].seut.col_type = key
-                if bpy.app.version >= (2, 91, 0):
-                    collections[key].color_tag = colors[key]
-                collections['seut'].children.link(collections[key])
+                collections['main'].append([create_seut_collection(context, 'main')])
+            elif key == 'bs':
+                collections['bs'].append([
+                        create_seut_collection(context, 'bs', 1),
+                        create_seut_collection(context, 'bs', 2),
+                        create_seut_collection(context, 'bs', 3)
+                    ])
 
-            elif key == 'lod' or key == 'bs':
+    # In two loops to ensure the cols that are referenced exist.
+    for key in collections.keys():
+        if collections[key] == None:
 
-                collections[key] = {}
+            if key == 'hkt':
+                collections['hkt'].append([create_seut_collection(context, 'hkt', ref_col=get_seut_collection(scene, 'main'))])
 
-                # Keeping ['0'] for LOD0 support I may add in the future
-                collections[key][1] = bpy.data.collections.new(names[key] + '1' + tag)
-                collections[key][1].seut.scene = scene
-                collections[key][1].seut.col_type = key
-                collections[key][1].seut.type_index = 1
-                if bpy.app.version >= (2, 91, 0):
-                    collections[key][1].color_tag = colors[key]
-                collections['seut'].children.link(collections[key][1])
-
-                collections[key][2] = bpy.data.collections.new(names[key] + '2' + tag)
-                collections[key][2].seut.scene = scene
-                collections[key][2].seut.col_type = key
-                collections[key][2].seut.type_index = 2
-                if bpy.app.version >= (2, 91, 0):
-                    collections[key][2].color_tag = colors[key]
-                collections['seut'].children.link(collections[key][2])
-
-                collections[key][3] = bpy.data.collections.new(names[key] + '3' + tag)
-                collections[key][3].seut.scene = scene
-                collections[key][3].seut.col_type = key
-                collections[key][3].seut.type_index = 3
-                if bpy.app.version >= (2, 91, 0):
-                    collections[key][3].color_tag = colors[key]
-                collections['seut'].children.link(collections[key][3])
-
-                if key == 'lod':
-                    collections[key][1].seut.lod_distance = 25
-                    collections[key][2].seut.lod_distance = 50
-                    collections[key][3].seut.lod_distance = 150
-
-            elif key == 'hkt':
-                temp_col = bpy.data.collections.new(names[key] + " - Main" + tag)
-                collections[key] = []
-                collections[key].append(temp_col)
-                temp_col.seut.scene = scene
-                temp_col.seut.col_type = key
-                if bpy.app.version >= (2, 91, 0):
-                    temp_col.color_tag = colors[key]
-                collections['seut'].children.link(temp_col)
-
-            elif key == 'bs_lod':
-                collections[key] = {}
-                collections[key][1] = bpy.data.collections.new(names[key] + '1' + tag)
-                collections[key][1].seut.scene = scene
-                collections[key][1].seut.col_type = key
-                collections[key][1].seut.type_index = 1
-                collections[key][1].seut.lod_distance = 50
-                if bpy.app.version >= (2, 91, 0):
-                    collections[key][1].color_tag = colors[key]
-                collections['seut'].children.link(collections[key][1])
-    
-    # This needs to be separate because else it can cause issues if main doesn't exist yet.
-    for col in bpy.data.collections:
-        if col is None:
-            continue
-        if col.seut.scene is None:
-            continue
-
-        tag = ' (' + col.seut.scene.seut.subtypeId + ')'
-        if col.seut.col_type == 'hkt' and col.seut.ref_col is None and 'Main' + tag in bpy.data.collections:
-            col.seut.ref_col = bpy.data.collections['Main' + tag]
+            elif key == 'lod':
+                collections['lod'].append([
+                        create_seut_collection(context, 'lod', 1, collections['main']),
+                        create_seut_collection(context, 'lod', 2, collections['main']),
+                        create_seut_collection(context, 'lod', 3, collections['main']),
+                        create_seut_collection(context, 'lod', 1, get_seut_collection(scene, 'bs', type_index=1))
+                    ])
 
     sort_collections(context)
 
     return collections
 
 
-def create_seut_collection(context, col_type, type_index, ref_col):
+def create_seut_collection(context, col_type: str, type_index=None, ref_col=None):
+    """Creates a SEUT collection with the specified characteristics."""
 
     scene = context.scene
-    tag = ' (' + scene.seut.subtypeId + ')'
     collections = get_collections(scene)
 
-    if type_index is None: type_index = 0
+    name = seut_collections[scene.seut.sceneType][col_type]['schema']
+    color = seut_collections[scene.seut.sceneType][col_type]['color']
+    lod_distance = 0
+    ref_col_name = ""
+    ref_col_type_index = ""
     
     if 'seut' not in collections or col_type not in collections:
-        create_collections(context)
+        collections = create_collections(context)
 
-    if col_type == 'bs' or col_type == 'lod' or col_type == 'bs_lod':
-        if type_index in collections[col_type] and not collections[col_type][type_index] is None:
-            return collections[col_type][type_index]
-        else:
-            collection = bpy.data.collections.new(names[col_type] + str(type_index) + tag)
-            collection.seut.scene = scene
-            collection.seut.col_type = col_type
-            collection.seut.type_index = type_index
-            if bpy.app.version >= (2, 91, 0):
-                collection.color_tag = colors[col_type]
-            collections['seut'].children.link(collection)
+    if scene.seut.subtypeId == 'mainScene':
 
-    elif col_type == 'main':
-        if not collections[col_type] is None:
-            return collections[col_type]
-        
-        else:
-            collection = bpy.data.collections.new(names[col_type] + tag)
-            collection.seut.scene = scene
-            collection.seut.col_type = col_type
-            if bpy.app.version >= (2, 91, 0):
-                collection.color_tag = colors[col_type]
-            collections['seut'].children.link(collection)
+        # Main
+        if col_type == 'main':
+            pass
+
+        # HKT
+        elif col_type == 'hkt':
+            if ref_col is None:
+                ref_col_name = 'None'
+            else:
+                ref_col_name = f"{seut_collections[scene.seut.sceneType][ref_col.seut.col_type]['name']}"
+                if ref_col.seut.col_type == 'bs':
+                    ref_col_name += ref_col.seut.type_index
+
+        # BS
+        elif col_type == 'bs':
+            if type_index is not None:
+                if type_index in collections['bs'] and not collections['bs'][type_index] is None:
+                    return collections['bs'][type_index]
+            else:
+                type_index = len(collections['bs'])
+
+        # LOD
+        elif col_type == 'lod':
+            if ref_col is None:
+                return False
+
+            cols = get_cols_by_type(scene, 'lod', ref_col.seut.col_type)
+
+            if type_index is not None:
+                if type_index in cols:
+                    return cols[type_index]
+            else:
+                if cols != {}:
+                    type_index = len(cols)
+                else:
+                    type_index = 1
+            
+            if type_index == 1:
+                lod_distance = 25
+            else:
+                lod_distance = cols[type_index - 1].seut.lod_distance * 2
+
+            if ref_col.seut.col_type != 'main':
+                ref_col_type = ref_col.seut.col_type
+                ref_col_name = seut_collections[scene.seut.sceneType][ref_col_type]['name']
+                ref_col_type_index = ref_col.seut.type_index
+                name = f"{ref_col_name}{ref_col.seut.type_index}_{seut_collections[scene.seut.sceneType]['lod']['name']}{type_index} ({scene.seut.subtypeId})"
+                color = 'COLOR_06'
+    
+    if type_index is None:
+        type_index = ""
+    name = name.format(subtpye_id=scene.seut.subtypeId, ref_col_name=ref_col_name, ref_col_type_index=ref_col_type_index, type_index=type_index)
+
+    collection = bpy.data.collections.new(name)
+    collection.seut.scene = scene
+    collection.seut.col_type = col_type
+    if type_index is not None:
+        collection.seut.type_index = type_index
+    if ref_col is not None:
+        collection.seut.ref_col = ref_col
+    if lod_distance != 0:
+        collection.seut.lod_distance = lod_distance
+    if bpy.app.version >= (2, 91, 0):
+        collection.color_tag = color
+    collections['seut'].children.link(collection)
 
     return collection
 
@@ -575,39 +497,75 @@ def sort_collections(context):
     scene = context.scene
     collections = get_collections(scene)
     seut_cols = collections['seut'].children
-    
-    for lod in sorted(collections['lod'].values(), key=lambda lod: lod.name.lower()):
-        seut_cols.unlink(lod)
-        seut_cols.link(lod)
-        hkt = get_hkt_col(collections, lod)
-        if not hkt is None:
-            seut_cols.unlink(hkt)
-            seut_cols.link(hkt)
         
-    for bs in sorted(collections['bs'].values(), key=lambda bs: bs.name.lower()):
+    for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
         seut_cols.unlink(bs)
         seut_cols.link(bs)
-        hkt = get_hkt_col(collections, bs)
+        hkt = get_rev_ref_col(collections, bs, 'hkt')
         if not hkt is None:
             seut_cols.unlink(hkt)
             seut_cols.link(hkt)
+    
+    for lod in sorted(get_cols_by_type(scene, 'lod', 'main'), key=lambda lod: lod.seut.type_index):
+        seut_cols.unlink(lod)
+        seut_cols.link(lod)
         
-    for bs_lod in sorted(collections['bs_lod'].values(), key=lambda bs_lod: bs_lod.name.lower()):
-        seut_cols.unlink(bs_lod)
-        seut_cols.link(bs_lod)
-        hkt = get_hkt_col(collections, bs_lod)
-        if not hkt is None:
-            seut_cols.unlink(hkt)
-            seut_cols.link(hkt)
+    for lod in sorted(get_cols_by_type(scene, 'lod', 'bs'), key=lambda lod: lod.seut.type_index):
+        seut_cols.unlink(lod)
+        seut_cols.link(lod)
 
 
-def get_hkt_col(collections, collection):
+def get_cols_by_type(scene, col_type: str, ref_col_type: str = None) -> dict:
+    """Returns a dict of cols with specified characteristics."""
 
-    if collections['hkt'] == None:
+    collections = get_collections(scene)
+    cols_by_type = {}
+
+    for col in collections[col_type]:
+        if ref_col_type is not None and col.seut.ref_col.seut.col_type != ref_col_type:
+            continue
+        cols_by_type[col.type_index] = col
+    
+    return cols_by_type
+
+
+def get_seut_collection(scene, col_type: str, ref_col_type: str = None, type_index: int = None) -> object:
+    """Returns the first collection found with specified characteristics, None if none found."""
+
+    collections = get_collections(scene)
+
+    for col in collections[col_type]:
+        if ref_col_type is not None and col.seut.ref_col.seut.col_type != ref_col_type:
+            continue
+        if type_index is not None and col.seut.type_index != type_index:
+            continue
+        return col
+    
+    return None
+
+
+def get_rev_ref_col(collections: dict, collection: object, col_type: str):
+    """Returns the first collection found which references the specified collection."""
+
+    if collections[col_type] == None:
         return None
 
-    for col in collections['hkt']:
+    for col in collections[col_type]:
         if col.seut.ref_col == collection:
             return col
             
     return None
+
+
+def get_first_free_index(collections: dict) -> int:
+    """Returns the first free index of the given dict of collections"""
+
+    if collections == {} or 1 not in collections:
+        index = 1
+    else:
+        temp_key = 2
+        while temp_key in collections:
+            temp_key += 1
+        index = temp_key
+    
+    return index

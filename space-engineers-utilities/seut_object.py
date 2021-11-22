@@ -13,7 +13,7 @@ from bpy.props  import (EnumProperty,
 
 from .export.seut_export_utils      import get_subpart_reference
 from .empties.seut_empties          import SEUT_EmptyHighlights
-from .seut_collections              import get_collections, names
+from .seut_collections              import get_collections
 from .seut_errors                   import seut_report
 from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, get_parent_collection
 

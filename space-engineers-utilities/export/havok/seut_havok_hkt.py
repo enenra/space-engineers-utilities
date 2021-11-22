@@ -12,7 +12,7 @@ from xml.etree              import ElementTree
 from .seut_havok_options        import HAVOK_OPTION_FILE_CONTENT
 from ..seut_export_utils        import ExportSettings, StdoutOperator, MissbehavingToolError, tool_path, write_to_log
 from ...utils.called_tool_type  import ToolType
-from ...seut_collections        import get_collections, names
+from ...seut_collections        import seut_collections
 from ...seut_errors             import seut_report
 
 
@@ -58,7 +58,7 @@ def process_fbximporterhkt_to_final_hkt_for_mwm(self, context, path, assignments
 
             for col in assignments:
                 if len(col.objects) > 0:
-                    hktBSfile = join(path, scene.seut.subtypeId + '_' + names[col.seut.col_type] + str(col.seut.type_index) + ".hkt")
+                    hktBSfile = join(path, f"{scene.seut.subtypeId}_{seut_collections[scene.seut.sceneType][col.seut.col_type]['name']}{col.seut.type_index}.hkt") # TODO: Check this for name gen
                     copy(srcfile, hktBSfile)
                         
         if result:

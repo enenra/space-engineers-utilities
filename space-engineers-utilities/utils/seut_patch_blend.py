@@ -2,9 +2,7 @@ import bpy
 import re
 import os
 
-from ..seut_collections     import names
-from ..seut_collections     import colors
-from ..seut_collections     import rename_collections
+from ..seut_collections     import rename_collections, seut_collections
 from ..seut_errors          import get_abs_path
 
 
@@ -100,7 +98,7 @@ def patch_collections():
                 continue
 
             if bpy.app.version >= (2, 91, 0):
-                col.color_tag = colors[col.seut.col_type]
+                col.color_tag = seut_collections[scn.seut.sceneType][col.seut.col_type]['color']
 
         
         rename_collections(scn)

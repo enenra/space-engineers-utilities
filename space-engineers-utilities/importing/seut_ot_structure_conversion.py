@@ -4,7 +4,7 @@ from bpy.types import Operator
 
 from ..empties.seut_empties          import empty_types
 from ..export.seut_export_utils      import get_subpart_reference
-from ..seut_collections              import get_collections, rename_collections, create_collections, colors, names
+from ..seut_collections              import get_collections, rename_collections, create_collections, seut_collections
 from ..seut_mirroring                import save_rotation
 from ..seut_errors                   import seut_report
 from ..seut_utils                    import link_subpart_scene, get_parent_collection
@@ -22,7 +22,8 @@ class SEUT_OT_StructureConversion(Operator):
 
         return result
     
-    
+
+# TODO: Rework
 def convert_structure(self, context):
     """Converts blend files created with the old plugin to the new structure"""
 
