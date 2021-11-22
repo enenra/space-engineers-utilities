@@ -1,11 +1,10 @@
 import bpy
-import os
 import time
-import textwrap
 
 from bpy.types              import Operator
 from bpy.props              import StringProperty, IntProperty
 
+from ..seut_utils       import wrap_text
 
 class SEUT_OT_IssueDisplay(Operator):
     """Displays a list of the last 10 notifications originating from SEUT"""
@@ -87,9 +86,7 @@ class SEUT_OT_IssueDisplay(Operator):
             if issue.issue_type == 'ERROR':
                 col.alert = True
 
-            wrapp = textwrap.TextWrapper(width=110)
-            text_list = wrapp.wrap(text=issue.text)
-            for text in text_list:
+            for text in wrap_text(issue.text, 110):
                 row = col.row()
                 row.scale_y = 0.75
                 row.label(text=text)
