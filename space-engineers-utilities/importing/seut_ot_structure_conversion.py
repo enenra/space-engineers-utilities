@@ -219,7 +219,7 @@ def convert_structure(self, context):
                     for empty in collections['main'][0].objects:
                         if empty.type == 'EMPTY' and 'file' in empty and str(empty['file']) in bpy.data.scenes:
                             reference = get_subpart_reference(empty, collections)
-                            link_subpart_scene(self, scn, empty, collections['main'])
+                            link_subpart_scene(self, scn, empty, collections['main'][0])
                             empty['file'] = reference
 
     # Set parent scenes from subparts

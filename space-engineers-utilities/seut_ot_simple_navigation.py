@@ -57,7 +57,7 @@ class SEUT_OT_SimpleNavigation(Operator):
                 if col.seut.col_type == 'seut' or col == active_col.collection:
                     continue
                 else:
-                    context.view_layer.layer_collection.children[collections['seut'].name].children[col.name].hide_viewport = True
+                    context.view_layer.layer_collection.children[collections['seut'][0].name].children[col.name].hide_viewport = True
 
         return {'PASS_THROUGH'}
 

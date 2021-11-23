@@ -295,6 +295,7 @@ def get_collections(scene: object) -> dict:
     """Scans the existing collections of a scene to find the SEUT ones."""
 
     collections = {}
+    collections['seut'] = None
     for key in seut_collections[scene.seut.sceneType].keys():
         collections[key] = None
 
@@ -332,26 +333,33 @@ def rename_collections(scene: object):
 
         if col.seut.col_type == 'none':
             continue
-
-        name = seut_collections[scene.seut.sceneType][col.seut.col_type]['schema']
-        color = seut_collections[scene.seut.sceneType][col.seut.col_type]['color']
+        
+        if col.seut.col_type == 'seut':
+            name = f"SEUT ({scene.seut.subtypeId})"
+            color = 'COLOR_02'
+        else:
+            name = seut_collections[scene.seut.sceneType][col.seut.col_type]['schema']
+            color = seut_collections[scene.seut.sceneType][col.seut.col_type]['color']
 
         type_index = ""
         if col.seut.type_index != 0:
             type_index = col.seut.type_index
 
+        ref_col_name = ""
+        ref_col_type_index = ""
         ref_col = None
         if col.seut.ref_col is not None:
             ref_col = col.seut.ref_col
             ref_col_type = ref_col.seut.col_type
             ref_col_name = seut_collections[scene.seut.sceneType][ref_col_type]['name']
+            ref_col_type_index = ref_col.seut.type_index
 
         if col.seut.col_type == 'lod':
             if col.seut.ref_col.seut.col_type != 'main':
                 name = f"{ref_col_name}{ref_col.seut.type_index}_{seut_collections[scene.seut.sceneType]['lod']['name']}{type_index} ({scene.seut.subtypeId})"
                 color = 'COLOR_06'
         
-        col.name = name.format(subtpye_id=scene.seut.subtypeId, ref_col_name=ref_col.seut.col_type, ref_col_type_index=ref_col.seut.type_index, type_index=type_index)
+        col.name = name.format(subtpye_id=scene.seut.subtypeId, ref_col_name=ref_col_name, ref_col_type_index=ref_col_type_index, type_index=type_index)
         if bpy.app.version >= (2, 91, 0):
             col.color_tag = color
 
@@ -366,17 +374,19 @@ def create_collections(context):
         if collections[key] == None:
 
             if key == 'seut':
-
-                collections['seut'] = bpy.data.collections.new(f"SEUT ({scene.seut.subtypeId})")
-                collections['seut'].seut.scene = scene
-                collections['seut'].seut.col_type = 'seut'
+                collections['seut'] = []
+                collections['seut'].append(bpy.data.collections.new(f"SEUT ({scene.seut.subtypeId})"))
+                collections['seut'][0].seut.scene = scene
+                collections['seut'][0].seut.col_type = 'seut'
                 if bpy.app.version >= (2, 91, 0):
-                    collections['seut'].color_tag = 'COLOR_02'
-                scene.collection.children.link(collections['seut'])
+                    collections['seut'][0].color_tag = 'COLOR_02'
+                scene.collection.children.link(collections['seut'][0])
             
             elif key == 'main':
+                collections['main'] = []
                 collections['main'].append(create_seut_collection(context, 'main'))
             elif key == 'bs':
+                collections['bs'] = []
                 collections['bs'].append(create_seut_collection(context, 'bs', 1))
                 collections['bs'].append(create_seut_collection(context, 'bs', 2))
                 collections['bs'].append(create_seut_collection(context, 'bs', 3))
@@ -386,12 +396,14 @@ def create_collections(context):
         if collections[key] == None:
 
             if key == 'hkt':
+                collections['hkt'] = []
                 collections['hkt'].append(create_seut_collection(context, 'hkt', ref_col=get_seut_collection(scene, 'main')))
 
             elif key == 'lod':
-                collections['lod'].append(create_seut_collection(context, 'lod', 1, collections['main']))
-                collections['lod'].append(create_seut_collection(context, 'lod', 2, collections['main']))
-                collections['lod'].append(create_seut_collection(context, 'lod', 3, collections['main']))
+                collections['lod'] = []
+                collections['lod'].append(create_seut_collection(context, 'lod', 1, collections['main'][0]))
+                collections['lod'].append(create_seut_collection(context, 'lod', 2, collections['main'][0]))
+                collections['lod'].append(create_seut_collection(context, 'lod', 3, collections['main'][0]))
                 collections['lod'].append(create_seut_collection(context, 'lod', 1, get_seut_collection(scene, 'bs', type_index=1)))
 
     sort_collections(context)
@@ -409,7 +421,7 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
     color = seut_collections[scene.seut.sceneType][col_type]['color']
     lod_distance = 0
     ref_col_name = ""
-    ref_col_type_index = ""
+    ref_col_type_index = 0
     
     if 'seut' not in collections or col_type not in collections:
         collections = create_collections(context)
@@ -440,7 +452,7 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
         # LOD
         elif col_type == 'lod':
             if ref_col is None:
-                return False
+                return None
 
             cols = get_cols_by_type(scene, 'lod', ref_col)
 
@@ -466,11 +478,11 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
                 color = 'COLOR_06'
     
     if type_index is None:
-        type_index = ""
+        type_index = 0
     name = name.format(subtpye_id=scene.seut.subtypeId, ref_col_name=ref_col_name, ref_col_type_index=ref_col_type_index, type_index=type_index)
 
     collection = bpy.data.collections.new(name)
-    collection.seut.version = col_version
+    collection.seut.version = 2
     collection.seut.scene = scene
     collection.seut.col_type = col_type
     if type_index is not None:
@@ -481,7 +493,13 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
         collection.seut.lod_distance = lod_distance
     if bpy.app.version >= (2, 91, 0):
         collection.color_tag = color
-    collections['seut'].children.link(collection)
+    
+    if 'seut' in collections and collections['seut'] is not None:
+        collections['seut'][0].children.link(collection)
+    elif f"SEUT ({scene.seut.subtypeId})" in scene.view_layers['SEUT'].layer_collection.children:
+        scene.view_layers['SEUT'].layer_collection.children[f"SEUT ({scene.seut.subtypeId})"].children.link(collection)
+    else:
+        return None
 
     return collection
 
@@ -490,7 +508,7 @@ def sort_collections(context):
 
     scene = context.scene
     collections = get_collections(scene)
-    seut_cols = collections['seut'].children
+    seut_cols = collections['seut'][0].children
         
     for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
         seut_cols.unlink(bs)
@@ -500,12 +518,12 @@ def sort_collections(context):
             seut_cols.unlink(hkt[0])
             seut_cols.link(hkt[0])
     
-    for lod in sorted(get_cols_by_type(scene, 'lod', collections['main'][0]), key=lambda lod: lod.seut.type_index):
+    for lod in sorted(get_cols_by_type(scene, 'lod', collections['main'][0]).values(), key=lambda lod: lod.seut.type_index):
         seut_cols.unlink(lod)
         seut_cols.link(lod)
     
     for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
-        for lod in sorted(get_cols_by_type(scene, 'lod', bs), key=lambda lod: lod.seut.type_index):
+        for lod in sorted(get_cols_by_type(scene, 'lod', bs).values(), key=lambda lod: lod.seut.type_index):
             seut_cols.unlink(lod)
             seut_cols.link(lod)
 
@@ -519,7 +537,7 @@ def get_cols_by_type(scene, col_type: str, ref_col: object = None) -> dict:
     for col in collections[col_type]:
         if ref_col is not None and col.seut.ref_col != ref_col:
             continue
-        cols_by_type[col.type_index] = col
+        cols_by_type[col.seut.type_index] = col
     
     return cols_by_type
 

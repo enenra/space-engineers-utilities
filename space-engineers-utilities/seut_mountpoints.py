@@ -20,7 +20,7 @@ def setup_mountpoints(self, context):
     collections = get_collections(scene)
     current_area = prep_context(context)
 
-    result = check_collection(self, context, scene, collections['seut'], False)
+    result = check_collection(self, context, scene, collections['seut'][0], False)
     if not result == {'CONTINUE'}:
         scene.seut.mirroringToggle = 'off'
         return
