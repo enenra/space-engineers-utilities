@@ -227,7 +227,7 @@ class SEUT_OT_IconRenderPreview(Operator):
                         obj.hide_render = True
                         obj.hide_viewport = True
 
-        for obj in collections['render'].objects:
+        for obj in collections['render'][0].objects:
             obj.hide_render = False
             obj.hide_viewport = False
 

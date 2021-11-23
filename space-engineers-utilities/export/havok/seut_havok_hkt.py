@@ -24,8 +24,7 @@ def process_hktfbx_to_fbximporterhkt(context, settings: ExportSettings, srcfile,
         logfile=dstfile+'.convert.log'
     )	
 
-def process_fbximporterhkt_to_final_hkt_for_mwm(self, context, path, assignments, settings: ExportSettings, srcfile, dstfile, havokoptions=HAVOK_OPTION_FILE_CONTENT):
-    scene = context.scene
+def process_fbximporterhkt_to_final_hkt_for_mwm(self, context, settings: ExportSettings, srcfile, dstfile, havokoptions=HAVOK_OPTION_FILE_CONTENT):
     
     hko = tempfile.NamedTemporaryFile(mode='wt', prefix='space_engineers_', suffix=".hko", delete=False) # wt mode is write plus text mode.	
     try:	
@@ -45,21 +44,9 @@ def process_fbximporterhkt_to_final_hkt_for_mwm(self, context, path, assignments
     except:
         result = False
 
-    finally:	
-        os.remove(hko.name)
-
-        def copy(srcfile: str, dstfile: str):
-            if srcfile is not None and dstfile != srcfile:
-                shutil.copy2(srcfile, dstfile)
-
-        # Create a copy of the main models HKT file for all the build stages to go through MWMB with their models.
-        # This could be modified at a later date if unique collisions are implemented per build stage to not process based on their existence.
-        if os.path.exists(srcfile):
-
-            for col in assignments:
-                if len(col.objects) > 0:
-                    hktBSfile = join(path, f"{scene.seut.subtypeId}_{seut_collections[scene.seut.sceneType][col.seut.col_type]['name']}{col.seut.type_index}.hkt") # TODO: Check this for name gen
-                    copy(srcfile, hktBSfile)
+    finally:
+        if context.scene.seut.export_deleteLooseFiles:
+            os.remove(hko.name)
                         
         if result:
             seut_report(self, context, 'INFO', True, 'I009')

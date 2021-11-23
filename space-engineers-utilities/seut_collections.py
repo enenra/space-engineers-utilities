@@ -130,10 +130,7 @@ def update_lod_distance(self, context):
     if self.col_type is None or self.col_type == 'none':
         return
 
-    ref_col = None
-    if self.ref_col is not None:
-        ref_col = self.ref_col
-    cols = get_cols_by_type(scene, self.col_type, ref_col.seut.col_type)
+    cols = get_cols_by_type(scene, self.col_type, self.ref_col)
 
     if cols != {}:
         # This is to avoid a non-critical error where Blender expects a string for the contains check only in this particular instance. For reasons beyond human understanding.
@@ -284,7 +281,7 @@ class SEUT_OT_CreateCollection(Operator):
                 if ref_col.seut is None or ref_col.seut.col_type in ['hkt', 'lod']:
                     ref_col = None
 
-                index = get_first_free_index(get_cols_by_type(scene, self.col_type))
+                index = get_first_free_index(get_cols_by_type(scene, self.col_type, ref_col))
             
             else:
                 index = get_first_free_index(get_cols_by_type(scene, self.col_type))
@@ -445,7 +442,7 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
             if ref_col is None:
                 return False
 
-            cols = get_cols_by_type(scene, 'lod', ref_col.seut.col_type)
+            cols = get_cols_by_type(scene, 'lod', ref_col)
 
             if type_index is not None:
                 if type_index in cols:
@@ -502,23 +499,24 @@ def sort_collections(context):
             seut_cols.unlink(hkt[0])
             seut_cols.link(hkt[0])
     
-    for lod in sorted(get_cols_by_type(scene, 'lod', 'main'), key=lambda lod: lod.seut.type_index):
+    for lod in sorted(get_cols_by_type(scene, 'lod', collections['main'][0]), key=lambda lod: lod.seut.type_index):
         seut_cols.unlink(lod)
         seut_cols.link(lod)
-        
-    for lod in sorted(get_cols_by_type(scene, 'lod', 'bs'), key=lambda lod: lod.seut.type_index):
-        seut_cols.unlink(lod)
-        seut_cols.link(lod)
+    
+    for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
+        for lod in sorted(get_cols_by_type(scene, 'lod', bs), key=lambda lod: lod.seut.type_index):
+            seut_cols.unlink(lod)
+            seut_cols.link(lod)
 
 
-def get_cols_by_type(scene, col_type: str, ref_col_type: str = None) -> dict:
+def get_cols_by_type(scene, col_type: str, ref_col: object = None) -> dict:
     """Returns a dict of cols with specified characteristics."""
 
     collections = get_collections(scene)
     cols_by_type = {}
 
     for col in collections[col_type]:
-        if ref_col_type is not None and col.seut.ref_col.seut.col_type != ref_col_type:
+        if ref_col is not None and col.seut.ref_col != ref_col:
             continue
         cols_by_type[col.type_index] = col
     

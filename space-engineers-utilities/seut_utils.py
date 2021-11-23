@@ -40,8 +40,8 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
     if col_type == 'bs':
         subpart_col = get_cols_by_type(subpart_scene, col_type)[type_index]
     elif col_type == 'lod':
-        ref_col_type = get_parent_collection(context, empty).seut.ref_col.seut.col_type
-        subpart_col = get_cols_by_type(subpart_scene, col_type, ref_col_type)[type_index]
+        ref_col = get_parent_collection(context, empty).seut.ref_col
+        subpart_col = get_cols_by_type(subpart_scene, col_type, ref_col)[type_index]
     elif col_type == 'mirroring':
         subpart_col = subpart_collections['main'][0]
     else:
@@ -115,7 +115,7 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                         if col_type == 'bs':
                             get_cols_by_type(current_scene, col_type)[type_index].objects.link(linked_object)
                         if col_type == 'lod':
-                            get_cols_by_type(current_scene, col_type, ref_col_type)[type_index].objects.link(linked_object)
+                            get_cols_by_type(current_scene, col_type, ref_col)[type_index].objects.link(linked_object)
                         else:
                             parent_collections[col_type][0].objects.link(linked_object)
                     else:
