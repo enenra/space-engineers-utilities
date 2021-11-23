@@ -154,22 +154,22 @@ def update_renderZoom(self, context):
 def update_renderDistance(self, context):
     scene = context.scene
 
-    empty = bpy.data.objects['Icon Render']
-    if empty is not None:
+    if 'Icon Render' in bpy.data.objects:
+        empty = bpy.data.objects['Icon Render']
         empty.scale.x = self.renderDistance
         empty.scale.y = self.renderDistance
         empty.scale.z = self.renderDistance
 
-    key_light = bpy.data.objects['Key Light']
-    if key_light is not None:
+    if 'Key Light' in bpy.data.objects:
+        key_light = bpy.data.objects['Key Light']
         key_light.data.energy = 7500.0 * scene.seut.renderDistance
-        
-    fill_light = bpy.data.objects['Fill Light']
-    if fill_light is not None:
+    
+    if 'Fill Light' in bpy.data.objects:
+        fill_light = bpy.data.objects['Fill Light']
         fill_light.data.energy = 5000.0 * scene.seut.renderDistance
-        
-    rim_light = bpy.data.objects['Rim Light']
-    if rim_light is not None:
+    
+    if 'Rim Light' in bpy.data.objects:
+        rim_light = bpy.data.objects['Rim Light']
         rim_light.data.energy = 10000.0 * scene.seut.renderDistance
 
 
