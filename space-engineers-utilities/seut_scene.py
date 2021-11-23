@@ -197,14 +197,12 @@ def update_subtypeId(self, context):
     scene.name = scene.seut.subtypeId
 
 
-# TODO: Redo
 def update_linkSubpartInstances(self, context):
     scene = context.scene
     collections = get_collections(scene)
 
-    for key in collections.keys():
-        if key == 'main' and not collections[key] is None:
-            col = collections[key]
+    for col_type, col in collections.items():
+        if col_type == 'main' and not col is None:
             for empty in col.objects:
                 if empty is not None and empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
 
@@ -213,13 +211,13 @@ def update_linkSubpartInstances(self, context):
                     else:
                         unlink_subpart_scene(empty)
 
-        elif (key == 'bs' or key == 'lod' or key == 'bs_lod') and not collections[key] is None:
-            for sub_key, value in collections[key].items():
-                for empty in value.objects:
+        elif col_type in ['bs', 'lod'] and not col is None:
+            for sub_col in col:
+                for empty in sub_col.objects:
                     if empty is not None and empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
 
                         if scene.seut.linkSubpartInstances:
-                            link_subpart_scene(self, scene, empty, value)
+                            link_subpart_scene(self, scene, empty, sub_col)
                         else:
                             unlink_subpart_scene(empty)
 
@@ -347,7 +345,7 @@ class SEUT_Scene(PropertyGroup):
     version: IntProperty(
         name="SEUT Scene Version",
         description="Used as a reference to patch the SEUT scene propertiesto newer versions",
-        default=2
+        default=0
     )
 
     sceneType: EnumProperty(

@@ -152,7 +152,7 @@ class SEUT_Collection(PropertyGroup):
     version: IntProperty(
         name="SEUT Collection Version",
         description="Used as a reference to patch the SEUT collection properties to newer versions",
-        default=1
+        default=0
     )
     
     scene: PointerProperty(
@@ -470,6 +470,7 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
     name = name.format(subtpye_id=scene.seut.subtypeId, ref_col_name=ref_col_name, ref_col_type_index=ref_col_type_index, type_index=type_index)
 
     collection = bpy.data.collections.new(name)
+    collection.seut.version = col_version
     collection.seut.scene = scene
     collection.seut.col_type = col_type
     if type_index is not None:

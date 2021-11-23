@@ -76,7 +76,7 @@ class SEUT_Object(PropertyGroup):
     version: IntProperty(
         name="SEUT Object Version",
         description="Used as a reference to patch the SEUT object properties to newer versions",
-        default=1
+        default=0
     )
     
     linkedScene: PointerProperty(
