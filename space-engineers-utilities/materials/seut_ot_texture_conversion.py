@@ -193,7 +193,7 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
             return {'FINISHED'}
 
     else:
-        seut_report(self, context, 'INFO', can_report, 'I024')
+        seut_report(self, context, 'INFO', can_report, 'I003')
 
     return {'FINISHED'}
 

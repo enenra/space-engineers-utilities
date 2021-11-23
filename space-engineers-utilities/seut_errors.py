@@ -72,7 +72,7 @@ warnings = {
 infos = {
     'I001': "Local material '{variable_1}' does not contain any valid textures. Skipping XML entry.",
     'I002': "Successfully converted '{variable_1}'-texture of material '{variable_2}' to DDS.",
-    'I003': "Collection '{variable_1}' not found or empty. Skipping XML entry.",
+    'I003': "All textures are up to date.",
     'I004': "'{variable_1}' has been created.",
     'I005': "IndexError at material '{variable_1}'.",
     'I006': "{variable_1} Options successfully copied to all scenes.",
@@ -93,7 +93,6 @@ infos = {
     'I021': "{variable_1} of {variable_2} files successfully imported. Refer to Blender System Console for details.",
     'I022': "Entry for '{variable_1}' has been created / updated in file '{variable_2}'.",
     'I023': "Texture conversion completed: {variable_1}/{variable_2} files have been converted in {variable_3}.",
-    'I024': "All textures are up to date.",
 }
 
 
