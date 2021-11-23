@@ -18,7 +18,7 @@ errors = {
     'E012': "Path to {variable_1} (Addon Preferences) '{variable_2}' not valid.",
     'E013': "Path to {variable_1} (Addon Preferences) not valid - wrong target file: Expected '{variable_2}' but is set to '{variable_3}'.",
     'E014': "Export path '{variable_1}' in scene '{variable_2}' does not contain 'Models\\'. Cannot be transformed into relative path.",
-    'E015': "Invalid {variable_1} setup. Cannot have {variable_1}2 but no {variable_1}1, or {variable_1}3 but no {variable_1}2.",
+    'E015': "Invalid {variable_1} filetype: Must be '{variable_2}'.",
     'E016': "Scene '{variable_1}' could not be exported.",
     'E017': "A RunTimeError has occurred in the FBX exporter. Try exiting Edit-Mode before exporting.",
     'E018': "Cannot set SubtypeId to a SubtypeId that has already been used for another scene in the same BLEND file.",
@@ -50,7 +50,6 @@ errors = {
     'E044': "An error ocurred during MWM conversion. See *.mwm.log file (generated if 'Delete Temp Files' is toggled off) for details.",
     'E045': "Model path must be located within the Mod's directory ('{variable_1}').",
     'E046': "Could not export '{variable_1}'-texture of material '{variable_2}' to DDS.\n{variable_3}",
-    'E047': "Invalid {variable_1} filetype: Must be '{variable_2}'.",
 }
 
 warnings = {

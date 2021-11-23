@@ -128,7 +128,7 @@ def update_texconv_input_file(self, context):
     
     if not self.texconv_input_file.endswith(self.texconv_input_filetype) and not self.texconv_input_file.endswith(self.texconv_input_filetype.upper()):
         self.texconv_input_file = ""
-        seut_report(self, context, 'ERROR', False, 'E047', 'Input', self.texconv_input_filetype)
+        seut_report(self, context, 'ERROR', False, 'E015', 'Input', self.texconv_input_filetype)
 
 class SEUT_IssueProperty(PropertyGroup):
     """Holder for issue information"""
