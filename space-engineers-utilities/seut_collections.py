@@ -109,7 +109,19 @@ seut_collections = {
 
 def update_ref_col(self, context):
     scene = context.scene
+
+    if self.ref_col is None:
+        self.type_index = 0
+    else:
+        cols = get_cols_by_type(scene, self.col_type, self.ref_col)
+        for key, col in cols.items():
+            if col.seut == self:
+                del cols[key]
+                break
+        self.type_index = get_first_free_index(cols)
+
     rename_collections(scene)
+    sort_collections(context)
 
 
 def poll_ref_col(self, object):
@@ -118,7 +130,8 @@ def poll_ref_col(self, object):
     check = self.scene == object.seut.scene and object.seut.col_type != 'none' and object.seut.col_type in ['main', 'bs']
 
     if self.col_type == 'hkt':
-        return check and get_rev_ref_cols(collections, self.ref_col, 'hkt') == []
+        hkt = get_rev_ref_cols(collections, self.ref_col, 'hkt')
+        return check and (hkt == [] or hkt[0].seut == self)
     
     elif self.col_type == 'lod':
         return check
@@ -352,12 +365,17 @@ def rename_collections(scene: object):
             ref_col = col.seut.ref_col
             ref_col_type = ref_col.seut.col_type
             ref_col_name = seut_collections[scene.seut.sceneType][ref_col_type]['name']
-            ref_col_type_index = ref_col.seut.type_index
-
-        if col.seut.col_type == 'lod':
-            if col.seut.ref_col.seut.col_type != 'main':
-                name = f"{ref_col_name}{ref_col.seut.type_index}_{seut_collections[scene.seut.sceneType]['lod']['name']}{type_index} ({scene.seut.subtypeId})"
-                color = 'COLOR_06'
+            if ref_col_type != 'main':
+                ref_col_type_index = ref_col.seut.type_index
+                
+            if col.seut.col_type == 'lod':
+                if col.seut.ref_col.seut.col_type != 'main':
+                    name = f"{ref_col_name}{ref_col.seut.type_index}_{seut_collections[scene.seut.sceneType]['lod']['name']}{type_index} ({scene.seut.subtypeId})"
+                    color = 'COLOR_06'
+        else:
+            ref_col_name = "None"
+            if col.seut.col_type == 'lod':
+                name = f"{seut_collections[scene.seut.sceneType]['lod']['name']} ({scene.seut.subtypeId})"
         
         col.name = name.format(subtpye_id=scene.seut.subtypeId, ref_col_name=ref_col_name, ref_col_type_index=ref_col_type_index, type_index=type_index)
         if bpy.app.version >= (2, 91, 0):
@@ -421,12 +439,12 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
     color = seut_collections[scene.seut.sceneType][col_type]['color']
     lod_distance = 0
     ref_col_name = ""
-    ref_col_type_index = 0
+    ref_col_type_index = ""
     
     if 'seut' not in collections or col_type not in collections:
         collections = create_collections(context)
 
-    if scene.seut.subtypeId == 'mainScene':
+    if scene.seut.sceneType == 'mainScene':
 
         # Main
         if col_type == 'main':
@@ -439,15 +457,18 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
             else:
                 ref_col_name = f"{seut_collections[scene.seut.sceneType][ref_col.seut.col_type]['name']}"
                 if ref_col.seut.col_type == 'bs':
-                    ref_col_name += ref_col.seut.type_index
+                    ref_col_type_index = ref_col.seut.type_index
 
         # BS
         elif col_type == 'bs':
-            if type_index is not None:
-                if type_index in collections['bs'] and not collections['bs'][type_index] is None:
-                    return collections['bs'][type_index]
+            if collections['bs'] is not None:
+                if type_index is not None:
+                    if type_index in collections['bs'] and not collections['bs'][type_index] is None:
+                        return collections['bs'][type_index]
+                else:
+                    type_index = len(collections['bs'])
             else:
-                type_index = len(collections['bs'])
+                type_index = 1
 
         # LOD
         elif col_type == 'lod':
@@ -507,6 +528,13 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
 def sort_collections(context):
 
     scene = context.scene
+    active_col = context.view_layer.active_layer_collection.collection
+    col_props = [
+        active_col.seut.col_type,
+        active_col.seut.type_index,
+        active_col.seut.ref_col
+    ]
+
     collections = get_collections(scene)
     seut_cols = collections['seut'][0].children
         
@@ -526,6 +554,13 @@ def sort_collections(context):
         for lod in sorted(get_cols_by_type(scene, 'lod', bs).values(), key=lambda lod: lod.seut.type_index):
             seut_cols.unlink(lod)
             seut_cols.link(lod)
+    
+    layer_col_parent = scene.view_layers['SEUT'].layer_collection.children[f"SEUT ({scene.seut.subtypeId})"]
+    name = ""
+    for col in get_cols_by_type(scene, col_props[0], col_props[2]).values():
+        if col.seut.type_index == col_props[1]:
+            name = col.name
+    context.view_layer.active_layer_collection = layer_col_parent.children[name]
 
 
 def get_cols_by_type(scene, col_type: str, ref_col: object = None) -> dict:
@@ -534,11 +569,14 @@ def get_cols_by_type(scene, col_type: str, ref_col: object = None) -> dict:
     collections = get_collections(scene)
     cols_by_type = {}
 
-    for col in collections[col_type]:
-        if ref_col is not None and col.seut.ref_col != ref_col:
-            continue
-        cols_by_type[col.seut.type_index] = col
-    
+    if collections[col_type] is not None:
+        for col in collections[col_type]:
+            if ref_col is not None:
+                if col.seut.ref_col == ref_col:
+                    cols_by_type[col.seut.type_index] = col
+            else:
+                cols_by_type[col.seut.type_index] = col
+
     return cols_by_type
 
 

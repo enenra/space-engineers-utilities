@@ -120,21 +120,24 @@ class SEUT_PT_Panel_Collections(Panel):
             col = box.column(align=True)
             col.label(text="Type: " + seut_collections[scene.seut.sceneType][active_col.seut.col_type]['name'])
             col.label(text="Scene: " + active_col.seut.scene.name)
-        layout.operator('scene.create_collection')
 
         if active_col.seut.col_type in ['lod', 'hkt']:
-            box = layout.box()
-            box.label(text='Options', icon='SETTINGS')
-
-            if active_col.seut.col_type == 'hkt' or active_col.seut.col_type == 'lod':
-                split = box.split(factor=0.40)
-                col = split.column()
-                col.label(text="Reference:")
-                col = split.column()
-                col.prop(active_col.seut,'ref_col', text="")
+            split = box.split(factor=0.40)
+            col = split.column()
+            row = col.row()
+            if active_col.seut.ref_col is None:
+                row.alert = True
+            row.label(text="Reference:")
+            col = split.column()
+            row = col.row()
+            if active_col.seut.ref_col is None:
+                row.alert = True
+            row.prop(active_col.seut,'ref_col', text="")
 
             if active_col.seut.col_type == 'lod':
                 box.prop(active_col.seut,'lod_distance')
+
+        layout.operator('scene.create_collection')
 
 
 class SEUT_PT_Panel_BoundingBox(Panel):
