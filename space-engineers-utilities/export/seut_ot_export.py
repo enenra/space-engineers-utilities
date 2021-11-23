@@ -326,7 +326,14 @@ def check_export_col_dict(self, context, cols: dict):
 
     # This ensures there's no index gaps
     if first_free_idx <= len(cols):
-        seut_report(self, context, 'ERROR', True, 'E015', 'BS') # TODO: Redo to support BS, LOD, BSx_LODx
+        col = next(iter(cols.values()))
+        col_type = col.seut.col_type
+        if col_type == 'lod' and col.seut.ref_col is not None:
+            ref_col_type_index = col.seut.ref_col.seut.type_index
+            seut_report(self, context, 'ERROR', True, 'E006', f"BS{ref_col_type_index}_LOD")
+        else:
+            seut_report(self, context, 'ERROR', True, 'E006', col_type)
+
         return {'CANCELLED'}
 
     for idx, col in cols.items():
@@ -334,7 +341,7 @@ def check_export_col_dict(self, context, cols: dict):
         if result == {'CONTINUE'}:
 
             if col.seut.col_typ == 'lod' and idx - 1 in cols and cols[idx - 1].seut.lod_distance > col.seut.lod_distance:
-                seut_report(self, context, 'ERROR', True, 'E011')
+                seut_report(self, context, 'ERROR', True, 'E011', col.name, cols[idx - 1].name)
                 return {'CANCELLED'}
 
             for obj in col.objects:
