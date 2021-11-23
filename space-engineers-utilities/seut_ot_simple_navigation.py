@@ -63,5 +63,5 @@ class SEUT_OT_SimpleNavigation(Operator):
 
 
     def finish(self):
-        self.unregister_handlers(context)
+        self.unregister_handlers(bpy.context)
         return {'FINISHED'}
