@@ -22,7 +22,7 @@ from .seut_ot_import        import import_fbx
 from ..seut_collections     import get_collections, create_seut_collection, sort_collections
 from ..seut_errors          import seut_report
 
-
+# TODO: Review
 class SEUT_OT_ImportComplete(Operator):
     """Attempts to import not only the FBX but also all its associated LODs and Build Stages"""
     bl_idname = "scene.import_complete"
@@ -78,7 +78,7 @@ class SEUT_OT_ImportComplete(Operator):
             if fbx_type is None:
                 continue
 
-            if fbx_type['col_type'] == 'bs' or fbx_type['col_type'] == 'lod' or fbx_type['col_type'] == 'bs_lod':
+            if fbx_type['col_type'] in ['bs', 'lod']:
                 if fbx_type['col_type'] in collections and fbx_type['type_index'] in collections[fbx_type['col_type']]:
                     col = collections[fbx_type['col_type']][fbx_type['type_index']]
                 else:

@@ -197,6 +197,7 @@ def update_subtypeId(self, context):
     scene.name = scene.seut.subtypeId
 
 
+# TODO: Redo
 def update_linkSubpartInstances(self, context):
     scene = context.scene
     collections = get_collections(scene)

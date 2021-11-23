@@ -5,9 +5,9 @@ from math           import pi
 from bpy.types      import Operator
 
 from .materials.seut_ot_texture_conversion  import convert_texture
-from .seut_collections                      import get_collections, seut_collections
+from .seut_collections                      import get_collections, create_seut_collection
 from .seut_errors                           import check_collection, check_collection_excluded, seut_report, get_abs_path
-from .seut_utils                            import to_radians, create_seut_collection, clear_selection, prep_context, seut_report
+from .seut_utils                            import to_radians, clear_selection, prep_context, seut_report
     
 
 def setup_icon_render(self, context):
@@ -26,14 +26,8 @@ def setup_icon_render(self, context):
         seut_report(self, context, 'ERROR', False, 'E008')
         scene.seut.renderToggle = 'off'
         return {'CANCELLED'}
-        
-    tag = ' (' + scene.seut.subtypeId + ')'
 
-    collection = create_seut_collection(collections['seut'], 'Render' + tag)
-    collection.seut.col_type = 'render'
-    collection.seut.scene = scene
-    if bpy.app.version >= (2, 91, 0):
-        collection.color_tag = seut_collections[scene.seut.sceneType][collection.seut.col_type]['color']
+    collection = create_seut_collection(context, 'render')
     
     if scene.render.filepath == '/tmp\\':
         scene.render.filepath = '//'
@@ -225,17 +219,9 @@ class SEUT_OT_IconRenderPreview(Operator):
             if value is None:
                 continue
             
-            if key == 'hkt':
+            if key in ['hkt', 'bs', 'lod']:
                 for sub_col in value:
                     for obj in sub_col.objects:
-                        if obj is None:
-                            continue
-                        obj.hide_render = True
-                        obj.hide_viewport = True
-
-            if key == 'bs' or key == 'lod' or key == 'bs_lod':
-                for k, v in value.items():
-                    for obj in v.objects:
                         if obj is None:
                             continue
                         obj.hide_render = True
@@ -268,17 +254,9 @@ class SEUT_OT_IconRenderPreview(Operator):
             if value is None:
                 continue
             
-            if key == 'hkt':
+            if key in ['hkt', 'bs', 'lod']:
                 for sub_col in value:
                     for obj in sub_col.objects:
-                        if obj is None:
-                            continue
-                        obj.hide_render = False
-                        obj.hide_viewport = False
-
-            if key == 'bs' or key == 'lod' or key == 'bs_lod':
-                for k, v in value.items():
-                    for obj in v.objects:
                         if obj is None:
                             continue
                         obj.hide_render = False

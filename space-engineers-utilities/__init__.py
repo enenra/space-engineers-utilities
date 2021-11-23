@@ -21,7 +21,7 @@ bl_info = {
     "blender": (2, 92, 0),
     "location": "View3D > Tools",
     "warning": "",
-    "wiki_url": "https://semref.atlassian.net/wiki/home",
+    "wiki_url": "https://semref.atlassian.net/wiki/home", # TODO: Switch this to doc_url for 3.0
     "tracker_url": "https://github.com/enenra/space-engineers-utilities/issues",
     "git_url": "https://github.com/enenra/space-engineers-utilities",
     "support": "COMMUNITY",

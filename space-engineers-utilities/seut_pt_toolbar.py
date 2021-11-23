@@ -3,7 +3,7 @@ import addon_utils
 
 from bpy.types  import Panel
 
-from .seut_collections              import get_collections, seut_collections
+from .seut_collections              import seut_collections
 
 
 class SEUT_PT_Panel(Panel):
@@ -122,7 +122,7 @@ class SEUT_PT_Panel_Collections(Panel):
             col.label(text="Scene: " + active_col.seut.scene.name)
         layout.operator('scene.create_collection')
 
-        if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod' or active_col.seut.col_type == 'hkt' or active_col.seut.col_type == 'bs_lod':
+        if active_col.seut.col_type in ['lod', 'hkt']:
             box = layout.box()
             box.label(text='Options', icon='SETTINGS')
 
@@ -133,7 +133,7 @@ class SEUT_PT_Panel_Collections(Panel):
                 col = split.column()
                 col.prop(active_col.seut,'ref_col', text="")
 
-            if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod':
+            if active_col.seut.col_type == 'lod':
                 box.prop(active_col.seut,'lod_distance')
 
 
@@ -348,8 +348,6 @@ class SEUT_PT_Panel_Export(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-
-        collections = get_collections(scene)
 
         # Export
         row = layout.row()

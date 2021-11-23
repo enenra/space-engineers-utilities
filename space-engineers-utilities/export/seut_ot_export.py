@@ -14,9 +14,9 @@ from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
 from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_loose_files, create_relative_path
-from .seut_export_utils             import correct_for_export_type, export_xml, export_fbx, export_collection
+from .seut_export_utils             import correct_for_export_type, export_collection
 from ..utils.seut_xml_utils         import *
-from ..seut_preferences             import get_addon_version, get_addon
+from ..seut_preferences             import get_addon
 from ..seut_collections             import get_collections
 from ..seut_errors                  import *
 from ..seut_utils                   import prep_context, get_preferences, create_relative_path
@@ -46,7 +46,6 @@ def export(self, context):
     """Exports all collections in the current scene and compiles them to MWM"""
     
     scene = context.scene
-    collections = get_collections(scene)
     preferences = get_preferences()
 
     bl_info = get_addon().bl_info
@@ -176,16 +175,15 @@ def export_main(self, context):
 
     scene = context.scene
     collections = get_collections(scene)
-    preferences = get_preferences()
 
     # Checks whether collection exists, is excluded or is empty
-    result = check_collection(self, context, scene, collections['main'], False)
+    result = check_collection(self, context, scene, collections['main'][0], False)
     if not result == {'CONTINUE'}:
         return result
 
     found_armatures = False
     unparented_objects = 0
-    for obj in collections['main'].objects:
+    for obj in collections['main'][0].objects:
 
         if obj is not None and obj.type == 'ARMATURE':
             found_armatures = True
@@ -205,10 +203,10 @@ def export_main(self, context):
     
     # Check for unparented objects
     if unparented_objects > 1:
-        seut_report(self, context, 'ERROR', True, 'E031', collections['main'].name)
+        seut_report(self, context, 'ERROR', True, 'E031', collections['main'][0].name)
         return {'CANCELLED'}
 
-    export_collection(self, context, collections['main'])
+    export_collection(self, context, collections['main'][0])
     
     return {'FINISHED'}
 
@@ -233,9 +231,9 @@ def export_hkt(self, context):
 
         # Fill a dictionary with collections as keys
         assignments = {}
-        assignments[collections['main']] = None
+        assignments[collections['main'][0]] = None
         for key, value in collections.items():
-            if key == 'bs' or key == 'lod' or key == 'bs_lod':
+            if key in ['bs', 'lod']:
                 if not collections[key] is None:
                     for col in collections[key]:
                         assignments[collections[key][col]] = None
@@ -422,7 +420,7 @@ def export_sbc(self, context):
     path_models = get_abs_path(scene.seut.export_exportPath)
 
     # Checks whether collection exists, is excluded or is empty
-    result = check_collection(self, context, scene, collections['main'], False)
+    result = check_collection(self, context, scene, collections['main'][0], False)
     if not result == {'CONTINUE'}:
         return result
 
@@ -502,7 +500,7 @@ def export_sbc(self, context):
     lines_entry = update_add_attrib(def_Size, 'z', round(scene.seut.bBox_Y * medium_grid_scalar), update_sbc, lines_entry)
 
     center_empty = None
-    for obj in collections['main'].objects:
+    for obj in collections['main'][0].objects:
         if obj is not None and obj.type == 'EMPTY' and obj.name.startswith('Center'):
             center_empty = obj
             break

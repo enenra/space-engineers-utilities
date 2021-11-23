@@ -28,7 +28,7 @@ def patch_view_layers():
             if not 'SEUT' in scn.view_layers:
                 scn.view_layers[0].name = 'SEUT'
 
-
+# TODO: Review
 def patch_collections():
     """Patches all collections in the BLEND file to the new 0.9.95 system."""
 

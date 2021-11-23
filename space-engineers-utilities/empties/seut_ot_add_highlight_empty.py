@@ -69,7 +69,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         scene = context.scene
         collections = get_collections(scene)
 
-        if collections['main'] is None:
+        if collections['main'][0] is None:
             seut_report(self, context, 'ERROR', True, 'E002', "'Main'")
             return {'CANCELLED'}
         
@@ -82,7 +82,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         target_object = target_objects[0]
         
         parent_collection = get_parent_collection(context, target_object)
-        if parent_collection != collections['main']:
+        if parent_collection != collections['main'][0]:
             seut_report(self, context, 'ERROR', True, 'E025')
             return {'CANCELLED'}
 
@@ -103,8 +103,8 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         empty.parent = target_object.parent
 
         parent_collection = get_parent_collection(context, empty)
-        if parent_collection != collections['main']:
-            collections['main'].objects.link(empty)
+        if parent_collection != collections['main'][0]:
+            collections['main'][0].objects.link(empty)
 
             if parent_collection is None:
                 scene.collection.objects.unlink(empty)

@@ -118,7 +118,7 @@ def poll_ref_col(self, object):
     check = self.scene == object.seut.scene and object.seut.col_type != 'none' and object.seut.col_type in ['main', 'bs']
 
     if self.col_type == 'hkt':
-        return check and get_rev_ref_col(collections, self.ref_col, 'hkt') is None
+        return check and get_rev_ref_cols(collections, self.ref_col, 'hkt') == []
     
     elif self.col_type == 'lod':
         return check
@@ -275,7 +275,7 @@ class SEUT_OT_CreateCollection(Operator):
                 if ref_col.seut is None or ref_col.seut.col_type in ['hkt', 'lod']:
                     ref_col = None
                 
-                if get_rev_ref_col(collections, ref_col, 'hkt') is not None:
+                if get_rev_ref_cols(collections, ref_col, 'hkt') != []:
                     return {'FINISHED'}
             
             elif self.col_type == 'lod':
@@ -378,28 +378,24 @@ def create_collections(context):
                 scene.collection.children.link(collections['seut'])
             
             elif key == 'main':
-                collections['main'].append([create_seut_collection(context, 'main')])
+                collections['main'].append(create_seut_collection(context, 'main'))
             elif key == 'bs':
-                collections['bs'].append([
-                        create_seut_collection(context, 'bs', 1),
-                        create_seut_collection(context, 'bs', 2),
-                        create_seut_collection(context, 'bs', 3)
-                    ])
+                collections['bs'].append(create_seut_collection(context, 'bs', 1))
+                collections['bs'].append(create_seut_collection(context, 'bs', 2))
+                collections['bs'].append(create_seut_collection(context, 'bs', 3))
 
     # In two loops to ensure the cols that are referenced exist.
     for key in collections.keys():
         if collections[key] == None:
 
             if key == 'hkt':
-                collections['hkt'].append([create_seut_collection(context, 'hkt', ref_col=get_seut_collection(scene, 'main'))])
+                collections['hkt'].append(create_seut_collection(context, 'hkt', ref_col=get_seut_collection(scene, 'main')))
 
             elif key == 'lod':
-                collections['lod'].append([
-                        create_seut_collection(context, 'lod', 1, collections['main']),
-                        create_seut_collection(context, 'lod', 2, collections['main']),
-                        create_seut_collection(context, 'lod', 3, collections['main']),
-                        create_seut_collection(context, 'lod', 1, get_seut_collection(scene, 'bs', type_index=1))
-                    ])
+                collections['lod'].append(create_seut_collection(context, 'lod', 1, collections['main']))
+                collections['lod'].append(create_seut_collection(context, 'lod', 2, collections['main']))
+                collections['lod'].append(create_seut_collection(context, 'lod', 3, collections['main']))
+                collections['lod'].append(create_seut_collection(context, 'lod', 1, get_seut_collection(scene, 'bs', type_index=1)))
 
     sort_collections(context)
 
@@ -501,10 +497,10 @@ def sort_collections(context):
     for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
         seut_cols.unlink(bs)
         seut_cols.link(bs)
-        hkt = get_rev_ref_col(collections, bs, 'hkt')
-        if not hkt is None:
-            seut_cols.unlink(hkt)
-            seut_cols.link(hkt)
+        hkt = get_rev_ref_cols(collections, bs, 'hkt')
+        if hkt != []:
+            seut_cols.unlink(hkt[0])
+            seut_cols.link(hkt[0])
     
     for lod in sorted(get_cols_by_type(scene, 'lod', 'main'), key=lambda lod: lod.seut.type_index):
         seut_cols.unlink(lod)
@@ -544,17 +540,19 @@ def get_seut_collection(scene, col_type: str, ref_col_type: str = None, type_ind
     return None
 
 
-def get_rev_ref_col(collections: dict, collection: object, col_type: str):
-    """Returns the first collection found which references the specified collection."""
+def get_rev_ref_cols(collections: dict, collection: object, col_type: str) -> list:
+    """Returns a list of all collections found (of a specified col_type) which reference the specified collection."""
+
+    output = []
 
     if collections[col_type] == None:
-        return None
+        return output
 
     for col in collections[col_type]:
         if col.seut.ref_col == collection:
-            return col
+            output.append(col)
             
-    return None
+    return output
 
 
 def get_first_free_index(collections: dict) -> int:
