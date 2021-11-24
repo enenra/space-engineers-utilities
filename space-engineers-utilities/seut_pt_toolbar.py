@@ -3,7 +3,8 @@ import addon_utils
 
 from bpy.types  import Panel
 
-from .seut_collections              import seut_collections
+from .seut_collections              import get_collections, seut_collections
+from .seut_utils                    import get_enum_items, wrap_text
 
 
 class SEUT_PT_Panel(Panel):
@@ -105,7 +106,6 @@ class SEUT_PT_Panel_Collections(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        wm = context.window_manager
         active_col = context.view_layer.active_layer_collection.collection
 
         # split = layout.split(factor=0.85)
@@ -117,6 +117,15 @@ class SEUT_PT_Panel_Collections(Panel):
         if active_col.seut.col_type != 'none':
             box = layout.box()
             box.label(text=active_col.name, icon='COLLECTION_' + active_col.color_tag)
+
+            if not active_col.seut.col_type in seut_collections[scene.seut.sceneType] or active_col.seut.ref_col is not None and not active_col.seut.ref_col.seut.col_type in seut_collections[scene.seut.sceneType]:
+                lines = wrap_text(f"Collection type not supported by scene type '{get_enum_items(scene.seut, 'sceneType', scene.seut.sceneType)[0]}'.", int(context.region.width / 8.5))
+                for l in lines:
+                    row = box.row()
+                    row.scale_y = 0.75
+                    row.alert = True
+                    row.label(text=l)
+
             #col = box.column(align=True)
             #col.label(text=f"Type: {seut_collections[scene.seut.sceneType][active_col.seut.col_type]['name']}")
             #col.label(text=f"Scene: {active_col.seut.scene.name}")

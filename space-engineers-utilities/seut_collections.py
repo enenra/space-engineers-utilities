@@ -338,6 +338,8 @@ def get_collections(scene: object) -> dict:
         if col.seut.col_type == 'none':
             continue
         else:
+            if not col.seut.col_type in seut_collections[scene.seut.sceneType]:
+                continue
             if collections[col.seut.col_type] is None:
                 collections[col.seut.col_type] = []
             collections[col.seut.col_type].append(col)
