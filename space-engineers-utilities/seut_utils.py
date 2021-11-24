@@ -277,6 +277,8 @@ def wrap_text(text: str, width: int):
         if len(l) > width:
             temp = l[:width]
             space_idx = temp.rfind(" ")
+            if temp.rfind("\\") > space_idx:
+                space_idx = temp.rfind("\\") + 1
             lines_new.append(l[:space_idx])
 
             overflow = l[space_idx:]
@@ -289,11 +291,15 @@ def wrap_text(text: str, width: int):
     return lines_new
 
 
-def get_enum_items(rna_type, property: str) -> dict:
-    """Returns a dict of the enum's items with the IDs as its key."""
+def get_enum_items(rna_type, property: str, id: str = None) -> dict:
+    """Returns a dict of the enum's items with the IDs as its key. If ID is provided, only that item's info is returned."""
 
     output = {}
     prop = rna_type.bl_rna.properties[property]
     for p in prop.enum_items:
         output[p.identifier] = [p.name, p.description]
+    
+    if id is not None:
+        return output[id]
+
     return output
