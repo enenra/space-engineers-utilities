@@ -353,7 +353,7 @@ class SEUT_Scene(PropertyGroup):
         items=(
             ('mainScene', 'Main', 'This scene is a main scene'),
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene'),
-            ('character', 'Character ', 'This scene contains a character model'),
+            ('character', 'Character', 'This scene contains a character model'),
             ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
             # ('particle_effect', 'Particle Effect', 'This scene contains a particle effect'),
             ),
