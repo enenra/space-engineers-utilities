@@ -110,9 +110,8 @@ seut_collections = {
 def update_ref_col(self, context):
     scene = context.scene
 
-    if self.ref_col is None:
-        self.type_index = 0
-    else:
+    self.type_index = 0
+    if self.ref_col is not None:
         cols = get_cols_by_type(scene, self.col_type, self.ref_col)
         for key, col in cols.items():
             if col.seut == self:
@@ -130,8 +129,11 @@ def poll_ref_col(self, object):
     check = self.scene == object.seut.scene and object.seut.col_type != 'none' and object.seut.col_type in ['main', 'bs']
 
     if self.col_type == 'hkt':
-        hkt = get_rev_ref_cols(collections, self.ref_col, 'hkt')
-        return check and (hkt == [] or hkt[0].seut == self)
+        hkt = get_rev_ref_cols(collections, object, 'hkt')
+        is_self = False
+        if hkt != []:
+            is_self = hkt[0].seut == self
+        return check and (hkt == [] or is_self)
     
     elif self.col_type == 'lod':
         return check
@@ -282,8 +284,8 @@ class SEUT_OT_CreateCollection(Operator):
             if self.col_type == 'hkt':
                 ref_col = context.view_layer.active_layer_collection.collection
 
-                if ref_col.seut is None or ref_col.seut.col_type in ['hkt', 'lod']:
-                    ref_col = None
+                if ref_col.seut.col_type == 'none' or ref_col.seut.col_type in ['hkt', 'lod']:
+                    return {'FINISHED'}
                 
                 if get_rev_ref_cols(collections, ref_col, 'hkt') != []:
                     return {'FINISHED'}
@@ -291,8 +293,8 @@ class SEUT_OT_CreateCollection(Operator):
             elif self.col_type == 'lod':
                 ref_col = context.view_layer.active_layer_collection.collection
 
-                if ref_col.seut is None or ref_col.seut.col_type in ['hkt', 'lod']:
-                    ref_col = None
+                if ref_col.seut.col_type == 'none' or ref_col.seut.col_type in ['hkt', 'lod']:
+                    return {'FINISHED'}
 
                 index = get_first_free_index(get_cols_by_type(scene, self.col_type, ref_col))
             
@@ -300,6 +302,7 @@ class SEUT_OT_CreateCollection(Operator):
                 index = get_first_free_index(get_cols_by_type(scene, self.col_type))
 
         create_seut_collection(context, self.col_type, index, ref_col)
+        sort_collections(context)
 
         return {'FINISHED'}
 
@@ -452,7 +455,7 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
 
         # HKT
         elif col_type == 'hkt':
-            if ref_col is None:
+            if ref_col is None or ref_col.seut.col_type == 'none':
                 ref_col_name = 'None'
             else:
                 ref_col_name = f"{seut_collections[scene.seut.sceneType][ref_col.seut.col_type]['name']}"
@@ -472,7 +475,7 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
 
         # LOD
         elif col_type == 'lod':
-            if ref_col is None:
+            if ref_col is None or ref_col.seut.col_type == 'none':
                 return None
 
             cols = get_cols_by_type(scene, 'lod', ref_col)
@@ -557,10 +560,12 @@ def sort_collections(context):
     
     layer_col_parent = scene.view_layers['SEUT'].layer_collection.children[f"SEUT ({scene.seut.subtypeId})"]
     name = ""
-    for col in get_cols_by_type(scene, col_props[0], col_props[2]).values():
-        if col.seut.type_index == col_props[1]:
-            name = col.name
-    context.view_layer.active_layer_collection = layer_col_parent.children[name]
+
+    if col_props[0] != 'none':
+        for col in get_cols_by_type(scene, col_props[0], col_props[2]).values():
+            if col.seut.type_index == col_props[1]:
+                name = col.name
+        context.view_layer.active_layer_collection = layer_col_parent.children[name]
 
 
 def get_cols_by_type(scene, col_type: str, ref_col: object = None) -> dict:

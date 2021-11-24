@@ -122,7 +122,7 @@ class SEUT_PT_Panel_Collections(Panel):
             col.label(text="Scene: " + active_col.seut.scene.name)
 
         if active_col.seut.col_type in ['lod', 'hkt']:
-            split = box.split(factor=0.40)
+            split = box.split(factor=0.35)
             col = split.column()
             row = col.row()
             if active_col.seut.ref_col is None:
