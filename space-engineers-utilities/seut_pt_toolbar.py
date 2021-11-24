@@ -116,10 +116,10 @@ class SEUT_PT_Panel_Collections(Panel):
 
         if active_col.seut.col_type != 'none':
             box = layout.box()
-            box.label(text=active_col.name, icon='COLLECTION_' + seut_collections[scene.seut.sceneType][active_col.seut.col_type]['color'])
-            col = box.column(align=True)
-            col.label(text="Type: " + seut_collections[scene.seut.sceneType][active_col.seut.col_type]['name'])
-            col.label(text="Scene: " + active_col.seut.scene.name)
+            box.label(text=active_col.name, icon='COLLECTION_' + active_col.color_tag)
+            #col = box.column(align=True)
+            #col.label(text=f"Type: {seut_collections[scene.seut.sceneType][active_col.seut.col_type]['name']}")
+            #col.label(text=f"Scene: {active_col.seut.scene.name}")
 
         if active_col.seut.col_type in ['lod', 'hkt']:
             split = box.split(factor=0.35)
