@@ -287,3 +287,13 @@ def wrap_text(text: str, width: int):
             lines_new.append(l)
     
     return lines_new
+
+
+def get_enum_items(rna_type, property: str) -> dict:
+    """Returns a dict of the enum's items with the IDs as its key."""
+
+    output = {}
+    prop = rna_type.bl_rna.properties[property]
+    for p in prop.enum_items:
+        output[p.identifier] = [p.name, p.description]
+    return output
