@@ -118,9 +118,23 @@ def update_ref_col(self, context):
                 del cols[key]
                 break
         self.type_index = get_first_free_index(cols)
+        
+    if self.col_type == 'lod':
+        if self.type_index - 1 in cols:
+            col = cols[self.type_index - 1]
+            if self.lod_distance <= col.seut.lod_distance:
+                self.lod_distance = col.seut.lod_distance + 1
+        if self.type_index + 1 in cols:
+            col = cols[self.type_index + 1]
+            if self.lod_distance >= col.seut.lod_distance:
+                self.lod_distance = col.seut.lod_distance - 1
 
     rename_collections(scene)
-    sort_collections(context)
+    # This can error on scene init.
+    try:
+        sort_collections(context)
+    except:
+        pass
 
 
 def poll_ref_col(self, object):
