@@ -362,7 +362,8 @@ def rename_collections(scene: object):
             continue
         if not col.seut.scene is scene:
             continue
-
+        if not col.seut.col_type in seut_collections[scene.seut.sceneType]:
+            continue
         if col.seut.col_type == 'none':
             continue
         
@@ -382,6 +383,10 @@ def rename_collections(scene: object):
         ref_col = None
         if col.seut.ref_col is not None:
             ref_col = col.seut.ref_col
+
+            if not ref_col.seut.col_type in seut_collections[scene.seut.sceneType]:
+                continue
+            
             ref_col_type = ref_col.seut.col_type
             ref_col_name = seut_collections[scene.seut.sceneType][ref_col_type]['name']
             if ref_col_type != 'main':
