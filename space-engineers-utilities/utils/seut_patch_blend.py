@@ -157,6 +157,10 @@ def patch_collections_v0996():
     """Patches collections for removal of BS_LOD-type and change for LOD to have ref_cols"""
 
     for scn in bpy.data.scenes:
+
+        if not 'SEUT' in scn.view_layers:
+            continue
+
         assignments = {}
         for col in bpy.data.collections:
             if col.seut.scene != scn:
