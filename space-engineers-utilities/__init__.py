@@ -21,7 +21,7 @@ bl_info = {
     "blender": (2, 92, 0),
     "location": "View3D > Tools",
     "warning": "",
-    "wiki_url": "https://semref.atlassian.net/wiki/home",
+    "wiki_url": "https://semref.atlassian.net/wiki/home", # TODO: Switch this to doc_url for 3.0
     "tracker_url": "https://github.com/enenra/space-engineers-utilities/issues",
     "git_url": "https://github.com/enenra/space-engineers-utilities",
     "support": "COMMUNITY",
@@ -263,6 +263,7 @@ def menu_draw(self, context):
     layout.label(text="Space Engineers Utilities")
     layout.menu('SEUT_MT_ContextMenu')
 
+
 @persistent
 def load_handler(dummy):
         
@@ -275,8 +276,8 @@ def load_handler(dummy):
     
     # On first install this might cause issues, the try is a safety for that.
     try:
-        check_update(get_addon_version())
         apply_patches()
+        check_update(get_addon_version())
         load_addon_prefs()
     except Exception as e:
         print(e)

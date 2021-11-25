@@ -2,9 +2,7 @@ import bpy
 import re
 import os
 
-from ..seut_collections     import names
-from ..seut_collections     import colors
-from ..seut_collections     import rename_collections
+from ..seut_collections     import rename_collections, seut_collections, sort_collections
 from ..seut_errors          import get_abs_path
 
 
@@ -12,11 +10,14 @@ def apply_patches():
 
     # SEUT 0.9.95
     patch_view_layers()
-    patch_collections()
+    patch_collections_v0995()
     patch_highlight_empty_references()
 
     # SEUT 0.9.96
+    # scene version = 2
+    # collection version = 2
     patch_mod_folder()
+    patch_collections_v0996()
 
 
 def patch_view_layers():
@@ -31,7 +32,7 @@ def patch_view_layers():
                 scn.view_layers[0].name = 'SEUT'
 
 
-def patch_collections():
+def patch_collections_v0995():
     """Patches all collections in the BLEND file to the new 0.9.95 system."""
 
     for scn in bpy.data.scenes:
@@ -72,7 +73,7 @@ def patch_collections():
                 # col.seut.ref_col = bpy.data.collections['Main' + tag]
 
             elif temp_type == 'bs_lod':
-                col.seut.col_type = temp_type
+                col.seut.col_type = 'none'
                 col.seut.type_index = 1
                 col.seut.lod_distance = scn.seut.export_bs_lodDistance
             
@@ -100,10 +101,7 @@ def patch_collections():
                 continue
 
             if bpy.app.version >= (2, 91, 0):
-                col.color_tag = colors[col.seut.col_type]
-
-        
-        rename_collections(scn)
+                col.color_tag = seut_collections[scn.seut.sceneType][col.seut.col_type]['color']
 
     # This must happen after because the collection names might still be in flux beforehand
     for col in bpy.data.collections:
@@ -153,4 +151,34 @@ def patch_mod_folder():
             if os.path.exists(os.path.dirname(path)):
                 scn.seut.mod_path = os.path.dirname(path)
             scn.seut.version = 2
+
+
+def patch_collections_v0996():
+    """Patches collections for removal of BS_LOD-type and change for LOD to have ref_cols"""
+
+    for scn in bpy.data.scenes:
+
+        if not 'SEUT' in scn.view_layers:
+            continue
+
+        assignments = {}
+        for col in bpy.data.collections:
+            if col.seut.scene != scn:
+                continue
             
+            if col.seut.version < 2:
+                if col.seut.col_type == 'mountpoints' and len(col.objects) <= 0:
+                    col.seut.col_type = 'lod'
+                    if f"BS1 ({scn.seut.subtypeId})" in bpy.data.collections:
+                        assignments[col] = f"BS1 ({scn.seut.subtypeId})"
+                    col.seut.version = 2
+                
+                elif col.seut.col_type == 'lod' and col.seut.ref_col is None:
+                    if f"Main ({scn.seut.subtypeId})" in bpy.data.collections:
+                        assignments[col] = f"Main ({scn.seut.subtypeId})"
+                    col.seut.version = 2
+        
+        for col, name in assignments.items():
+            col.seut.ref_col = bpy.data.collections[name]
+
+        rename_collections(scn)

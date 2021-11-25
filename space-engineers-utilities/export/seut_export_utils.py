@@ -12,19 +12,19 @@ from mathutils                              import Matrix
 from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..utils.seut_tool_utils                import get_tool_dir
-from ..seut_collections                     import get_collections, names
+from ..seut_collections                     import get_collections, get_rev_ref_cols
 from ..seut_utils                           import *
 from ..seut_errors                          import seut_report, get_abs_path
 from .seut_custom_fbx_exporter              import save_single
 from .seut_export_transparent_mat           import export_transparent_mat
 from .seut_export_texture                   import export_material_textures
 
+
 def export_xml(self, context, collection) -> str:
     """Exports the XML definition for a collection"""
 
     scene = context.scene
     collections = get_collections(scene)
-    preferences = get_preferences()
 
     # Create XML tree and add initial parameters.
     model = ET.Element('Model')
@@ -41,7 +41,7 @@ def export_xml(self, context, collection) -> str:
     if scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
         add_subelement(model, 'RotationY', '180')
     
-    path = get_abs_path(scene.seut.export_exportPath) + "\\"
+    path = get_abs_path(scene.seut.export_exportPath)
 
     # Write local materials as material entries into XML, write library materials as matrefs into XML
     for mat in bpy.data.materials:
@@ -90,51 +90,43 @@ def export_xml(self, context, collection) -> str:
             matRef.set('Name', mat.name)
             
     # Write LOD references into the XML, if applicable
-    if collection.seut.col_type == 'main':
-
-        printed = {}
+    if collection.seut.col_type in ['main', 'bs']:
         if not collections['lod'] is None:
-            for key, value in collections['lod'].items():
-                lod_col = value
-                if len(lod_col.objects) == 0:
-                    seut_report(self, context, 'INFO', False, 'I003', 'LOD' + str(lod_col.seut.type_index))
-                else:
-                    if key == 1 or key - 1 in printed and printed[key - 1]:
-                        create_lod_entry(scene, model, lod_col.seut.lod_distance, path, '_LOD' + str(lod_col.seut.type_index))
-                        printed[key] = True
-                    else:
-                        seut_report(self, context, 'ERROR', True, 'E006')
-    
-    elif collection.seut.col_type == 'bs':
-
-        printed = {}
-        if not collections['bs_lod'] is None:
-            for key, value in collections['bs_lod'].items():
-                lod_col = value
-                if len(lod_col.objects) == 0:
-                    seut_report(self, context, 'INFO', False, 'I003', 'BS_LOD' + str(lod_col.seut.type_index))
-                else:
-                    if key == 1 or key - 1 in printed and printed[key - 1]:
-                        create_lod_entry(scene, model, lod_col.seut.lod_distance, path, '_BS_LOD' + str(lod_col.seut.type_index))
-                        printed[key] = True
-                    else:
-                        seut_report(self, context, 'ERROR', True, 'E006')
+            cols = get_rev_ref_cols(collections, collection, 'lod')
+            for col in cols:
+                if len(col.objects) > 0:
+                    create_lod_entry(model, col.seut.lod_distance, path, get_col_filename(col))
         
     # Create file with subtypename + collection name and write string to it
     xml_formatted = format_xml(self, context, model)
-    
-    filetype = collection.name[:collection.name.find(" (")]
-    
-    if collection == collections['main']:
-        filename = scene.seut.subtypeId
-    else:
-        filename = scene.seut.subtypeId + '_' + filetype
 
-    exported_xml = open(path + filename + ".xml", "w")
+    path = os.path.join(path, f"{get_col_filename(collection)}.xml")
+    exported_xml = open(path, "w")
     exported_xml.write(xml_formatted)
-    seut_report(self, context, 'INFO', True, 'I004', path + filename + ".xml")
+    seut_report(self, context, 'INFO', True, 'I004', path)
 
     return {'FINISHED'}
+
+
+def get_col_filename(collection: object) -> str:
+    """Returns the correct filename for a given collection."""
+
+    schema = {
+        'main': "{subtypeId}",
+        'hkt': "{ref_col_name}",
+        'bs': "{subtypeId}_BS{type_index}",
+        'lod': "{ref_col_name}_LOD{type_index}" 
+    }
+
+    subtypeId = collection.seut.scene.seut.subtypeId
+    type_index = collection.seut.type_index
+
+    ref_col_name = ""
+    ref_col = collection.seut.ref_col
+    if ref_col is not None:
+        ref_col_name = schema[ref_col.seut.col_type].format(subtypeId=subtypeId, type_index=ref_col.seut.type_index)
+
+    return schema[collection.seut.col_type].format(subtypeId=subtypeId, type_index=type_index, ref_col_name=ref_col_name)
 
 
 def add_subelement(parent, name: str, value):
@@ -145,18 +137,19 @@ def add_subelement(parent, name: str, value):
     param.text = str(value)
 
 
-def create_texture_entry(self, context, mat_entry, mat_name: str, images: dict, tex_type: str, tex_name: str, tex_name_long: str, ):
+def create_texture_entry(self, context, mat_entry, mat_name: str, images: dict, tex_type: str, tex_name: str, tex_name_long: str):
     """Creates a texture entry for a texture type into the XML tree"""
     
     rel_path = create_relative_path(images[tex_type].filepath, "Textures")
     
     if not rel_path:
         seut_report(self, context, 'ERROR', True, 'E007', tex_name, mat_name)
+        return
     else:
         add_subelement(mat_entry, tex_name_long, os.path.splitext(rel_path)[0] + ".dds")
     
     if not is_valid_resolution(images[tex_type].size[0]) or not is_valid_resolution(images[tex_type].size[1]):
-        seut_report(self, context, 'WARNING', True, 'W004', tex_name, mat_name, str(images[tex_type].size[0]) + "x" + str(images[tex_type].size[1]))
+        seut_report(self, context, 'WARNING', True, 'W004', tex_name, mat_name, f"{images[tex_type].size[0]}x{images[tex_type].size[1]}")
 
 
 def is_valid_resolution(number: int) -> bool:
@@ -216,13 +209,13 @@ def create_mat_entry(self, context, tree, mat):
             create_texture_entry(self, context, mat_entry, mat.name, images, 'am', 'ALPHAMASK', 'AlphamaskTexture')
 
 
-def create_lod_entry(scene, tree, distance: int, path: str, lod_type: str):
+def create_lod_entry(tree, distance: int, path: str, filename: str):
     """Creates a LOD entry into the XML tree"""
     
     lod = ET.SubElement(tree, 'LOD')
     lod.set('Distance', str(distance))
     lodModel = ET.SubElement(lod, 'Model')
-    lodModel.text = create_relative_path(path, "Models") + scene.seut.subtypeId + lod_type
+    lodModel.text = create_relative_path(os.path.join(path, filename), "Models")
 
 
 def format_xml(self, context, tree) -> str:
@@ -232,7 +225,6 @@ def format_xml(self, context, tree) -> str:
 
     try:
         temp_string.decode('ascii')
-
     except UnicodeDecodeError:
         seut_report(self, context, 'ERROR', False, 'E033')
 
@@ -245,12 +237,11 @@ def export_fbx(self, context, collection) -> str:
     """Exports the FBX file for a defined collection"""
 
     scene = context.scene
-    preferences = get_preferences()
     collections = get_collections(scene)
     depsgraph = context.evaluated_depsgraph_get()
     settings = ExportSettings(scene, depsgraph)
 
-    path = get_abs_path(scene.seut.export_exportPath) + "\\"
+    path = get_abs_path(scene.seut.export_exportPath)
     
     # Export exports the active layer_collection so the collection's layer_collection needs to be set as the active one
     try:
@@ -329,16 +320,10 @@ def export_fbx(self, context, collection) -> str:
             prepare_mat_for_export(self, context, mat)
 
     # Export the collection to FBX
-    filetype = collection.name[:collection.name.find(" (")]
-    if collection == collections['main']:
-        filename = scene.seut.subtypeId
-    else:
-        filename = scene.seut.subtypeId + '_' + filetype
-
-    fbx_file = join(path, filename + ".fbx")
+    path = os.path.join(path, f"{get_col_filename(collection)}.fbx")
     error_during_export = False
     try:
-        export_to_fbxfile(settings, scene, fbx_file, collection.objects, ishavokfbxfile=False)
+        export_to_fbxfile(settings, scene, path, collection.objects, ishavokfbxfile=False)
 
     except RuntimeError as error:
         seut_report(self, context, 'ERROR', False, 'E017')
@@ -372,7 +357,7 @@ def export_fbx(self, context, collection) -> str:
     bpy.context.scene.collection.children.unlink(collection)
 
     if not error_during_export:
-        seut_report(self, context, 'INFO', True, 'I004', path + filename + ".fbx")
+        seut_report(self, context, 'INFO', True, 'I004', path)
         return {'CANCELLED'}
 
     return {'FINISHED'}
@@ -384,9 +369,9 @@ def get_subpart_reference(empty, collections: dict) -> str:
     parent_collection = empty.users_collection[0]
 
     if parent_collection.seut.col_type == 'bs':
-        for bs in collections['bs'].values():
+        for bs in collections['bs']:
             if parent_collection == bs:
-                return empty.seut.linkedScene.seut.subtypeId + "_" + names['bs'] + str(bs.seut.type_index)
+                return f"{empty.seut.linkedScene.seut.subtypeId}_BS{bs.seut.type_index}" # Special case, can't use get_col_filename.
 
     return empty.seut.linkedScene.seut.subtypeId
 
@@ -571,16 +556,21 @@ def write_to_log(logfile, content, cmdline=None, cwd=None, loglines=[]):
 
         log.write(content)
 
-def delete_loose_files(self, context, path):
-    fileRemovalList = [fileName for fileName in glob.glob(path + "*.*") if "fbx" in fileName or
-        "xml" in fileName or "hkt" in fileName or "log" in fileName]
+
+def delete_temp_files(self, context, path: str):
+    """Deletes all temp files for the scene currently being exported."""
+
+    scene = context.scene
+
+    file_list = [f for f in os.listdir(path) if (f"{scene.seut.subtypeId}_BS" in f or f"{scene.seut.subtypeId}_LOD" in f or f"{scene.seut.subtypeId}." in f) and (".fbx" in f or ".xml" in f or ".hkt" in f or ".log" in f)]
 
     try:
-        for fileName in fileRemovalList:
-            os.remove(fileName)
+        for f in file_list:
+            os.remove(os.path.join(path, f))
 
     except EnvironmentError:
         seut_report(self, context, 'ERROR', False, 'E020')
+
 
 class ExportSettings:
     def __init__(self, scene, depsgraph, mwmDir=None):

@@ -93,7 +93,7 @@ class SEUT_Materials(PropertyGroup):
     version: IntProperty(
         name="SEUT Material Version",
         description="Used as a reference to patch the SEUT material properties to newer versions",
-        default=1
+        default=0
     )
     
     vanilla: BoolProperty(

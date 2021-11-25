@@ -1,3 +1,4 @@
+import collections
 import bpy
 import os
 
@@ -15,9 +16,32 @@ from bpy.props  import (EnumProperty,
 from .seut_mirroring                import clean_mirroring, setup_mirroring
 from .seut_mountpoints              import clean_mountpoints, setup_mountpoints
 from .seut_icon_render              import clean_icon_render, setup_icon_render
-from .seut_collections              import get_collections, rename_collections, names
+from .seut_collections              import get_collections, rename_collections, seut_collections
 from .seut_errors                   import get_abs_path, seut_report, check_export
 from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, to_radians, get_parent_collection, toggle_scene_modes
+
+
+def update_sceneType(self, context):
+    scene = context.scene
+    collections = get_collections(scene, True)
+
+    for key, cols in collections.items():
+        if cols is None:
+            continue
+        
+        if not key in seut_collections[scene.seut.sceneType] and key != 'seut':
+            for col in cols:
+                if len(col.objects) <= 0:
+                    bpy.data.collections.remove(col)
+                else:
+                    col.color_tag = 'COLOR_07'
+        else:
+            for col in cols:
+                if col.seut.ref_col is not None and not col.seut.ref_col.seut.col_type in seut_collections[scene.seut.sceneType]:
+                    if len(col.objects) <= 0:
+                        bpy.data.collections.remove(col)
+                    else:
+                        col.color_tag = 'COLOR_07'
 
 
 def update_GridScale(self, context):
@@ -154,22 +178,22 @@ def update_renderZoom(self, context):
 def update_renderDistance(self, context):
     scene = context.scene
 
-    empty = bpy.data.objects['Icon Render']
-    if empty is not None:
+    if 'Icon Render' in bpy.data.objects:
+        empty = bpy.data.objects['Icon Render']
         empty.scale.x = self.renderDistance
         empty.scale.y = self.renderDistance
         empty.scale.z = self.renderDistance
 
-    key_light = bpy.data.objects['Key Light']
-    if key_light is not None:
+    if 'Key Light' in bpy.data.objects:
+        key_light = bpy.data.objects['Key Light']
         key_light.data.energy = 7500.0 * scene.seut.renderDistance
-        
-    fill_light = bpy.data.objects['Fill Light']
-    if fill_light is not None:
+    
+    if 'Fill Light' in bpy.data.objects:
+        fill_light = bpy.data.objects['Fill Light']
         fill_light.data.energy = 5000.0 * scene.seut.renderDistance
-        
-    rim_light = bpy.data.objects['Rim Light']
-    if rim_light is not None:
+    
+    if 'Rim Light' in bpy.data.objects:
+        rim_light = bpy.data.objects['Rim Light']
         rim_light.data.energy = 10000.0 * scene.seut.renderDistance
 
 
@@ -201,9 +225,8 @@ def update_linkSubpartInstances(self, context):
     scene = context.scene
     collections = get_collections(scene)
 
-    for key in collections.keys():
-        if key == 'main' and not collections[key] is None:
-            col = collections[key]
+    for col_type, col in collections.items():
+        if col_type == 'main' and not col is None:
             for empty in col.objects:
                 if empty is not None and empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
 
@@ -212,13 +235,13 @@ def update_linkSubpartInstances(self, context):
                     else:
                         unlink_subpart_scene(empty)
 
-        elif (key == 'bs' or key == 'lod' or key == 'bs_lod') and not collections[key] is None:
-            for sub_key, value in collections[key].items():
-                for empty in value.objects:
+        elif col_type in ['bs', 'lod'] and not col is None:
+            for sub_col in col:
+                for empty in sub_col.objects:
                     if empty is not None and empty.type == 'EMPTY' and empty.name.find('(L)') == -1 and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
 
                         if scene.seut.linkSubpartInstances:
-                            link_subpart_scene(self, scene, empty, value)
+                            link_subpart_scene(self, scene, empty, sub_col)
                         else:
                             unlink_subpart_scene(empty)
 
@@ -346,7 +369,7 @@ class SEUT_Scene(PropertyGroup):
     version: IntProperty(
         name="SEUT Scene Version",
         description="Used as a reference to patch the SEUT scene propertiesto newer versions",
-        default=2
+        default=0
     )
 
     sceneType: EnumProperty(
@@ -354,11 +377,12 @@ class SEUT_Scene(PropertyGroup):
         items=(
             ('mainScene', 'Main', 'This scene is a main scene'),
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene'),
-            ('character', 'Character ', 'This scene contains a character model'),
+            ('character', 'Character', 'This scene contains a character model'),
             ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
             # ('particle_effect', 'Particle Effect', 'This scene contains a particle effect'),
             ),
-        default='mainScene'
+        default='mainScene',
+        update=update_sceneType
     )
     linkSubpartInstances: BoolProperty(
         name="Link Subpart Instances",

@@ -4,7 +4,7 @@ import os
 from bpy.types      import Operator
 from math           import pi
 
-from .seut_collections              import get_collections
+from .seut_collections              import get_collections, get_cols_by_type
 from .seut_errors                   import check_collection, seut_report
 
 
@@ -37,12 +37,15 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
     col_type = target_collection.seut.col_type
     type_index = target_collection.seut.type_index
 
-    if col_type == 'bs' or col_type == 'lod' or col_type == 'bs_lod':
-        subpart_col = subpart_collections[col_type][type_index]
+    if col_type == 'bs':
+        subpart_col = get_cols_by_type(subpart_scene, col_type)[type_index]
+    elif col_type == 'lod':
+        ref_col = get_parent_collection(context, empty).seut.ref_col
+        subpart_col = get_cols_by_type(subpart_scene, col_type, ref_col)[type_index]
     elif col_type == 'mirroring':
-        subpart_col = subpart_collections['main']
+        subpart_col = subpart_collections['main'][0]
     else:
-        subpart_col = subpart_collections[col_type]
+        subpart_col = subpart_collections[col_type][0]
 
     # Checks whether collection exists, is excluded or is empty
     result = check_collection(self, context, subpart_scene, subpart_col, False)
@@ -109,10 +112,12 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                 # Link instance to empty
                 try:
                     if target_collection is None:
-                        if col_type == 'bs' or col_type == 'lod' or col_type == 'bs_lod':
-                            parent_collections[col_type][type_index].objects.link(linked_object)
+                        if col_type == 'bs':
+                            get_cols_by_type(current_scene, col_type)[type_index].objects.link(linked_object)
+                        if col_type == 'lod':
+                            get_cols_by_type(current_scene, col_type, ref_col)[type_index].objects.link(linked_object)
                         else:
-                            parent_collections[col_type].objects.link(linked_object)
+                            parent_collections[col_type][0].objects.link(linked_object)
                     else:
                         target_collection.objects.link(linked_object)
                 except RuntimeError:
@@ -166,22 +171,10 @@ def get_parent_collection(context, child):
     
     for key, value in collections.items():
         if value is not None:
-            if key == 'hkt':
-                for col in value:
-                    for obj in col.objects:
-                        if obj is not None and obj == child:
-                            return col
-
-            elif key == 'bs' or key == 'lod' or key == 'bs_lod':
-                for k, v in value.items():
-                    for obj in v.objects:
-                        if obj is not None and obj == child:
-                            return v
-
-            else:
-                for obj in value.objects:
+            for col in value:
+                for obj in col.objects:
                     if obj is not None and obj == child:
-                        return value
+                        return col
     
     return None
 
@@ -252,23 +245,6 @@ def toggle_scene_modes(context, mirroring, mountpoints, icon_render):
     context.window.scene = original_scene
 
 
-def create_seut_collection(seut_collection, name: str):
-    """Creates a new SEUT collection if it doesn't exist yet, else returns the existing one."""
-
-    if not name in bpy.data.collections:
-        collection = bpy.data.collections.new(name)
-        seut_collection.children.link(collection)
-
-    else:
-        collection = bpy.data.collections[name]
-        try:
-            seut_collection.children.link(collection)
-        except:
-            pass
-    
-    return collection
-
-
 def lock_object(target):
     """Locks the specified object's location, rotation and scale"""
 
@@ -301,6 +277,8 @@ def wrap_text(text: str, width: int):
         if len(l) > width:
             temp = l[:width]
             space_idx = temp.rfind(" ")
+            if temp.rfind("\\") > space_idx:
+                space_idx = temp.rfind("\\") + 1
             lines_new.append(l[:space_idx])
 
             overflow = l[space_idx:]
@@ -311,3 +289,17 @@ def wrap_text(text: str, width: int):
             lines_new.append(l)
     
     return lines_new
+
+
+def get_enum_items(rna_type, property: str, id: str = None) -> dict:
+    """Returns a dict of the enum's items with the IDs as its key. If ID is provided, only that item's info is returned."""
+
+    output = {}
+    prop = rna_type.bl_rna.properties[property]
+    for p in prop.enum_items:
+        output[p.identifier] = [p.name, p.description]
+    
+    if id is not None:
+        return output[id]
+
+    return output

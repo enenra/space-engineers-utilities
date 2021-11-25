@@ -13,11 +13,11 @@ from bpy.types      import Operator
 from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
 from .seut_mwmbuilder               import mwmbuilder
-from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_loose_files, create_relative_path
-from .seut_export_utils             import correct_for_export_type, export_xml, export_fbx, export_collection
+from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_temp_files, create_relative_path
+from .seut_export_utils             import correct_for_export_type, export_collection, get_col_filename
 from ..utils.seut_xml_utils         import *
-from ..seut_preferences             import get_addon_version, get_addon
-from ..seut_collections             import get_collections, names
+from ..seut_preferences             import get_addon
+from ..seut_collections             import get_collections, get_rev_ref_cols, get_cols_by_type, get_first_free_index
 from ..seut_errors                  import *
 from ..seut_utils                   import prep_context, get_preferences, create_relative_path
 from ..utils.seut_tool_utils        import get_tool_dir
@@ -46,7 +46,6 @@ def export(self, context):
     """Exports all collections in the current scene and compiles them to MWM"""
     
     scene = context.scene
-    collections = get_collections(scene)
     preferences = get_preferences()
 
     bl_info = get_addon().bl_info
@@ -176,16 +175,15 @@ def export_main(self, context):
 
     scene = context.scene
     collections = get_collections(scene)
-    preferences = get_preferences()
 
     # Checks whether collection exists, is excluded or is empty
-    result = check_collection(self, context, scene, collections['main'], False)
+    result = check_collection(self, context, scene, collections['main'][0], False)
     if not result == {'CONTINUE'}:
         return result
 
     found_armatures = False
     unparented_objects = 0
-    for obj in collections['main'].objects:
+    for obj in collections['main'][0].objects:
 
         if obj is not None and obj.type == 'ARMATURE':
             found_armatures = True
@@ -205,10 +203,10 @@ def export_main(self, context):
     
     # Check for unparented objects
     if unparented_objects > 1:
-        seut_report(self, context, 'ERROR', True, 'E031', collections['main'].name)
+        seut_report(self, context, 'ERROR', True, 'E031', collections['main'][0].name)
         return {'CANCELLED'}
 
-    export_collection(self, context, collections['main'])
+    export_collection(self, context, collections['main'][0])
     
     return {'FINISHED'}
 
@@ -228,57 +226,37 @@ def export_hkt(self, context):
         return result
 
     if not collections['hkt'] is None:
-        
-        # This exists to determine which HKT is assigned to what FBX.
 
-        # Fill a dictionary with collections as keys
+        # Dict with collection as a key and its assigned HKT collection as a value
         assignments = {}
-        assignments[collections['main']] = None
-        for key, value in collections.items():
-            if key == 'bs' or key == 'lod' or key == 'bs_lod':
-                if not collections[key] is None:
-                    for col in collections[key]:
-                        assignments[collections[key][col]] = None
+        for key in collections:
 
-        # Assign HKT collections to each key
-        for hkt_col in collections['hkt']:
+            if key == 'main':
+                hkt = get_rev_ref_cols(collections, collections[key][0], 'hkt')
+                if hkt != []:
+                    assignments[collections[key][0].name] = get_rev_ref_cols(collections, collections[key][0], 'hkt')
 
-            result = check_collection(self, context, scene, hkt_col, True)
+            elif key == 'bs':
+                for col in collections[key]:
+                    if len(col.objects) <= 0:
+                        continue
+                    hkt = get_rev_ref_cols(collections, col, 'hkt')
+                    if hkt != []:
+                        assignments[col.name] = hkt
+
+        if assignments == {}:
+            return {'FINISHED'}
+
+        # Create HKTs by going through all cols with HKTs assigned to them.
+        for key in assignments:
+            col = bpy.data.collections[key]
+            print(col)
+            result = check_collection(self, context, scene, col, True)
             if not result == {'CONTINUE'}:
                 continue
 
-            ref_col = hkt_col.seut.ref_col
-            if ref_col.seut.col_type == 'main':
-                for key, value in assignments.items():
-                    if key.seut.col_type == 'main':
-                        assignments[key] = hkt_col
-                    elif value is None:
-                        assignments[key] = hkt_col
-
-            if ref_col.seut.col_type == 'bs':
-                idx = ref_col.seut.type_index
-                for key, value in assignments.items():
-                    if key.seut.col_type == 'bs' and key.seut.type_index == idx:
-                        assignments[key] = hkt_col
-                    elif idx == 1 and (key.seut.col_type == 'bs' or key.seut.col_type == 'bs_lod') and value is None:
-                        assignments[key] = hkt_col
-
-        # This uses the collision collections as keys for a new dict that contains the assigned "normal" collections as values in a list
-        assignments_inverted = {}
-        for key, value in assignments.items():
-            if not value in assignments_inverted.keys():
-                assignments_inverted[value] = []
-            if not key in assignments_inverted[value]:
-                assignments_inverted[value].append(key)
-        
-        for hkt_col in collections['hkt']:
-
-            result = check_collection(self, context, scene, hkt_col, True)
-            if not result == {'CONTINUE'}:
-                continue
-            
             cancelled = False
-            for obj in hkt_col.objects:
+            for obj in col.objects:
 
                 # Check for unapplied modifiers
                 if len(obj.modifiers) > 0:
@@ -294,26 +272,19 @@ def export_hkt(self, context):
             if cancelled:
                 return {'CANCELLED'}
             
-            if len(hkt_col.objects) > 10:
-                seut_report(self, context, 'ERROR', True, 'E022', hkt_col.name, len(hkt_col.objects))
+            if len(col.objects) > 10:
+                seut_report(self, context, 'ERROR', True, 'E022', col.name, len(col.objects))
                 continue
-
-            # FBX export via Custom FBX Importer
-            ref_col = hkt_col.seut.ref_col
-            assignments_inverted[hkt_col].remove(ref_col) # This is removed because it's created by default
-
-            tag = ""
-            if ref_col.seut.col_type == 'bs':
-                tag = "_" + names[ref_col.seut.col_type] + str(ref_col.seut.type_index)
-
-            fbx_hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt.fbx")
-            hkt_file = join(path, scene.seut.subtypeId + tag + ".hkt")
             
-            export_to_fbxfile(settings, scene, fbx_hkt_file, hkt_col.objects, ishavokfbxfile=True)
+            fbx_hkt_file = join(path, f"{get_col_filename(col)}.hkt.fbx")
+            hkt_file = join(path, f"{get_col_filename(col)}.hkt")
+
+            # Export as FBX
+            export_to_fbxfile(settings, scene, fbx_hkt_file, col.objects, ishavokfbxfile=True)
 
             # Then create the HKT file.
             process_hktfbx_to_fbximporterhkt(context, settings, fbx_hkt_file, hkt_file)
-            process_fbximporterhkt_to_final_hkt_for_mwm(self, context, path, assignments_inverted[hkt_col], settings, hkt_file, hkt_file)
+            process_fbximporterhkt_to_final_hkt_for_mwm(self, context, settings, hkt_file, hkt_file)
 
     return {'FINISHED'}
 
@@ -322,28 +293,8 @@ def export_bs(self, context):
     """Exports Build Stage collections"""
 
     scene = context.scene
-    collections = get_collections(scene)
-
-    valid = {}
-    if not collections['bs'] is None:
-        for key, value in collections['bs'].items():
-            bs_col = value
-
-            valid[key] = False
-            result = check_collection(self, context, scene, bs_col, True)
-            if result == {'CONTINUE'}:
-                valid[key] = True
-
-            if key - 1 in valid and not valid[key - 1] and valid[key]:
-                seut_report(self, context, 'ERROR', True, 'E015', 'LOD')
-                return {'CANCELLED'}
-            
-            if valid[key]:
-                for obj in bs_col.objects:
-                    if check_uvms(self, context, obj) != {'CONTINUE'}:
-                        return {'CANCELLED'}
-                
-                export_collection(self, context, bs_col)
+    bs_cols = get_cols_by_type(scene, 'bs')
+    check_export_col_dict(self, context, bs_cols)
     
     return {'FINISHED'}
 
@@ -354,60 +305,65 @@ def export_lod(self, context):
     scene = context.scene
     collections = get_collections(scene)
 
-    check_export_lods(self, context, collections['lod'])
-    check_export_lods(self, context, collections['bs_lod'])
+    # Normal LODs
+    lod_cols = get_cols_by_type(scene, 'lod', collections['main'][0])
+    check_export_col_dict(self, context, lod_cols)
+
+    # BS LODs
+    for ref_col in collections['bs']:
+        lod_cols = get_cols_by_type(scene, 'lod', ref_col)
+        check_export_col_dict(self, context, lod_cols)
 
     return {'FINISHED'}
 
 
-def check_export_lods(self, context, dictionary):
+def check_export_col_dict(self, context, cols: dict):
     scene = context.scene
+    first_free_idx = get_first_free_index(cols)
 
-    valid = {}
-    if not dictionary is None:
-        for key, value in dictionary.items():
-            lod_col = value
+    # This ensures there's no index gaps
+    if first_free_idx <= len(cols):
+        col = next(iter(cols.values()))
+        col_type = col.seut.col_type
+        if col_type == 'lod' and col.seut.ref_col is not None:
+            ref_col_type_index = col.seut.ref_col.seut.type_index
+            seut_report(self, context, 'ERROR', True, 'E006', f"BS{ref_col_type_index}_LOD")
+        else:
+            seut_report(self, context, 'ERROR', True, 'E006', col_type)
 
-            valid[key] = False
-            result = check_collection(self, context, scene, lod_col, True)
-            if result == {'CONTINUE'}:
-                valid[key] = True
+        return {'CANCELLED'}
 
-            if key - 1 in valid:
+    for idx, col in cols.items():
+        result = check_collection(self, context, scene, col, True)
+        if result == {'CONTINUE'}:
 
-                if not valid[key - 1] and valid[key]:
-                    seut_report(self, context, 'ERROR', True, 'E015', 'LOD')
-                    return {'CANCELLED'}
+            if col.seut.col_type == 'lod' and idx - 1 in cols and cols[idx - 1].seut.lod_distance > col.seut.lod_distance:
+                seut_report(self, context, 'ERROR', True, 'E011', col.name, cols[idx - 1].name)
+                return {'CANCELLED'}
 
-                if dictionary[key - 1].seut.lod_distance > lod_col.seut.lod_distance:
-                    seut_report(self, context, 'ERROR', True, 'E011')
+            for obj in col.objects:
+                if check_uvms(self, context, obj) != {'CONTINUE'}:
                     return {'CANCELLED'}
             
-            if valid[key]:
-                for obj in lod_col.objects:
-                    if check_uvms(self, context, obj) != {'CONTINUE'}:
-                        return {'CANCELLED'}
-                
-                export_collection(self, context, lod_col)
+            export_collection(self, context, col)
 
 
 def export_mwm(self, context):
     """Compiles to MWM from the previously exported temp files"""
     
     scene = context.scene
-    collections = get_collections(scene)
     preferences = get_preferences()
-    path = get_abs_path(scene.seut.export_exportPath) + "\\"
+    path = get_abs_path(scene.seut.export_exportPath)
     materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
     settings = ExportSettings(scene, None)
-        
+
     mwmfile = join(path, scene.seut.subtypeId + ".mwm")
     
     try:
         mwmbuilder(self, context, path, path, settings, mwmfile, materials_path)
     finally:
         if scene.seut.export_deleteLooseFiles:
-            delete_loose_files(self, context, path)
+            delete_temp_files(self, context, path)
 
     return {'FINISHED'}
 
@@ -417,28 +373,13 @@ def export_sbc(self, context):
 
     scene = context.scene
     collections = get_collections(scene)
-    preferences = get_preferences()
     path_data = os.path.join(get_abs_path(scene.seut.mod_path), "Data")
     path_models = get_abs_path(scene.seut.export_exportPath)
 
     # Checks whether collection exists, is excluded or is empty
-    result = check_collection(self, context, scene, collections['main'], False)
+    result = check_collection(self, context, scene, collections['main'][0], False)
     if not result == {'CONTINUE'}:
         return result
-
-    bs_valid = {}
-    if not collections['bs'] is None:
-        for key, value in collections['bs'].items():
-            bs_col = value
-
-            bs_valid[key] = False
-            result = check_collection(self, context, scene, bs_col, True)
-            if result == {'CONTINUE'}:
-                bs_valid[key] = True
-        
-            if key - 1 in bs_valid and not bs_valid[key - 1] and bs_valid[key]:
-                seut_report(self, context, 'ERROR', True, 'E015', 'BS')
-                return {'CANCELLED'}
 
     # 3 options: no file and no entry, file but no entry, file and entry
 
@@ -502,7 +443,7 @@ def export_sbc(self, context):
     lines_entry = update_add_attrib(def_Size, 'z', round(scene.seut.bBox_Y * medium_grid_scalar), update_sbc, lines_entry)
 
     center_empty = None
-    for obj in collections['main'].objects:
+    for obj in collections['main'][0].objects:
         if obj is not None and obj.type == 'EMPTY' and obj.name.startswith('Center'):
             center_empty = obj
             break
@@ -662,11 +603,9 @@ def export_sbc(self, context):
     if not collections['bs'] is None and len(collections['bs']) > 0:
 
         counter = 0
-        if not collections['bs'] is None:
-            for key, value in collections['bs'].items():
-                bs_col = value
-                if len(bs_col.objects) > 0:
-                    counter += 1
+        for bs_col in collections['bs']:
+            if len(bs_col.objects) > 0:
+                counter += 1
 
         if counter > 0:
             if not update_sbc:

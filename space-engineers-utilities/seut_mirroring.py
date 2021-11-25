@@ -5,9 +5,9 @@ from bpy.types      import Operator
 from collections    import OrderedDict
 
 from .materials.seut_materials      import create_internal_material
-from .seut_collections              import get_collections, colors
+from .seut_collections              import get_collections, create_seut_collection
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, prep_context, to_radians, clear_selection, create_seut_collection, lock_object
+from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, prep_context, to_radians, clear_selection, lock_object
 
 
 mirroring_presets = OrderedDict([
@@ -60,12 +60,12 @@ def setup_mirroring(self, context):
     collections = get_collections(scene)
     current_area = prep_context(context)
 
-    result = check_collection(self, context, scene, collections['seut'], False)
+    result = check_collection(self, context, scene, collections['seut'][0], False)
     if not result == {'CONTINUE'}:
         scene.seut.mirroringToggle = 'off'
         return
 
-    result = check_collection(self, context, scene, collections['main'], False)
+    result = check_collection(self, context, scene, collections['main'][0], False)
     if not result == {'CONTINUE'}:
         scene.seut.mirroringToggle = 'off'
         return
@@ -88,14 +88,8 @@ def setup_mirroring(self, context):
         smat_y = create_internal_material(context, 'MIRROR_Y')
     if smat_z is None:
         smat_z = create_internal_material(context, 'MIRROR_Z')
-        
-    tag = ' (' + scene.seut.subtypeId + ')'
 
-    collection = create_seut_collection(collections['seut'], 'Mirroring' + tag)
-    collection.seut.col_type = 'mirroring'
-    collection.seut.scene = scene
-    if bpy.app.version >= (2, 91, 0):
-        collection.color_tag = colors[collection.seut.col_type]
+    collection = create_seut_collection(context, 'mirroring')
     
     # Compile rotation / position / size information
     empty_x_rot_raw = mirroring_presets[scene.seut.mirroring_X]

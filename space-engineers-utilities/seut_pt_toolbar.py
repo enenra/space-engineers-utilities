@@ -3,7 +3,8 @@ import addon_utils
 
 from bpy.types  import Panel
 
-from .seut_collections              import get_collections, names, colors
+from .seut_collections              import get_collections, seut_collections
+from .seut_utils                    import get_enum_items, wrap_text
 
 
 class SEUT_PT_Panel(Panel):
@@ -105,7 +106,6 @@ class SEUT_PT_Panel_Collections(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        wm = context.window_manager
         active_col = context.view_layer.active_layer_collection.collection
 
         # split = layout.split(factor=0.85)
@@ -114,27 +114,43 @@ class SEUT_PT_Panel_Collections(Panel):
         # link.section = 'reference'
         # link.page = 'outliner'
 
+        show_button = True
         if active_col.seut.col_type != 'none':
             box = layout.box()
-            box.label(text=active_col.name, icon='COLLECTION_' + colors[active_col.seut.col_type])
-            col = box.column(align=True)
-            col.label(text="Type: " + names[active_col.seut.col_type])
-            col.label(text="Scene: " + active_col.seut.scene.name)
-        layout.operator('scene.create_collection')
+            box.label(text=active_col.name, icon='COLLECTION_' + active_col.color_tag)
+            if active_col.seut.col_type in seut_collections[scene.seut.sceneType]:
+                box.label(text=seut_collections[scene.seut.sceneType][active_col.seut.col_type]['type'])
+            elif active_col.seut.col_type == 'seut':
+                box.label(text='SEUT Collection Container')
 
-        if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod' or active_col.seut.col_type == 'hkt' or active_col.seut.col_type == 'bs_lod':
-            box = layout.box()
-            box.label(text='Options', icon='SETTINGS')
+            if not active_col.seut.col_type == 'seut':
+                if not active_col.seut.col_type in seut_collections[scene.seut.sceneType] or active_col.seut.ref_col is not None and not active_col.seut.ref_col.seut.col_type in seut_collections[scene.seut.sceneType]:
+                    show_button = False
+                    lines = wrap_text(f"Collection type not supported by scene type '{get_enum_items(scene.seut, 'sceneType', scene.seut.sceneType)[0]}'.", int(context.region.width / 8.5))
+                    for l in lines:
+                        row = box.row()
+                        row.scale_y = 0.75
+                        row.alert = True
+                        row.label(text=l)
 
-            if active_col.seut.col_type == 'lod' or active_col.seut.col_type == 'bs_lod':
+        if active_col.seut.col_type in ['lod', 'hkt']:
+            split = box.split(factor=0.35)
+            col = split.column()
+            row = col.row()
+            if active_col.seut.ref_col is None:
+                row.alert = True
+            row.label(text="Reference:")
+            col = split.column()
+            row = col.row()
+            if active_col.seut.ref_col is None:
+                row.alert = True
+            row.prop(active_col.seut,'ref_col', text="")
+
+            if active_col.seut.col_type == 'lod':
                 box.prop(active_col.seut,'lod_distance')
 
-            if active_col.seut.col_type == 'hkt':
-                split = box.split(factor=0.40)
-                col = split.column()
-                col.label(text="Reference:")
-                col = split.column()
-                col.prop(active_col.seut,'ref_col', text="")
+        if show_button:
+            layout.operator('scene.create_collection')
 
 
 class SEUT_PT_Panel_BoundingBox(Panel):
@@ -348,8 +364,6 @@ class SEUT_PT_Panel_Export(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-
-        collections = get_collections(scene)
 
         # Export
         row = layout.row()

@@ -19,7 +19,7 @@ from bpy.types import (Panel,
 from bpy.types                  import Operator
 
 from .seut_ot_import        import import_fbx
-from ..seut_collections     import get_collections, create_seut_collection, sort_collections, names
+from ..seut_collections     import *
 from ..seut_errors          import seut_report
 
 
@@ -46,8 +46,6 @@ class SEUT_OT_ImportComplete(Operator):
 
 
     def execute(self, context):
-
-        wm = context.window_manager
         scene = context.scene
 
         collections = get_collections(scene)
@@ -78,18 +76,29 @@ class SEUT_OT_ImportComplete(Operator):
             if fbx_type is None:
                 continue
 
-            if fbx_type['col_type'] == 'bs' or fbx_type['col_type'] == 'lod' or fbx_type['col_type'] == 'bs_lod':
-                if fbx_type['col_type'] in collections and fbx_type['type_index'] in collections[fbx_type['col_type']]:
-                    col = collections[fbx_type['col_type']][fbx_type['type_index']]
-                else:
-                    col = create_seut_collection(context, fbx_type['col_type'], fbx_type['type_index'], None)
-
-            elif fbx_type['col_type'] == 'main':
-                if fbx_type['col_type'] in collections:
-                    col = collections[fbx_type['col_type']]
-                else:
-                    col = create_seut_collection(context, fbx_type['col_type'], fbx_type['type_index'], None)
+            col_type = fbx_type['col_type']
+            type_index = fbx_type['type_index']
+            ref_col_type = fbx_type['ref_col_type']
+            ref_col_type_index = fbx_type['ref_col_type_index']
             
+            if ref_col_type is not None:
+                ref_col = get_seut_collection(scene, ref_col_type, ref_col_type=None, type_index=ref_col_type_index)
+            else:
+                ref_col = None
+
+            if col_type in ['bs', 'lod']:
+                cols = get_cols_by_type(scene, col_type, ref_col)
+                if col_type in collections and type_index in cols:
+                    col = cols[type_index]
+                else:
+                    col = create_seut_collection(context, col_type, type_index, ref_col)
+
+            elif col_type == 'main':
+                if 'main' in collections:
+                    col = collections['main'][0]
+                else:
+                    col = create_seut_collection(context, 'main', None, None)
+                        
             col_counter += 1
             context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children[col.name]
             result = import_fbx(self, context, os.path.join(directory, f))
@@ -135,40 +144,39 @@ def determine_fbx_type(filename: str):
 
     fbx_type = {
         'col_type': None, 
-        'type_index': None
+        'type_index': None,
+        'ref_col_type': None,
+        'ref_col_type_index': None
         }
-    
-    if filename.find("_BS_LOD") != -1:
-        fbx_type['col_type'] = 'bs_lod'
 
-        if re.search("(?<=_BS_LOD)[0-9]{1,}", filename) != -1:
-            fbx_type['type_index'] = int(re.search("(?<=_BS_LOD)[0-9]{1,}", filename)[0])
-    
-    elif filename.find("Construction_") != -1 and filename.find("_LOD") != -1:
-        fbx_type['col_type'] = 'bs_lod'
-
-        # More than one BS_LOD for a BS is currently not supported.
-        if re.search("(?<=_LOD)[0-9]{1,}", filename)[0] != str(1):
-            return None
-
-        fbx_type['type_index'] = int(re.search("(?<=Construction_)[0-9]{1,}", filename)[0])
-
-    elif filename.find("_LOD") != -1:
+    # LOD
+    if filename.find("_LOD") != -1:
         fbx_type['col_type'] = 'lod'
         fbx_type['type_index'] = int(re.search("(?<=_LOD)[0-9]{1,}", filename)[0])
+    
+    # BS / Construction
+    if filename.find("Construction_") != -1:
+        if fbx_type['col_type'] is not None:
+            fbx_type['ref_col_type'] = 'bs'
+            fbx_type['ref_col_type_index'] = int(re.search("(?<=Construction_)[0-9]{1,}", filename)[0])
+        else:
+            fbx_type['col_type'] = 'bs'
+            fbx_type['type_index'] = int(re.search("(?<=Construction_)[0-9]{1,}", filename)[0])
 
-    elif filename.find("_BS") != -1:
-        fbx_type['col_type'] = 'bs'
-        fbx_type['type_index'] = int(re.search("(?<=_BS)[0-9]{1,}", filename)[0])
+    if filename.find("_BS_LOD") != -1:
+            fbx_type['ref_col_type'] = 'bs'
+            fbx_type['ref_col_type_index'] = 1
 
-    elif filename.find("Construction_") != -1:
-        fbx_type['col_type'] = 'bs'
-        fbx_type['type_index'] = int(re.search("(?<=Construction_)[0-9]{1,}", filename)[0])
-
-    elif filename.find(".hkt") != -1:
-        fbx_type['col_type'] = 'hkt'
-
-    else:
+    if filename.find("_BS") != -1:
+        if fbx_type['col_type'] is not None:
+            fbx_type['ref_col_type'] = 'bs'
+            fbx_type['ref_col_type_index'] = int(re.search("(?<=_BS)[0-9]{1,}", filename)[0])
+        elif fbx_type['ref_col_type'] is not None:
+            fbx_type['col_type'] = 'bs'
+            fbx_type['type_index'] = int(re.search("(?<=_BS)[0-9]{1,}", filename)[0])
+    
+    # Main
+    if fbx_type['col_type'] is None:
         fbx_type['col_type'] = 'main'
 
     return fbx_type

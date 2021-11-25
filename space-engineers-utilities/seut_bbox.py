@@ -6,9 +6,6 @@ from bgl                import *
 from gpu_extras.batch   import batch_for_shader
 from bpy.types          import Operator
 
-from .seut_collections              import get_collections
-from .seut_errors                   import seut_report
-
 
 # Most of the code used in this class is **heavily** based on Jayanam's "Blender 2.8 Python GPU : Draw Lines"-video:
 # https://www.youtube.com/watch?v=EgrgEoNFNsA

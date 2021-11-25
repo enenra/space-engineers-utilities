@@ -9,16 +9,16 @@ errors = {
     'E003': "{variable_1} path '{variable_2}' doesn't exist.",
     'E004': "No SubtypeId set for scene '{variable_1}'.",
     'E005': "Linking to scene '{variable_1}' from '{variable_2}' would create a subpart instancing loop.",
-    'E006': "LOD2 cannot be set if LOD1 is not, or LOD3 if LOD2 is not.",
+    'E006': "Invalid colletion setup: Missing indexes in '{variable_1}'-collections.",
     'E007': "'{variable_1}' texture filepath in local material '{variable_2}' does not contain 'Textures\\'. Cannot be transformed into relative path.",
     'E008': "BLEND file must be saved before export.",
     'E009': "Cannot create empties for more than one object at a time.",
     'E010': "Cannot run Simple Navigation if no SEUT collections are present.",
-    'E011': "Invalid LOD distances. LOD2 cannot be set to be displayed before LOD1 or LOD3 before LOD2.",
+    'E011': "Invalid LOD distances: '{variable_1}' has a higher index but LOD distance of '{variable_2}' is higher.",
     'E012': "Path to {variable_1} (Addon Preferences) '{variable_2}' not valid.",
     'E013': "Path to {variable_1} (Addon Preferences) not valid - wrong target file: Expected '{variable_2}' but is set to '{variable_3}'.",
     'E014': "Export path '{variable_1}' in scene '{variable_2}' does not contain 'Models\\'. Cannot be transformed into relative path.",
-    'E015': "Invalid {variable_1} setup. Cannot have {variable_1}2 but no {variable_1}1, or {variable_1}3 but no {variable_1}2.",
+    'E015': "Invalid {variable_1} filetype: Must be '{variable_2}'.",
     'E016': "Scene '{variable_1}' could not be exported.",
     'E017': "A RunTimeError has occurred in the FBX exporter. Try exiting Edit-Mode before exporting.",
     'E018': "Cannot set SubtypeId to a SubtypeId that has already been used for another scene in the same BLEND file.",
@@ -50,7 +50,6 @@ errors = {
     'E044': "An error ocurred during MWM conversion. See *.mwm.log file (generated if 'Delete Temp Files' is toggled off) for details.",
     'E045': "Model path must be located within the Mod's directory ('{variable_1}').",
     'E046': "Could not export '{variable_1}'-texture of material '{variable_2}' to DDS.\n{variable_3}",
-    'E047': "Invalid {variable_1} filetype: Must be '{variable_2}'.",
 }
 
 warnings = {
@@ -72,7 +71,7 @@ warnings = {
 infos = {
     'I001': "Local material '{variable_1}' does not contain any valid textures. Skipping XML entry.",
     'I002': "Successfully converted '{variable_1}'-texture of material '{variable_2}' to DDS.",
-    'I003': "Collection '{variable_1}' not found or empty. Skipping XML entry.",
+    'I003': "All textures are up to date.",
     'I004': "'{variable_1}' has been created.",
     'I005': "IndexError at material '{variable_1}'.",
     'I006': "{variable_1} Options successfully copied to all scenes.",
@@ -93,7 +92,6 @@ infos = {
     'I021': "{variable_1} of {variable_2} files successfully imported. Refer to Blender System Console for details.",
     'I022': "Entry for '{variable_1}' has been created / updated in file '{variable_2}'.",
     'I023': "Texture conversion completed: {variable_1}/{variable_2} files have been converted in {variable_3}.",
-    'I024': "All textures are up to date.",
 }
 
 

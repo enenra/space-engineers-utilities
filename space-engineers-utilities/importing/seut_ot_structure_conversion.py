@@ -4,7 +4,7 @@ from bpy.types import Operator
 
 from ..empties.seut_empties          import empty_types
 from ..export.seut_export_utils      import get_subpart_reference
-from ..seut_collections              import get_collections, rename_collections, create_collections, colors, names
+from ..seut_collections              import get_collections, rename_collections, create_collections, seut_collections
 from ..seut_mirroring                import save_rotation
 from ..seut_errors                   import seut_report
 from ..seut_utils                    import link_subpart_scene, get_parent_collection
@@ -22,7 +22,8 @@ class SEUT_OT_StructureConversion(Operator):
 
         return result
     
-    
+
+# TODO: Rework
 def convert_structure(self, context):
     """Converts blend files created with the old plugin to the new structure"""
 
@@ -47,7 +48,7 @@ def convert_structure(self, context):
             seut_col.seut.scene = scn
             seut_col.seut.col_type = 'seut'
             if bpy.app.version >= (2, 91, 0):
-                seut_col.color_tag = colors['seut']
+                seut_col.color_tag = 'COLOR_07'
             scn.collection.children.link(seut_col)
         
         assignments = {
@@ -93,16 +94,18 @@ def convert_structure(self, context):
                         col.seut.col_type = value
                     
                     if bpy.app.version >= (2, 91, 0):
-                        col.color_tag = colors[col.seut.col_type]
+                        col.color_tag = seut_collections[scn.seut.sceneType][col.seut.col_type]['color']
 
                     col.seut.scene = scn
 
-                    if names[value] + tag in bpy.data.collections:
-                        bpy.data.collections.remove(bpy.data.collections[names[value] + tag])
+                    name = seut_collections[scn.seut.sceneType][value]['name']
+                    if name + tag in bpy.data.collections:
+                        bpy.data.collections.remove(bpy.data.collections[name + tag])
 
                     idx = ""
-                    if col.seut.type_index != 0: idx = col.seut.type_index
-                    col.name = names[value] + str(idx) + tag
+                    if col.seut.type_index != 0: 
+                        idx = col.seut.type_index
+                    col.name = name + str(idx) + tag
 
                     break
             
@@ -120,6 +123,9 @@ def convert_structure(self, context):
         
         create_collections(context)
         rename_collections(scn)
+
+        collections = get_collections(scn)
+        collections['hkt'][0].seut.ref_col = collections['main'][0]
 
         # Convert custom properties of empties from harag's to the default blender method.
         for obj in scn.objects:
@@ -202,22 +208,22 @@ def convert_structure(self, context):
     for scn in bpy.data.scenes:
         collections = get_collections(scn)
 
-        for key in collections.keys():
-            if collections[key] != None:
+        for col_type in collections.keys():
+            if collections[col_type] != None:
 
-                if key == 'bs' or key == 'lod' or key == 'bs_lod':
-                    for dict_col in collections[key]:
-                        for empty in collections[key][dict_col].objects:
+                if col_type in ['bs', 'lod']:
+                    for col in collections[col_type]:
+                        for empty in col.objects:
                             if empty.type == 'EMPTY' and 'file' in empty and str(empty['file']) in bpy.data.scenes:
                                 reference = get_subpart_reference(empty, collections)
-                                link_subpart_scene(self, scn, empty, collections[key][dict_col])
+                                link_subpart_scene(self, scn, empty, col)
                                 empty['file'] = reference
 
-                elif key == 'main':
-                    for empty in collections[key].objects:
+                elif col_type == 'main':
+                    for empty in collections['main'][0].objects:
                         if empty.type == 'EMPTY' and 'file' in empty and str(empty['file']) in bpy.data.scenes:
                             reference = get_subpart_reference(empty, collections)
-                            link_subpart_scene(self, scn, empty, collections[key])
+                            link_subpart_scene(self, scn, empty, collections['main'][0])
                             empty['file'] = reference
 
     # Set parent scenes from subparts

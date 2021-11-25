@@ -95,7 +95,7 @@ class SEUT_OT_AddDummy(Operator):
         scene = context.scene
         collections = get_collections(scene)
 
-        if collections['main'] is None:
+        if collections['main'][0] is None:
             seut_report(self, context, 'ERROR', True, 'E002', "'Main'")
             return {'CANCELLED'}
         
@@ -120,8 +120,8 @@ class SEUT_OT_AddDummy(Operator):
             empty.name = empty_name
 
         parent_collection = get_parent_collection(context, empty)
-        if parent_collection != collections['main']:
-            collections['main'].objects.link(empty)
+        if parent_collection != collections['main'][0]:
+            collections['main'][0].objects.link(empty)
 
             if parent_collection is None:
                 try:

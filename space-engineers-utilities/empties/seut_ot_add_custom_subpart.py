@@ -3,8 +3,6 @@ import bpy
 from bpy.types  import Operator
 from bpy.props  import StringProperty
 
-from ..seut_collections             import get_collections
-from ..seut_utils                   import get_parent_collection
 from ..seut_errors                  import seut_report
 
 

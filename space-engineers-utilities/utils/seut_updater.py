@@ -1,4 +1,5 @@
 import bpy
+import sys
 import re
 import requests
 import webbrowser
@@ -108,8 +109,8 @@ def check_update(current_version):
 
             else:
                 if preferences.dev_mode:
-
-                    addon = bpy.context.preferences.addons.get(__package__.split(".")[0])
+                    
+                    addon = sys.modules.get(__package__.split(".")[0])
                     
                     # Version number is the same and latest is not a dev version.
                     if is_dev == -1:
