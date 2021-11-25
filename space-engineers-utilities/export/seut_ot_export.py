@@ -13,7 +13,7 @@ from bpy.types      import Operator
 from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
 from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
 from .seut_mwmbuilder               import mwmbuilder
-from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_loose_files, create_relative_path
+from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_temp_files, create_relative_path
 from .seut_export_utils             import correct_for_export_type, export_collection, get_col_filename
 from ..utils.seut_xml_utils         import *
 from ..seut_preferences             import get_addon
@@ -232,15 +232,15 @@ def export_hkt(self, context):
         for key in collections:
 
             if key == 'main':
-                hkt = get_rev_ref_cols(collections, key[0], 'hkt')[0]
+                hkt = get_rev_ref_cols(collections, collections[key][0], 'hkt')
                 if hkt != []:
-                    assignments[key[0]] = get_rev_ref_cols(collections, key[0], 'hkt')[0]
+                    assignments[key[0]] = get_rev_ref_cols(collections, collections[key][0], 'hkt')[0]
 
             elif key == 'bs':
-                for col in key:
+                for col in collections[key]:
                     if len(col.objects) <= 0:
                         continue
-                    hkt = get_rev_ref_cols(collections, col, 'hkt')[0]
+                    hkt = get_rev_ref_cols(collections, col, 'hkt')
                     if hkt != []:
                         assignments[col] = hkt
                     else:
@@ -279,8 +279,8 @@ def export_hkt(self, context):
                 seut_report(self, context, 'ERROR', True, 'E022', assignments[key].name, len(assignments[key].objects))
                 continue
             
-            fbx_hkt_file = join(path, f"{get_col_filename(key)}.hkt.fbx")
-            hkt_file = join(path, f"{get_col_filename(key)}.hkt")
+            fbx_hkt_file = join(path, f"{get_col_filename(assignments[key])}.hkt.fbx")
+            hkt_file = join(path, f"{get_col_filename(assignments[key])}.hkt")
 
             # Export as FBX
             export_to_fbxfile(settings, scene, fbx_hkt_file, assignments[key].objects, ishavokfbxfile=True)
@@ -340,7 +340,7 @@ def check_export_col_dict(self, context, cols: dict):
         result = check_collection(self, context, scene, col, True)
         if result == {'CONTINUE'}:
 
-            if col.seut.col_typ == 'lod' and idx - 1 in cols and cols[idx - 1].seut.lod_distance > col.seut.lod_distance:
+            if col.seut.col_type == 'lod' and idx - 1 in cols and cols[idx - 1].seut.lod_distance > col.seut.lod_distance:
                 seut_report(self, context, 'ERROR', True, 'E011', col.name, cols[idx - 1].name)
                 return {'CANCELLED'}
 
@@ -359,14 +359,14 @@ def export_mwm(self, context):
     path = get_abs_path(scene.seut.export_exportPath)
     materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
     settings = ExportSettings(scene, None)
-        
+
     mwmfile = join(path, scene.seut.subtypeId + ".mwm")
     
     try:
         mwmbuilder(self, context, path, path, settings, mwmfile, materials_path)
     finally:
         if scene.seut.export_deleteLooseFiles:
-            delete_loose_files(self, context, path)
+            delete_temp_files(self, context, path)
 
     return {'FINISHED'}
 

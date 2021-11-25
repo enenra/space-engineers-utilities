@@ -24,20 +24,21 @@ def process_hktfbx_to_fbximporterhkt(context, settings: ExportSettings, srcfile,
         logfile=dstfile+'.convert.log'
     )	
 
+
 def process_fbximporterhkt_to_final_hkt_for_mwm(self, context, settings: ExportSettings, srcfile, dstfile, havokoptions=HAVOK_OPTION_FILE_CONTENT):
     
     hko = tempfile.NamedTemporaryFile(mode='wt', prefix='space_engineers_', suffix=".hko", delete=False) # wt mode is write plus text mode.	
-    try:	
-        with hko.file as tempfile_to_process:	
-            tempfile_to_process.write(havokoptions)	
+    try:
+        with hko.file as tempfile_to_process:
+            tempfile_to_process.write(havokoptions)
 
         # -t is for standard ouput, -s designates a filter set (hko created above), -p designates path.	
         # Above referenced from running "hctStandAloneFilterManager.exe -h"	
-        result = settings.callTool(	
+        result = settings.callTool(
             context,
-            [settings.havokfilter, '-t', '-s', hko.name, '-p', dstfile, srcfile], 	
+            [settings.havokfilter, '-t', '-s', hko.name, '-p', dstfile, srcfile],
             ToolType(2),
-            logfile=dstfile+'.filter.log',	
+            logfile=dstfile+'.filter.log',
             successfulExitCodes=[0,1]
         )
 
@@ -47,6 +48,6 @@ def process_fbximporterhkt_to_final_hkt_for_mwm(self, context, settings: ExportS
     finally:
         if context.scene.seut.export_deleteLooseFiles:
             os.remove(hko.name)
-                        
+
         if result:
             seut_report(self, context, 'INFO', True, 'I009')

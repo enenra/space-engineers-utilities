@@ -94,7 +94,7 @@ def export_xml(self, context, collection) -> str:
         if not collections['lod'] is None:
             cols = get_rev_ref_cols(collections, collection, 'lod')
             for col in cols:
-                if len(cols.objects) > 0:
+                if len(col.objects) > 0:
                     create_lod_entry(model, col.seut.lod_distance, path, get_col_filename(col))
         
     # Create file with subtypename + collection name and write string to it
@@ -556,16 +556,21 @@ def write_to_log(logfile, content, cmdline=None, cwd=None, loglines=[]):
 
         log.write(content)
 
-def delete_loose_files(self, context, path):
-    fileRemovalList = [fileName for fileName in glob.glob(path + "*.*") if "fbx" in fileName or
-        "xml" in fileName or "hkt" in fileName or "log" in fileName]
+
+def delete_temp_files(self, context, path: str):
+    """Deletes all temp files for the scene currently being exported."""
+
+    scene = context.scene
+
+    file_list = [f for f in os.listdir(path) if (f"{scene.seut.subtypeId}_BS" in f or f"{scene.seut.subtypeId}_LOD" in f or f"{scene.seut.subtypeId}." in f) and (".fbx" in f or ".xml" in f or ".hkt" in f or ".log" in f)]
 
     try:
-        for fileName in fileRemovalList:
-            os.remove(fileName)
+        for f in file_list:
+            os.remove(os.path.join(path, f))
 
     except EnvironmentError:
         seut_report(self, context, 'ERROR', False, 'E020')
+
 
 class ExportSettings:
     def __init__(self, scene, depsgraph, mwmDir=None):

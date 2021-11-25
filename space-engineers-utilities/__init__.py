@@ -263,6 +263,7 @@ def menu_draw(self, context):
     layout.label(text="Space Engineers Utilities")
     layout.menu('SEUT_MT_ContextMenu')
 
+
 @persistent
 def load_handler(dummy):
         

@@ -167,13 +167,11 @@ def patch_collections_v0996():
                     col.seut.col_type = 'lod'
                     if f"BS1 ({scn.seut.subtypeId})" in bpy.data.collections:
                         assignments[col] = f"BS1 ({scn.seut.subtypeId})"
-                        print(assignments[col])
                     col.seut.version = 2
                 
                 elif col.seut.col_type == 'lod' and col.seut.ref_col is None:
                     if f"Main ({scn.seut.subtypeId})" in bpy.data.collections:
                         assignments[col] = f"Main ({scn.seut.subtypeId})"
-                        print(assignments[col])
                     col.seut.version = 2
         
         for col, name in assignments.items():
