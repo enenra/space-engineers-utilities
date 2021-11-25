@@ -274,9 +274,9 @@ def load_handler(dummy):
         pass
     
     # On first install this might cause issues, the try is a safety for that.
+    apply_patches()
     try:
         check_update(get_addon_version())
-        apply_patches()
         load_addon_prefs()
     except Exception as e:
         print(e)

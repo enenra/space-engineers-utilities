@@ -2,7 +2,7 @@ import bpy
 import re
 import os
 
-from ..seut_collections     import get_collections, rename_collections, seut_collections
+from ..seut_collections     import rename_collections, seut_collections, sort_collections
 from ..seut_errors          import get_abs_path
 
 
@@ -103,9 +103,6 @@ def patch_collections_v0995():
             if bpy.app.version >= (2, 91, 0):
                 col.color_tag = seut_collections[scn.seut.sceneType][col.seut.col_type]['color']
 
-        
-        rename_collections(scn)
-
     # This must happen after because the collection names might still be in flux beforehand
     for col in bpy.data.collections:
         if col is None:
@@ -160,18 +157,26 @@ def patch_collections_v0996():
     """Patches collections for removal of BS_LOD-type and change for LOD to have ref_cols"""
 
     for scn in bpy.data.scenes:
-        collections = get_collections(scn)
-
+        assignments = {}
         for col in bpy.data.collections:
-            if col.scene != scn:
+            if col.seut.scene != scn:
                 continue
-
+            
             if col.seut.version < 2:
-                if col.seut.col_type == 'none' and (col.seut.lod_distance != 25 or col.name.find("BS_LOD") != -1):
+                if col.seut.col_type == 'mountpoints' and len(col.objects) <= 0:
                     col.seut.col_type = 'lod'
-                    col.seut.ref_col = collections['bs'][0]
+                    if f"BS1 ({scn.seut.subtypeId})" in bpy.data.collections:
+                        assignments[col] = f"BS1 ({scn.seut.subtypeId})"
+                        print(assignments[col])
                     col.seut.version = 2
                 
                 elif col.seut.col_type == 'lod' and col.seut.ref_col is None:
-                    col.seut.ref_col = collections['main'][0]
+                    if f"Main ({scn.seut.subtypeId})" in bpy.data.collections:
+                        assignments[col] = f"Main ({scn.seut.subtypeId})"
+                        print(assignments[col])
                     col.seut.version = 2
+        
+        for col, name in assignments.items():
+            col.seut.ref_col = bpy.data.collections[name]
+
+        rename_collections(scn)
