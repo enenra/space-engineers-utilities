@@ -17,36 +17,43 @@ seut_collections = {
     'mainScene':{
         'main': {
             'name': 'Main',
+            'type': 'Main Model',
             'schema': 'Main ({subtpye_id})',
             'color': 'COLOR_04'
             },
         'hkt': {
             'name': 'Collision',
+            'type': 'Collision Objects',
             'schema': 'Collision - {ref_col_name}{ref_col_type_index} ({subtpye_id})',
             'color': 'COLOR_08'
             },
         'lod': {
             'name': 'LOD',
+            'type': 'Level of Detail',
             'schema': 'LOD{type_index} ({subtpye_id})',
             'color': 'COLOR_01'
             },
         'bs': {
             'name': 'BS',
+            'type': 'Build Stage Model',
             'schema': 'BS{type_index} ({subtpye_id})',
             'color': 'COLOR_05'
             },
         'mountpoints': {
             'name': 'Mountpoints',
+            'type': 'Mountpoint Information',
             'schema': 'Mountpoints ({subtpye_id})',
             'color': 'COLOR_03'
             },
         'mirroring': {
             'name': 'Mirroring',
+            'type': 'Mirroring Information',
             'schema': 'Mirroring ({subtpye_id})',
             'color': 'COLOR_03'
             },
         'render': {
             'name': 'Render',
+            'type': 'Render Rig',
             'schema': 'Render ({subtpye_id})',
             'color': 'COLOR_03'
             }
@@ -54,21 +61,25 @@ seut_collections = {
     'subpart': {
         'main': {
             'name': 'Main',
+            'type': 'Subpart Model',
             'schema': 'Main ({subtpye_id})',
             'color': 'COLOR_04'
             },
         'hkt': {
             'name': 'Collision',
+            'type': 'Collision Objects',
             'schema': 'Collision - {ref_col_name}{ref_col_type_index} ({subtpye_id})',
             'color': 'COLOR_08'
             },
         'lod': {
             'name': 'LOD',
+            'type': 'Level of Detail',
             'schema': 'LOD{type_index} ({subtpye_id})',
             'color': 'COLOR_01'
             },
         'bs': {
             'name': 'BS',
+            'type': 'Build Stage Model',
             'schema': 'BS{type_index} ({subtpye_id})',
             'color': 'COLOR_05'
             }
@@ -76,16 +87,19 @@ seut_collections = {
     'character': {
         'main': {
             'name': 'Main',
+            'type': 'Character Model',
             'schema': 'Main ({subtpye_id})',
             'color': 'COLOR_04'
             },
         'hkt': {
             'name': 'Collision',
+            'type': 'Collision Objects',
             'schema': 'Collision - {ref_col_name}{ref_col_type_index} ({subtpye_id})',
             'color': 'COLOR_08'
             },
         'lod': {
             'name': 'LOD',
+            'type': 'Level of Detail',
             'schema': 'LOD{type_index} ({subtpye_id})',
             'color': 'COLOR_01'
             },
@@ -93,6 +107,7 @@ seut_collections = {
     'character_animation': {
         'main': {
             'name': 'Main',
+            'type': 'Character Animation',
             'schema': 'Main ({subtpye_id})',
             'color': 'COLOR_04'
             },
@@ -100,6 +115,7 @@ seut_collections = {
     'particle_effect': {
         'main': {
             'name': 'Main',
+            'type': 'Particle Effect',
             'schema': 'Main ({subtpye_id})',
             'color': 'COLOR_04'
             },

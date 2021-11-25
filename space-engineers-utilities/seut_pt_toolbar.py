@@ -117,6 +117,10 @@ class SEUT_PT_Panel_Collections(Panel):
         if active_col.seut.col_type != 'none':
             box = layout.box()
             box.label(text=active_col.name, icon='COLLECTION_' + active_col.color_tag)
+            if active_col.seut.col_type in seut_collections[scene.seut.sceneType]:
+                box.label(text=seut_collections[scene.seut.sceneType][active_col.seut.col_type]['type'])
+            elif active_col.seut.col_type == 'seut':
+                box.label(text='SEUT Collection Container')
 
             show_button = True
             if not active_col.seut.col_type == 'seut':
