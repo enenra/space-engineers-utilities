@@ -48,7 +48,7 @@ def convert_structure(self, context):
             seut_col.seut.scene = scn
             seut_col.seut.col_type = 'seut'
             if bpy.app.version >= (2, 91, 0):
-                seut_col.color_tag = seut_collections[scn.seut.sceneType]['seut']['color']
+                seut_col.color_tag = 'COLOR_07'
             scn.collection.children.link(seut_col)
         
         assignments = {
@@ -103,7 +103,8 @@ def convert_structure(self, context):
                         bpy.data.collections.remove(bpy.data.collections[name + tag])
 
                     idx = ""
-                    if col.seut.type_index != 0: idx = col.seut.type_index
+                    if col.seut.type_index != 0: 
+                        idx = col.seut.type_index
                     col.name = name + str(idx) + tag
 
                     break
@@ -122,6 +123,9 @@ def convert_structure(self, context):
         
         create_collections(context)
         rename_collections(scn)
+
+        collections = get_collections(scn)
+        collections['hkt'][0].seut.ref_col = collections['main'][0]
 
         # Convert custom properties of empties from harag's to the default blender method.
         for obj in scn.objects:
