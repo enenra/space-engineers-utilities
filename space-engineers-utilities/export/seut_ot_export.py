@@ -234,7 +234,7 @@ def export_hkt(self, context):
             if key == 'main':
                 hkt = get_rev_ref_cols(collections, collections[key][0], 'hkt')
                 if hkt != []:
-                    assignments[key[0]] = get_rev_ref_cols(collections, collections[key][0], 'hkt')[0]
+                    assignments[collections[key][0].name] = get_rev_ref_cols(collections, collections[key][0], 'hkt')
 
             elif key == 'bs':
                 for col in collections[key]:
@@ -242,24 +242,21 @@ def export_hkt(self, context):
                         continue
                     hkt = get_rev_ref_cols(collections, col, 'hkt')
                     if hkt != []:
-                        assignments[col] = hkt
-                    else:
-                        hkt = get_rev_ref_cols(collections, collections['main'][0], 'hkt')[0]
-                        if hkt != []:
-                            assignments[col] = hkt
+                        assignments[col.name] = hkt
 
         if assignments == {}:
             return {'FINISHED'}
 
         # Create HKTs by going through all cols with HKTs assigned to them.
         for key in assignments:
-
-            result = check_collection(self, context, scene, assignments[key], True)
+            col = bpy.data.collections[key]
+            print(col)
+            result = check_collection(self, context, scene, col, True)
             if not result == {'CONTINUE'}:
                 continue
 
             cancelled = False
-            for obj in assignments[key].objects:
+            for obj in col.objects:
 
                 # Check for unapplied modifiers
                 if len(obj.modifiers) > 0:
@@ -275,15 +272,15 @@ def export_hkt(self, context):
             if cancelled:
                 return {'CANCELLED'}
             
-            if len(assignments[key].objects) > 10:
-                seut_report(self, context, 'ERROR', True, 'E022', assignments[key].name, len(assignments[key].objects))
+            if len(col.objects) > 10:
+                seut_report(self, context, 'ERROR', True, 'E022', col.name, len(col.objects))
                 continue
             
-            fbx_hkt_file = join(path, f"{get_col_filename(assignments[key])}.hkt.fbx")
-            hkt_file = join(path, f"{get_col_filename(assignments[key])}.hkt")
+            fbx_hkt_file = join(path, f"{get_col_filename(col)}.hkt.fbx")
+            hkt_file = join(path, f"{get_col_filename(col)}.hkt")
 
             # Export as FBX
-            export_to_fbxfile(settings, scene, fbx_hkt_file, assignments[key].objects, ishavokfbxfile=True)
+            export_to_fbxfile(settings, scene, fbx_hkt_file, col.objects, ishavokfbxfile=True)
 
             # Then create the HKT file.
             process_hktfbx_to_fbximporterhkt(context, settings, fbx_hkt_file, hkt_file)

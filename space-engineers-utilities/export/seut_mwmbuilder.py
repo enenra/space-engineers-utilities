@@ -21,7 +21,7 @@ def mwmbuilder(self, context, path, mwm_path, settings: ExportSettings, mwmfile:
             cmdline,
             ToolType(3),
             cwd=path,
-            logfile=os.path.join(path, scene.seut.subtypeId + '.mwm.log')            
+            logfile=os.path.join(path, scene.seut.subtypeId + '.mwm.log')
         )
 
     finally:
