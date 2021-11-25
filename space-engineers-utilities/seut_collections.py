@@ -261,7 +261,7 @@ class SEUT_OT_RecreateCollections(Operator):
 
 
 class SEUT_OT_CreateCollection(Operator):
-    """Creates a specific collection"""
+    """Creates a collection, referencing the active one if applicable"""
     bl_idname = "scene.create_collection"
     bl_label = "Create Collection"
     bl_options = {'REGISTER', 'UNDO'}
@@ -293,30 +293,28 @@ class SEUT_OT_CreateCollection(Operator):
         index = None
         ref_col = None
 
-        if scene.seut.sceneType == 'mainScene':
+        if not self.col_type in seut_collections[scene.seut.sceneType]:
+            return {'FINISHED'}
+            
+        if self.col_type == 'hkt':
+            ref_col = context.view_layer.active_layer_collection.collection
 
-            if not self.col_type in seut_collections[scene.seut.sceneType]:
+            if ref_col.seut.col_type == 'none' or ref_col.seut.col_type in ['hkt', 'lod']:
                 return {'FINISHED'}
-                
-            if self.col_type == 'hkt':
-                ref_col = context.view_layer.active_layer_collection.collection
-
-                if ref_col.seut.col_type == 'none' or ref_col.seut.col_type in ['hkt', 'lod']:
-                    return {'FINISHED'}
-                
-                if get_rev_ref_cols(collections, ref_col, 'hkt') != []:
-                    return {'FINISHED'}
             
-            elif self.col_type == 'lod':
-                ref_col = context.view_layer.active_layer_collection.collection
+            if get_rev_ref_cols(collections, ref_col, 'hkt') != []:
+                return {'FINISHED'}
+        
+        elif self.col_type == 'lod':
+            ref_col = context.view_layer.active_layer_collection.collection
 
-                if ref_col.seut.col_type == 'none' or ref_col.seut.col_type in ['hkt', 'lod']:
-                    return {'FINISHED'}
+            if ref_col.seut.col_type == 'none' or ref_col.seut.col_type in ['hkt', 'lod']:
+                return {'FINISHED'}
 
-                index = get_first_free_index(get_cols_by_type(scene, self.col_type, ref_col))
-            
-            else:
-                index = get_first_free_index(get_cols_by_type(scene, self.col_type))
+            index = get_first_free_index(get_cols_by_type(scene, self.col_type, ref_col))
+        
+        else:
+            index = get_first_free_index(get_cols_by_type(scene, self.col_type))
 
         create_seut_collection(context, self.col_type, index, ref_col)
         sort_collections(context)
@@ -568,23 +566,26 @@ def sort_collections(context):
 
     collections = get_collections(scene)
     seut_cols = collections['seut'][0].children
-        
-    for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
-        seut_cols.unlink(bs)
-        seut_cols.link(bs)
-        hkt = get_rev_ref_cols(collections, bs, 'hkt')
-        if hkt != []:
-            seut_cols.unlink(hkt[0])
-            seut_cols.link(hkt[0])
     
-    for lod in sorted(get_cols_by_type(scene, 'lod', collections['main'][0]).values(), key=lambda lod: lod.seut.type_index):
-        seut_cols.unlink(lod)
-        seut_cols.link(lod)
+    if 'bs' in collections:
+        for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
+            seut_cols.unlink(bs)
+            seut_cols.link(bs)
+            hkt = get_rev_ref_cols(collections, bs, 'hkt')
+            if hkt != []:
+                seut_cols.unlink(hkt[0])
+                seut_cols.link(hkt[0])
     
-    for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
-        for lod in sorted(get_cols_by_type(scene, 'lod', bs).values(), key=lambda lod: lod.seut.type_index):
+    if 'lod' in collections:
+        for lod in sorted(get_cols_by_type(scene, 'lod', collections['main'][0]).values(), key=lambda lod: lod.seut.type_index):
             seut_cols.unlink(lod)
             seut_cols.link(lod)
+    
+    if 'bs' in collections and 'lod' in collections:
+        for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
+            for lod in sorted(get_cols_by_type(scene, 'lod', bs).values(), key=lambda lod: lod.seut.type_index):
+                seut_cols.unlink(lod)
+                seut_cols.link(lod)
     
     layer_col_parent = scene.view_layers['SEUT'].layer_collection.children[f"SEUT ({scene.seut.subtypeId})"]
     name = ""
