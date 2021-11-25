@@ -26,6 +26,7 @@
 * Changed: Users must now specify a mod folder, as a result SBC files are directly placed and updated in the `Data`-folder. (Alpha 6)
 * Changed: Labeling of SEMREF-button in SEUT Notification panel made more clear. (Alpha 6)
 * Changed: Reversed issue display sorting - now the newest issue is shown at the top. (Alpha 7)
+* Changed: Harag's FBXImporter is now included within the addon. (Alpha 7)
 * Changed #291: Reduced max allowed collision objects to 10 as per Keen change. (Alpha 6)
 * Changed #292: Switched all links to SEMREF to new SEMREF 2.0 website. (Alpha 6)
 * Changed #298: Removed Bounding Box Automatic. It was broken and not useful enough to invest time into fixing. (Alpha 6)
@@ -53,7 +54,7 @@
 * Fixed #286: Error when trying to fix scratched materials. (Alpha 6)
 * Fixed #295: Error when trying to create a new collection but no collection of that type existed before. (Alpha 6)
 * Fixed #293: Error when trying to import a material from an XML that only contains MaterialRefs. (Alpha 6)
-* Fixed #302: MWMB did not accept BS_LOD pathing.
+* Fixed #302: MWMB did not accept BS_LOD pathing. (Alpha 7)
 
 # Installation
 Refer to the [install guide](https://space-engineers-modding.github.io/modding-reference/tutorials/tools/3d-modelling/seut/setup.html).
