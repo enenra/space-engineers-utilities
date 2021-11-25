@@ -610,7 +610,10 @@ def sort_collections(context):
         for col in get_cols_by_type(scene, col_props[0], col_props[2]).values():
             if col.seut.type_index == col_props[1]:
                 name = col.name
-        context.view_layer.active_layer_collection = layer_col_parent.children[name]
+        if name != layer_col_parent.name:
+            context.view_layer.active_layer_collection = layer_col_parent.children[name]
+        else:
+            context.view_layer.active_layer_collection = layer_col_parent
 
 
 def get_cols_by_type(scene, col_type: str, ref_col: object = None) -> dict:
