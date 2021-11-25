@@ -294,6 +294,9 @@ class SEUT_OT_CreateCollection(Operator):
         ref_col = None
 
         if scene.seut.sceneType == 'mainScene':
+
+            if not self.col_type in seut_collections[scene.seut.sceneType]:
+                return {'FINISHED'}
                 
             if self.col_type == 'hkt':
                 ref_col = context.view_layer.active_layer_collection.collection
@@ -321,8 +324,8 @@ class SEUT_OT_CreateCollection(Operator):
         return {'FINISHED'}
 
 
-def get_collections(scene: object) -> dict:
-    """Scans the existing collections of a scene to find the SEUT ones."""
+def get_collections(scene: object, inclusive: bool = False) -> dict:
+    """Scans the existing collections of a scene to find the SEUT ones. Inclusive returns all collections, including ones disallowed by sceneType."""
 
     collections = {}
     collections['seut'] = None
@@ -338,8 +341,11 @@ def get_collections(scene: object) -> dict:
         if col.seut.col_type == 'none':
             continue
         else:
-            if not col.seut.col_type in seut_collections[scene.seut.sceneType]:
+            if not inclusive and not col.seut.col_type in seut_collections[scene.seut.sceneType] and not col.seut.col_type == 'seut':
                 continue
+            if inclusive:
+                if not col.seut.col_type in collections:
+                    collections[col.seut.col_type] = None
             if collections[col.seut.col_type] is None:
                 collections[col.seut.col_type] = []
             collections[col.seut.col_type].append(col)
@@ -362,9 +368,10 @@ def rename_collections(scene: object):
             continue
         if not col.seut.scene is scene:
             continue
-        if not col.seut.col_type in seut_collections[scene.seut.sceneType]:
-            continue
         if col.seut.col_type == 'none':
+            continue
+        if not col.seut.col_type in seut_collections[scene.seut.sceneType] and not col.seut.col_type == 'seut':
+            col.color_tag = 'COLOR_07'
             continue
         
         if col.seut.col_type == 'seut':
@@ -386,7 +393,7 @@ def rename_collections(scene: object):
 
             if not ref_col.seut.col_type in seut_collections[scene.seut.sceneType]:
                 continue
-            
+
             ref_col_type = ref_col.seut.col_type
             ref_col_name = seut_collections[scene.seut.sceneType][ref_col_type]['name']
             if ref_col_type != 'main':
@@ -412,19 +419,19 @@ def create_collections(context):
     scene = context.scene
     collections = get_collections(scene)
 
+    if collections['seut'] is None:
+        collections['seut'] = []
+        collections['seut'].append(bpy.data.collections.new(f"SEUT ({scene.seut.subtypeId})"))
+        collections['seut'][0].seut.scene = scene
+        collections['seut'][0].seut.col_type = 'seut'
+        if bpy.app.version >= (2, 91, 0):
+            collections['seut'][0].color_tag = 'COLOR_02'
+        scene.collection.children.link(collections['seut'][0])
+
+
     for key in collections.keys():
         if collections[key] == None:
-
-            if key == 'seut':
-                collections['seut'] = []
-                collections['seut'].append(bpy.data.collections.new(f"SEUT ({scene.seut.subtypeId})"))
-                collections['seut'][0].seut.scene = scene
-                collections['seut'][0].seut.col_type = 'seut'
-                if bpy.app.version >= (2, 91, 0):
-                    collections['seut'][0].color_tag = 'COLOR_02'
-                scene.collection.children.link(collections['seut'][0])
-            
-            elif key == 'main':
+            if key == 'main':
                 collections['main'] = []
                 collections['main'].append(create_seut_collection(context, 'main'))
             elif key == 'bs':

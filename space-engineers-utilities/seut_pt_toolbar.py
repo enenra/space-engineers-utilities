@@ -118,13 +118,16 @@ class SEUT_PT_Panel_Collections(Panel):
             box = layout.box()
             box.label(text=active_col.name, icon='COLLECTION_' + active_col.color_tag)
 
-            if not active_col.seut.col_type in seut_collections[scene.seut.sceneType] or active_col.seut.ref_col is not None and not active_col.seut.ref_col.seut.col_type in seut_collections[scene.seut.sceneType]:
-                lines = wrap_text(f"Collection type not supported by scene type '{get_enum_items(scene.seut, 'sceneType', scene.seut.sceneType)[0]}'.", int(context.region.width / 8.5))
-                for l in lines:
-                    row = box.row()
-                    row.scale_y = 0.75
-                    row.alert = True
-                    row.label(text=l)
+            show_button = True
+            if not active_col.seut.col_type == 'seut':
+                if not active_col.seut.col_type in seut_collections[scene.seut.sceneType] or active_col.seut.ref_col is not None and not active_col.seut.ref_col.seut.col_type in seut_collections[scene.seut.sceneType]:
+                    show_button = False
+                    lines = wrap_text(f"Collection type not supported by scene type '{get_enum_items(scene.seut, 'sceneType', scene.seut.sceneType)[0]}'.", int(context.region.width / 8.5))
+                    for l in lines:
+                        row = box.row()
+                        row.scale_y = 0.75
+                        row.alert = True
+                        row.label(text=l)
 
             #col = box.column(align=True)
             #col.label(text=f"Type: {seut_collections[scene.seut.sceneType][active_col.seut.col_type]['name']}")
@@ -146,7 +149,8 @@ class SEUT_PT_Panel_Collections(Panel):
             if active_col.seut.col_type == 'lod':
                 box.prop(active_col.seut,'lod_distance')
 
-        layout.operator('scene.create_collection')
+        if show_button:
+            layout.operator('scene.create_collection')
 
 
 class SEUT_PT_Panel_BoundingBox(Panel):

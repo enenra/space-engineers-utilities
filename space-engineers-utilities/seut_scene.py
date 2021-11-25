@@ -1,3 +1,4 @@
+import collections
 import bpy
 import os
 
@@ -15,9 +16,32 @@ from bpy.props  import (EnumProperty,
 from .seut_mirroring                import clean_mirroring, setup_mirroring
 from .seut_mountpoints              import clean_mountpoints, setup_mountpoints
 from .seut_icon_render              import clean_icon_render, setup_icon_render
-from .seut_collections              import get_collections, rename_collections
+from .seut_collections              import get_collections, rename_collections, seut_collections
 from .seut_errors                   import get_abs_path, seut_report, check_export
 from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, to_radians, get_parent_collection, toggle_scene_modes
+
+
+def update_sceneType(self, context):
+    scene = context.scene
+    collections = get_collections(scene, True)
+
+    for key, cols in collections.items():
+        if cols is None:
+            continue
+        
+        if not key in seut_collections[scene.seut.sceneType] and key != 'seut':
+            for col in cols:
+                if len(col.objects) <= 0:
+                    bpy.data.collections.remove(col)
+                else:
+                    col.color_tag = 'COLOR_07'
+        else:
+            for col in cols:
+                if col.seut.ref_col is not None and not col.seut.ref_col.seut.col_type in seut_collections[scene.seut.sceneType]:
+                    if len(col.objects) <= 0:
+                        bpy.data.collections.remove(col)
+                    else:
+                        col.color_tag = 'COLOR_07'
 
 
 def update_GridScale(self, context):
@@ -357,7 +381,8 @@ class SEUT_Scene(PropertyGroup):
             ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
             # ('particle_effect', 'Particle Effect', 'This scene contains a particle effect'),
             ),
-        default='mainScene'
+        default='mainScene',
+        update=update_sceneType
     )
     linkSubpartInstances: BoolProperty(
         name="Link Subpart Instances",
