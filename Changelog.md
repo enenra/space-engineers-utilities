@@ -8,16 +8,19 @@
 * Added: Ability to export to "medium grid". (Thanks to @dbenson24) (Alpha 6)
 * Added: If an icon was already rendered, the SBC entry will point to it. (Alpha 6)
 * Added: Ability to delete single issues in SEUT Notifications screen. (Alpha 7)
+* Added: Warning if currently selected collection is of a type not supported by the scene's type. (Alpha 7)
 * Added #24: Support for TransparentMaterials display in Blender and export to SBC. (Alpha 6)
 * Added #269: Panel for texture conversion from and to `DDS`. (Alpha 6)
 * Added #269: Export icon to `DDS`-format by default. (Alpha 6)
 * Added #269: Export custom material textures to `DDS`-format on model export. (Alpha 7)
 * Added #269: Ability to mass convert textures using threading. (Alpha 7)
 * Added #269: Ability to update local `TIF` textures from game directory with single button press. (Alpha 7)
+* Added #290: Support for unlimited LODs per Build Stage. (Alpha 7)
 * Improved: Code around creation of subpart empties. Now handles targeted objects better. (Alpha 5)
 * Improved: Clarified functionality of `DECAL` material technique. (Alpha 5)
 * Improved: Export log now outputs the current dev version as well. (Alpha 5)
 * Improved: Gave all materials a default `Emission Strength` and enable Bloom by default for SEUT scenes for better emissive material display. (Alpha 7)
+* Improved: Collection handling / interaction / presentation has been improved significantly and is much more robust now. (Alpha 7)
 * Improved #288: First convert icon to grayscale, then overlay color to improve shading. (Alpha 6)
 * Changed: Bounding box is no longer displayed in anything but the main scene type. (Alpha 5)
 * Changed: Users must now specify a mod folder, as a result SBC files are directly placed and updated in the `Data`-folder. (Alpha 6)
@@ -50,6 +53,7 @@
 * Fixed #286: Error when trying to fix scratched materials. (Alpha 6)
 * Fixed #295: Error when trying to create a new collection but no collection of that type existed before. (Alpha 6)
 * Fixed #293: Error when trying to import a material from an XML that only contains MaterialRefs. (Alpha 6)
+* Fixed #302: MWMB did not accept BS_LOD pathing.
 
 # Installation
 Refer to the [install guide](https://space-engineers-modding.github.io/modding-reference/tutorials/tools/3d-modelling/seut/setup.html).
