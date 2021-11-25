@@ -114,6 +114,7 @@ class SEUT_PT_Panel_Collections(Panel):
         # link.section = 'reference'
         # link.page = 'outliner'
 
+        show_button = True
         if active_col.seut.col_type != 'none':
             box = layout.box()
             box.label(text=active_col.name, icon='COLLECTION_' + active_col.color_tag)
@@ -122,7 +123,6 @@ class SEUT_PT_Panel_Collections(Panel):
             elif active_col.seut.col_type == 'seut':
                 box.label(text='SEUT Collection Container')
 
-            show_button = True
             if not active_col.seut.col_type == 'seut':
                 if not active_col.seut.col_type in seut_collections[scene.seut.sceneType] or active_col.seut.ref_col is not None and not active_col.seut.ref_col.seut.col_type in seut_collections[scene.seut.sceneType]:
                     show_button = False
@@ -132,10 +132,6 @@ class SEUT_PT_Panel_Collections(Panel):
                         row.scale_y = 0.75
                         row.alert = True
                         row.label(text=l)
-
-            #col = box.column(align=True)
-            #col.label(text=f"Type: {seut_collections[scene.seut.sceneType][active_col.seut.col_type]['name']}")
-            #col.label(text=f"Scene: {active_col.seut.scene.name}")
 
         if active_col.seut.col_type in ['lod', 'hkt']:
             split = box.split(factor=0.35)
