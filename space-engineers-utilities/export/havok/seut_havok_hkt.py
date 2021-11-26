@@ -7,6 +7,7 @@ from ...utils.called_tool_type  import ToolType
 from ...utils.seut_xml_utils    import update_subelement
 from ...seut_errors             import seut_report
 
+
 def convert_fbx_to_fbxi_hkt(context, settings: ExportSettings, source: str, target: str):
     """Converts the FBX created by export to FBXImporter FBX for HKT creation."""
 
@@ -21,7 +22,7 @@ def convert_fbx_to_fbxi_hkt(context, settings: ExportSettings, source: str, targ
 def convert_fbxi_hkt_to_hkt(self, context, settings: ExportSettings, source: str, target: str, adjustments=None):
     """Converts the HKT created by FBXImporter to the final HKT."""
     
-    havok_options = get_default_hko_content(adjustments)
+    havok_options = get_hko_content(adjustments)
 
     hko = tempfile.NamedTemporaryFile(mode='wt', prefix='space_engineers_', suffix=".hko", delete=False) # wt mode is write plus text mode.	
     try:
@@ -49,7 +50,7 @@ def convert_fbxi_hkt_to_hkt(self, context, settings: ExportSettings, source: str
             seut_report(self, context, 'INFO', True, 'I009')
 
 
-def get_default_hko_content(adjustments: dict = None) -> str:
+def get_hko_content(adjustments: dict = None) -> str:
     """Returns the content of the default HKO file."""
 
     # This file is taken entirely from Balmung's fork of Harag's plugin. No reason to reinvent the wheel.
