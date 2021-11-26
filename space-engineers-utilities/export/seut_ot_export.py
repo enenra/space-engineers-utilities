@@ -249,7 +249,6 @@ def export_hkt(self, context):
         # Create HKTs by going through all cols with HKTs assigned to them.
         for key in assignments:
             col = bpy.data.collections[key]
-            print(col)
             result = check_collection(self, context, scene, col, True)
             if not result == {'CONTINUE'}:
                 continue

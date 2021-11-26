@@ -63,7 +63,7 @@ def add_subelement(parent, name: str, value=None):
 def update_subelement(lines: str, name: str, value, attrib: str = None) -> str:
     """Updates an existing subelements to a new value."""
 
-    entry = get_subelement(lines, name)
+    entry = get_subelement(lines, name, attrib)
 
     if attrib is not None:
         entry_updated = f"<{name} name=\"{attrib}\">{str(value)}</{name}>"
@@ -87,8 +87,13 @@ def update_add_optional_subelement(parent, name: str, value, update_sbc: bool, l
 
 def get_subelement(lines: str, name: str, attrib: str = None):
     """Returns the specified subelement. -1 if not found."""
+    
+    if attrib is not None and f"<{name} name=\"{attrib}\">" in lines:
+        start = lines.find(f"<{name} name=\"{attrib}\">")
+        end = start + lines[start:].find(f"</{name}>") + len(f"</{name}>")
+        return lines[start:end]
 
-    if f"<{name}>" in lines:
+    elif f"<{name}>" in lines:
         start = lines.find(f"<{name}>")
         end = start + lines[start:].find(f"</{name}>") + len(f"</{name}>")
         return lines[start:end]
@@ -96,11 +101,6 @@ def get_subelement(lines: str, name: str, attrib: str = None):
     elif f"<{name} " in lines:
         start = lines.find(f"<{name} ")
         end = start + lines[start:].find('/>') + 2
-        return lines[start:end]
-    
-    elif attrib is not None and f"<{name} name=\"{attrib}\">" in lines:
-        start = lines.find(f"<{name} name=\"{attrib}\">")
-        end = start + lines[start:].find(f"</{name}>") + len(f"</{name}>")
         return lines[start:end]
 
     else:
@@ -164,7 +164,7 @@ def convert_back_xml(element, name: str, lines_entry: str) -> str:
     return lines_entry.replace(lines_entry[start:end], entry)
 
 
-def format_entry(lines: str, depth=0) -> str:
+def format_entry(lines: str, depth: int = 0) -> str:
     """Formats a given xml entry to a specified depth."""
 
     indent = "\t"

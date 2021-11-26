@@ -4,7 +4,7 @@ import tempfile
 
 from ..seut_export_utils        import ExportSettings
 from ...utils.called_tool_type  import ToolType
-from ...utils.seut_xml_utils    import update_subelement
+from ...utils.seut_xml_utils    import update_subelement, format_entry
 from ...seut_errors             import seut_report
 
 
@@ -60,7 +60,9 @@ def get_hko_content(adjustments: dict = None) -> str:
     with open(path, 'r') as file:
         hko = file.read()
 
-    for elem, value in adjustments:
-        hko = update_subelement(hko, 'hkparam', value, elem)
+    if adjustments is not None:
+        for elem, value in adjustments.items():
+            hko = update_subelement(hko, 'hkparam', value, elem)
+        hko = format_entry(hko)
     
     return hko
