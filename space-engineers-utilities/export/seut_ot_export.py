@@ -10,8 +10,7 @@ import shutil
 from os.path        import join
 from bpy.types      import Operator
 
-from .havok.seut_havok_options      import HAVOK_OPTION_FILE_CONTENT
-from .havok.seut_havok_hkt          import process_hktfbx_to_fbximporterhkt, process_fbximporterhkt_to_final_hkt_for_mwm
+from .havok.seut_havok_hkt          import convert_fbx_to_fbxi_hkt, convert_fbxi_hkt_to_hkt
 from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_temp_files, create_relative_path
 from .seut_export_utils             import correct_for_export_type, export_collection, get_col_filename
@@ -283,8 +282,8 @@ def export_hkt(self, context):
             export_to_fbxfile(settings, scene, fbx_hkt_file, col.objects, ishavokfbxfile=True)
 
             # Then create the HKT file.
-            process_hktfbx_to_fbximporterhkt(context, settings, fbx_hkt_file, hkt_file)
-            process_fbximporterhkt_to_final_hkt_for_mwm(self, context, settings, hkt_file, hkt_file)
+            convert_fbx_to_fbxi_hkt(context, settings, fbx_hkt_file, hkt_file)
+            convert_fbxi_hkt_to_hkt(self, context, settings, hkt_file, hkt_file)
 
     return {'FINISHED'}
 
