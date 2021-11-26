@@ -60,14 +60,22 @@ def add_subelement(parent, name: str, value=None):
         return subelement
 
 
-def update_subelement(lines, name: str, value):
+def update_subelement(lines: str, name: str, value, attrib: str = None) -> str:
     """Updates an existing subelements to a new value."""
 
     entry = get_subelement(lines, name)
-    entry_updated = '<' + name + '>' + str(value) + '</' + name + '>'
+
+    if attrib is not None:
+        entry_updated = f"<{name} name=\"{attrib}\">{str(value)}</{name}>"
+    else:
+        entry_updated = f"<{name}>{str(value)}</{name}>"
+
     return lines.replace(str(entry), str(entry_updated))
 
-def update_add_optional_subelement(parent, name: str, value, update_sbc, lines):
+
+def update_add_optional_subelement(parent, name: str, value, update_sbc: bool, lines: str) -> str:
+    """Updates or adds an optional subelement depending on the parameters given."""
+
     if update_sbc:
         if get_subelement(lines, name) == -1:
             return lines.replace('</Definition>', '<' + name + '>' + str(value) + '</' + name + '>\n</Definition>')
@@ -77,17 +85,22 @@ def update_add_optional_subelement(parent, name: str, value, update_sbc, lines):
         return add_subelement(parent, name, str(value))
 
 
-def get_subelement(lines: str, name: str):
+def get_subelement(lines: str, name: str, attrib: str = None):
     """Returns the specified subelement. -1 if not found."""
 
-    if '<' + name + '>' in lines:
-        start = lines.find('<' + name + '>')
-        end = start + lines[start:].find('</' + name + '>') + len('</' + name + '>')
+    if f"<{name}>" in lines:
+        start = lines.find(f"<{name}>")
+        end = start + lines[start:].find(f"</{name}>") + len(f"</{name}>")
         return lines[start:end]
 
-    elif '<' + name + ' ' in lines:
-        start = lines.find('<' + name + ' ')
+    elif f"<{name} " in lines:
+        start = lines.find(f"<{name} ")
         end = start + lines[start:].find('/>') + 2
+        return lines[start:end]
+    
+    elif attrib is not None and f"<{name} name=\"{attrib}\">" in lines:
+        start = lines.find(f"<{name} name=\"{attrib}\">")
+        end = start + lines[start:].find(f"</{name}>") + len(f"</{name}>")
         return lines[start:end]
 
     else:

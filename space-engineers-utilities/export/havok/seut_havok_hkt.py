@@ -4,24 +4,24 @@ import tempfile
 
 from ..seut_export_utils        import ExportSettings
 from ...utils.called_tool_type  import ToolType
+from ...utils.seut_xml_utils    import update_subelement
 from ...seut_errors             import seut_report
 
-
-def convert_fbx_to_fbxi_hkt(context, settings: ExportSettings, srcfile, dstfile):
+def convert_fbx_to_fbxi_hkt(context, settings: ExportSettings, source: str, target: str):
     """Converts the FBX created by export to FBXImporter FBX for HKT creation."""
+
     settings.callTool(
         context,
-        [settings.fbximporter, srcfile, dstfile],
+        [settings.fbximporter, source, target],
         ToolType(1),
-        logfile=dstfile+'.convert.log'
+        logfile=f"{target}.convert.log"
     )
 
 
-def convert_fbxi_hkt_to_hkt(self, context, settings: ExportSettings, source: str, target: str, havok_options=None):
+def convert_fbxi_hkt_to_hkt(self, context, settings: ExportSettings, source: str, target: str, adjustments=None):
     """Converts the HKT created by FBXImporter to the final HKT."""
     
-    if havok_options is None:
-        havok_options = get_default_hko_content()
+    havok_options = get_default_hko_content(adjustments)
 
     hko = tempfile.NamedTemporaryFile(mode='wt', prefix='space_engineers_', suffix=".hko", delete=False) # wt mode is write plus text mode.	
     try:
@@ -49,7 +49,7 @@ def convert_fbxi_hkt_to_hkt(self, context, settings: ExportSettings, source: str
             seut_report(self, context, 'INFO', True, 'I009')
 
 
-def get_default_hko_content() -> str:
+def get_default_hko_content(adjustments: dict = None) -> str:
     """Returns the content of the default HKO file."""
 
     # This file is taken entirely from Balmung's fork of Harag's plugin. No reason to reinvent the wheel.
@@ -57,6 +57,9 @@ def get_default_hko_content() -> str:
     path = os.path.join(bpy.utils.user_resource("SCRIPTS"), 'addons', __package__[:__package__.find(".")], 'export', 'havok', 'default.hko')
 
     with open(path, 'r') as file:
-        data = file.read()
+        hko = file.read()
+
+    for elem, value in adjustments:
+        hko = update_subelement(hko, 'hkparam', value, elem)
     
-    return data
+    return hko
