@@ -13,29 +13,30 @@ from bpy.props      import (EnumProperty,
 
 
 def update_technique(self, context):
-    nodes = context.active_object.active_material.node_tree.nodes
-    material = context.active_object.active_material
+    if context.active_object is not None and context.active_object.active_material is not None:
+        nodes = context.active_object.active_material.node_tree.nodes
+        material = context.active_object.active_material
 
-    ng = None
-    for node in nodes:
-        if node.name == 'SEUT_NODE_GROUP':
-            ng = node
-    if ng is None:
-        return
+        ng = None
+        for node in nodes:
+            if node.name == 'SEUT_NODE_GROUP':
+                ng = node
+        if ng is None:
+            return
 
-    switch = None
-    for i in ng.inputs:
-        if i.name == 'TM Switch':
-            switch = i
-    if switch is None:
-        return
-    
-    if self.technique in ['GLASS', 'HOLO', 'SHIELD']:
-        switch.default_value = 1
-        material.blend_method = 'BLEND'
-    else:
-        switch.default_value = 0
-        material.blend_method = 'CLIP'
+        switch = None
+        for i in ng.inputs:
+            if i.name == 'TM Switch':
+                switch = i
+        if switch is None:
+            return
+        
+        if self.technique in ['GLASS', 'HOLO', 'SHIELD']:
+            switch.default_value = 1
+            material.blend_method = 'BLEND'
+        else:
+            switch.default_value = 0
+            material.blend_method = 'CLIP'
 
 
 def update_vanilla_dlc(self, context):
