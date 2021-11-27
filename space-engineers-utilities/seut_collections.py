@@ -197,7 +197,7 @@ class SEUT_Collection(PropertyGroup):
     version: IntProperty(
         name="SEUT Collection Version",
         description="Used as a reference to patch the SEUT collection properties to newer versions",
-        default=0
+        default=0 # current: 3
     )
     
     scene: PointerProperty(
@@ -252,6 +252,7 @@ class SEUT_OT_RecreateCollections(Operator):
 
         if not 'SEUT' in scene.view_layers:
             scene.view_layers[0].name = 'SEUT'
+            scene.seut.version = 3
             scene.eevee.use_bloom = True
 
         if scene.seut.subtypeId == "":
@@ -548,7 +549,7 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
     name = name.format(subtpye_id=scene.seut.subtypeId, ref_col_name=ref_col_name, ref_col_type_index=ref_col_type_index, type_index=type_index)
 
     collection = bpy.data.collections.new(name)
-    collection.seut.version = 2
+    collection.seut.version = 3
     collection.seut.scene = scene
     collection.seut.col_type = col_type
     if type_index is not None:

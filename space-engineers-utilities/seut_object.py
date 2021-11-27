@@ -75,7 +75,7 @@ class SEUT_Object(PropertyGroup):
     version: IntProperty(
         name="SEUT Object Version",
         description="Used as a reference to patch the SEUT object properties to newer versions",
-        default=0
+        default=0 # current: 2
     )
     
     # Empties

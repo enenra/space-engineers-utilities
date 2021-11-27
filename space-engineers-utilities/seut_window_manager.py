@@ -176,7 +176,7 @@ class SEUT_WindowManager(PropertyGroup):
     version: IntProperty(
         name="SEUT WM Version",
         description="Used as a reference to patch the SEUT window manager properties to newer versions",
-        default=0
+        default=0 # current: 1
     )
 
     simpleNavigationToggle: BoolProperty(

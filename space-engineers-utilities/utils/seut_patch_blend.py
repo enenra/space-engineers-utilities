@@ -14,8 +14,6 @@ def apply_patches():
     patch_highlight_empty_references()
 
     # SEUT 0.9.96
-    # scene version = 2
-    # collection version = 2
     patch_mod_folder()
     patch_collections_v0996()
     patch_linked_objs()
@@ -25,18 +23,23 @@ def patch_view_layers():
     """Patches all SEUT scenes in BLEND file to have a named SEUT view layer."""
 
     for scn in bpy.data.scenes:
+        if scn.seut.version >= 2:
+            continue
 
         tag = ' (' + scn.seut.subtypeId + ')'
 
         if 'SEUT' + tag in scn.view_layers[0].layer_collection.children:
             if not 'SEUT' in scn.view_layers:
                 scn.view_layers[0].name = 'SEUT'
+                scn.seut.version = 1
 
 
 def patch_collections_v0995():
     """Patches all collections in the BLEND file to the new 0.9.95 system."""
 
     for scn in bpy.data.scenes:
+        if scn.seut.version >= 2:
+            continue
 
         tag = ' (' + scn.seut.subtypeId + ')'
 
@@ -55,6 +58,8 @@ def patch_collections_v0995():
         seut_col.seut.col_type = 'seut'
 
         for col in seut_col.children:
+            if col.seut.version >= 1:
+                continue
 
             raw_type = re.match("^\w+", col.name).group(0)
             temp_type = re.match(".+?(?=[0-99])", raw_type)
@@ -93,6 +98,7 @@ def patch_collections_v0995():
                 col.seut.col_type = temp_type
         
             col.seut.scene = scn
+            col.seut.version = 1
         
         # Recoloring collections
         for col in bpy.data.collections:
@@ -120,12 +126,17 @@ def patch_highlight_empty_references():
     """Patches highlight empties to use the new CollectionProperty"""
 
     for obj in bpy.data.objects:
-        if not obj is None and obj.type == 'EMPTY' and 'highlight' in obj:
-            if not obj.seut.linkedObject is None and len(obj.seut.highlight_objects) < 1:
-                ref = obj.seut.linkedObject
-                obj.seut.linkedObject = None
-                new = obj.seut.highlight_objects.add()
-                new.obj = ref
+        if obj is None or obj.type != 'EMPTY' or not 'highlight' in obj:
+            continue
+        if obj.seut.version >= 1:
+            continue
+
+        if not obj.seut.linkedObject is None and len(obj.seut.highlight_objects) < 1:
+            ref = obj.seut.linkedObject
+            obj.seut.linkedObject = None
+            new = obj.seut.highlight_objects.add()
+            new.obj = ref
+            obj.seut.version = 1
 
 
 def patch_mod_folder():
@@ -135,49 +146,51 @@ def patch_mod_folder():
         return
 
     for scn in bpy.data.scenes:
+        if scn.seut.version >= 2:
+            continue
 
         if scn.seut.export_exportPath == "":
             continue
 
-        # Since the version system is introduced with this patch, the versioning will be a bit strange for this first usage.
-        if scn.seut.version <= 2:
-            path = get_abs_path(scn.seut.export_exportPath)
-            
-            while os.path.basename(path) != "Models":
-                if os.path.dirname(path) == path:
-                    break
+        path = get_abs_path(scn.seut.export_exportPath)
+        
+        while os.path.basename(path) != "Models":
+            if os.path.dirname(path) == path:
+                break
 
-                path = get_abs_path(os.path.dirname(path))
-            
-            if os.path.exists(os.path.dirname(path)):
-                scn.seut.mod_path = os.path.dirname(path)
-            scn.seut.version = 2
+            path = get_abs_path(os.path.dirname(path))
+        
+        if os.path.exists(os.path.dirname(path)):
+            scn.seut.mod_path = os.path.dirname(path)
+        scn.seut.version = 2
 
 
 def patch_collections_v0996():
     """Patches collections for removal of BS_LOD-type and change for LOD to have ref_cols"""
 
     for scn in bpy.data.scenes:
-
         if not 'SEUT' in scn.view_layers:
+            continue
+        if scn.seut.version >= 3:
             continue
 
         assignments = {}
         for col in bpy.data.collections:
+            if col.seut.version >= 3:
+                continue
             if col.seut.scene != scn:
                 continue
+
+            if col.seut.col_type == 'mountpoints' and len(col.objects) <= 0:
+                col.seut.col_type = 'lod'
+                if f"BS1 ({scn.seut.subtypeId})" in bpy.data.collections:
+                    assignments[col] = f"BS1 ({scn.seut.subtypeId})"
+                col.seut.version = 3
             
-            if col.seut.version < 2:
-                if col.seut.col_type == 'mountpoints' and len(col.objects) <= 0:
-                    col.seut.col_type = 'lod'
-                    if f"BS1 ({scn.seut.subtypeId})" in bpy.data.collections:
-                        assignments[col] = f"BS1 ({scn.seut.subtypeId})"
-                    col.seut.version = 2
-                
-                elif col.seut.col_type == 'lod' and col.seut.ref_col is None:
-                    if f"Main ({scn.seut.subtypeId})" in bpy.data.collections:
-                        assignments[col] = f"Main ({scn.seut.subtypeId})"
-                    col.seut.version = 2
+            elif col.seut.col_type == 'lod' and col.seut.ref_col is None:
+                if f"Main ({scn.seut.subtypeId})" in bpy.data.collections:
+                    assignments[col] = f"Main ({scn.seut.subtypeId})"
+                col.seut.version = 3
         
         for col, name in assignments.items():
             col.seut.ref_col = bpy.data.collections[name]
@@ -189,9 +202,14 @@ def patch_linked_objs():
     """Patches all linked objects to the new .linked marker. (L) is only visual now."""
 
     for empty in bpy.data.objects:
-        if empty.type != 'EMPTY' and 'file' in empty:
+        if empty.type != 'EMPTY' or not 'file' in empty:
             continue
+        if empty.seut.version >= 2:
+            continue
+
+        empty.seut.version = 2
             
         for obj in empty.children:
             if '(L)' in obj.name and not obj.seut.linked:
                 obj.seut.linked = True
+                obj.seut.version = 2
