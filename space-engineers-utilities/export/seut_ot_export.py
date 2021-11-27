@@ -225,30 +225,7 @@ def export_hkt(self, context):
         return result
 
     if not collections['hkt'] is None:
-
-        # Dict with collection as a key and its assigned HKT collection as a value
-        assignments = {}
-        for key in collections:
-
-            if key == 'main':
-                hkt = get_rev_ref_cols(collections, collections[key][0], 'hkt')
-                if hkt != []:
-                    assignments[collections[key][0].name] = get_rev_ref_cols(collections, collections[key][0], 'hkt')
-
-            elif key == 'bs':
-                for col in collections[key]:
-                    if len(col.objects) <= 0:
-                        continue
-                    hkt = get_rev_ref_cols(collections, col, 'hkt')
-                    if hkt != []:
-                        assignments[col.name] = hkt
-
-        if assignments == {}:
-            return {'FINISHED'}
-
-        # Create HKTs by going through all cols with HKTs assigned to them.
-        for key in assignments:
-            col = bpy.data.collections[key]
+        for col in collections['hkt']:
             result = check_collection(self, context, scene, col, True)
             if not result == {'CONTINUE'}:
                 continue
