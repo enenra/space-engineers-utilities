@@ -20,8 +20,7 @@ bl_info = {
     "dev_tag": "alpha",
     "blender": (2, 92, 0),
     "location": "View3D > Tools",
-    "warning": "",
-    "wiki_url": "https://semref.atlassian.net/wiki/home", # TODO: Switch this to doc_url for 3.0
+    "doc_url": "https://semref.atlassian.net/wiki/spaces/tools/pages/33261/Space+Engineers+Utilities",
     "tracker_url": "https://github.com/enenra/space-engineers-utilities/issues",
     "git_url": "https://github.com/enenra/space-engineers-utilities",
     "support": "COMMUNITY",
