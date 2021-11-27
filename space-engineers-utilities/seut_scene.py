@@ -69,7 +69,6 @@ def update_GridScale(self, context):
 
 
 def update_MirroringToggle(self, context):
-    scene = context.scene
     toggle_mode(self, context, 'MIRRORING')
 
 
@@ -89,19 +88,15 @@ def update_mirroringScene(self, context):
 
 
 def update_MountpointToggle(self, context):  
-    scene = context.scene
     toggle_mode(self, context, 'MOUNTPOINT')
 
 
 def update_RenderToggle(self, context):
-    scene = context.scene
     toggle_mode(self, context, 'ICON_RENDER')
 
 
 def toggle_mode(self, context, mode: str):
     """Toggles the passed mode on and all other modes off, in all scenes."""
-
-    scene = context.scene
 
     if mode == 'MIRRORING':
         if self.mirroringToggle == 'off':
@@ -247,14 +242,12 @@ def update_linkSubpartInstances(self, context):
 
 
 def update_export_largeGrid(self, context):
-    scene = context.scene
 
     if not self.export_smallGrid and not self.export_largeGrid:
         self.export_smallGrid = True
 
 
 def update_export_smallGrid(self, context):
-    scene = context.scene
 
     if not self.export_largeGrid and not self.export_smallGrid:
         self.export_largeGrid = True
