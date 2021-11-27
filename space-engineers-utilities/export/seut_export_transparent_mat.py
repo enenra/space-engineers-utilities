@@ -177,6 +177,6 @@ def export_transparent_mat(self, context, subtype_id):
     if file_to_update is None:
         seut_report(self, context, 'INFO', False, 'I004', target_file)
     else:
-        seut_report(self, context, 'INFO', False, 'I022', subtype_id, target_file)
+        seut_report(self, context, 'INFO', False, 'I015', subtype_id, target_file)
 
     return {'FINISHED'}

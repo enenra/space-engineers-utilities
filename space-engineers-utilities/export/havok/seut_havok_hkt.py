@@ -39,15 +39,12 @@ def convert_fbxi_hkt_to_hkt(self, context, settings: ExportSettings, source: str
             successfulExitCodes=[0,1]
         )
 
-    except:
-        result = False
+    except Exception as e:
+        print(e)
 
     finally:
         if context.scene.seut.export_deleteLooseFiles:
             os.remove(hko.name)
-
-        if result:
-            seut_report(self, context, 'INFO', True, 'I009')
 
 
 def get_hko_content(adjustments: dict = None) -> str:

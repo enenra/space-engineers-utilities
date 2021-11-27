@@ -697,6 +697,6 @@ def export_sbc(self, context):
     if not update_sbc:
         seut_report(self, context, 'INFO', False, 'I004', target_file)
     else:
-        seut_report(self, context, 'INFO', False, 'I022', scene.seut.subtypeId, target_file)
+        seut_report(self, context, 'INFO', False, 'I015', scene.seut.subtypeId, target_file)
 
     return {'FINISHED'}

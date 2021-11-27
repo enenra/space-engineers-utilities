@@ -194,9 +194,9 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
 
         if duration > 60:
             m, s = divmod(duration, 60)
-            seut_report(self, context, 'INFO', can_report, 'I023', converted, total, f"{m}m {s}s")
+            seut_report(self, context, 'INFO', can_report, 'I009', converted, total, f"{m}m {s}s")
         else:
-            seut_report(self, context, 'INFO', can_report, 'I023', converted, total, f"{round(duration, 1)}s")
+            seut_report(self, context, 'INFO', can_report, 'I009', converted, total, f"{round(duration, 1)}s")
 
         if converted == 0:
             return {'CANCELLED'}

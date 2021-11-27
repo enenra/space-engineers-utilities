@@ -103,7 +103,6 @@ def export_xml(self, context, collection) -> str:
     path = os.path.join(path, f"{get_col_filename(collection)}.xml")
     exported_xml = open(path, "w")
     exported_xml.write(xml_formatted)
-    seut_report(self, context, 'INFO', True, 'I004', path)
 
     return {'FINISHED'}
 
@@ -321,13 +320,11 @@ def export_fbx(self, context, collection) -> str:
 
     # Export the collection to FBX
     path = os.path.join(path, f"{get_col_filename(collection)}.fbx")
-    error_during_export = False
     try:
         export_to_fbxfile(settings, scene, path, collection.objects, ishavokfbxfile=False)
 
     except RuntimeError as error:
         seut_report(self, context, 'ERROR', False, 'E017')
-        error_during_export = True
 
     except KeyError as error:
         seut_report(self, context, 'ERROR', True, 'E038', error)
@@ -355,10 +352,6 @@ def export_fbx(self, context, collection) -> str:
                 empty.scale.z *= 0.5
 
     bpy.context.scene.collection.children.unlink(collection)
-
-    if not error_during_export:
-        seut_report(self, context, 'INFO', True, 'I004', path)
-        return {'CANCELLED'}
 
     return {'FINISHED'}
 
