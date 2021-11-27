@@ -33,8 +33,6 @@ def setup_mountpoints(self, context):
     
     if smat_mp is None:
         smat_mp = create_internal_material(context, 'MOUNTPOINT')
-        
-    tag = ' (' + scene.seut.subtypeId + ')'
 
     collection = create_seut_collection(context, 'mountpoints')
 
@@ -231,7 +229,7 @@ def clean_mountpoints(self, context):
 
     tag = ' (' + scene.seut.subtypeId + ')'
 
-    if 'Mountpoints' + tag in bpy.data.collections:
+    if 'Mountpoints' + tag in bpy.data.collections and 'Mountpoints Front' in bpy.data.collections['Mountpoints' + tag].objects:
         save_mountpoint(self, context, bpy.data.collections['Mountpoints' + tag])
 
     # Save empty rotation values to properties, delete children instances, remove empty

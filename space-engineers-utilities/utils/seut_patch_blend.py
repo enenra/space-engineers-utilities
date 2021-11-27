@@ -181,7 +181,7 @@ def patch_collections_v0996():
             if col.seut.scene != scn:
                 continue
 
-            if col.seut.col_type == 'mountpoints' and len(col.objects) <= 0:
+            if col.seut.col_type == 'mountpoints' and scn.seut.mountpointToggle == 'off':
                 col.seut.col_type = 'lod'
                 if f"BS1 ({scn.seut.subtypeId})" in bpy.data.collections:
                     assignments[col] = f"BS1 ({scn.seut.subtypeId})"
