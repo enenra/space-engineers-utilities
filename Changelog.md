@@ -21,6 +21,8 @@
 * Improved: Export log now outputs the current dev version as well. (Alpha 5)
 * Improved: Gave all materials a default `Emission Strength` and enable Bloom by default for SEUT scenes for better emissive material display. (Alpha 7)
 * Improved: Collection handling / interaction / presentation has been improved significantly and is much more robust now. (Alpha 7)
+* Improved: Handling of instanced linked objects below subpart empties. (Alpha 8)
+* Improved: Reduced amount of unimportant notifications in SEUT Notifications screen. (Alpha 8)
 * Improved #288: First convert icon to grayscale, then overlay color to improve shading. (Alpha 6)
 * Changed: Bounding box is no longer displayed in anything but the main scene type. (Alpha 5)
 * Changed: Users must now specify a mod folder, as a result SBC files are directly placed and updated in the `Data`-folder. (Alpha 6)
