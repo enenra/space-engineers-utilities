@@ -18,6 +18,7 @@ def apply_patches():
     # collection version = 2
     patch_mod_folder()
     patch_collections_v0996()
+    patch_linked_objs()
 
 
 def patch_view_layers():
@@ -182,3 +183,15 @@ def patch_collections_v0996():
             col.seut.ref_col = bpy.data.collections[name]
 
         rename_collections(scn)
+
+
+def patch_linked_objs():
+    """Patches all linked objects to the new .linked marker. (L) is only visual now."""
+
+    for empty in bpy.data.objects:
+        if empty.type != 'EMPTY' and 'file' in empty:
+            continue
+            
+        for obj in empty.children:
+            if '(L)' in obj.name and not obj.seut.linked:
+                obj.seut.linked = True

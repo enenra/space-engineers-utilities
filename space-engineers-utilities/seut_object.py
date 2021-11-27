@@ -56,7 +56,6 @@ def update_default(self, context):
 
 
 def update_mask_preset(self, context):
-
     preset = self.mask_preset
 
     if preset != "custom":
@@ -79,6 +78,7 @@ class SEUT_Object(PropertyGroup):
         default=0
     )
     
+    # Empties
     linkedScene: PointerProperty(
         name='Subpart Scene',
         description="Which subpart scene this empty links to. Scene must be of type 'Subpart'",
@@ -86,41 +86,35 @@ class SEUT_Object(PropertyGroup):
         poll=poll_linkedScene,
         update=update_linkedScene
     )
-    
-    # Deprecated with SEUT 0.9.95
-    linkedObject: PointerProperty(
-        name='Highlight Object',
-        description="Which object this empty links to",
-        type=bpy.types.Object
+    linked: BoolProperty(
+        name='Linked Object',
+        description="This object is an instance of a subpart's object, linked into the scene",
+        default=False
     )
-
     highlight_objects: CollectionProperty(
         type = SEUT_EmptyHighlights
     )
-
     highlight_object_index: IntProperty(
         default = 0
     )
     
+    # Mountpoints
     default: BoolProperty(
         name='Default',
         description="Whether a Mountpoint Area is the one where a block is first attempted to be placed on",
         default=False,
         update=update_default
     )
-    
     pressurized: BoolProperty(
         name='Pressurized When Open',
         description="Whether a mountpoint on a door block stays pressurized when the door is opened",
         default=False
     )
-
     enabled: BoolProperty(
         name="Enabled",
         description="Whether a mountpoint area should be enabled or not. Disabled areas provide airtightness but don't allow blocks to be placed onto them",
         default=True
     )
-
     mask_preset: EnumProperty(
         name='Mask Preset',
         description="Masks determine which blocks' mountpoints can be mounted onto this mountpoint area",
@@ -135,7 +129,6 @@ class SEUT_Object(PropertyGroup):
         default='0:0',
         update=update_mask_preset
     )
-
     exclusion_mask: IntProperty(
         name="Exclusion Mask",
         description="",
@@ -143,7 +136,6 @@ class SEUT_Object(PropertyGroup):
         min=0,
         max=255
     )
-
     properties_mask: IntProperty(
         name="Properties Mask",
         description="",
@@ -205,4 +197,12 @@ class SEUT_Object(PropertyGroup):
         description="TBD",
         min=0,
         default=500
+    )
+
+    
+    # Deprecated with SEUT 0.9.95
+    linkedObject: PointerProperty(
+        name='Highlight Object',
+        description="Which object this empty links to",
+        type=bpy.types.Object
     )

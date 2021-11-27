@@ -73,7 +73,7 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
 
         # The following is done only on a first-level subpart as further-nested subparts already have empties as parents.
         # Needs to account for empties being parents that aren't subpart empties.
-        if obj is not None and (obj.parent is None or obj.parent.type != 'EMPTY' or not 'file' in obj.parent) and obj.name.find("(L)") == -1:
+        if obj is not None and (obj.parent is None or obj.parent.type != 'EMPTY' or not 'file' in obj.parent) and not obj.seut.linked:
             obj.hide_viewport = False
             existing_objects = set(subpart_col.objects)
             
@@ -95,7 +95,7 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                     if new_obj == existing_obj:
                         created_objects.remove(new_obj)
 
-                if new_obj in created_objects and new_obj.name.find("(L)") != -1:
+                if new_obj in created_objects and new_obj.seut.linked:
                     created_objects.remove(new_obj)
                     delete_objects.add(new_obj)
             
@@ -106,6 +106,7 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
             linked_object = None
             for obj in created_objects:
                 obj.name = obj.name + " (L)"
+                obj.seut.linked = True
                 linked_object = obj
 
             if linked_object is not None:
