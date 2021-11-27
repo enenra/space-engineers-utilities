@@ -85,7 +85,7 @@ infos = {
     'I014': "Import of '{variable_1}' successfully completed.",
     'I015': "Entry for '{variable_1}' has been created / updated in file '{variable_2}'.",
     'I016': "Empty '{variable_1}' rotation {variable_2} registered as: {variable_3}",
-    'I017': "Mountpoint Area {variable_1} saved. {variable_2} {variable_3}",
+    'I017': "Mountpoint Area {variable_1} saved: {variable_2}.",
     'I018': "Icon successfully saved to '{variable_1}'.",
     'I019': "Successfully imported {variable_1} materials from '{variable_2}': {variable_3}",
     'I020': "Material '{variable_1}' was skipped because it already exists in the BLEND file.",

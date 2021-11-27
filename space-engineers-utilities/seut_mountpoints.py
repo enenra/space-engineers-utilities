@@ -214,7 +214,7 @@ def save_mountpoint(self, context, collection):
                 item.properties_mask = child.seut.properties_mask
 
     for area in areas:
-        seut_report(self, context, 'INFO', False, 'I017', area.side, "Location x: " + str(area.x) + " Location y: " + str(area.y) + " Dimension x: " + str(area.xDim) + " Dimension y: " + str(area.yDim), "Default: " + str(area.default) + " PressurizedWhenOpen: " + str(area.pressurized) + " Enabled: " + str(area.enabled) + " ExclusionMask: " + str(area.exclusion_mask) + " PropertiesMask: " + str(area.properties_mask))
+        seut_report(self, context, 'INFO', False, 'I017', area.side, f"Location x: {round(area.x, 2)} y: {round(area.y, 2)} Dimension x: {round(area.xDim, 2)} y: {round(area.yDim, 2)}")
 
 
 def clean_mountpoints(self, context):
