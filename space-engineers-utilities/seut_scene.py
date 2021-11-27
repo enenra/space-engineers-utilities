@@ -221,12 +221,12 @@ def update_linkSubpartInstances(self, context):
     collections = get_collections(scene)
 
     for col_type, col in collections.items():
-        if col_type == 'main' and not col is None:
-            for empty in col.objects:
+        if col_type == 'main' and not col is None and not col[0] is None:
+            for empty in col[0].objects:
                 if empty is not None and empty.type == 'EMPTY' and not empty.seut.linked and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
 
                     if scene.seut.linkSubpartInstances:
-                        link_subpart_scene(self, scene, empty, col)
+                        link_subpart_scene(self, scene, empty, col[0])
                     else:
                         unlink_subpart_scene(empty)
 
