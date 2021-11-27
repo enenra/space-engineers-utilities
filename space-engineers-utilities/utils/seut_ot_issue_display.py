@@ -91,7 +91,7 @@ class SEUT_OT_IssueDisplay(Operator):
             if issue.issue_type == 'ERROR':
                 col.alert = True
                 
-            for text in wrap_text(issue.text, int(context.region.width / 13.5)):
+            for text in wrap_text(issue.text, 110):
                 row = col.row()
                 row.scale_y = 0.75
                 if issue.issue_type == 'INFO':
