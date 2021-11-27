@@ -110,15 +110,17 @@ class SEUT_OT_MassConvertTextures(Operator):
             "Particles"
         ]
 
+        skip_list = ['_de.', '_ns.']
+
         for d in range(0, len(dirs_to_convert)):
             dirs_to_convert[d] = os.path.join(preferences.game_path, 'Content', 'Textures', dirs_to_convert[d])
 
-        result = mass_convert_textures(self, context, dirs_to_convert, target_dir, 'tif', log_to_file=True, can_report=True)
+        result = mass_convert_textures(self, context, dirs_to_convert, target_dir, 'tif', skip_list=skip_list, log_to_file=True, can_report=True)
 
         return result
 
 
-def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: str, settings=[], log_to_file=False, can_report=False):
+def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: str, settings: list = [], skip_list: list = [], log_to_file=False, can_report=False):
 
     wm = context.window_manager
 
@@ -134,6 +136,14 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
                 source = os.path.join(tex_dir, file)
 
                 if not os.path.splitext(source)[1].upper()[1:] in ['DDS', 'TIF', 'PNG']:
+                    continue
+                
+                skip = False
+                for i in skip_list:
+                    if i in os.path.basename(source):
+                        skip = True
+                        break
+                if skip:
                     continue
                 
                 if target_dir.find('Textures') != -1:
