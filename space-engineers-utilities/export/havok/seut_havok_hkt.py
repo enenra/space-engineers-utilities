@@ -19,7 +19,7 @@ def convert_fbx_to_fbxi_hkt(context, settings: ExportSettings, source: str, targ
     )
 
 
-def convert_fbxi_hkt_to_hkt(self, context, settings: ExportSettings, source: str, target: str, adjustments=None):
+def convert_fbxi_hkt_to_hkt(self, context, settings: ExportSettings, source: str, target: str, adjustments: dict = None):
     """Converts the HKT created by FBXImporter to the final HKT."""
     
     havok_options = get_hko_content(adjustments)
