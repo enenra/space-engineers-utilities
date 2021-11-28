@@ -52,12 +52,12 @@ errors = {
     'E044': "An error ocurred during MWM conversion. See *.mwm.log file (generated if 'Delete Temp Files' is toggled off) for details.",
     'E045': "Model path must be located within the Mod's directory ('{variable_1}').",
     'E046': "Could not export '{variable_1}'-texture of material '{variable_2}' to DDS.\n{variable_3}",
-    'E047': "Object '{variable_1}' has {variable_2}/{variable_3} UV Vertices at coordinates (0, 0) - this indicates broken UV-Maps, which will result in bad shading of the object ingame.",
+    'E047': "Object '{variable_1}' has {variable_2}/{variable_3} UV-Vertices at coordinates (0,0) - this indicates broken UV-Maps, which will result in bad shading of the object ingame.",
 }
 
 warnings = {
     'W001': "Subpart scene '{variable_1}' does not have the same grid size export settings as the scene of the subpart empty ('{variable_2}') it is referenced in. This may cause the subpart to display in an unintended size ingame.",
-    'W002': "Object '{variable_1}' has a lot of its UV-Vertices located at (0, 0) - this might result in bad shading of the object ingame.",
+    'W002': "Object '{variable_1}' has a lot of its UV-Vertices located at (0,0) - this might result in bad shading of the object ingame.",
     'W003': "Could not remove unused material slots for object '{variable_1}'.",
     'W004': "'{variable_1}' texture of local material '{variable_2}' is not of a valid resolution ({variable_3}). May not display correctly ingame.",
     'W005': "Empty '{variable_1}' (numbering might differ) in collection '{variable_2}' has no parent object. This may prevent it from working properly ingame.",
