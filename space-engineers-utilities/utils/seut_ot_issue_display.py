@@ -130,7 +130,12 @@ class SEUT_OT_DeleteIssue(Operator):
     def execute(self, context):
         
         wm = context.window_manager
-        wm.seut.issues.remove(self.idx)
+
+        for index in range(0, len(wm.seut.issues)):
+            if wm.seut.issues[index] == SEUT_OT_IssueDisplay.issues_sorted[self.idx]:
+                wm.seut.issues.remove(index)
+                break
+
         SEUT_OT_IssueDisplay.issues_sorted.clear()
         SEUT_OT_IssueDisplay.issues_sorted = sorted(wm.seut.issues, key=lambda issue: issue.timestamp, reverse=True)
         
