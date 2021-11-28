@@ -2,6 +2,8 @@ import bpy
 import os
 import time
 
+from mathutils  import Vector
+
 
 errors = {
     'E001': "Import error. Imported object not found.",
@@ -50,6 +52,7 @@ errors = {
     'E044': "An error ocurred during MWM conversion. See *.mwm.log file (generated if 'Delete Temp Files' is toggled off) for details.",
     'E045': "Model path must be located within the Mod's directory ('{variable_1}').",
     'E046': "Could not export '{variable_1}'-texture of material '{variable_2}' to DDS.\n{variable_3}",
+    'E047': "Object '{variable_1}' has {variable_2}/{variable_3} UV Vertices at coordinates (0, 0) - this indicates broken UV-Maps, which will result in bad shading of the object ingame.",
 }
 
 warnings = {
@@ -66,6 +69,7 @@ warnings = {
     'W011': "Loading of image '{variable_1}' failed.",
     'W012': "Material '{variable_1}' is a DLC material. Keen requires any model using it to be DLC-locked.",
     'W013': "Subpart scene '{variable_1}' does not have the same grid size export settings as the scene of the subpart empty ('{variable_2}') it is referenced in. This may cause the subpart to display in an unintended size ingame.",
+    'W014': "Object '{variable_1}' has a lot of its UV-Vertices located at (0, 0) - this might result in bad shading of the object ingame.",
 }
 
 infos = {
@@ -190,9 +194,24 @@ def check_collection_excluded(scene, collection) -> bool:
 def check_uvms(self, context, obj):
     """Checks whether object has UV layers"""
 
-    if obj is not None and obj.type == 'MESH' and len(obj.data.uv_layers) < 1:
-        seut_report(self, context, 'ERROR', True, 'E032', obj.name)
-        return {'CANCELLED'}
+    if obj is not None and obj.type == 'MESH':
+    
+        if len(obj.data.uv_layers) < 1:
+            seut_report(self, context, 'ERROR', True, 'E032', obj.name)
+            return {'CANCELLED'}
+
+        at_zero = 0
+        obj_total = len(obj.data.uv_layers.active.data)
+        for loop in obj.data.loops:
+            uv = obj.data.uv_layers.active.data[loop.index].uv
+            if uv == Vector((0.0, 0.0)):
+                at_zero += 1
+            
+        if (at_zero / obj_total) > 0.25 and at_zero > 10:
+            seut_report(self, context, 'ERROR', True, 'E047', obj.name, at_zero, obj_total)
+        elif (at_zero / obj_total) > 0.005 and at_zero > 10:
+            seut_report(self, context, 'WARNING', True, 'W014', obj.name)
+            return {'CANCELLED'}
     
     return {'CONTINUE'}
 
