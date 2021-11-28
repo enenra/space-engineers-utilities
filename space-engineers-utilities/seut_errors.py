@@ -51,7 +51,7 @@ errors = {
     'E043': "An object within the file '{variable_1}' has invalid UV-Maps. Could not be converted to MWM.",
     'E044': "An error ocurred during MWM conversion. See *.mwm.log file (generated if 'Delete Temp Files' is toggled off) for details.",
     'E045': "Model path must be located within the Mod's directory ('{variable_1}').",
-    'E046': "Could not export '{variable_1}'-texture of material '{variable_2}' to DDS.\n{variable_3}",
+    'E046': "Could not convert '{variable_1}'-texture of material '{variable_2}' to DDS.\n{variable_3}",
     'E047': "Object '{variable_1}' has {variable_2}/{variable_3} UV-Vertices at coordinates (0,0) - this indicates broken UV-Maps, which will result in bad shading of the object ingame.",
 }
 
@@ -79,7 +79,7 @@ infos = {
     'I006': "{variable_1} Options successfully copied to all scenes.",
     'I007': "FBX and XML files of scene '{variable_1}' have been compiled to MWM.",
     'I008': "{variable_1} of {variable_2} scenes successfully exported.",
-    'I009': "Texture conversion completed: {variable_1}/{variable_2} files have been converted in {variable_3}.",
+    'I009': "Texture conversion completed: {variable_1} files have been converted{variable_2}.",
     'I010': "{variable_1} '{variable_2}' created.",
     'I011': "Highlight '{variable_1}' created for object '{variable_2}'.",
     'I012': "Structure conversion successfully completed.",

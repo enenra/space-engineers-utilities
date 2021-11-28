@@ -68,11 +68,30 @@ class SEUT_OT_ConvertTextures(Operator):
                 settings.append('-if')
                 settings.append('POINT_DITHER_DIFFUSION')
         
+        output_path = get_abs_path(wm.seut.texconv_output_dir)
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
         if wm.seut.texconv_input_type == 'file':
-            return convert_texture(get_abs_path(wm.seut.texconv_input_file), get_abs_path(wm.seut.texconv_output_dir), wm.seut.texconv_preset, settings)
+            result = convert_texture(get_abs_path(wm.seut.texconv_input_file), output_path, wm.seut.texconv_preset, settings)
+            if result[0] == 0:
+                seut_report(self, context, 'INFO', True, 'I009', f"1/1", "")
+            else:
+                seut_report(self, context, 'ERROR', True, 'E046', "texture conversion", result[1])
+                return {'CANCELLED'}
         else:
-            return mass_convert_textures(self, context, [get_abs_path(wm.seut.texconv_input_dir)], get_abs_path(wm.seut.texconv_output_dir), wm.seut.texconv_preset, settings)
+            results = mass_convert_textures(self, context, [get_abs_path(wm.seut.texconv_input_dir)], output_path, wm.seut.texconv_preset, settings)
+            converted = 0
+            for r in results:
+                if r[0] == 0:
+                    converted += 1
 
+            if converted == 0:
+                return {'CANCELLED'}
+            else:
+                seut_report(self, context, 'INFO', True, 'I009', converted, "")
+        
+        return {'FINISHED'}
+        
 
 class SEUT_OT_MassConvertTextures(Operator):
     """Mass converts DDS textures to TIF.\nWARNING: This can lock up Blender for up to 30min for a full conversion"""
@@ -181,7 +200,6 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
         duration = time.time() - timer
 
         converted = 0
-        output = ""
         for r in results:
             idx_o = presets[preset].index('-o')
             target_file = os.path.join(r[2][idx_o + 1], os.path.splitext(os.path.basename(r[2][1]))[0] + '.' + output_type)
@@ -192,16 +210,14 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
                 print(f"ERROR - {target_file}")
                 print(r[1])
 
-        if duration > 60:
-            m, s = divmod(duration, 60)
-            seut_report(self, context, 'INFO', can_report, 'I009', converted, total, f"{m}m {s}s")
-        else:
-            seut_report(self, context, 'INFO', can_report, 'I009', converted, total, f"{round(duration, 1)}s")
-
         if converted == 0:
             return {'CANCELLED'}
+
+        elif duration > 60:
+            m, s = divmod(duration, 60)
+            seut_report(self, context, 'INFO', can_report, 'I009', f"{converted}/{total}", f" in {m}m {s}s")
         else:
-            return {'FINISHED'}
+            seut_report(self, context, 'INFO', can_report, 'I009', f"{converted}/{total}", f" in {round(duration, 1)}s")
 
     else:
         seut_report(self, context, 'INFO', can_report, 'I003')
