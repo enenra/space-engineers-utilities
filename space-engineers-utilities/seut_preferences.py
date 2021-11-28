@@ -31,7 +31,7 @@ class SEUT_OT_SetDevPaths(Operator):
         # enenra
         if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\Materials\\"):
             preferences.game_path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SpaceEngineers\\"
-            preferences.asset_path = "D:\\Modding\\Space Engineers\\SEUT\\"
+            preferences.asset_path = "D:\\Modding\\Space Engineers\\SEUT\\seut-assets\\"
             preferences.mwmb_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\StollieMWMBuilder\\MwmBuilder.exe"
             preferences.havok_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
         
