@@ -296,7 +296,7 @@ def export_fbx(self, context, collection) -> str:
             elif 'file' in empty and empty.seut.linkedScene is not None:
                 linked_scene = empty.seut.linkedScene
                 if linked_scene.seut.export_largeGrid != scene.seut.export_largeGrid or linked_scene.seut.export_smallGrid != scene.seut.export_smallGrid:
-                    seut_report(self, context, 'WARNING', True, 'W013', linked_scene.name, scene.name)
+                    seut_report(self, context, 'WARNING', True, 'W001', linked_scene.name, scene.name)
 
                 # Remove subpart instances
                 reference = get_subpart_reference(empty, collections)

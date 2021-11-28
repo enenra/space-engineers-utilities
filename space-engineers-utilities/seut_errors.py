@@ -56,8 +56,8 @@ errors = {
 }
 
 warnings = {
-    'W001': "Collection not found. Action not possible.",
-    'W002': "Collection '{variable_1}' excluded from view layer or empty. Action not possible.",
+    'W001': "Subpart scene '{variable_1}' does not have the same grid size export settings as the scene of the subpart empty ('{variable_2}') it is referenced in. This may cause the subpart to display in an unintended size ingame.",
+    'W002': "Object '{variable_1}' has a lot of its UV-Vertices located at (0, 0) - this might result in bad shading of the object ingame.",
     'W003': "Could not remove unused material slots for object '{variable_1}'.",
     'W004': "'{variable_1}' texture of local material '{variable_2}' is not of a valid resolution ({variable_3}). May not display correctly ingame.",
     'W005': "Empty '{variable_1}' (numbering might differ) in collection '{variable_2}' has no parent object. This may prevent it from working properly ingame.",
@@ -68,8 +68,6 @@ warnings = {
     'W010': "Library '{variable_1}' could not be relocated in '{variable_2}'.",
     'W011': "Loading of image '{variable_1}' failed.",
     'W012': "Material '{variable_1}' is a DLC material. Keen requires any model using it to be DLC-locked.",
-    'W013': "Subpart scene '{variable_1}' does not have the same grid size export settings as the scene of the subpart empty ('{variable_2}') it is referenced in. This may cause the subpart to display in an unintended size ingame.",
-    'W014': "Object '{variable_1}' has a lot of its UV-Vertices located at (0, 0) - this might result in bad shading of the object ingame.",
 }
 
 infos = {
@@ -133,27 +131,18 @@ def check_collection(self, context, scene, collection, partial_check=True):
     """Check if collection exists, is not excluded and is not empty."""
 
     if collection is None:
-        if partial_check:
-            seut_report(self, context, 'WARNING', False, 'W001')
-            return {'FINISHED'}
-        else:
+        if not partial_check:
             seut_report(self, context, 'ERROR', False, 'E002')
             return {'CANCELLED'}
             
     is_excluded = check_collection_excluded(scene, collection)
     if is_excluded or is_excluded is None:
-        if partial_check:
-            seut_report(self, context, 'WARNING', False, 'W002', collection.name)
-            return {'FINISHED'}
-        else:
+        if not partial_check:
             seut_report(self, context, 'ERROR', False, 'E002', collection.name)
             return {'CANCELLED'}
 
     if len(collection.objects) == 0 and collection.name[:4] != 'SEUT':
-        if partial_check:
-            seut_report(self, context, 'WARNING', False, 'W002', collection.name)
-            return {'FINISHED'}
-        else:
+        if not partial_check:
             seut_report(self, context, 'ERROR', False, 'E002', '"' + collection.name + '"')
             return {'CANCELLED'}
     
@@ -210,7 +199,7 @@ def check_uvms(self, context, obj):
         if (at_zero / obj_total) > 0.25 and at_zero > 10:
             seut_report(self, context, 'ERROR', True, 'E047', obj.name, at_zero, obj_total)
         elif (at_zero / obj_total) > 0.005 and at_zero > 10:
-            seut_report(self, context, 'WARNING', True, 'W014', obj.name)
+            seut_report(self, context, 'WARNING', True, 'W002', obj.name)
             return {'CANCELLED'}
     
     return {'CONTINUE'}
