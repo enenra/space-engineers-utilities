@@ -1,5 +1,4 @@
 import bpy
-import os
 
 from bpy.types      import Operator
 from math           import pi
@@ -19,8 +18,8 @@ class SEUT_OT_UpdateSubpartInstances(Operator):
 
         scene = context.scene
 
-        scene.seut.linkSubpartInstances == 'off'
-        scene.seut.linkSubpartInstances == 'on'
+        scene.seut.linkSubpartInstances = False
+        scene.seut.linkSubpartInstances = True
 
         return {'FINISHED'}
 
