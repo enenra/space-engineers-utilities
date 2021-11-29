@@ -133,18 +133,18 @@ def check_collection(self, context, scene, collection, partial_check=True):
     if collection is None:
         if not partial_check:
             seut_report(self, context, 'ERROR', False, 'E002')
-            return {'CANCELLED'}
+        return {'CANCELLED'}
             
     is_excluded = check_collection_excluded(scene, collection)
     if is_excluded or is_excluded is None:
         if not partial_check:
             seut_report(self, context, 'ERROR', False, 'E002', collection.name)
-            return {'CANCELLED'}
+        return {'CANCELLED'}
 
     if len(collection.objects) == 0 and collection.name[:4] != 'SEUT':
         if not partial_check:
             seut_report(self, context, 'ERROR', False, 'E002', '"' + collection.name + '"')
-            return {'CANCELLED'}
+        return {'CANCELLED'}
     
     return {'CONTINUE'}
 
