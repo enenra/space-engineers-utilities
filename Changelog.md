@@ -10,6 +10,8 @@
 * Added: Ability to delete single issues in SEUT Notifications screen. (Alpha 7)
 * Added: Warning if currently selected collection is of a type not supported by the scene's type. (Alpha 7)
 * Added: LOD materials to SEUT.zip. (Alpha 8)
+* Added: Check for invalid UV-Maps. (Alpha 9)
+* Added: Finer control over how / whether to export to SBC. (Alpha 9)
 * Added #24: Support for TransparentMaterials display in Blender and export to SBC. (Alpha 6)
 * Added #269: Panel for texture conversion from and to `DDS`. (Alpha 6)
 * Added #269: Export icon to `DDS`-format by default. (Alpha 6)
