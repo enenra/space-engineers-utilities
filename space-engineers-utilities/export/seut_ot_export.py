@@ -60,13 +60,18 @@ def export(self, context):
     scene.seut.mirroringToggle = 'off'
     scene.seut.renderToggle = 'off'
 
+    subparts = scene.seut.linkSubpartInstances
+    scene.seut.linkSubpartInstances = False
+
     if not os.path.isdir(get_abs_path(scene.seut.mod_path) + '\\'):
         seut_report(self, context, 'ERROR', True, 'E019', "Mod", scene.name)
+        scene.seut.linkSubpartInstances = subparts
         return {'CANCELLED'}
 
     # Checks export path and whether SubtypeId exists
     result = check_export(self, context)
     if not result == {'CONTINUE'}:
+        scene.seut.linkSubpartInstances = subparts
         return result
         
     if not os.path.exists(get_abs_path(scene.seut.export_exportPath)):
@@ -75,17 +80,20 @@ def export(self, context):
     # Check for availability of FBX Importer
     result = check_toolpath(self, context, os.path.join(get_tool_dir(), 'FBXImporter.exe'), "Custom FBX Importer", "FBXImporter.exe")
     if not result == {'CONTINUE'}:
+        scene.seut.linkSubpartInstances = subparts
         return result
 
     # Check for availability of MWM Builder
     result = check_toolpath(self, context, preferences.mwmb_path, "MWM Builder", "MwmBuilder.exe")
     if not result == {'CONTINUE'}:
+        scene.seut.linkSubpartInstances = subparts
         return result
 
     # Check materials path
     materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
     if preferences.asset_path == "":
         seut_report(self, context, 'ERROR', True, 'E012', "Asset Directory", get_abs_path(preferences.asset_path))
+        scene.seut.linkSubpartInstances = subparts
         return {'CANCELLED'}
     elif not os.path.isdir(materials_path):
         os.makedirs(materials_path, exist_ok=True)
@@ -146,6 +154,8 @@ def export(self, context):
         scene.seut.gridScale = grid_scale
         scene.seut.export_rescaleFactor = rescale_factor
         scene.seut.export_exportPath = path
+        
+    scene.seut.linkSubpartInstances = subparts
         
     context.area.type = current_area
 
