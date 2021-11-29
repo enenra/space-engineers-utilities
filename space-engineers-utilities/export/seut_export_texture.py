@@ -10,6 +10,9 @@ from ..seut_utils                               import create_relative_path
 def export_material_textures(self, context, material):
     """Checks if source file is newer than converted file, if so, exports to DDS."""
 
+    if material.node_tree is None or material.node_tree.nodes is None:
+        return {'CANCELLED'}
+
     scene = context.scene
     nodes = material.node_tree.nodes
     textures = {}
