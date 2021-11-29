@@ -80,12 +80,16 @@ class SEUT_PT_Panel(Panel):
                 row = box.row()
                 row.prop(scene.seut,'gridScale', expand=True)
                         
-            layout.prop(wm.seut, 'simpleNavigationToggle')
+            split = layout.split(factor=0.85)
+            col = split.column()
 
-            row = layout.row()
+            row = col.row()
             if wm.seut.issue_alert:
                 row.alert = True
             row.operator('wm.issue_display', icon='INFO')
+            
+            col = split.column()
+            col.prop(wm.seut, 'simpleNavigationToggle', text="", icon='OUTLINER')
 
 
 class SEUT_PT_Panel_Collections(Panel):
