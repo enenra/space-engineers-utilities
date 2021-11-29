@@ -269,7 +269,7 @@ def export_fbx(self, context, collection) -> str:
                     empty.name = empty.name[:-4]
 
             # Check parenting
-            if empty.parent is None:
+            if empty.parent is None and not empty.seut.linked:
                 seut_report(self, context, 'WARNING', True, 'W005', empty.name, collection.name)
             elif empty.parent.parent is not None:
                 seut_report(self, context, 'WARNING', True, 'W006', empty.name, empty.parent.name, collection.name)
