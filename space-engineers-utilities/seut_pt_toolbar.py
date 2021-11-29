@@ -381,12 +381,9 @@ class SEUT_PT_Panel_Export(Panel):
         col = split.column()
         col.operator('scene.copy_export_options', text="", icon='PASTEDOWN')
     
+        box.prop(scene.seut, "export_deleteLooseFiles", icon='TEMP')
         row = box.row()
-        split = box.split(factor=0.70)
-        col = split.column()
-        col.prop(scene.seut, "export_deleteLooseFiles")
-        col = split.column()
-        col.prop(scene.seut, "export_sbc")
+        row.prop(scene.seut, "export_sbc_type", expand=True)
 
         if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_anmiation':
             box2 = box.box()

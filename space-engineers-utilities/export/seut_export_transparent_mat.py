@@ -23,7 +23,7 @@ def export_transparent_mat(self, context, subtype_id):
         end = output[3]
 
     # Neither a TransparentMat file nor an entry for this particular one was found
-    if file_to_update is None:
+    if file_to_update is None or scene.seut.export_sbc_type == 'new':
         definitions = ET.Element('Definitions')
         add_attrib(definitions, 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
         add_attrib(definitions, 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema')
@@ -133,7 +133,7 @@ def export_transparent_mat(self, context, subtype_id):
     lines_entry = update_add_subelement(def_definition, 'SpecularColorFactor', round(material.seut.specular_color_factor, 2), update, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'IsFlareOccluder', material.seut.is_flare_occluder, update, lines_entry)
 
-    if file_to_update is None:
+    if file_to_update is None or scene.seut.export_sbc_type == 'new':
         temp_string = ET.tostring(definitions, 'utf-8')
         try:
             temp_string.decode('ascii')
@@ -162,19 +162,28 @@ def export_transparent_mat(self, context, subtype_id):
     # This removes empty lines
     # xml_formatted = re.sub(r'\n\s*\n', '\n', xml_formatted)
 
-    if file_to_update is None:
+    if file_to_update is None or scene.seut.export_sbc_type == 'new':
         target_file = os.path.join(path_data, "TransparentMaterials.sbc")
         if not os.path.exists(path_data):
             os.makedirs(path_data)
+        
+        # This covers the case where a file exists but the SBC export setting forces new file creation.
+        if os.path.exists(target_file):
+            target_file = os.path.splitext(target_file)[0] + f"_{subtype_id}.sbc"
+        counter = 1
+        while os.path.exists(target_file):
+            target_file = os.path.splitext(target_file)[0] + f"_{counter}.sbc"
+
     elif file_to_update is not None and start is None and end is None:
         target_file = os.path.join(path_data, file_to_update)
+
     else:
         target_file = file_to_update
 
     exported_xml = open(target_file, "w")
     exported_xml.write(xml_formatted)
 
-    if file_to_update is None:
+    if file_to_update is None or scene.seut.export_sbc_type == 'new':
         seut_report(self, context, 'INFO', False, 'I004', target_file)
     else:
         seut_report(self, context, 'INFO', False, 'I015', subtype_id, target_file)

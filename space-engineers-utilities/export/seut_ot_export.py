@@ -162,7 +162,7 @@ def export_all(self, context):
     result_main = export_main(self, context)
     export_hkt(self, context)
 
-    if scene.seut.export_sbc and scene.seut.sceneType == 'mainScene':
+    if scene.seut.export_sbc_type in ['update', 'new'] and scene.seut.sceneType == 'mainScene':
         export_sbc(self, context)
     
     if result_main == {'FINISHED'}:
@@ -366,15 +366,15 @@ def export_sbc(self, context):
         start = output[2]
         end = output[3]
     
-    if output is None or start is None and end is None:
-        update_sbc = False
-        lines_entry = ""
-        definitions = ET.Element('Definitions')
-    else:
+    if output is not None and start is not None and end is not None and scene.seut.export_sbc_type == 'update':
         update_sbc = True
         lines_entry = lines[start:end]
         definitions = None
         def_definition = None
+    else:
+        update_sbc = False
+        lines_entry = ""
+        definitions = ET.Element('Definitions')
 
     if not update_sbc:
         add_attrib(definitions, 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
@@ -667,6 +667,11 @@ def export_sbc(self, context):
         target_file = os.path.join(path_data, "CubeBlocks", filename + ".sbc")
         if not os.path.exists(os.path.join(path_data, "CubeBlocks")):
             os.makedirs(os.path.join(path_data, "CubeBlocks"))
+        
+        # This covers the case where a file exists but the SBC export setting forces new file creation.
+        counter = 1
+        while os.path.exists(target_file):
+            target_file = os.path.splitext(target_file)[0] + f"_{counter}.sbc"
 
     exported_xml = open(target_file, "w")
     exported_xml.write(xml_formatted)

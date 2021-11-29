@@ -23,10 +23,10 @@ class SEUT_OT_CopyExportOptions(Operator):
         
         for scn in bpy.data.scenes:
             scn.seut.export_deleteLooseFiles = scene.seut.export_deleteLooseFiles
+            scn.seut.export_sbc_type = scene.seut.export_sbc_type
             scn.seut.export_largeGrid = scene.seut.export_largeGrid
             scn.seut.export_smallGrid = scene.seut.export_smallGrid
             scn.seut.export_medium_grid = scene.seut.export_medium_grid
-            scn.seut.export_sbc = scene.seut.export_sbc
             scn.seut.mod_path = scene.seut.mod_path
             scn.seut.export_exportPath = scene.seut.export_exportPath
         

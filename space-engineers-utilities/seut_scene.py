@@ -548,7 +548,7 @@ class SEUT_Scene(PropertyGroup):
 
     # Export
     export_deleteLooseFiles: BoolProperty(
-        name="Delete Temp Files",
+        name="Delete Temporary Files",
         description="Whether the temporary files should be deleted after the MWM has been created",
         default=True
     )
@@ -569,10 +569,15 @@ class SEUT_Scene(PropertyGroup):
         description="Use a 3:5 ratio instead of 1:5 when exporting to small grid",
         default=False
     )
-    export_sbc: BoolProperty(
-        name="SBC",
-        description="Whether to export to SBC (CubeBlocks definition)",
-        default=True
+    export_sbc_type: EnumProperty(
+        name='SBC',
+        description="Whether and how to export data to SBC file(s)",
+        items=(
+            ('none', 'No SBC', 'Do not export data to SBC.'),
+            ('update', 'Update', 'Update existing entries, create new ones if missing.'),
+            ('new', 'New', 'Only create new files, do not update existing ones.')
+            ),
+        default='update'
     )
     export_rescaleFactor: FloatProperty(
         name="Rescale Factor:",
@@ -617,6 +622,11 @@ class SEUT_Scene(PropertyGroup):
         description="From what distance this LOD should display",
         default=50,
         min=0
+    )
+    export_sbc: BoolProperty(
+        name="SBC",
+        description="Whether to export to SBC (CubeBlocks definition)",
+        default=True
     )
 
     # Axis Conversion

@@ -14,7 +14,7 @@ def apply_patches():
     patch_highlight_empty_references()
 
     # SEUT 0.9.96
-    patch_mod_folder()
+    patch_scenes()
     patch_collections_v0996()
     patch_linked_objs()
 
@@ -139,14 +139,14 @@ def patch_highlight_empty_references():
             obj.seut.version = 1
 
 
-def patch_mod_folder():
-    """Introduce mod folder with default being derived from mod folder"""
+def patch_scenes():
+    """Introduce mod folder with default being derived from mod folder as well as transition to export_sbc_type"""
 
     if not bpy.data.is_saved:
         return
 
     for scn in bpy.data.scenes:
-        if scn.seut.version >= 2:
+        if scn.seut.version >= 3:
             continue
 
         if scn.seut.export_exportPath == "":
@@ -162,7 +162,11 @@ def patch_mod_folder():
         
         if os.path.exists(os.path.dirname(path)):
             scn.seut.mod_path = os.path.dirname(path)
-        scn.seut.version = 2
+
+        if not scn.seut.export_sbc:
+            scn.seut.export_sbc_type = 'none'
+
+        scn.seut.version = 3
 
 
 def patch_collections_v0996():
