@@ -29,7 +29,7 @@ class SEUT_OT_SetDevPaths(Operator):
         check_update(get_addon_version())
 
         # enenra
-        if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\Materials\\"):
+        if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\seut-assets\\Materials\\"):
             preferences.game_path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SpaceEngineers\\"
             preferences.asset_path = "D:\\Modding\\Space Engineers\\SEUT\\seut-assets\\"
             preferences.mwmb_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\StollieMWMBuilder\\MwmBuilder.exe"
