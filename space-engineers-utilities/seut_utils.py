@@ -129,7 +129,10 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                         context.window.view_layer.objects.active = linked_object
                         for mod in linked_object.modifiers:
                             name = mod.name
-                            bpy.ops.object.modifier_apply(modifier = name)
+                            try:
+                                bpy.ops.object.modifier_apply(modifier = name)
+                            except:
+                                pass
                         
                     bpy.ops.object.transform_apply(location = True, scale = True, rotation = True)
                     context.window.view_layer.objects.active = old_active
