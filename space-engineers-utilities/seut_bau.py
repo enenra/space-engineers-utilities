@@ -7,7 +7,7 @@ import time
 from bpy.types      import Operator
 from bpy.props      import StringProperty
 
-from .seut_utils    import get_preferences
+from .seut_utils    import get_preferences, wrap_text
 
 
 def draw_bau_ui(self, context, element=None):
@@ -87,7 +87,7 @@ def draw_bau_ui(self, context, element=None):
                 row.label(text= "Last check: " + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(bau_entry.last_check)))
 
             if bau_entry.display_instructions:
-                show_instructions(box)
+                show_instructions(context, box)
             else:
                 if not bau_entry.dev_mode and bau_entry.rel_ver_needs_update:
                     show_changelog(addon, box, bau_entry.rel_changelog, bau_entry.latest_rel_ver_name)
@@ -100,22 +100,23 @@ def draw_bau_ui(self, context, element=None):
             op = col.operator('wm.bau_register_addon', text="", icon='LINK_BLEND')
             op.name = __package__
             op.display_changelog = True
+            op.download_method = 'asset'
             op.dev_mode = preferences.dev_mode
 
 
-def show_instructions(box):
+def show_instructions(context, box):
     box = box.box()
 
     row = box.row()
     row.alert = True
     row.label(text="Installation Instructions", icon='ERROR')
 
-    row = box.row()
-    row.scale_y = 0.5
-    row.label(text="Only perform this update in a fresh, empty BLEND file!")
-    row = box.row()
-    row.scale_y = 0.5
-    row.label(text="Otherwise, there is a chance that data may be lost or corrupted.")
+    lines = wrap_text(f"Only perform this update in a fresh, empty BLEND file! Otherwise, there is a chance that data may be lost or corrupted. You may have to restart Blender in order for the addon to be enabled and working.", int(context.region.width / 7))
+    for l in lines:
+        row = box.row()
+        row.scale_y = 0.5
+        row.alert = True
+        row.label(text=l)
     
     box.separator()
 
@@ -183,7 +184,7 @@ def bau_register():
 
     try:
         if __package__ not in wm.bau.addons:
-            result = bpy.ops.wm.bau_register_addon(name = __package__, display_changelog=True, dev_mode=get_preferences().dev_mode)
+            result = bpy.ops.wm.bau_register_addon(name=__package__, display_changelog=True, download_method='asset', dev_mode=get_preferences().dev_mode)
             if not result == {'FINISHED'}:
                 return 5.0
         bpy.app.timers.unregister(bau_register)
