@@ -303,8 +303,6 @@ def export_fbx(self, context, collection) -> str:
                 reference = correct_for_export_type(scene, reference)
                 empty['file'] = reference
                 unlink_subpart_scene(empty)
-
-                rescale = True
             
             # Blender FBX export halves empty size on export, this works around it
             if rescale:
@@ -346,7 +344,7 @@ def export_fbx(self, context, collection) -> str:
                     empty['file'] = reference
 
             # Resetting empty size
-            if 'file' in empty or 'highlight' in empty :
+            if 'highlight' in empty :
                 empty.scale.x *= 0.5
                 empty.scale.y *= 0.5
                 empty.scale.z *= 0.5
