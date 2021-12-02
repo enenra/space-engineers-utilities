@@ -153,7 +153,8 @@ def show_changelog(addon, box, changelog, latest_ver_name):
             counter += 1
 
 
-def get_config():
+def get_config() -> dict:
+    """Saves params from preferences to dict for json."""
 
     preferences = get_preferences()
     data = {}
@@ -174,6 +175,8 @@ def get_config():
 
 
 def set_config(data):
+    """Gets params from dict and saves it to preferences."""
+
     preferences = get_preferences()
 
     if 'space-engineers-utilities' in data:

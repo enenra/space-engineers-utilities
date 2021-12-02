@@ -262,10 +262,10 @@ def get_addon_version():
 
 
 def save_addon_prefs():
+    """Saves params from the addon's preferences to a json cfg."""
 
     wm = bpy.context.window_manager
     path = os.path.join(bpy.utils.user_resource('CONFIG'), 'space-engineers-utilities.cfg')
-    preferences = get_preferences()
 
     data = get_config()
     
@@ -277,6 +277,7 @@ def save_addon_prefs():
 
 
 def load_addon_prefs():
+    """Loads params from the json cfg and saves them to preferences."""
 
     wm = bpy.context.window_manager
     if addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
@@ -286,7 +287,6 @@ def load_addon_prefs():
 
     else:
         path = os.path.join(bpy.utils.user_resource('CONFIG'), 'space-engineers-utilities.cfg')
-        preferences = get_preferences()
 
         if os.path.exists(path):
             with open(path) as cfg_file:
