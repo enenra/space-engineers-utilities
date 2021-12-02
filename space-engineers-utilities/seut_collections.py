@@ -124,7 +124,7 @@ seut_collections = {
 
 
 def update_ref_col(self, context):
-    scene = context.scene
+    scene = self.scene
 
     self.type_index = 0
     if self.ref_col is not None:
@@ -135,20 +135,20 @@ def update_ref_col(self, context):
                 break
         self.type_index = get_first_free_index(cols)
         
-    if self.col_type == 'lod':
-        if self.type_index - 1 in cols:
-            col = cols[self.type_index - 1]
-            if self.lod_distance <= col.seut.lod_distance:
-                self.lod_distance = col.seut.lod_distance + 1
-        if self.type_index + 1 in cols:
-            col = cols[self.type_index + 1]
-            if self.lod_distance >= col.seut.lod_distance:
-                self.lod_distance = col.seut.lod_distance - 1
+        if self.col_type == 'lod':
+            if self.type_index - 1 in cols:
+                col = cols[self.type_index - 1]
+                if self.lod_distance <= col.seut.lod_distance:
+                    self.lod_distance = col.seut.lod_distance + 1
+            if self.type_index + 1 in cols:
+                col = cols[self.type_index + 1]
+                if self.lod_distance >= col.seut.lod_distance:
+                    self.lod_distance = col.seut.lod_distance - 1
 
     rename_collections(scene)
     # This can error on scene init.
     try:
-        sort_collections(context)
+        sort_collections(scene, context)
     except:
         pass
 
@@ -334,7 +334,7 @@ class SEUT_OT_CreateCollection(Operator):
             index = get_first_free_index(get_cols_by_type(scene, self.col_type))
 
         create_seut_collection(context, self.col_type, index, ref_col)
-        sort_collections(context)
+        sort_collections(scene, context)
 
         return {'FINISHED'}
 
@@ -470,7 +470,7 @@ def create_collections(context):
                 collections['lod'].append(create_seut_collection(context, 'lod', 3, collections['main'][0]))
                 collections['lod'].append(create_seut_collection(context, 'lod', 1, get_seut_collection(scene, 'bs', type_index=1)))
 
-    sort_collections(context)
+    sort_collections(scene, context)
 
     return collections
 
@@ -571,50 +571,60 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
     return collection
 
 
-def sort_collections(context):
+def sort_collections(scene, context = None):
 
-    scene = context.scene
-    active_col = context.view_layer.active_layer_collection.collection
-    col_props = [
-        active_col.seut.col_type,
-        active_col.seut.type_index,
-        active_col.seut.ref_col
-    ]
+    if context is not None:
+        active_col = context.view_layer.active_layer_collection.collection
+        col_props = [
+            active_col.seut.col_type,
+            active_col.seut.type_index,
+            active_col.seut.ref_col
+        ]
 
     collections = get_collections(scene)
     seut_cols = collections['seut'][0].children
+    vl_cols = scene.view_layers['SEUT'].layer_collection.children[collections['seut'][0].name].children
     
     if 'bs' in collections:
         for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
+            hide = vl_cols[bs.name].hide_viewport
             seut_cols.unlink(bs)
             seut_cols.link(bs)
+            vl_cols[bs.name].hide_viewport = hide
             hkt = get_rev_ref_cols(collections, bs, 'hkt')
             if hkt != []:
+                hide = vl_cols[hkt[0].name].hide_viewport
                 seut_cols.unlink(hkt[0])
                 seut_cols.link(hkt[0])
+                vl_cols[hkt[0].name].hide_viewport = hide
     
     if 'lod' in collections:
         for lod in sorted(get_cols_by_type(scene, 'lod', collections['main'][0]).values(), key=lambda lod: lod.seut.type_index):
+            hide = vl_cols[lod.name].hide_viewport
             seut_cols.unlink(lod)
             seut_cols.link(lod)
+            vl_cols[lod.name].hide_viewport = hide
     
     if 'bs' in collections and 'lod' in collections:
         for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
             for lod in sorted(get_cols_by_type(scene, 'lod', bs).values(), key=lambda lod: lod.seut.type_index):
+                hide = vl_cols[lod.name].hide_viewport
                 seut_cols.unlink(lod)
                 seut_cols.link(lod)
+                vl_cols[lod.name].hide_viewport = hide
     
-    layer_col_parent = scene.view_layers['SEUT'].layer_collection.children[f"SEUT ({scene.seut.subtypeId})"]
-    name = ""
+    if context is not None:
+        layer_col_parent = scene.view_layers['SEUT'].layer_collection.children[f"SEUT ({scene.seut.subtypeId})"]
+        name = ""
 
-    if col_props[0] != 'none':
-        for col in get_cols_by_type(scene, col_props[0], col_props[2]).values():
-            if col.seut.type_index == col_props[1]:
-                name = col.name
-        if name != layer_col_parent.name:
-            context.view_layer.active_layer_collection = layer_col_parent.children[name]
-        else:
-            context.view_layer.active_layer_collection = layer_col_parent
+        if col_props[0] != 'none':
+            for col in get_cols_by_type(scene, col_props[0], col_props[2]).values():
+                if col.seut.type_index == col_props[1]:
+                    name = col.name
+            if name != layer_col_parent.name:
+                context.view_layer.active_layer_collection = layer_col_parent.children[name]
+            else:
+                context.view_layer.active_layer_collection = layer_col_parent
 
 
 def get_cols_by_type(scene, col_type: str, ref_col: object = None) -> dict:

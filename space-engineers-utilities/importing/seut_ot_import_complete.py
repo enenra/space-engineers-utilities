@@ -109,7 +109,7 @@ class SEUT_OT_ImportComplete(Operator):
             if fbx_type['col_type'] != 'main':
                 scene.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children[col.name].hide_viewport = True
         
-        sort_collections(context)
+        sort_collections(scene, context)
         
         seut_report(self, context, 'INFO', True, 'I021', col_counter - failed_counter, col_counter)
         

@@ -2,7 +2,7 @@ import bpy
 import re
 import os
 
-from ..seut_collections     import rename_collections, seut_collections, sort_collections
+from ..seut_collections     import get_cols_by_type, get_first_free_index, rename_collections, seut_collections, sort_collections
 from ..seut_errors          import get_abs_path
 
 
@@ -175,7 +175,7 @@ def patch_collections_v0996():
     for scn in bpy.data.scenes:
         if not 'SEUT' in scn.view_layers:
             continue
-        if scn.seut.version >= 3:
+        if scn.seut.version >= 4:
             continue
 
         assignments = {}
@@ -185,21 +185,26 @@ def patch_collections_v0996():
             if col.seut.scene != scn:
                 continue
 
+            type_index = None
+
             if col.seut.col_type == 'mountpoints' and scn.seut.mountpointToggle == 'off':
                 col.seut.col_type = 'lod'
                 if f"BS1 ({scn.seut.subtypeId})" in bpy.data.collections:
-                    assignments[col] = f"BS1 ({scn.seut.subtypeId})"
+                    assignments[col] = [f"BS1 ({scn.seut.subtypeId})", col.seut.type_index]
                 col.seut.version = 3
             
             elif col.seut.col_type == 'lod' and col.seut.ref_col is None:
                 if f"Main ({scn.seut.subtypeId})" in bpy.data.collections:
-                    assignments[col] = f"Main ({scn.seut.subtypeId})"
+                    assignments[col] = [f"Main ({scn.seut.subtypeId})", col.seut.type_index]
                 col.seut.version = 3
         
-        for col, name in assignments.items():
-            col.seut.ref_col = bpy.data.collections[name]
+        for col, data in assignments.items():
+            col.seut.ref_col = bpy.data.collections[data[0]]
+            col.seut.type_index = data[1]
 
         rename_collections(scn)
+        sort_collections(scn)
+        scn.view_layers['SEUT'].update()
 
 
 def patch_linked_objs():

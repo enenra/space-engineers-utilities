@@ -362,7 +362,7 @@ class SEUT_Scene(PropertyGroup):
     version: IntProperty(
         name="SEUT Scene Version",
         description="Used as a reference to patch the SEUT scene propertiesto newer versions",
-        default=0 # current: 3
+        default=0 # current: 4
     )
 
     sceneType: EnumProperty(
