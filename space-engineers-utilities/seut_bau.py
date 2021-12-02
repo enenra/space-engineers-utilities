@@ -158,13 +158,18 @@ def get_config():
     preferences = get_preferences()
     data = {}
     data['space-engineers-utilities'] = []
-    data['space-engineers-utilities'].append({
-        'game_path': preferences.game_path,
-        'asset_path': preferences.asset_path,
-        'mwmb_path': preferences.mwmb_path,
-        'havok_path': preferences.havok_path
-    })
-    
+    dict = {}
+
+    if preferences.game_path is not None:
+        dict['game_path'] = preferences.game_path
+    if preferences.game_path is not None:
+        dict['asset_path'] = preferences.asset_path
+    if preferences.game_path is not None:
+        dict['mwmb_path'] = preferences.mwmb_path
+    if preferences.game_path is not None:
+        dict['havok_path'] = preferences.havok_path
+
+    data['space-engineers-utilities'].append(dict)
     return data
 
 
@@ -173,10 +178,14 @@ def set_config(data):
 
     if 'space-engineers-utilities' in data:
         cfg = data['space-engineers-utilities'][0]
-        preferences.game_path = cfg['game_path']
-        preferences.asset_path = cfg['asset_path']
-        preferences.mwmb_path = cfg['mwmb_path']
-        preferences.havok_path = cfg['havok_path']
+        if 'game_path' in cfg:
+            preferences.game_path = cfg['game_path']
+        if 'asset_path' in cfg:
+            preferences.asset_path = cfg['asset_path']
+        if 'mwmb_path' in cfg:
+            preferences.mwmb_path = cfg['mwmb_path']
+        if 'havok_path' in cfg:
+            preferences.havok_path = cfg['havok_path']
 
 
 def bau_register():
