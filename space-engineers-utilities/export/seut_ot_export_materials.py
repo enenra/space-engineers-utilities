@@ -40,7 +40,7 @@ def export_materials(self, context):
     filename = filename[7:]
 
     materials = ET.Element('MaterialsLib')
-    materials.set('Name', 'Default Materials')
+    materials.set('Name', filename)
 
     for mat in bpy.data.materials:
         if mat.library is None:
