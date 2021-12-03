@@ -111,8 +111,8 @@ class SEUT_Materials(PropertyGroup):
     )
     
     overrideMatLib: BoolProperty(
-        name="Override MatLib",
-        description="Whether the material should replace its MatLib counterpart during export of this file (non-destructively)",
+        name="Override Library",
+        description="Whether this material's definition should be written into XML (instead of using the default material definition).\nShould only be set if the material has been altered from its asset library counterpart",
         default=False
     )
     technique: EnumProperty(
@@ -337,6 +337,8 @@ class SEUT_PT_Panel_Materials(Panel):
             link = split.operator('wm.semref_link', text="", icon='INFO')
             link.section = 'reference'
             link.page = '6095000/SEUT+Shader+Editor'
+            
+            box.prop(material.seut, 'overrideMatLib', icon='LIBRARY_DATA_OVERRIDE')
 
             box.prop(material.seut, 'technique', icon='IMGDISPLAY')
             box.prop(material.seut, 'facing')

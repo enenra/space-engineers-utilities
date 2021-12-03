@@ -79,6 +79,11 @@ def update_asset_path(self, context):
 
     if os.path.isdir(path):
 
+        materials_path = os.path.join(path, 'Materials')
+        if not os.path.exists(materials_path):
+            os.makedirs(materials_path)
+        relocate_matlibs(materials_path)
+
         # This is suboptimal but works.
         found = False
         libraries = bpy.context.preferences.filepaths.asset_libraries
@@ -101,6 +106,15 @@ def update_asset_path(self, context):
                         break
     
     save_addon_prefs()
+
+
+def relocate_matlibs(path):
+    for lib in bpy.data.libraries:
+        if lib.name.startswith("MatLib_") and not os.path.exists(lib.filepath):
+            if os.path.exists(os.path.join(path, lib.name[7:])):
+                bpy.ops.wm.lib_relocate(library=lib.name, directory=path, filename=lib.name[7:])
+            elif os.path.exists(os.path.join(path, lib.name)):
+                bpy.ops.wm.lib_relocate(library=lib.name, directory=path, filename=lib.name)
 
 
 def update_havok_path(self, context):
