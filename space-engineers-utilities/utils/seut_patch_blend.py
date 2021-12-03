@@ -49,9 +49,11 @@ def patch_collections_v0995():
         if not 'SEUT' + tag in scn.view_layers['SEUT'].layer_collection.children:
             continue
         # Ensure it doesn't run for scenes that have already been patched
-        if not scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag].collection.seut.col_type == 'none':
-            continue
-        
+        if scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag].collection is not None:
+            seut_col = scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag].collection
+            if seut_col.seut.col_type != 'none':
+                continue
+            
         # Converting main collection
         seut_col = scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag].collection
         seut_col.seut.scene = scn
@@ -184,8 +186,6 @@ def patch_collections_v0996():
                 continue
             if col.seut.scene != scn:
                 continue
-
-            type_index = None
 
             if col.seut.col_type == 'mountpoints' and scn.seut.mountpointToggle == 'off':
                 col.seut.col_type = 'lod'

@@ -18,6 +18,7 @@ class SEUT_OT_RemapMaterials(Operator):
         scene = context.scene
         wm = context.window_manager
 
+        return
         enabled = False
         for lib in wm.seut.matlibs:
             if lib.enabled:

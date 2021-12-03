@@ -157,19 +157,6 @@ class SEUT_IssueProperty(PropertyGroup):
     )
 
 
-class SEUT_MatLibProps(PropertyGroup):
-    """Holder for the various MatLib properties"""
-
-    name: StringProperty(
-        name="Name of MatLib"
-    )
-    enabled: BoolProperty(
-        name="Enable or Disable MatLibs in the Materials folder",
-        default=False,
-        update=update_enabled
-    )
-
-
 class SEUT_WindowManager(PropertyGroup):
     """Holder for the various properties saved to the BLEND file"""
 
@@ -215,15 +202,6 @@ class SEUT_WindowManager(PropertyGroup):
         name = "Fix Scratched Materials",
         description = "Numerous SDK models have a scratched paint material assigned to their bevels in the FBX but don't have them ingame. This switches those surfaces to the non-scratched material",
         default = True
-    )
-
-    # Materials
-    matlibs: CollectionProperty(
-        type=SEUT_MatLibProps
-    )
-    matlib_index: IntProperty(
-        name="Enable or Disable MatLibs in the Materials folder",
-        default=0
     )
 
     # Texture Conversion

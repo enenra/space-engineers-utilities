@@ -78,8 +78,27 @@ def update_asset_path(self, context):
     path = get_abs_path(self.asset_path)
 
     if os.path.isdir(path):
-        os.makedirs(os.path.join(path, 'Materials'), exist_ok=True)
-        bpy.ops.wm.refresh_matlibs()
+
+        # This is suboptimal but works.
+        found = False
+        libraries = bpy.context.preferences.filepaths.asset_libraries
+        if 'SEUT' in libraries:
+            libraries['SEUT'].path = path
+            found = True
+
+        if not found:
+            for al in libraries:
+                if al.path == path:
+                    al.name = "SEUT"
+                    found = True
+                    break
+            
+            if not found:
+                bpy.ops.preferences.asset_library_add(directory=path)
+                for al in bpy.context.preferences.filepaths.asset_libraries:
+                    if al.path == path:
+                        al.name = "SEUT"
+                        break
     
     save_addon_prefs()
 
