@@ -372,6 +372,9 @@ def rename_collections(scene: object):
     """Scans existing collections to find the SEUT ones and renames them if the tag has changed."""
     
     # This ensures that after a full copy of a scene, the collections are reassigned to the new scene
+    if len(scene.view_layers['SEUT'].layer_collection.children) < 1:
+        return
+        
     if scene.view_layers['SEUT'].layer_collection.children[0].collection.name.startswith("SEUT "):
         scene.view_layers['SEUT'].layer_collection.children[0].collection.seut.scene = scene
         for vl_col in scene.view_layers['SEUT'].layer_collection.children[0].children:
@@ -582,6 +585,10 @@ def sort_collections(scene, context = None):
         ]
 
     collections = get_collections(scene)
+
+    if collections['seut'] is None:
+        return
+
     seut_cols = collections['seut'][0].children
     vl_cols = scene.view_layers['SEUT'].layer_collection.children[collections['seut'][0].name].children
     
