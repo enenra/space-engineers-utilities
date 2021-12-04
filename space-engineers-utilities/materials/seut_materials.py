@@ -11,7 +11,7 @@ from bpy.props      import (EnumProperty,
                             StringProperty,
                             BoolProperty)
 
-from ..utils.seut_patch_blend   import check_patch_needed
+from ..seut_pt_toolbar   import check_display_panels
 
 
 def update_technique(self, context):
@@ -295,7 +295,7 @@ class SEUT_PT_Panel_Materials(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return 'SEUT' in scene.view_layers and not check_patch_needed()
+        return check_display_panels(context)
 
 
     def draw(self, context):
@@ -400,7 +400,7 @@ class SEUT_PT_Panel_TextureConversion(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return 'SEUT' in scene.view_layers and not check_patch_needed()
+        return check_display_panels(context)
 
 
     def draw(self, context):

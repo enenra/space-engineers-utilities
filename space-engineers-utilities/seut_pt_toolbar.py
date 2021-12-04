@@ -8,6 +8,10 @@ from .seut_collections              import get_collections, seut_collections
 from .seut_utils                    import get_enum_items, wrap_text
 
 
+def check_display_panels(context) -> bool:
+    scene = context.scene
+    return not check_patch_needed() and 'SEUT' in scene.view_layers
+
 class SEUT_PT_Panel(Panel):
     """Creates the topmost panel for SEUT"""
     bl_idname = "SEUT_PT_Panel"
@@ -111,7 +115,7 @@ class SEUT_PT_Panel_Collections(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return (scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character') and 'SEUT' in scene.view_layers and not check_patch_needed()
+        return (scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character') and check_display_panels(context)
 
 
     def draw(self, context):
@@ -176,7 +180,7 @@ class SEUT_PT_Panel_BoundingBox(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers and not check_patch_needed()
+        return scene.seut.sceneType == 'mainScene' and check_display_panels(context)
 
 
     def draw(self, context):
@@ -213,7 +217,7 @@ class SEUT_PT_Panel_Mirroring(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers and not check_patch_needed()
+        return scene.seut.sceneType == 'mainScene' and check_display_panels(context)
 
 
     def draw(self, context):
@@ -247,7 +251,7 @@ class SEUT_PT_Panel_Mountpoints(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers and not check_patch_needed()
+        return scene.seut.sceneType == 'mainScene' and check_display_panels(context)
 
 
     def draw(self, context):
@@ -295,7 +299,7 @@ class SEUT_PT_Panel_IconRender(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers and not check_patch_needed()
+        return scene.seut.sceneType == 'mainScene' and check_display_panels(context)
 
 
     def draw(self, context):
@@ -369,7 +373,7 @@ class SEUT_PT_Panel_Export(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return (scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation') and 'SEUT' in scene.view_layers and not check_patch_needed()
+        return scene.seut.sceneType in ['mainScene', 'subpart', 'character', 'character_animation'] and check_display_panels(context)
 
 
     def draw(self, context):
@@ -429,7 +433,7 @@ class SEUT_PT_Panel_Import(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return (scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation') and 'SEUT' in scene.view_layers and not check_patch_needed()
+        return scene.seut.sceneType in ['mainScene', 'subpart', 'character', 'character_animation'] and check_display_panels(context)
 
 
     def draw(self, context):
