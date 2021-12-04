@@ -15,6 +15,14 @@ from bpy.props  import (EnumProperty,
 from bpy_extras.asset_utils import SpaceAssetInfo
 
 
+def update_vanilla_dlc(self, context):
+    if self.is_dlc and not self.is_vanilla:
+        self.is_vanilla = True
+    
+    elif not self.is_vanilla and self.is_dlc:
+        self.is_dlc = False
+
+
 class SEUT_Asset(PropertyGroup):
     """Holder for the various asset properties"""
 
@@ -27,12 +35,14 @@ class SEUT_Asset(PropertyGroup):
     is_dlc: BoolProperty(
         name='DLC',
         description="",
-        default=False
+        default=False,
+        update=update_vanilla_dlc
     )
     is_vanilla: BoolProperty(
         name='Vanilla',
         description="",
-        default=False
+        default=False,
+        update=update_vanilla_dlc
     )
     
 
