@@ -26,12 +26,6 @@ def update_vanilla_dlc(self, context):
 class SEUT_Asset(PropertyGroup):
     """Holder for the various asset properties"""
 
-    version: IntProperty(
-        name="SEUT Asset Version",
-        description="Used as a reference to patch the SEUT asset properties to newer versions",
-        default=0 # current: 1
-    )
-
     is_dlc: BoolProperty(
         name='DLC',
         description="",

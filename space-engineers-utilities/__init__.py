@@ -86,7 +86,7 @@ from .particles.seut_particles                  import SEUT_PT_Panel_ImportParti
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
 from .utils.seut_updater                        import check_update
-from .utils.seut_patch_blend                    import apply_patches
+from .utils.seut_patch_blend                    import SEUT_OT_PatchBLEND
 from .utils.seut_updater                        import SEUT_OT_GetUpdate
 from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
 from .utils.seut_ot_discord_link                import SEUT_OT_DiscordLink
@@ -149,6 +149,7 @@ classes = (
     SEUT_OT_HighlightObjectAdd,
     SEUT_OT_HighlightObjectRemove,
     SEUT_MT_ContextMenu,
+    SEUT_OT_PatchBLEND,
     SEUT_OT_GetUpdate,
     SEUT_OT_SEMREFLink,
     SEUT_OT_DiscordLink,
@@ -266,7 +267,6 @@ def load_handler(dummy):
         
     try:
         init_relocate_matlibs()
-        apply_patches()
         check_update(get_addon_version())
         load_addon_prefs()
     except Exception as e:

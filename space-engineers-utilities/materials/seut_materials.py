@@ -11,6 +11,8 @@ from bpy.props      import (EnumProperty,
                             StringProperty,
                             BoolProperty)
 
+from ..utils.seut_patch_blend   import check_patch_needed
+
 
 def update_technique(self, context):
     if context.active_object is not None and context.active_object.active_material is not None:
@@ -293,7 +295,7 @@ class SEUT_PT_Panel_Materials(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return 'SEUT' in scene.view_layers
+        return 'SEUT' in scene.view_layers and not check_patch_needed()
 
 
     def draw(self, context):
@@ -398,7 +400,7 @@ class SEUT_PT_Panel_TextureConversion(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return 'SEUT' in scene.view_layers
+        return 'SEUT' in scene.view_layers and not check_patch_needed()
 
 
     def draw(self, context):

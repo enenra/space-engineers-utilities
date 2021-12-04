@@ -252,7 +252,7 @@ class SEUT_OT_RecreateCollections(Operator):
 
         if not 'SEUT' in scene.view_layers:
             scene.view_layers[0].name = 'SEUT'
-            scene.seut.version = 3
+            scene.seut.version = 4
             scene.eevee.use_bloom = True
 
         if scene.seut.subtypeId == "":
@@ -442,6 +442,7 @@ def create_collections(context):
         collections['seut'].append(bpy.data.collections.new(f"SEUT ({scene.seut.subtypeId})"))
         collections['seut'][0].seut.scene = scene
         collections['seut'][0].seut.col_type = 'seut'
+        collections['seut'][0].seut.version = 3
         if bpy.app.version >= (2, 91, 0):
             collections['seut'][0].color_tag = 'COLOR_02'
         scene.collection.children.link(collections['seut'][0])
