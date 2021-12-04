@@ -96,7 +96,7 @@ from .utils.seut_ot_issue_display               import SEUT_OT_ClearIssues
 
 from .seut_preferences                  import SEUT_AddonPreferences
 from .seut_preferences                  import SEUT_OT_SetDevPaths
-from .seut_preferences                  import get_addon_version, load_addon_prefs
+from .seut_preferences                  import get_addon_version, load_addon_prefs, init_relocate_matlibs
 from .seut_preferences                  import load_icons, unload_icons
 from .seut_pt_toolbar                   import SEUT_PT_Panel
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Collections
@@ -264,12 +264,8 @@ def menu_draw(self, context):
 @persistent
 def load_handler(dummy):
         
-    # This exists to avoid errors on startup
-    #if seut_preferences.asset_path is not None:
-        #bpy.ops.wm.refresh_matlibs()
-    
-    # On first install this might cause issues, the try is a safety for that.
     try:
+        init_relocate_matlibs()
         apply_patches()
         check_update(get_addon_version())
         load_addon_prefs()

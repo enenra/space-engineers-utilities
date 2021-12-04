@@ -117,6 +117,12 @@ def relocate_matlibs(path):
                 bpy.ops.wm.lib_relocate(library=lib.name, directory=path, filename=lib.name)
 
 
+def init_relocate_matlibs():
+    preferences = get_preferences()
+    if os.path.exists(preferences.asset_path):
+        relocate_matlibs(os.path.join(preferences.asset_path, 'Materials'))
+
+
 def update_havok_path(self, context):
     filename = 'hctStandAloneFilterManager.exe'
 
