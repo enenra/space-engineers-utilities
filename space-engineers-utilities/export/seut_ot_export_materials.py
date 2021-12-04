@@ -20,7 +20,7 @@ class SEUT_OT_ExportMaterials(Operator):
     def poll(cls, context):
         counter = 0
         for mat in bpy.data.materials:
-            if mat.library is None and not mat.name.startswith('SMAT_'):
+            if mat.library is None and mat.asset_data is not None and not mat.name.startswith('SMAT_'):
                 counter += 1
         return counter > 0
 
