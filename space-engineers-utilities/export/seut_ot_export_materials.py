@@ -52,7 +52,7 @@ def export_materials(self, context):
     materials.set('Name', filename)
 
     for mat in bpy.data.materials:
-        if mat.library is None:
+        if mat.library is None and mat.asset_data is not None:
             create_mat_entry(self, context, materials, mat)
                 
     # Create file with subtypename + collection name and write string to it
