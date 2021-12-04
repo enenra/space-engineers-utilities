@@ -30,7 +30,7 @@ def check_patch_needed() -> bool:
             return True
 
     for col in bpy.data.collections:
-        if col.seut.version < 3:
+        if col.seut.version < 3 and col.seut.col_type != 'none':
             return True
     
     return False
