@@ -376,6 +376,12 @@ class SEUT_PT_Panel_Export(Panel):
         row = layout.row()
         row.scale_y = 1.1
         row.operator('scene.export', icon='EXPORT')
+        
+        split = layout.split(factor=0.85, align=True)
+        split.operator('scene.export_materials', icon='EXPORT')
+        link = split.operator('wm.semref_link', text="", icon='INFO')
+        link.section = 'tutorials'
+        link.page = '6128098/Create+MatLib+Tutorial'
 
         # Options
         box = layout.box()

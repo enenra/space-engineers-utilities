@@ -10,10 +10,19 @@ from ..seut_errors      import seut_report, get_abs_path
 
 
 class SEUT_OT_ExportMaterials(Operator):
-    """Export local materials to XML file"""
+    """Export local materials to XML library file"""
     bl_idname = "scene.export_materials"
     bl_label = "Export Materials"
     bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        counter = 0
+        for mat in bpy.data.materials:
+            if mat.library is None and not mat.name.startswith('SMAT_'):
+                counter += 1
+        return counter > 0
 
 
     def execute(self, context):

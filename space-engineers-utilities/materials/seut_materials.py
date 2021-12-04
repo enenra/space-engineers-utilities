@@ -390,12 +390,6 @@ class SEUT_PT_Panel_Materials(Panel):
 
         box.operator('object.create_material', icon='ADD')
         box.operator('wm.import_materials', icon='IMPORT')
-        
-        split = layout.split(factor=0.85)
-        split.operator('scene.export_materials', icon='EXPORT')
-        link = split.operator('wm.semref_link', text="", icon='INFO')
-        link.section = 'tutorials'
-        link.page = '6128098/Create+MatLib+Tutorial'
 
 
 class SEUT_PT_Panel_TextureConversion(Panel):
