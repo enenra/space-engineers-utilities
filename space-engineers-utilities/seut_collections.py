@@ -593,7 +593,7 @@ def sort_collections(scene, context = None):
     seut_cols = collections['seut'][0].children
     vl_cols = scene.view_layers['SEUT'].layer_collection.children[collections['seut'][0].name].children
     
-    if 'bs' in collections:
+    if 'bs' in collections and collections['bs'] is not None:
         for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
             hide = vl_cols[bs.name].hide_viewport
             seut_cols.unlink(bs)
@@ -606,14 +606,14 @@ def sort_collections(scene, context = None):
                 seut_cols.link(hkt[0])
                 vl_cols[hkt[0].name].hide_viewport = hide
     
-    if 'lod' in collections:
+    if 'lod' in collections and collections['lod'] is not None:
         for lod in sorted(get_cols_by_type(scene, 'lod', collections['main'][0]).values(), key=lambda lod: lod.seut.type_index):
             hide = vl_cols[lod.name].hide_viewport
             seut_cols.unlink(lod)
             seut_cols.link(lod)
             vl_cols[lod.name].hide_viewport = hide
     
-    if 'bs' in collections and 'lod' in collections:
+    if 'bs' in collections and 'lod' in collections and collections['bs'] is not None and collections['lod'] is not None:
         for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
             for lod in sorted(get_cols_by_type(scene, 'lod', bs).values(), key=lambda lod: lod.seut.type_index):
                 hide = vl_cols[lod.name].hide_viewport
