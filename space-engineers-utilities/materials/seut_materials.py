@@ -39,15 +39,6 @@ def update_technique(self, context):
             material.blend_method = 'CLIP'
 
 
-def update_vanilla_dlc(self, context):
-
-    if self.dlc and not self.vanilla:
-        self.vanilla = True
-    
-    elif not self.vanilla and self.dlc:
-        self.dlc = False
-
-
 def update_color(self, context):
     nodes = context.active_object.active_material.node_tree.nodes
 
@@ -95,19 +86,6 @@ class SEUT_Materials(PropertyGroup):
         name="SEUT Material Version",
         description="Used as a reference to patch the SEUT material properties to newer versions",
         default=0
-    )
-    
-    vanilla: BoolProperty(
-        name="Vanilla",
-        description="Whether the material is a vanilla Space Engineers material",
-        default=False,
-        update=update_vanilla_dlc
-    )
-    dlc: BoolProperty(
-        name="DLC",
-        description="Whether the material is a DLC material",
-        default=False,
-        update=update_vanilla_dlc
     )
     
     overrideMatLib: BoolProperty(
@@ -165,7 +143,6 @@ class SEUT_Materials(PropertyGroup):
     )
 
     # TransparentMaterial properties
-
     alpha_misting_enable: BoolProperty(
         name="Alpha Misting",
         description="Start and end values determine the distance in meters at which a material's transparency is rendered.\nNote: Only works on billboards spawned by code, not on models",
@@ -480,6 +457,7 @@ def create_internal_material(context, mat_type: str):
     material = bpy.data.materials.new(name="SEUT_TEMP")
     material.use_nodes = True
     material.blend_method = 'BLEND'
+    material.use_fake_user = True
     nodes = material.node_tree.nodes
     
     node_bsdf = None
