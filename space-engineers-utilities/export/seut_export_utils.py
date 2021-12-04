@@ -53,42 +53,37 @@ def export_xml(self, context, collection) -> str:
         # This is a legacy check to filter out the old material presets.
         if mat.name[:5] == 'SMAT_':
             continue
+            
+        if mat.asset_data is not None:
+            if mat.asset_data.seut.is_dlc:
+                seut_report(self, context, 'WARNING', False, 'W012', mat.name)
 
-        if mat.seut.dlc:
-            seut_report(self, context, 'WARNING', False, 'W012', mat.name)
-        
-        elif mat.library == None:
-            # If the material is not part of a linked library, I have to account for the possibility that it is a leftover material from import.
-            # Those do get cleaned up, but only after the BLEND file is saved, closed and reopened. That may not have happened.
+        is_unique = False
+        # Case 1: linked + asset -> no entry (unless not vanilla)
+        if mat.library is not None and mat.asset_data is not None:
+            if not mat.asset_data.seut.is_vanilla:
+                is_unique = True
+        # Case 2: linked but no asset -> no entry (compatibility)
+        elif mat.library is not None and mat.asset_data is None:
+            continue
+        # Case 3: local + asset -> entry (unless vanilla)
+        elif mat.library is None and mat.asset_data is not None:
+            if not mat.asset_data.seut.is_vanilla:
+                is_unique = True
+        # Case 4: local -> entry
+        elif mat.library is None and mat.asset_data is None:
             is_unique = True
-
-            for mtl in bpy.data.materials:
-                if mtl.library != None:
-                    # There is a material with its name in a linked library but override is turned on.
-                    if mtl.name == mat.name and mat.seut.overrideMatLib == True:
-                        is_unique = True
-                    # There is a material with its name in a linked library and override is turned off.
-                    if mtl.name == mat.name and mat.seut.overrideMatLib == False:
-                        is_unique = False
-                    # There is no material with its name in a linked library.
-                    elif mat.library == None and mtl.name == mat.name:
-                        is_unique = True
             
-            # Material is a local material
-            if is_unique:
-                create_mat_entry(self, context, model, mat)
+        if is_unique:
+            create_mat_entry(self, context, model, mat)
+            if mat.asset_data is None or (mat.asset_data is not None and not mat.asset_data.seut.is_vanilla):
                 export_material_textures(self, context, mat)
-                if mat.seut.technique in ['GLASS', 'HOLO', 'SHIELD'] and scene.seut.export_sbc_type in ['update', 'new']:
-                    export_transparent_mat(self, context, mat.name)
-            
-            else:
-                matRef = ET.SubElement(model, 'MaterialRef')
-                matRef.set('Name', mat.name)
-
-        elif mat.library != None:
+            if mat.seut.technique in ['GLASS', 'HOLO', 'SHIELD'] and scene.seut.export_sbc_type in ['update', 'new']:
+                export_transparent_mat(self, context, mat.name)
+        else:
             matRef = ET.SubElement(model, 'MaterialRef')
             matRef.set('Name', mat.name)
-            
+
     # Write LOD references into the XML, if applicable
     if collection.seut.col_type in ['main', 'bs']:
         if not collections['lod'] is None:
