@@ -85,6 +85,25 @@ def update_texconv_input_file(self, context):
         seut_report(self, context, 'ERROR', False, 'E015', 'Input', self.texconv_input_filetype)
 
 
+class SEUT_RepositoryProperty(PropertyGroup):
+    """Holder for information about repositories and their status"""
+
+    name: StringProperty()
+    text_name: StringProperty()
+    git_url: StringProperty()
+    needs_update: BoolProperty(
+        default=False
+    )
+    update_message: StringProperty()
+    current_version: StringProperty()
+    latest_version: StringProperty()
+    dev_mode: BoolProperty(
+        default=False
+    )
+    dev_tag: StringProperty()
+    dev_version: IntProperty()
+
+
 class SEUT_IssueProperty(PropertyGroup):
     """Holder for issue information"""
 
@@ -237,6 +256,10 @@ class SEUT_WindowManager(PropertyGroup):
     )
 
     # Updater
+    repos: CollectionProperty(
+        type=SEUT_RepositoryProperty
+    )
+
     needs_update: BoolProperty(
         default = False
     )

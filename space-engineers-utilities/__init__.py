@@ -85,9 +85,9 @@ from .particles.seut_particles                  import SEUT_PT_Panel_ExportParti
 from .particles.seut_particles                  import SEUT_PT_Panel_ImportParticle
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
-from .utils.seut_updater                        import check_update
+from .utils.seut_repositories                   import SEUT_OT_GetUpdate
+from .utils.seut_repositories                   import update_register_repos, check_repo_update
 from .utils.seut_patch_blend                    import SEUT_OT_PatchBLEND
-from .utils.seut_updater                        import SEUT_OT_GetUpdate
 from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
 from .utils.seut_ot_discord_link                import SEUT_OT_DiscordLink
 from .utils.seut_ot_issue_display               import SEUT_OT_IssueDisplay
@@ -96,7 +96,7 @@ from .utils.seut_ot_issue_display               import SEUT_OT_ClearIssues
 
 from .seut_preferences                  import SEUT_AddonPreferences
 from .seut_preferences                  import SEUT_OT_SetDevPaths
-from .seut_preferences                  import get_addon_version, load_addon_prefs, init_relocate_matlibs
+from .seut_preferences                  import load_addon_prefs, init_relocate_matlibs
 from .seut_preferences                  import load_icons, unload_icons
 from .seut_pt_toolbar                   import SEUT_PT_Panel
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Collections
@@ -119,6 +119,7 @@ from .seut_icon_render                  import SEUT_OT_CopyRenderOptions
 from .seut_scene                        import SEUT_MountpointAreas
 from .seut_scene                        import SEUT_Scene
 from .seut_object                       import SEUT_Object
+from .seut_window_manager               import SEUT_RepositoryProperty
 from .seut_window_manager               import SEUT_IssueProperty
 from .seut_window_manager               import SEUT_WindowManager
 from .seut_utils                        import SEUT_OT_UpdateSubpartInstances
@@ -194,6 +195,7 @@ classes = (
     SEUT_Scene,
     SEUT_Collection,
     SEUT_Object,
+    SEUT_RepositoryProperty,
     SEUT_IssueProperty,
     SEUT_WindowManager,
     SEUT_UL_ParticleProperties,
@@ -267,7 +269,10 @@ def load_handler(dummy):
         
     try:
         init_relocate_matlibs()
-        check_update(get_addon_version())
+        update_register_repos()
+        #check_repo_update('space-engineers-utilities')
+        #check_repo_update('seut-assets')
+        #check_repo_update('MWMBuilder')
         load_addon_prefs()
     except Exception as e:
         print(e)

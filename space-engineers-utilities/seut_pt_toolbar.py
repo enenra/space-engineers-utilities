@@ -25,6 +25,7 @@ class SEUT_PT_Panel(Panel):
         layout = self.layout
         scene = context.scene
         wm = context.window_manager
+        repo = wm.seut.repos['space-engineers-utilities']
         
         if addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
             bau_entry = wm.bau.addons[__package__]
@@ -35,11 +36,12 @@ class SEUT_PT_Panel(Panel):
                 row = layout.row()
                 row.label(text="Go to Preferences to update.")
 
-        elif wm.seut.needs_update:
+        elif repo.needs_update:
             row = layout.row()
             row.alert = True
-            row.label(text=wm.seut.update_message, icon='ERROR')
-            row.operator('wm.get_update', icon='IMPORT', text="")
+            row.label(text=repo.update_message, icon='ERROR')
+            op = row.operator('wm.get_update', icon='IMPORT', text="")
+            op.repo_name = 'space-engineers-utilities'
 
         if not 'SEUT' in scene.view_layers:
             row = layout.row()

@@ -15,10 +15,9 @@ from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_temp_files, create_relative_path
 from .seut_export_utils             import correct_for_export_type, export_collection, get_col_filename
 from ..utils.seut_xml_utils         import *
-from ..seut_preferences             import get_addon
 from ..seut_collections             import get_collections, get_rev_ref_cols, get_cols_by_type, get_first_free_index
 from ..seut_errors                  import *
-from ..seut_utils                   import prep_context, get_preferences, create_relative_path
+from ..seut_utils                   import prep_context, get_preferences, create_relative_path, get_addon
 from ..utils.seut_tool_utils        import get_tool_dir
 
 class SEUT_OT_Export(Operator):

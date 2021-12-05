@@ -7,9 +7,9 @@ import addon_utils
 from bpy.types  import Operator, AddonPreferences
 from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
 
-from .utils.seut_updater            import check_update
+from .utils.seut_repositories       import *
 from .seut_errors                   import seut_report, get_abs_path
-from .seut_utils                    import get_preferences
+from .seut_utils                    import get_preferences, get_addon
 from .seut_bau                      import draw_bau_ui, get_config, set_config
 
 
@@ -25,31 +25,30 @@ class SEUT_OT_SetDevPaths(Operator):
 
     def execute(self, context):
         preferences = get_preferences()
-        
-        check_update(get_addon_version())
 
         # enenra
         if os.path.isdir("D:\\Modding\\Space Engineers\\SEUT\\seut-assets\\Materials\\"):
             preferences.game_path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SpaceEngineers\\"
             preferences.asset_path = "D:\\Modding\\Space Engineers\\SEUT\\seut-assets\\"
-            preferences.mwmb_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\StollieMWMBuilder\\MwmBuilder.exe"
             preferences.havok_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
         
         # Stollie
         elif os.path.isdir("C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"):
             preferences.asset_path = "C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\"
-            preferences.mwmb_path = "C:\\3D_Projects\\BlenderPlugins\\StollieMWMBuilder\\MwmBuilder.exe"
             preferences.havok_path = "C:\\3D_Projects\\BlenderPlugins\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
         
         else:
             load_addon_prefs()
 
+        update_register_repos()
+        check_repo_update('space-engineers-utilities')
+        check_repo_update('seut-assets')
+        check_repo_update('MWMBuilder')
+
         return {'FINISHED'}
 
 
 def update_game_path(self, context):
-    scene = context.scene
-
     if self.game_path == "":
         return
     
@@ -70,8 +69,6 @@ def update_game_path(self, context):
 
 
 def update_asset_path(self, context):
-    scene = context.scene
-
     if self.asset_path == "":
         return
     
@@ -83,6 +80,13 @@ def update_asset_path(self, context):
         if not os.path.exists(materials_path):
             os.makedirs(materials_path)
         relocate_matlibs(materials_path)
+
+        preferences = get_preferences()
+        mwmb_path = os.path.join(os.path.dirname(materials_path), 'Tools', 'StollieMWMBuilder', 'MwmBuilder.exe')
+        if os.path.exists(mwmb_path):
+            preferences.mwmb_path = mwmb_path
+        else:
+            preferences.mwmb_path = ""
 
         # This is suboptimal but works.
         found = False
@@ -137,26 +141,6 @@ def update_havok_path(self, context):
     self.havok_path = verify_tool_path(self, context, path, "Havok Stand Alone Filter Manager", filename)
 
     save_addon_prefs()
-
-
-def update_mwmb_path(self, context):
-    name = str('MwmBuilder.exe')
-
-    if self.mwmb_path == "":
-        return
-    elif self.mwmb_path == self.mwmb_path_before:
-        return
-
-    path = get_abs_path(self.mwmb_path)
-    
-    self.mwmb_path_before = verify_tool_path(self, context, path, "MWM Builder", name)
-    self.mwmb_path = verify_tool_path(self, context, path, "MWM Builder", name)
-
-    save_addon_prefs()
-
-
-def get_addon():
-    return sys.modules.get(__package__)
     
 
 class SEUT_AddonPreferences(AddonPreferences):
@@ -190,28 +174,23 @@ class SEUT_AddonPreferences(AddonPreferences):
     mwmb_path: StringProperty(
         name="MWM Builder",
         description="This tool converts the individual 'loose files' that the export yields into MWM files the game can read",
-        subtype='FILE_PATH',
-        update=update_mwmb_path
-    )
-    mwmb_path_before: StringProperty(
         subtype='FILE_PATH'
     )
 
     def draw(self, context):
         layout = self.layout
         wm = context.window_manager
-        addon = sys.modules.get(__package__)
+        preferences = get_preferences()
 
         self.dev_mode = get_addon().bl_info['dev_version'] > 0
 
         preview_collections = get_icons()
         pcoll = preview_collections['main']
 
-        split = layout.split(factor=0.90)
-        split.label(text="")
-        split = split.split(factor=0.5)
-        split.operator('wm.discord_link', text="", icon_value=pcoll['discord'].icon_id)
-        link = split.operator('wm.semref_link', text="", icon='INFO')
+        row = layout.row()
+        row.alignment = 'RIGHT'
+        row.operator('wm.discord_link', text="", icon_value=pcoll['discord'].icon_id)
+        link = row.operator('wm.semref_link', text="", icon='INFO')
         link.section = 'reference'
         link.page = '6127826/SEUT+Preferences'
 
@@ -220,13 +199,17 @@ class SEUT_AddonPreferences(AddonPreferences):
             row = layout.row()
             row.label(text="Update Status:")
 
-            if wm.seut.needs_update:
+            repo = wm.seut.repos['space-engineers-utilities']
+
+            if repo.needs_update:
                 row.alert = True
-                row.label(text=wm.seut.update_message, icon='ERROR')
-                row.operator('wm.get_update', icon='IMPORT')
+                row.label(text=repo.update_message, icon='ERROR')
+                op = row.operator('wm.get_update', icon='IMPORT')
+                op.repo_name = 'space-engineers-utilities'
             else:
-                row.label(text=wm.seut.update_message, icon='CHECKMARK')
-                row.operator('wm.get_update', text="Releases", icon='IMPORT')
+                row.label(text=repo.update_message, icon='CHECKMARK')
+                op = row.operator('wm.get_update', text="Releases", icon='IMPORT')
+                op.repo_name = 'space-engineers-utilities'
 
             box = layout.box()
             box.label(text="Install the Blender Addon Updater to easily update SEUT:", icon='FILE_REFRESH')
@@ -236,20 +219,62 @@ class SEUT_AddonPreferences(AddonPreferences):
             op.url = "https://github.com/enenra/blender_addon_updater/releases/"
 
         if self.dev_mode:
-            layout.operator('wm.set_dev_paths', icon='FILEBROWSER')
+            row = layout.row()
+            row.scale_x = 1.25
+            row.scale_y = 1.5
+            row.operator('wm.set_dev_paths', icon='FILEBROWSER')
 
         layout.prop(self, "game_path", expand=True)
 
         box = layout.box()
-        split = box.split(factor=0.65)
+        split = box.split(factor=0.60)
         split.label(text="Assets", icon='ASSET_MANAGER')
         split.operator('wm.mass_convert_textures', icon='FILE_REFRESH')
         box.prop(self, "asset_path", expand=True)
+        if os.path.exists(preferences.asset_path):
+            repo = wm.seut.repos['seut-assets']
+            box2 = box.box()
+            row = box2.row()
+            if repo.needs_update:
+                row.alert = True
+                split = row.split(factor=0.30)
+                split.label(text="Assets Status:", icon='ASSET_MANAGER')
+                split.label(text=repo.update_message, icon='ERROR')
+                op = row.operator('wm.get_update', text="", icon='URL')
+                op.repo_name = repo.name
+            else:
+                split = row.split(factor=0.30)
+                split.label(text="Assets Status:", icon='ASSET_MANAGER')
+                split.label(text=repo.update_message, icon='CHECKMARK')
+                op = row.operator('wm.get_update', text="", icon='URL')
+                op.repo_name = repo.name
+                
+        if os.path.exists(preferences.mwmb_path):
+            repo = wm.seut.repos['MWMBuilder']
+            box2 = box.box()
+            row = box2.row()
+
+            if preferences.mwmb_path == "":
+                row.alert = True
+                row.label(text="MWMB not installed.", icon='ERROR')
+            else:
+                if repo.needs_update:
+                    row.alert = True
+                    split = row.split(factor=0.30)
+                    split.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
+                    split.label(text=repo.update_message, icon='ERROR')
+                    op = row.operator('wm.get_update', text="", icon='URL')
+                    op.repo_name = repo.name
+                else:
+                    split = row.split(factor=0.30)
+                    split.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
+                    split.label(text=repo.update_message, icon='CHECKMARK')
+                    op = row.operator('wm.get_update', text="", icon='URL')
+                    op.repo_name = repo.name
 
         box = layout.box()
         box.label(text="External Tools", icon='TOOL_SETTINGS')
-        box.prop(self, "mwmb_path", expand=True)
-        box.prop(self, "havok_path", expand=True)
+        box.prop(self, "havok_path", text="Havok File Manager", expand=True)
 
 
 def load_icons():

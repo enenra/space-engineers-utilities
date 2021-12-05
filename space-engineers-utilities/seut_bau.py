@@ -163,11 +163,9 @@ def get_config() -> dict:
 
     if preferences.game_path is not None:
         dict['game_path'] = preferences.game_path
-    if preferences.game_path is not None:
+    if preferences.asset_path is not None:
         dict['asset_path'] = preferences.asset_path
-    if preferences.game_path is not None:
-        dict['mwmb_path'] = preferences.mwmb_path
-    if preferences.game_path is not None:
+    if preferences.havok_path is not None:
         dict['havok_path'] = preferences.havok_path
 
     data['space-engineers-utilities'].append(dict)
@@ -185,8 +183,6 @@ def set_config(data):
             preferences.game_path = cfg['game_path']
         if 'asset_path' in cfg:
             preferences.asset_path = cfg['asset_path']
-        if 'mwmb_path' in cfg:
-            preferences.mwmb_path = cfg['mwmb_path']
         if 'havok_path' in cfg:
             preferences.havok_path = cfg['havok_path']
 
