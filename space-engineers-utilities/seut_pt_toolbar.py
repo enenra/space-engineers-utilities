@@ -171,7 +171,9 @@ class SEUT_PT_Panel_Collections(Panel):
                 box.prop(active_col.seut,'lod_distance')
 
         if show_button:
-            layout.operator('scene.create_collection')
+            row = layout.row()
+            row.scale_y = 1.5
+            row.operator('scene.create_collection')
             layout.operator('scene.recreate_collections', icon='OUTLINER')
 
 
