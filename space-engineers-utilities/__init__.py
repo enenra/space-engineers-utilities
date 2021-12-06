@@ -86,6 +86,7 @@ from .particles.seut_particles                  import SEUT_PT_Panel_ImportParti
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
 from .utils.seut_repositories                   import SEUT_OT_GetUpdate
+from .utils.seut_repositories                   import SEUT_OT_CheckUpdate
 from .utils.seut_repositories                   import update_register_repos, check_repo_update
 from .utils.seut_patch_blend                    import SEUT_OT_PatchBLEND
 from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
@@ -152,6 +153,7 @@ classes = (
     SEUT_MT_ContextMenu,
     SEUT_OT_PatchBLEND,
     SEUT_OT_GetUpdate,
+    SEUT_OT_CheckUpdate,
     SEUT_OT_SEMREFLink,
     SEUT_OT_DiscordLink,
     SEUT_OT_IssueDisplay,

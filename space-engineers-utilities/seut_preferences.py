@@ -41,9 +41,9 @@ class SEUT_OT_SetDevPaths(Operator):
             load_addon_prefs()
 
         update_register_repos()
-        check_repo_update('space-engineers-utilities')
-        check_repo_update('seut-assets')
-        check_repo_update('MWMBuilder')
+        #check_repo_update('space-engineers-utilities')
+        #check_repo_update('seut-assets')
+        #check_repo_update('MWMBuilder')
 
         return {'FINISHED'}
 
@@ -234,7 +234,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         if os.path.exists(preferences.asset_path):
             repo = wm.seut.repos['seut-assets']
             box2 = box.box()
-            row = box2.row()
+            row = box2.row(align=True)
             if repo.needs_update:
                 row.alert = True
                 split = row.split(factor=0.30)
@@ -246,13 +246,15 @@ class SEUT_AddonPreferences(AddonPreferences):
                 split = row.split(factor=0.30)
                 split.label(text="Assets Status:", icon='ASSET_MANAGER')
                 split.label(text=repo.update_message, icon='CHECKMARK')
+                op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
+                op.repo_name = repo.name
                 op = row.operator('wm.get_update', text="", icon='URL')
                 op.repo_name = repo.name
                 
         if os.path.exists(preferences.mwmb_path):
             repo = wm.seut.repos['MWMBuilder']
             box2 = box.box()
-            row = box2.row()
+            row = box2.row(align=True)
 
             if preferences.mwmb_path == "":
                 row.alert = True
@@ -269,6 +271,8 @@ class SEUT_AddonPreferences(AddonPreferences):
                     split = row.split(factor=0.30)
                     split.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
                     split.label(text=repo.update_message, icon='CHECKMARK')
+                    op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
+                    op.repo_name = repo.name
                     op = row.operator('wm.get_update', text="", icon='URL')
                     op.repo_name = repo.name
 

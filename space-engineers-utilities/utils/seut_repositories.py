@@ -40,7 +40,24 @@ class SEUT_OT_GetUpdate(Operator):
         if repo.latest_version == "":
             webbrowser.open(f"{repo.git_url}/releases/")
         else:
-            webbrowser.open(f"{repo.git_url}/releases/tag/{repo.latest_version}")
+            webbrowser.open(f"{repo.git_url}/releases/tag/v{repo.latest_version}")
+        
+        return {'FINISHED'}
+
+
+class SEUT_OT_CheckUpdate(Operator):
+    """Check whether a newer update is available"""
+    bl_idname = "wm.check_update"
+    bl_label = "Check Update"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    repo_name: StringProperty()
+
+
+    def execute(self, context):
+
+        check_repo_update(self.repo_name)
         
         return {'FINISHED'}
 
