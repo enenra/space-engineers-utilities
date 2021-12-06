@@ -240,7 +240,7 @@ class SEUT_Collection(PropertyGroup):
 
 
 class SEUT_OT_RecreateCollections(Operator):
-    """Recreates the collections"""
+    """Recreates any missing collections for the current scene type"""
     bl_idname = "scene.recreate_collections"
     bl_label = "Recreate Collections"
     bl_options = {'REGISTER', 'UNDO'}
@@ -472,7 +472,8 @@ def create_collections(context):
                 collections['lod'].append(create_seut_collection(context, 'lod', 1, collections['main'][0]))
                 collections['lod'].append(create_seut_collection(context, 'lod', 2, collections['main'][0]))
                 collections['lod'].append(create_seut_collection(context, 'lod', 3, collections['main'][0]))
-                collections['lod'].append(create_seut_collection(context, 'lod', 1, get_seut_collection(scene, 'bs', type_index=1)))
+                if 'bs' in collections and len(collections['bs']) > 0:
+                    collections['lod'].append(create_seut_collection(context, 'lod', 1, get_seut_collection(scene, 'bs', type_index=1)))
 
     sort_collections(scene, context)
 
@@ -657,12 +658,13 @@ def get_seut_collection(scene, col_type: str, ref_col_type: str = None, type_ind
 
     collections = get_collections(scene)
 
-    for col in collections[col_type]:
-        if ref_col_type is not None and col.seut.ref_col.seut.col_type != ref_col_type:
-            continue
-        if type_index is not None and col.seut.type_index != type_index:
-            continue
-        return col
+    if col_type in collections:
+        for col in collections[col_type]:
+            if ref_col_type is not None and col.seut.ref_col.seut.col_type != ref_col_type:
+                continue
+            if type_index is not None and col.seut.type_index != type_index:
+                continue
+            return col
     
     return None
 

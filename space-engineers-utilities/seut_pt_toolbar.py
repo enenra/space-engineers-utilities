@@ -172,6 +172,7 @@ class SEUT_PT_Panel_Collections(Panel):
 
         if show_button:
             layout.operator('scene.create_collection')
+            layout.operator('scene.recreate_collections', icon='OUTLINER')
 
 
 class SEUT_PT_Panel_BoundingBox(Panel):
