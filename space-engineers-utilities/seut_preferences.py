@@ -231,34 +231,47 @@ class SEUT_AddonPreferences(AddonPreferences):
         split.label(text="Assets", icon='ASSET_MANAGER')
         split.operator('wm.mass_convert_textures', icon='FILE_REFRESH')
         box.prop(self, "asset_path", expand=True)
+
         if os.path.exists(preferences.asset_path):
             repo = wm.seut.repos['seut-assets']
             box2 = box.box()
             row = box2.row(align=True)
-            if repo.needs_update:
+
+            if not os.path.exists(os.path.join(preferences.asset_path, 'Materials')):
                 row.alert = True
                 split = row.split(factor=0.30)
-                split.label(text="Assets Status:", icon='ASSET_MANAGER')
-                split.label(text=repo.update_message, icon='ERROR')
+                split.label(text="Assets Status:", icon='TOOL_SETTINGS')
+                split.label(text="Assets not downloaded.", icon='ERROR')
                 op = row.operator('wm.get_update', text="", icon='URL')
                 op.repo_name = repo.name
             else:
-                split = row.split(factor=0.30)
-                split.label(text="Assets Status:", icon='ASSET_MANAGER')
-                split.label(text=repo.update_message, icon='CHECKMARK')
-                op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
-                op.repo_name = repo.name
-                op = row.operator('wm.get_update', text="", icon='URL')
-                op.repo_name = repo.name
+                if repo.needs_update:
+                    row.alert = True
+                    split = row.split(factor=0.30)
+                    split.label(text="Assets Status:", icon='ASSET_MANAGER')
+                    split.label(text=repo.update_message, icon='ERROR')
+                    op = row.operator('wm.get_update', text="", icon='URL')
+                    op.repo_name = repo.name
+                else:
+                    split = row.split(factor=0.30)
+                    split.label(text="Assets Status:", icon='ASSET_MANAGER')
+                    split.label(text=repo.update_message, icon='CHECKMARK')
+                    op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
+                    op.repo_name = repo.name
+                    op = row.operator('wm.get_update', text="", icon='URL')
+                    op.repo_name = repo.name
                 
-        if os.path.exists(preferences.mwmb_path):
             repo = wm.seut.repos['MWMBuilder']
             box2 = box.box()
             row = box2.row(align=True)
 
             if preferences.mwmb_path == "":
                 row.alert = True
-                row.label(text="MWMB not installed.", icon='ERROR')
+                split = row.split(factor=0.30)
+                split.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
+                split.label(text="MWMBuilder not installed.", icon='ERROR')
+                op = row.operator('wm.get_update', text="", icon='URL')
+                op.repo_name = repo.name
             else:
                 if repo.needs_update:
                     row.alert = True
