@@ -111,7 +111,7 @@ def update_register_repos():
         repo.text_name = 'MWM Builder'
         repo.git_url = "https://github.com/cstahlhut/MWMBuilder"
             
-    path = os.path.join(preferences.asset_path, 'Tools', 'MWMB', 'MWMBuilder.cfg')
+    path = os.path.join(preferences.asset_path, 'Tools', 'StollieMWMBuilder', 'MWMBuilder.cfg')
     data = {}
     if os.path.exists(path):
         with open(path) as cfg_file:
@@ -119,7 +119,7 @@ def update_register_repos():
     if 'MWMBuilder' in data:
         cfg = data['MWMBuilder'][0]
         if 'current_version' in cfg:
-            repo.current_version = tuple(map(int, cfg['current_version'].split('.')))
+            repo.current_version = cfg['current_version']
         if 'dev_tag' in cfg:
             repo.dev_tag = cfg['dev_tag']
         if 'dev_version' in cfg:
