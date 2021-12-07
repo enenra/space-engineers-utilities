@@ -4,9 +4,13 @@ import re
 import json
 import requests
 import webbrowser
+import tempfile
+import shutil
+import zipfile
+import glob
 
 from bpy.types              import Operator
-from bpy.props              import StringProperty
+from bpy.props              import StringProperty, BoolProperty
 
 from ..seut_utils           import get_preferences, get_addon
 
@@ -48,21 +52,51 @@ class SEUT_OT_GetUpdate(Operator):
 class SEUT_OT_CheckUpdate(Operator):
     """Check whether a newer update is available"""
     bl_idname = "wm.check_update"
-    bl_label = "Check Update"
+    bl_label = "Check for Updates"
     bl_options = {'REGISTER', 'UNDO'}
 
 
     repo_name: StringProperty()
+    
+    location: StringProperty()
 
 
     def execute(self, context):
 
+        wm = context.window_manager
+        repo = wm.seut.repos[self.repo_name]
+
+        update_repo_from_config(repo, self.location)
         check_repo_update(self.repo_name)
         
         return {'FINISHED'}
 
 
-# TODO: How to deal with where to place and what to replace
+class SEUT_OT_DownloadUpdate(Operator):
+    """Downloads and installs the specified repository"""
+    bl_idname = "wm.download_update"
+    bl_label = "Download & Install"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    repo_name: StringProperty()
+    
+    location: StringProperty()
+
+    wipe: BoolProperty(
+        default=False
+    )
+
+
+    def execute(self, context):
+
+        wm = context.window_manager
+        repo = wm.seut.repos[self.repo_name]
+
+        update_repo(repo, self.location, self.wipe)
+        
+        return {'FINISHED'}
+
 
 def update_register_repos():
 
@@ -96,28 +130,7 @@ def update_register_repos():
         repo.text_name = 'SEUT Assets Repository'
         repo.git_url = "https://github.com/enenra/seut-assets"
     
-    path = os.path.join(preferences.asset_path, 'seut-assets.cfg')
-    data = {}
-    if os.path.exists(path):
-        with open(path) as cfg_file:
-            data = json.load(cfg_file)
-
-    if 'seut-assets' in data:
-        cfg = data['seut-assets'][0]
-        if 'current_version' in cfg:
-            repo.current_version = cfg['current_version']
-        if 'dev_tag' in cfg:
-            repo.dev_tag = cfg['dev_tag']
-        if 'dev_version' in cfg:
-            repo.dev_version = cfg['dev_version']
-    else:
-        repo.current_version = "0.0.0"
-        repo.dev_tag = "rc"
-        repo.dev_version = 0
-    if repo.dev_version > 0:
-        repo.dev_mode = True
-    else:
-        repo.dev_mode = False
+    update_repo_from_config(repo, preferences.asset_path)
     
     # MWMB
     if 'MWMBuilder' in wm.seut.repos:
@@ -128,13 +141,19 @@ def update_register_repos():
         repo.text_name = 'MWM Builder'
         repo.git_url = "https://github.com/cstahlhut/MWMBuilder"
             
-    path = os.path.join(preferences.asset_path, 'Tools', 'StollieMWMBuilder', 'MWMBuilder.cfg')
+    update_repo_from_config(repo, os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder'))
+
+
+def update_repo_from_config(repo: object, cfg_path: str):
+
+    cfg_path = os.path.join(cfg_path, f"{repo.name}.cfg")
     data = {}
-    if os.path.exists(path):
-        with open(path) as cfg_file:
+    if os.path.exists(cfg_path):
+        with open(cfg_path) as cfg_file:
             data = json.load(cfg_file)
-    if 'MWMBuilder' in data:
-        cfg = data['MWMBuilder'][0]
+
+    if repo.name in data:
+        cfg = data[repo.name][0]
         if 'current_version' in cfg:
             repo.current_version = cfg['current_version']
         if 'dev_tag' in cfg:
@@ -151,11 +170,10 @@ def update_register_repos():
         repo.dev_mode = False
 
 
-def check_repo_update(repository):
+def check_repo_update(repository: str):
     """Checks the GitHub API for the latest release of the given repository."""
 
     wm = bpy.context.window_manager
-    preferences = get_preferences()
     repo = wm.seut.repos[repository]
 
     repo.needs_update = False
@@ -259,3 +277,104 @@ def check_repo_update(repository):
     except Exception as e:
         print(e)
         repo.update_message = "Connection Failed!"
+
+
+def update_repo(repo: str, location: str, wipe: bool = False):
+    
+    tag = repo.latest_version
+    git_url = repo.git_url.replace("github.com/", "api.github.com/repos/")
+    response_releases = requests.get(git_url + "/releases")
+
+    try:
+        if response_releases.status_code == 200:
+            json_releases = response_releases.json()
+
+            found = False
+            download_url = ""
+            for release in json_releases:
+                if release['tag_name'] == f"v{tag}" and 'assets' in release:
+                    for asset in release['assets']:
+                        if asset['name'].endswith(".zip"):
+                            download_url = asset['browser_download_url']
+                            found = True
+                            break
+                        
+            if found:
+                temp_dir = tempfile.mkdtemp()
+                download_path = os.path.join(temp_dir, f"{repo.name}_{tag}.zip")
+
+                try:
+                    downloaded_dir = download_copy(download_url, temp_dir, download_path, repo)
+
+                    if wipe:
+                        if os.path.exists(location):
+                            shutil.rmtree(location)
+                        shutil.copytree(downloaded_dir, location)
+                    else:
+                        move_files_recursive(downloaded_dir, location)
+
+                    shutil.rmtree(temp_dir)
+
+                except Exception as e:
+                    print(e)
+                    shutil.rmtree(temp_dir)
+                    return {'CANCELLED'}
+
+                update_repo_from_config(repo, location)
+                check_repo_update(repo.name)
+                return {'FINISHED'}
+
+            else:
+                repo.update_message = "Release could not be found."
+                return {'CANCELLED'}
+            
+
+        elif response_releases.status_code == 403:
+            repo.update_message = "Rate limit exceeded!"
+            return {'CANCELLED'}
+
+        else:
+            repo.update_message = "Release could not be found."
+
+
+    except Exception as e:
+        print(e)
+        repo.update_message = "Connection Failed!"
+        return {'CANCELLED'}
+
+
+def download_copy(url, directory, save_path, repo, chunk_size=128):
+    r = requests.get(url, stream=True)
+    with open(save_path, 'wb') as fd:
+        for chunk in r.iter_content(chunk_size=chunk_size):
+            fd.write(chunk)
+
+    with zipfile.ZipFile(save_path, 'r') as zip_ref:
+        zip_ref.extractall(directory)
+    
+    os.remove(save_path)
+
+    init = glob.glob(directory + f"/**/{repo.name}.cfg", recursive = True)[0]
+
+    return os.path.dirname(init)
+
+
+def move_files_recursive(source: str, destination: str):
+
+    if not os.path.exists(destination):
+        shutil.move(source, destination)
+
+    else:
+        for root, dirs, files in os.walk(source):
+
+            for item in files:
+                src_file = os.path.join(source, item)
+                dst_file = os.path.join(destination, item)
+                if os.path.exists(dst_file):
+                    os.remove(dst_file)
+                shutil.move(src_file, dst_file)
+
+            for item in dirs:
+                src_dir = os.path.join(source, item)
+                dest_dir = os.path.join(destination, item)
+                move_files_recursive(src_dir, dest_dir)

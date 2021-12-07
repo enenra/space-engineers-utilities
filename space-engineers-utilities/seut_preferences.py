@@ -82,7 +82,7 @@ def update_asset_path(self, context):
         relocate_matlibs(materials_path)
 
         preferences = get_preferences()
-        mwmb_path = os.path.join(os.path.dirname(materials_path), 'Tools', 'StollieMWMBuilder', 'MwmBuilder.exe')
+        mwmb_path = os.path.join(os.path.dirname(materials_path), 'Tools', 'MWMBuilder', 'MwmBuilder.exe')
         if os.path.exists(mwmb_path):
             preferences.mwmb_path = mwmb_path
         else:
@@ -242,14 +242,21 @@ class SEUT_AddonPreferences(AddonPreferences):
                 split = row.split(factor=0.30)
                 split.label(text="Assets Status:", icon='TOOL_SETTINGS')
                 split.label(text="Assets not downloaded.", icon='ERROR')
-                op = row.operator('wm.get_update', text="", icon='URL')
+                op = row.operator('wm.download_update', text="", icon='IMPORT')
                 op.repo_name = repo.name
+                op.location = get_abs_path(preferences.asset_path)
             else:
                 if repo.needs_update:
                     row.alert = True
                     split = row.split(factor=0.30)
                     split.label(text="Assets Status:", icon='ASSET_MANAGER')
                     split.label(text=repo.update_message, icon='ERROR')
+                    op = row.operator('wm.download_update', text="", icon='IMPORT')
+                    op.repo_name = repo.name
+                    op.location = get_abs_path(preferences.asset_path)
+                    op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
+                    op.repo_name = repo.name
+                    op.location = get_abs_path(preferences.asset_path)
                     op = row.operator('wm.get_update', text="", icon='URL')
                     op.repo_name = repo.name
                 else:
@@ -258,6 +265,7 @@ class SEUT_AddonPreferences(AddonPreferences):
                     split.label(text=repo.update_message, icon='CHECKMARK')
                     op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
                     op.repo_name = repo.name
+                    op.location = get_abs_path(preferences.asset_path)
                     op = row.operator('wm.get_update', text="", icon='URL')
                     op.repo_name = repo.name
                 
@@ -270,14 +278,23 @@ class SEUT_AddonPreferences(AddonPreferences):
                 split = row.split(factor=0.30)
                 split.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
                 split.label(text="MWMBuilder not installed.", icon='ERROR')
-                op = row.operator('wm.get_update', text="", icon='URL')
+                op = row.operator('wm.download_update', text="Download", icon='IMPORT')
                 op.repo_name = repo.name
+                op.location = get_abs_path(os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder'))
+                op.wipe = True
             else:
                 if repo.needs_update:
                     row.alert = True
                     split = row.split(factor=0.30)
                     split.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
                     split.label(text=repo.update_message, icon='ERROR')
+                    op = row.operator('wm.download_update', text="", icon='IMPORT')
+                    op.repo_name = repo.name
+                    op.location = get_abs_path(os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder'))
+                    op.wipe = True
+                    op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
+                    op.repo_name = repo.name
+                    op.location = get_abs_path(os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder'))
                     op = row.operator('wm.get_update', text="", icon='URL')
                     op.repo_name = repo.name
                 else:
@@ -286,6 +303,7 @@ class SEUT_AddonPreferences(AddonPreferences):
                     split.label(text=repo.update_message, icon='CHECKMARK')
                     op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
                     op.repo_name = repo.name
+                    op.location = get_abs_path(os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder'))
                     op = row.operator('wm.get_update', text="", icon='URL')
                     op.repo_name = repo.name
 
