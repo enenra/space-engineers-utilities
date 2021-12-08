@@ -160,7 +160,12 @@ class SEUT_PT_Panel_Collections(Panel):
             box = layout.box()
             box.label(text=active_col.name, icon='COLLECTION_' + active_col.color_tag)
             if active_col.seut.col_type in seut_collections[scene.seut.sceneType]:
-                box.label(text=seut_collections[scene.seut.sceneType][active_col.seut.col_type]['type'])
+                row = box.row(align=True)
+                row.label(text=seut_collections[scene.seut.sceneType][active_col.seut.col_type]['type'])
+                if active_col.seut.col_type == 'hkt':
+                    link = row.operator('wm.semref_link', text="", icon='INFO')
+                    link.section = 'tutorials'
+                    link.page = '10944513/Create+Collision+Model+Tutorial'
             elif active_col.seut.col_type == 'seut':
                 box.label(text='SEUT Collection Container')
 
