@@ -27,6 +27,7 @@ def remap_materials(self, context):
     preferences = get_preferences()
     current_scene = context.window.scene
     current_area = prep_context(context)
+    wm = context.window_manager
 
     materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
     if not os.path.exists(materials_path):
@@ -92,6 +93,9 @@ def remap_materials(self, context):
                         new_material = old_material.name
                     elif old_material.name[:-4] in available_mats:
                         new_material = old_material.name[:-4]
+                    
+                    if wm.seut.fix_scratched_materials and "Scratched_" in new_material and new_material.replace("Scratched", "") in available_mats:
+                        new_material = new_material.replace("Scratched", "")
 
                     if new_material is not None:
                         with bpy.data.libraries.load(os.path.join(materials_path, available_mats[new_material]), link=True) as (data_from, data_to):
