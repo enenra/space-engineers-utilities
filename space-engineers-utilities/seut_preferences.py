@@ -67,6 +67,8 @@ def update_game_path(self, context):
 
 
 def update_asset_path(self, context):
+    wm = context.window_manager
+
     if self.asset_path == "":
         return
     
@@ -107,8 +109,14 @@ def update_asset_path(self, context):
                 if al.path == path:
                     al.name = "SEUT"
                     break
-    
-    
+
+    repo_assets = wm.seut.repos['seut-assets']
+    repo_assets.cfg_path = path
+    check_repo_update(repo_assets)
+    repo_mwmb = wm.seut.repos['MWMBuilder']
+    repo_mwmb.cfg_path = os.path.join(path, 'Tools', 'MWMBuilder')
+    check_repo_update(repo_mwmb)
+
     save_addon_prefs()
 
 
@@ -237,23 +245,28 @@ class SEUT_AddonPreferences(AddonPreferences):
             box2 = box.box()
             row = box2.row(align=True)
 
-            if not os.path.exists(os.path.join(preferences.asset_path, 'Materials')):
+            if not os.path.exists(os.path.join(repo.cfg_path, f"{repo.name}.cfg")):
                 row.alert = True
-                split = row.split(factor=0.30)
-                split.label(text="Assets Status:", icon='TOOL_SETTINGS')
-                split.label(text="Assets not downloaded.", icon='ERROR')
-                op = row.operator('wm.download_update', text="", icon='IMPORT')
+                row.label(text="Assets Status:", icon='TOOL_SETTINGS')
+                if repo.update_message == "Rate limit exceeded!":
+                    icon = 'CANCEL'
+                else:
+                    icon = 'ERROR'
+                row.label(text=repo.update_message, icon=icon)
+                op = row.operator('wm.download_update', text="Download & Install", icon='IMPORT')
                 op.repo_name = repo.name
-                op.location = get_abs_path(preferences.asset_path)
             else:
                 if repo.needs_update:
                     row.alert = True
                     split = row.split(factor=0.30)
                     split.label(text="Assets Status:", icon='ASSET_MANAGER')
-                    split.label(text=repo.update_message, icon='ERROR')
+                    if repo.update_message == "Rate limit exceeded!":
+                        icon = 'CANCEL'
+                    else:
+                        icon = 'ERROR'
+                    split.label(text=repo.update_message, icon=icon)
                     op = row.operator('wm.download_update', text="", icon='IMPORT')
                     op.repo_name = repo.name
-                    op.location = get_abs_path(preferences.asset_path)
                     op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
                     op.repo_name = repo.name
                     op = row.operator('wm.get_update', text="", icon='URL')
@@ -261,7 +274,11 @@ class SEUT_AddonPreferences(AddonPreferences):
                 else:
                     split = row.split(factor=0.30)
                     split.label(text="Assets Status:", icon='ASSET_MANAGER')
-                    split.label(text=repo.update_message, icon='CHECKMARK')
+                    if repo.update_message == "Rate limit exceeded!":
+                        icon = 'CANCEL'
+                    else:
+                        icon = 'CHECKMARK'
+                    split.label(text=repo.update_message, icon=icon)
                     op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
                     op.repo_name = repo.name
                     op = row.operator('wm.get_update', text="", icon='URL')
@@ -273,22 +290,27 @@ class SEUT_AddonPreferences(AddonPreferences):
 
             if preferences.mwmb_path == "":
                 row.alert = True
-                split = row.split(factor=0.30)
-                split.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
-                split.label(text="MWMBuilder not installed.", icon='ERROR')
-                op = row.operator('wm.download_update', text="Download", icon='IMPORT')
+                row.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
+                if repo.update_message == "Rate limit exceeded!":
+                    icon = 'CANCEL'
+                else:
+                    icon = 'ERROR'
+                row.label(text=repo.update_message, icon=icon)
+                op = row.operator('wm.download_update', text="Download & Install", icon='IMPORT')
                 op.repo_name = repo.name
-                op.location = get_abs_path(os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder'))
                 op.wipe = True
             else:
                 if repo.needs_update:
                     row.alert = True
                     split = row.split(factor=0.30)
                     split.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
-                    split.label(text=repo.update_message, icon='ERROR')
+                    if repo.update_message == "Rate limit exceeded!":
+                        icon = 'CANCEL'
+                    else:
+                        icon = 'ERROR'
+                    split.label(text=repo.update_message, icon=icon)
                     op = row.operator('wm.download_update', text="", icon='IMPORT')
                     op.repo_name = repo.name
-                    op.location = get_abs_path(os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder'))
                     op.wipe = True
                     op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
                     op.repo_name = repo.name
@@ -297,7 +319,11 @@ class SEUT_AddonPreferences(AddonPreferences):
                 else:
                     split = row.split(factor=0.30)
                     split.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
-                    split.label(text=repo.update_message, icon='CHECKMARK')
+                    if repo.update_message == "Rate limit exceeded!":
+                        icon = 'CANCEL'
+                    else:
+                        icon = 'CHECKMARK'
+                    split.label(text=repo.update_message, icon=icon)
                     op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
                     op.repo_name = repo.name
                     op = row.operator('wm.get_update', text="", icon='URL')

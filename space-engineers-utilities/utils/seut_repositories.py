@@ -77,8 +77,6 @@ class SEUT_OT_DownloadUpdate(Operator):
 
 
     repo_name: StringProperty()
-    
-    location: StringProperty()
 
     wipe: BoolProperty(
         default=False
@@ -89,8 +87,8 @@ class SEUT_OT_DownloadUpdate(Operator):
 
         wm = context.window_manager
         repo = wm.seut.repos[self.repo_name]
-
-        update_repo(repo, self.location, self.wipe)
+        
+        update_repo(repo, self.wipe)
         
         return {'FINISHED'}
 
@@ -124,7 +122,7 @@ def update_register_repos():
     else:
         repo = wm.seut.repos.add()
         repo.name = 'seut-assets'
-        repo.text_name = 'SEUT Assets Repository'
+        repo.text_name = 'SEUT Assets'
         repo.git_url = "https://github.com/enenra/seut-assets"
         repo.cfg_path = preferences.asset_path
     
@@ -145,6 +143,8 @@ def update_register_repos():
 
 def update_repo_from_config(repo: object):
 
+    preferences = get_preferences()
+
     cfg_path = os.path.join(repo.cfg_path, f"{repo.name}.cfg")
     data = {}
     if os.path.exists(cfg_path):
@@ -159,10 +159,18 @@ def update_repo_from_config(repo: object):
             repo.dev_tag = cfg['dev_tag']
         if 'dev_version' in cfg:
             repo.dev_version = cfg['dev_version']
+        if repo.name == 'MWMBuilder':
+            preferences.mwmb_path = os.path.join(repo.cfg_path, 'MWMBuilder.exe')
+
     else:
+        repo.update_message = f"{repo.name} not installed."
         repo.current_version = "0.0.0"
         repo.dev_tag = "rc"
         repo.dev_version = 0
+
+        if repo.name == 'MWMBuilder':
+            preferences.mwmb_path = ""
+
     if repo.dev_version > 0:
         repo.dev_mode = True
     else:
@@ -240,7 +248,10 @@ def check_repo_update(repo: object):
             repo.latest_version = latest_version_name
             
             if current_version < latest_version:
-                outdated = f"{repo.text_name} version {latest_version_name} available!"
+                if current_version == (0, 0, 0):
+                    outdated = f"{repo.text_name} not installed."
+                else:
+                    outdated = f"{repo.text_name} version {latest_version_name} available!"
                 repo.update_message = outdated
                 repo.needs_update = True
 
@@ -283,9 +294,10 @@ def check_repo_update(repo: object):
         repo.update_message = "Connection Failed!"
 
 
-def update_repo(repo: str, location: str, wipe: bool = False):
+def update_repo(repo: object, wipe: bool = False):
     
     tag = repo.latest_version
+    location = repo.cfg_path
     git_url = repo.git_url.replace("github.com/", "api.github.com/repos/")
     response_releases = requests.get(git_url + "/releases")
 
