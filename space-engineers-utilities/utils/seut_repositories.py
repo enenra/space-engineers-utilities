@@ -160,7 +160,7 @@ def update_repo_from_config(repo: object):
         if 'dev_version' in cfg:
             repo.dev_version = cfg['dev_version']
         if repo.name == 'MWMBuilder':
-            preferences.mwmb_path = os.path.join(repo.cfg_path, 'MWMBuilder.exe')
+            preferences.mwmb_path = os.path.join(repo.cfg_path, 'MwmBuilder.exe')
 
     else:
         repo.update_message = f"{repo.name} not installed."
