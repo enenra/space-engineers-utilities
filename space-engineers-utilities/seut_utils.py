@@ -1,4 +1,5 @@
 import bpy
+import sys
 
 from bpy.types      import Operator
 from math           import pi
@@ -185,6 +186,10 @@ def get_parent_collection(context, child):
 def to_radians(number):
     """Converts degrees to radians"""
     return pi * number / 180
+
+
+def get_addon():
+    return sys.modules.get(__package__)
 
 
 def get_preferences():

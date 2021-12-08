@@ -23,50 +23,6 @@ def update_BBox(self, context):
 
 def update_simpleNavigationToggle(self, context):
     bpy.ops.wm.simple_navigation('INVOKE_DEFAULT')
-    
-
-def update_enabled(self, context):
-    wm = context.window_manager
-    preferences = get_preferences()
-    materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
-
-    if preferences.asset_path == "":
-        seut_report(self, context, 'ERROR', True, 'E012', "Asset Directory", get_abs_path(preferences.asset_path))
-        return
-    elif not os.path.isdir(materials_path):
-        os.makedirs(materials_path, exist_ok=True)
-
-    if self.enabled:
-        with bpy.data.libraries.load(os.path.join(materials_path, self.name), link=True) as (data_from, data_to):
-            data_to.materials = data_from.materials
-
-    else:
-        with bpy.data.libraries.load(os.path.join(materials_path, self.name), link=True) as (data_from, data_to):
-            keep_img = []
-            for mat in data_from.materials:
-                material = bpy.data.materials[mat]
-
-                if material.name in bpy.data.materials and material.library is not None and material.library.name == self.name:
-                    bpy.data.materials.remove(material, do_unlink=True)
-
-                elif material.name in bpy.data.materials and material.library is None:
-                    for node in material.node_tree.nodes:
-                        if node.type == 'TEX_IMAGE' and (node.label == 'CM' or node.label == 'ADD' or node.label == 'NG' or node.label == 'ALPHAMASK'):
-                            keep_img.append(node.image.name)
-
-            for img in data_from.images:
-                if img in bpy.data.images and img is not None:
-                    image = bpy.data.images[img]
-                    if image.name in bpy.data.images and image.library is not None and image.library.name == self.name:
-                        if image.name in keep_img:
-                            image.make_local()
-                        else:
-                            bpy.data.images.remove(image, do_unlink=True)
-
-            for ng in data_from.node_groups:
-                node_group = bpy.data.node_groups[ng]
-                if node_group.name in bpy.data.node_groups and node_group.library is not None and node_group.library.name == self.name:
-                    bpy.data.node_groups.remove(node_group, do_unlink=True)
 
 
 def update_texconv_preset(self, context):
@@ -122,13 +78,32 @@ def update_texconv_preset(self, context):
 
 
 def update_texconv_input_file(self, context):
-
     if self.texconv_input_file == "":
         return
-    
     if not self.texconv_input_file.endswith(self.texconv_input_filetype) and not self.texconv_input_file.endswith(self.texconv_input_filetype.upper()):
         self.texconv_input_file = ""
         seut_report(self, context, 'ERROR', False, 'E015', 'Input', self.texconv_input_filetype)
+
+
+class SEUT_RepositoryProperty(PropertyGroup):
+    """Holder for information about repositories and their status"""
+
+    name: StringProperty()
+    text_name: StringProperty()
+    git_url: StringProperty()
+    cfg_path: StringProperty()
+    needs_update: BoolProperty(
+        default=False
+    )
+    update_message: StringProperty()
+    current_version: StringProperty()
+    latest_version: StringProperty()
+    dev_mode: BoolProperty(
+        default=False
+    )
+    dev_tag: StringProperty()
+    dev_version: IntProperty()
+
 
 class SEUT_IssueProperty(PropertyGroup):
     """Holder for issue information"""
@@ -154,19 +129,6 @@ class SEUT_IssueProperty(PropertyGroup):
     )
     reference: StringProperty(
         name="Reference Name"
-    )
-
-
-class SEUT_MatLibProps(PropertyGroup):
-    """Holder for the various MatLib properties"""
-
-    name: StringProperty(
-        name="Name of MatLib"
-    )
-    enabled: BoolProperty(
-        name="Enable or Disable MatLibs in the Materials folder",
-        default=False,
-        update=update_enabled
     )
 
 
@@ -215,15 +177,6 @@ class SEUT_WindowManager(PropertyGroup):
         name = "Fix Scratched Materials",
         description = "Numerous SDK models have a scratched paint material assigned to their bevels in the FBX but don't have them ingame. This switches those surfaces to the non-scratched material",
         default = True
-    )
-
-    # Materials
-    matlibs: CollectionProperty(
-        type=SEUT_MatLibProps
-    )
-    matlib_index: IntProperty(
-        name="Enable or Disable MatLibs in the Materials folder",
-        default=0
     )
 
     # Texture Conversion
@@ -304,6 +257,10 @@ class SEUT_WindowManager(PropertyGroup):
     )
 
     # Updater
+    repos: CollectionProperty(
+        type=SEUT_RepositoryProperty
+    )
+
     needs_update: BoolProperty(
         default = False
     )

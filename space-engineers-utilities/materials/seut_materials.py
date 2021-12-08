@@ -11,6 +11,8 @@ from bpy.props      import (EnumProperty,
                             StringProperty,
                             BoolProperty)
 
+from ..seut_pt_toolbar   import check_display_panels
+
 
 def update_technique(self, context):
     if context.active_object is not None and context.active_object.active_material is not None:
@@ -37,15 +39,6 @@ def update_technique(self, context):
         else:
             switch.default_value = 0
             material.blend_method = 'CLIP'
-
-
-def update_vanilla_dlc(self, context):
-
-    if self.dlc and not self.vanilla:
-        self.vanilla = True
-    
-    elif not self.vanilla and self.dlc:
-        self.dlc = False
 
 
 def update_color(self, context):
@@ -97,24 +90,6 @@ class SEUT_Materials(PropertyGroup):
         default=0
     )
     
-    vanilla: BoolProperty(
-        name="Vanilla",
-        description="Whether the material is a vanilla Space Engineers material",
-        default=False,
-        update=update_vanilla_dlc
-    )
-    dlc: BoolProperty(
-        name="DLC",
-        description="Whether the material is a DLC material",
-        default=False,
-        update=update_vanilla_dlc
-    )
-    
-    overrideMatLib: BoolProperty(
-        name="Override MatLib",
-        description="Whether the material should replace its MatLib counterpart during export of this file (non-destructively)",
-        default=False
-    )
     technique: EnumProperty(
         name='Technique',
         description="The technique with which the material is rendered ingame",
@@ -165,7 +140,6 @@ class SEUT_Materials(PropertyGroup):
     )
 
     # TransparentMaterial properties
-
     alpha_misting_enable: BoolProperty(
         name="Alpha Misting",
         description="Start and end values determine the distance in meters at which a material's transparency is rendered.\nNote: Only works on billboards spawned by code, not on models",
@@ -309,24 +283,6 @@ class SEUT_Materials(PropertyGroup):
     )
 
 
-class SEUT_UL_MatLib(UIList):
-    """Creates the MatLib UI list"""
-
-    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
-
-        split = layout.split(factor=0.9)
-        if item.enabled:
-            split.label(text=item.name[:-6], icon='LINKED')
-        else:
-            split.label(text=item.name[:-6], icon='UNLINKED')
-        split.prop(item, "enabled", text="", index=index)
-
-        self.use_filter_sort_alpha = True
-
-    def invoke(self, context, event):
-        pass 
-
-
 class SEUT_PT_Panel_Materials(Panel):
     """Creates the materials panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_Materials"
@@ -339,13 +295,11 @@ class SEUT_PT_Panel_Materials(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return 'SEUT' in scene.view_layers
+        return check_display_panels(context)
 
 
     def draw(self, context):
         layout = self.layout
-        wm = context.window_manager
-        scene = context.scene
 
         if bpy.context.active_object is not None and context.active_object.active_material is not None:
 
@@ -358,11 +312,6 @@ class SEUT_PT_Panel_Materials(Panel):
             link.section = 'reference'
             link.page = '6095000/SEUT+Shader+Editor'
 
-            col = box.column(align=True)
-            col.prop(material.seut, 'overrideMatLib', icon='LIBRARY_DATA_OVERRIDE')
-            row = col.row(align=True)
-            row.prop(material.seut, 'vanilla', icon='DOT')
-            row.prop(material.seut, 'dlc', icon='ADD')
             box.prop(material.seut, 'technique', icon='IMGDISPLAY')
             box.prop(material.seut, 'facing')
             
@@ -438,39 +387,6 @@ class SEUT_PT_Panel_Materials(Panel):
         box.operator('wm.import_materials', icon='IMPORT')
 
 
-class SEUT_PT_Panel_MatLib(Panel):
-    """Creates the MatLib linking panel for SEUT"""
-    bl_idname = "SEUT_PT_Panel_MatLib"
-    bl_label = "Material Libraries"
-    bl_category = "SEUT"
-    bl_space_type = "NODE_EDITOR"
-    bl_region_type = "UI"
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return 'SEUT' in scene.view_layers
-
-
-    def draw(self, context):
-        layout = self.layout
-        wm = context.window_manager
-        scene = context.scene
-        
-        rows = 2
-        row = layout.row()
-        row.template_list('SEUT_UL_MatLib', "", wm.seut , 'matlibs', wm.seut , 'matlib_index', rows=rows)
-        layout.operator('wm.refresh_matlibs', icon='FILE_REFRESH')
-        
-        layout.separator()
-        split = layout.split(factor=0.85)
-        split.operator('scene.export_materials', icon='EXPORT')
-        link = split.operator('wm.semref_link', text="", icon='INFO')
-        link.section = 'tutorials'
-        link.page = '6128098/Create+MatLib+Tutorial'
-
-
 class SEUT_PT_Panel_TextureConversion(Panel):
     """Creates the Texture Conversion panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_TextureConversion"
@@ -484,7 +400,7 @@ class SEUT_PT_Panel_TextureConversion(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return 'SEUT' in scene.view_layers
+        return check_display_panels(context)
 
 
     def draw(self, context):
@@ -530,6 +446,7 @@ def create_internal_material(context, mat_type: str):
     material = bpy.data.materials.new(name="SEUT_TEMP")
     material.use_nodes = True
     material.blend_method = 'BLEND'
+    material.use_fake_user = True
     nodes = material.node_tree.nodes
     
     node_bsdf = None

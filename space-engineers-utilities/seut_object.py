@@ -71,12 +71,6 @@ def poll_linkedScene(self, object):
 
 class SEUT_Object(PropertyGroup):
     """Holder for the various object properties"""
-
-    version: IntProperty(
-        name="SEUT Object Version",
-        description="Used as a reference to patch the SEUT object properties to newer versions",
-        default=0 # current: 2
-    )
     
     # Empties
     linkedScene: PointerProperty(

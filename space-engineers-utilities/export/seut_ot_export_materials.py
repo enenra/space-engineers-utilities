@@ -10,10 +10,19 @@ from ..seut_errors      import seut_report, get_abs_path
 
 
 class SEUT_OT_ExportMaterials(Operator):
-    """Export local materials to XML file"""
+    """Export local materials to XML library file"""
     bl_idname = "scene.export_materials"
     bl_label = "Export Materials"
     bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        counter = 0
+        for mat in bpy.data.materials:
+            if mat.library is None and mat.asset_data is not None and not mat.name.startswith('SMAT_'):
+                counter += 1
+        return counter > 0
 
 
     def execute(self, context):
@@ -31,10 +40,6 @@ def export_materials(self, context):
     scene = context.scene
     offset = bpy.path.basename(bpy.context.blend_data.filepath).find(".blend")
     filename = bpy.path.basename(bpy.context.blend_data.filepath)[:offset]
-
-    if not filename.startswith("MatLib_"):
-        seut_report(self, context, 'ERROR', True, 'E026')
-        return {'FILE_NAME_WRONG'}
     
     # This culls the MatLb_ from the filename
     filename = filename[7:]
@@ -43,7 +48,7 @@ def export_materials(self, context):
     materials.set('Name', filename)
 
     for mat in bpy.data.materials:
-        if mat.library is None:
+        if mat.library is None and mat.asset_data is not None:
             create_mat_entry(self, context, materials, mat)
                 
     # Create file with subtypename + collection name and write string to it

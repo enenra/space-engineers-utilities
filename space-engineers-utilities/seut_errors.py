@@ -26,12 +26,12 @@ errors = {
     'E018': "Cannot set SubtypeId to a SubtypeId that has already been used for another scene in the same BLEND file.",
     'E019': "No {variable_1} folder defined for scene '{variable_2}'.",
     'E020': "Deletion of temporary files failed.",
-    'E021': "Available MatLibs could not be refreshed.",
+    'E021': "No BLEND files could be found in the Materials-folder ({variable_1}).",
     'E022': "Too many objects in '{variable_1}'-collection. Collection contains {variable_2} but Space Engineers only supports a maximum of 10.",
     'E023': "Empty '{variable_1}' has incorrect rotation value: {variable_2}",
     'E024': "Collection 'Mountpoints ({variable_1})' not found. Disable and then re-enable Mountpoint Mode to recreate!",
     'E025': "Cannot create highlight empty for object outside of 'Main' collection.",
-    'E026': "Filename incorrect: BLEND-filename must start with 'MatLib_' to create a valid MatLib.",
+    'E026': "None of the BLEND files in the materials folder ({variable_1}) contain material-assets.",
     'E027': "'Mountpoints {variable_1}' not found. Disable and then re-enable Mountpoint Mode to recreate!",
     'E028': "Object is not an Armature.",
     'E029': "No Armature selected.",
@@ -47,12 +47,11 @@ errors = {
     'E039': "Assimp32.dll could not be found by MWM Builder. Output could not be converted to MWM.",
     'E040': "Selected XML file could not be loaded as a MaterialsLib.",
     'E041': "No Materials were imported from MaterialsLib '{variable_1}'.",
-    'E042': "No MatLibs enabled. Materials cannot be remapped.",
+    'E042': "Object '{variable_1}' has {variable_2}/{variable_3} UV-Vertices at coordinates (0,0) - this indicates broken UV-Maps, which will result in bad shading of the object ingame.",
     'E043': "An object within the file '{variable_1}' has invalid UV-Maps. Could not be converted to MWM.",
     'E044': "An error ocurred during MWM conversion. See *.mwm.log file (generated if 'Delete Temp Files' is toggled off) for details.",
     'E045': "Model path must be located within the Mod's directory ('{variable_1}').",
     'E046': "Could not convert '{variable_1}'-texture of material '{variable_2}' to DDS.\n{variable_3}",
-    'E047': "Object '{variable_1}' has {variable_2}/{variable_3} UV-Vertices at coordinates (0,0) - this indicates broken UV-Maps, which will result in bad shading of the object ingame.",
 }
 
 warnings = {
@@ -197,7 +196,7 @@ def check_uvms(self, context, obj):
                 at_zero += 1
             
         if (at_zero / obj_total) > 0.25 and at_zero > 10:
-            seut_report(self, context, 'ERROR', True, 'E047', obj.name, at_zero, obj_total)
+            seut_report(self, context, 'ERROR', True, 'E042', obj.name, at_zero, obj_total)
         elif (at_zero / obj_total) > 0.005 and at_zero > 10:
             seut_report(self, context, 'WARNING', True, 'W002', obj.name)
             return {'CANCELLED'}

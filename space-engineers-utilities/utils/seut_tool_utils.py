@@ -5,7 +5,6 @@ import threading
 
 from multiprocessing    import Pool
 
-from ..seut_preferences     import get_addon
 from ..seut_errors          import get_abs_path
 
 

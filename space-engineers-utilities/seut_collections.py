@@ -240,7 +240,7 @@ class SEUT_Collection(PropertyGroup):
 
 
 class SEUT_OT_RecreateCollections(Operator):
-    """Recreates the collections"""
+    """Recreates any missing collections for the current scene type"""
     bl_idname = "scene.recreate_collections"
     bl_label = "Recreate Collections"
     bl_options = {'REGISTER', 'UNDO'}
@@ -252,7 +252,7 @@ class SEUT_OT_RecreateCollections(Operator):
 
         if not 'SEUT' in scene.view_layers:
             scene.view_layers[0].name = 'SEUT'
-            scene.seut.version = 3
+            scene.seut.version = 4
             scene.eevee.use_bloom = True
 
         if scene.seut.subtypeId == "":
@@ -372,6 +372,9 @@ def rename_collections(scene: object):
     """Scans existing collections to find the SEUT ones and renames them if the tag has changed."""
     
     # This ensures that after a full copy of a scene, the collections are reassigned to the new scene
+    if len(scene.view_layers['SEUT'].layer_collection.children) < 1:
+        return
+        
     if scene.view_layers['SEUT'].layer_collection.children[0].collection.name.startswith("SEUT "):
         scene.view_layers['SEUT'].layer_collection.children[0].collection.seut.scene = scene
         for vl_col in scene.view_layers['SEUT'].layer_collection.children[0].children:
@@ -439,6 +442,7 @@ def create_collections(context):
         collections['seut'].append(bpy.data.collections.new(f"SEUT ({scene.seut.subtypeId})"))
         collections['seut'][0].seut.scene = scene
         collections['seut'][0].seut.col_type = 'seut'
+        collections['seut'][0].seut.version = 3
         if bpy.app.version >= (2, 91, 0):
             collections['seut'][0].color_tag = 'COLOR_02'
         scene.collection.children.link(collections['seut'][0])
@@ -468,7 +472,8 @@ def create_collections(context):
                 collections['lod'].append(create_seut_collection(context, 'lod', 1, collections['main'][0]))
                 collections['lod'].append(create_seut_collection(context, 'lod', 2, collections['main'][0]))
                 collections['lod'].append(create_seut_collection(context, 'lod', 3, collections['main'][0]))
-                collections['lod'].append(create_seut_collection(context, 'lod', 1, get_seut_collection(scene, 'bs', type_index=1)))
+                if 'bs' in collections and len(collections['bs']) > 0:
+                    collections['lod'].append(create_seut_collection(context, 'lod', 1, get_seut_collection(scene, 'bs', type_index=1)))
 
     sort_collections(scene, context)
 
@@ -582,10 +587,14 @@ def sort_collections(scene, context = None):
         ]
 
     collections = get_collections(scene)
+
+    if collections['seut'] is None:
+        return
+
     seut_cols = collections['seut'][0].children
     vl_cols = scene.view_layers['SEUT'].layer_collection.children[collections['seut'][0].name].children
     
-    if 'bs' in collections:
+    if 'bs' in collections and collections['bs'] is not None:
         for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
             hide = vl_cols[bs.name].hide_viewport
             seut_cols.unlink(bs)
@@ -598,14 +607,14 @@ def sort_collections(scene, context = None):
                 seut_cols.link(hkt[0])
                 vl_cols[hkt[0].name].hide_viewport = hide
     
-    if 'lod' in collections:
+    if 'lod' in collections and collections['lod'] is not None:
         for lod in sorted(get_cols_by_type(scene, 'lod', collections['main'][0]).values(), key=lambda lod: lod.seut.type_index):
             hide = vl_cols[lod.name].hide_viewport
             seut_cols.unlink(lod)
             seut_cols.link(lod)
             vl_cols[lod.name].hide_viewport = hide
     
-    if 'bs' in collections and 'lod' in collections:
+    if 'bs' in collections and 'lod' in collections and collections['bs'] is not None and collections['lod'] is not None:
         for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
             for lod in sorted(get_cols_by_type(scene, 'lod', bs).values(), key=lambda lod: lod.seut.type_index):
                 hide = vl_cols[lod.name].hide_viewport
@@ -649,12 +658,13 @@ def get_seut_collection(scene, col_type: str, ref_col_type: str = None, type_ind
 
     collections = get_collections(scene)
 
-    for col in collections[col_type]:
-        if ref_col_type is not None and col.seut.ref_col.seut.col_type != ref_col_type:
-            continue
-        if type_index is not None and col.seut.type_index != type_index:
-            continue
-        return col
+    if col_type in collections:
+        for col in collections[col_type]:
+            if ref_col_type is not None and col.seut.ref_col.seut.col_type != ref_col_type:
+                continue
+            if type_index is not None and col.seut.type_index != type_index:
+                continue
+            return col
     
     return None
 

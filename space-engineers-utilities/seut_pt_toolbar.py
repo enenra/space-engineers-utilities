@@ -3,9 +3,14 @@ import addon_utils
 
 from bpy.types  import Panel
 
+from .utils.seut_patch_blend        import check_patch_needed
 from .seut_collections              import get_collections, seut_collections
 from .seut_utils                    import get_enum_items, wrap_text
 
+
+def check_display_panels(context) -> bool:
+    scene = context.scene
+    return not check_patch_needed() and 'SEUT' in scene.view_layers
 
 class SEUT_PT_Panel(Panel):
     """Creates the topmost panel for SEUT"""
@@ -20,6 +25,14 @@ class SEUT_PT_Panel(Panel):
         layout = self.layout
         scene = context.scene
         wm = context.window_manager
+        skip = False
+        try:
+            for r in wm.seut.repos:
+                if r.needs_update:
+                    repo = r
+                    break
+        except KeyError:
+            skip = True
         
         if addon_utils.check('blender_addon_updater') == (True, True) and __package__ in wm.bau.addons:
             bau_entry = wm.bau.addons[__package__]
@@ -30,11 +43,10 @@ class SEUT_PT_Panel(Panel):
                 row = layout.row()
                 row.label(text="Go to Preferences to update.")
 
-        elif wm.seut.needs_update:
+        elif not skip and repo.needs_update:
             row = layout.row()
             row.alert = True
-            row.label(text=wm.seut.update_message, icon='ERROR')
-            row.operator('wm.get_update', icon='IMPORT', text="")
+            row.label(text=f"Update available for {repo.text_name} - check Addon Preferences!", icon='ERROR')
 
         if not 'SEUT' in scene.view_layers:
             row = layout.row()
@@ -48,48 +60,54 @@ class SEUT_PT_Panel(Panel):
                 row.operator('wm.convert_structure', icon='OUTLINER')
 
         else:
-
-            # SubtypeId
-            box = layout.box()
-            split = box.split(factor=0.85)
-            split.label(text=scene.name, icon_value=layout.icon(scene))
-            link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'reference'
-            link.page = '6094866/SEUT+Main+Panel'
-
-            box.prop(scene.seut, 'sceneType')
-            if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart':
-                if scene.seut.linkSubpartInstances:
-                    col = box.column(align=True)
-                    row = col.row(align=True)
-                    row.operator('scene.update_subpart_instances', icon='MOD_INSTANCE')
-                    row.prop(scene.seut,'linkSubpartInstances', text='', icon='UNLINKED', invert_checkbox=True)
-                else:
-                    box.prop(scene.seut,'linkSubpartInstances', icon='LINKED')
-            
-            box = layout.box()
-            if scene.seut.sceneType == 'mainScene':
-                box.label(text="SubtypeId (File Name)", icon='COPY_ID')
+            if check_patch_needed():
+                row = layout.row()
+                row.scale_y = 2.0
+                row.operator('wm.patch_blend', icon='OUTLINER')
+                
             else:
-                box.label(text="File Name", icon='FILE')
-            box.prop(scene.seut, "subtypeId", text="", expand=True)
 
-            if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart':
+                # SubtypeId
                 box = layout.box()
-                box.label(text="Grid Scale", icon='GRID')
-                row = box.row()
-                row.prop(scene.seut,'gridScale', expand=True)
-                        
-            split = layout.split(factor=0.85)
-            col = split.column()
+                split = box.split(factor=0.85)
+                split.label(text=scene.name, icon_value=layout.icon(scene))
+                link = split.operator('wm.semref_link', text="", icon='INFO')
+                link.section = 'reference'
+                link.page = '6094866/SEUT+Main+Panel'
 
-            row = col.row()
-            if wm.seut.issue_alert:
-                row.alert = True
-            row.operator('wm.issue_display', icon='INFO')
-            
-            col = split.column()
-            col.prop(wm.seut, 'simpleNavigationToggle', text="", icon='OUTLINER')
+                box.prop(scene.seut, 'sceneType')
+                if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart':
+                    if scene.seut.linkSubpartInstances:
+                        col = box.column(align=True)
+                        row = col.row(align=True)
+                        row.operator('scene.update_subpart_instances', icon='MOD_INSTANCE')
+                        row.prop(scene.seut,'linkSubpartInstances', text='', icon='UNLINKED', invert_checkbox=True)
+                    else:
+                        box.prop(scene.seut,'linkSubpartInstances', icon='LINKED')
+                
+                box = layout.box()
+                if scene.seut.sceneType == 'mainScene':
+                    box.label(text="SubtypeId (File Name)", icon='COPY_ID')
+                else:
+                    box.label(text="File Name", icon='FILE')
+                box.prop(scene.seut, "subtypeId", text="", expand=True)
+
+                if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart':
+                    box = layout.box()
+                    box.label(text="Grid Scale", icon='GRID')
+                    row = box.row()
+                    row.prop(scene.seut,'gridScale', expand=True)
+                            
+                split = layout.split(factor=0.85)
+                col = split.column()
+
+                row = col.row()
+                if wm.seut.issue_alert:
+                    row.alert = True
+                row.operator('wm.issue_display', icon='INFO')
+                
+                col = split.column()
+                col.prop(wm.seut, 'simpleNavigationToggle', text="", icon='OUTLINER')
 
 
 class SEUT_PT_Panel_Collections(Panel):
@@ -104,7 +122,7 @@ class SEUT_PT_Panel_Collections(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return (scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character') and 'SEUT' in scene.view_layers
+        return (scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character') and check_display_panels(context)
 
 
     def draw(self, context):
@@ -154,7 +172,10 @@ class SEUT_PT_Panel_Collections(Panel):
                 box.prop(active_col.seut,'lod_distance')
 
         if show_button:
-            layout.operator('scene.create_collection')
+            row = layout.row()
+            row.scale_y = 1.5
+            row.operator('scene.create_collection')
+            layout.operator('scene.recreate_collections', icon='OUTLINER')
 
 
 class SEUT_PT_Panel_BoundingBox(Panel):
@@ -169,7 +190,7 @@ class SEUT_PT_Panel_BoundingBox(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers
+        return scene.seut.sceneType == 'mainScene' and check_display_panels(context)
 
 
     def draw(self, context):
@@ -206,7 +227,7 @@ class SEUT_PT_Panel_Mirroring(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers
+        return scene.seut.sceneType == 'mainScene' and check_display_panels(context)
 
 
     def draw(self, context):
@@ -240,7 +261,7 @@ class SEUT_PT_Panel_Mountpoints(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers
+        return scene.seut.sceneType == 'mainScene' and check_display_panels(context)
 
 
     def draw(self, context):
@@ -288,7 +309,7 @@ class SEUT_PT_Panel_IconRender(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' and 'SEUT' in scene.view_layers
+        return scene.seut.sceneType == 'mainScene' and check_display_panels(context)
 
 
     def draw(self, context):
@@ -362,7 +383,7 @@ class SEUT_PT_Panel_Export(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return (scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation') and 'SEUT' in scene.view_layers
+        return scene.seut.sceneType in ['mainScene', 'subpart', 'character', 'character_animation'] and check_display_panels(context)
 
 
     def draw(self, context):
@@ -376,6 +397,12 @@ class SEUT_PT_Panel_Export(Panel):
         row = layout.row()
         row.scale_y = 1.1
         row.operator('scene.export', icon='EXPORT')
+        
+        split = layout.split(factor=0.85, align=True)
+        split.operator('scene.export_materials', icon='EXPORT')
+        link = split.operator('wm.semref_link', text="", icon='INFO')
+        link.section = 'tutorials'
+        link.page = '6128098/Create+MatLib+Tutorial'
 
         # Options
         box = layout.box()
@@ -416,7 +443,7 @@ class SEUT_PT_Panel_Import(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return (scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart' or scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation') and 'SEUT' in scene.view_layers
+        return scene.seut.sceneType in ['mainScene', 'subpart', 'character', 'character_animation'] and check_display_panels(context)
 
 
     def draw(self, context):

@@ -18,7 +18,7 @@ bl_info = {
     "version": (0, 9, 96),
     "dev_version": 11,
     "dev_tag": "alpha",
-    "blender": (2, 93, 0),
+    "blender": (3, 0, 0),
     "location": "View3D > Tools",
     "doc_url": "https://semref.atlassian.net/wiki/spaces/tools/pages/33261/Space+Engineers+Utilities",
     "tracker_url": "https://github.com/enenra/space-engineers-utilities/issues",
@@ -65,14 +65,11 @@ from .importing.seut_ot_structure_conversion    import SEUT_OT_StructureConversi
 from .importing.seut_ot_import_materials        import SEUT_OT_Import_Materials
 from .materials.seut_materials                  import SEUT_Materials
 from .materials.seut_materials                  import SEUT_PT_Panel_Materials
-from .materials.seut_materials                  import SEUT_PT_Panel_MatLib
 from .materials.seut_materials                  import SEUT_PT_Panel_TextureConversion
 from .materials.seut_ot_remap_materials         import SEUT_OT_RemapMaterials
-from .materials.seut_ot_refresh_matlibs         import SEUT_OT_RefreshMatLibs
 from .materials.seut_ot_create_material         import SEUT_OT_MatCreate
 from .materials.seut_ot_texture_conversion      import SEUT_OT_ConvertTextures
 from .materials.seut_ot_texture_conversion      import SEUT_OT_MassConvertTextures
-from .materials.seut_materials                  import SEUT_UL_MatLib
 from .particles.seut_particle_settings          import SEUT_ParticlePropertyKeys
 from .particles.seut_particle_settings          import SEUT_ParticlePropertyValue2D
 from .particles.seut_particle_settings          import SEUT_ParticleProperty
@@ -88,9 +85,11 @@ from .particles.seut_particles                  import SEUT_PT_Panel_ExportParti
 from .particles.seut_particles                  import SEUT_PT_Panel_ImportParticle
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
-from .utils.seut_updater                        import check_update
-from .utils.seut_patch_blend                    import apply_patches
-from .utils.seut_updater                        import SEUT_OT_GetUpdate
+from .utils.seut_repositories                   import SEUT_OT_GetUpdate
+from .utils.seut_repositories                   import SEUT_OT_CheckUpdate
+from .utils.seut_repositories                   import SEUT_OT_DownloadUpdate
+from .utils.seut_repositories                   import update_register_repos, check_all_repo_updates
+from .utils.seut_patch_blend                    import SEUT_OT_PatchBLEND
 from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
 from .utils.seut_ot_discord_link                import SEUT_OT_DiscordLink
 from .utils.seut_ot_issue_display               import SEUT_OT_IssueDisplay
@@ -99,7 +98,7 @@ from .utils.seut_ot_issue_display               import SEUT_OT_ClearIssues
 
 from .seut_preferences                  import SEUT_AddonPreferences
 from .seut_preferences                  import SEUT_OT_SetDevPaths
-from .seut_preferences                  import get_addon_version, load_addon_prefs
+from .seut_preferences                  import load_addon_prefs, init_relocate_matlibs
 from .seut_preferences                  import load_icons, unload_icons
 from .seut_pt_toolbar                   import SEUT_PT_Panel
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Collections
@@ -109,6 +108,8 @@ from .seut_pt_toolbar                   import SEUT_PT_Panel_Mountpoints
 from .seut_pt_toolbar                   import SEUT_PT_Panel_IconRender
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Export
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Import
+from .seut_asset                        import SEUT_Asset
+from .seut_asset                        import SEUT_PT_Panel_Asset
 from .seut_bbox                         import SEUT_OT_BBox
 from .seut_mountpoints                  import SEUT_OT_AddMountpointArea
 from .seut_collections                  import SEUT_Collection
@@ -120,8 +121,8 @@ from .seut_icon_render                  import SEUT_OT_CopyRenderOptions
 from .seut_scene                        import SEUT_MountpointAreas
 from .seut_scene                        import SEUT_Scene
 from .seut_object                       import SEUT_Object
+from .seut_window_manager               import SEUT_RepositoryProperty
 from .seut_window_manager               import SEUT_IssueProperty
-from .seut_window_manager               import SEUT_MatLibProps
 from .seut_window_manager               import SEUT_WindowManager
 from .seut_utils                        import SEUT_OT_UpdateSubpartInstances
 from .seut_utils                        import get_preferences
@@ -143,14 +144,18 @@ classes = (
     SEUT_PT_Panel_ExportParticle,
     SEUT_PT_Panel_ImportParticle,
     SEUT_PT_Panel_Materials,
-    SEUT_PT_Panel_MatLib,
     SEUT_PT_Panel_TextureConversion,
+    SEUT_PT_Panel_Asset,
     SEUT_PT_EmptyLink,
+    SEUT_Asset,
     SEUT_EmptyHighlights,
     SEUT_OT_HighlightObjectAdd,
     SEUT_OT_HighlightObjectRemove,
     SEUT_MT_ContextMenu,
+    SEUT_OT_PatchBLEND,
     SEUT_OT_GetUpdate,
+    SEUT_OT_CheckUpdate,
+    SEUT_OT_DownloadUpdate,
     SEUT_OT_SEMREFLink,
     SEUT_OT_DiscordLink,
     SEUT_OT_IssueDisplay,
@@ -180,7 +185,6 @@ classes = (
     SEUT_OT_MatCreate,
     SEUT_OT_ConvertTextures,
     SEUT_OT_MassConvertTextures,
-    SEUT_OT_RefreshMatLibs,
     SEUT_Materials,
     SEUT_OT_IconRenderPreview,
     SEUT_OT_CopyRenderOptions,
@@ -195,10 +199,9 @@ classes = (
     SEUT_Scene,
     SEUT_Collection,
     SEUT_Object,
+    SEUT_RepositoryProperty,
     SEUT_IssueProperty,
-    SEUT_MatLibProps,
     SEUT_WindowManager,
-    SEUT_UL_MatLib,
     SEUT_UL_ParticleProperties,
     SEUT_UL_ParticlePropertyValues2D,
     SEUT_OT_UpdateSubpartInstances,
@@ -213,6 +216,7 @@ def register():
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
     bpy.types.VIEW3D_MT_add.append(menu_draw)
 
+    bpy.types.AssetMetaData.seut = PointerProperty(type=SEUT_Asset)
     bpy.types.Material.seut = PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
@@ -237,6 +241,7 @@ def unregister():
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
     bpy.types.VIEW3D_MT_add.remove(menu_draw)
 
+    del bpy.types.AssetMetaData.seut
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
     del bpy.types.Object.seut
@@ -266,17 +271,10 @@ def menu_draw(self, context):
 @persistent
 def load_handler(dummy):
         
-    # This exists to avoid errors on startup
     try:
-        if seut_preferences.asset_path is not None:
-            bpy.ops.wm.refresh_matlibs()
-    except:
-        pass
-    
-    # On first install this might cause issues, the try is a safety for that.
-    try:
-        apply_patches()
-        check_update(get_addon_version())
+        init_relocate_matlibs()
+        update_register_repos()
+        #check_all_repo_updates()
         load_addon_prefs()
     except Exception as e:
         print(e)

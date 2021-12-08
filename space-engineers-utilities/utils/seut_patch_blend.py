@@ -2,8 +2,38 @@ import bpy
 import re
 import os
 
+from bpy.types              import Operator
+from bpy.props              import StringProperty
+
 from ..seut_collections     import get_cols_by_type, get_first_free_index, rename_collections, seut_collections, sort_collections
 from ..seut_errors          import get_abs_path
+
+
+class SEUT_OT_PatchBLEND(Operator):
+    """Patches the BLEND file's SEUT properties to the latest version"""
+    bl_idname = "wm.patch_blend"
+    bl_label = "Patch BLEND File"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    def execute(self, context):
+        
+        apply_patches()
+        
+        return {'FINISHED'}
+
+
+def check_patch_needed() -> bool:
+    
+    for scn in bpy.data.scenes:
+        if scn.seut.version < 4:
+            return True
+
+    for col in bpy.data.collections:
+        if col.seut.version < 3 and col.seut.col_type != 'none':
+            return True
+    
+    return False
 
 
 def apply_patches():
@@ -25,7 +55,7 @@ def patch_view_layers():
     for scn in bpy.data.scenes:
         if scn.seut.version >= 2:
             continue
-
+        
         tag = ' (' + scn.seut.subtypeId + ')'
 
         if 'SEUT' + tag in scn.view_layers[0].layer_collection.children:
@@ -48,10 +78,13 @@ def patch_collections_v0995():
             continue
         if not 'SEUT' + tag in scn.view_layers['SEUT'].layer_collection.children:
             continue
+
         # Ensure it doesn't run for scenes that have already been patched
-        if not scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag].collection.seut.col_type == 'none':
-            continue
-        
+        if scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag].collection is not None:
+            seut_col = scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag].collection
+            if seut_col.seut.col_type != 'none':
+                continue
+
         # Converting main collection
         seut_col = scn.view_layers['SEUT'].layer_collection.children['SEUT' + tag].collection
         seut_col.seut.scene = scn
@@ -128,15 +161,12 @@ def patch_highlight_empty_references():
     for obj in bpy.data.objects:
         if obj is None or obj.type != 'EMPTY' or not 'highlight' in obj:
             continue
-        if obj.seut.version >= 1:
-            continue
 
         if not obj.seut.linkedObject is None and len(obj.seut.highlight_objects) < 1:
             ref = obj.seut.linkedObject
             obj.seut.linkedObject = None
             new = obj.seut.highlight_objects.add()
             new.obj = ref
-            obj.seut.version = 1
 
 
 def patch_scenes():
@@ -175,8 +205,6 @@ def patch_collections_v0996():
     for scn in bpy.data.scenes:
         if not 'SEUT' in scn.view_layers:
             continue
-        if scn.seut.version >= 4:
-            continue
 
         assignments = {}
         for col in bpy.data.collections:
@@ -184,8 +212,6 @@ def patch_collections_v0996():
                 continue
             if col.seut.scene != scn:
                 continue
-
-            type_index = None
 
             if col.seut.col_type == 'mountpoints' and scn.seut.mountpointToggle == 'off':
                 col.seut.col_type = 'lod'
@@ -197,6 +223,9 @@ def patch_collections_v0996():
                 if f"Main ({scn.seut.subtypeId})" in bpy.data.collections:
                     assignments[col] = [f"Main ({scn.seut.subtypeId})", col.seut.type_index]
                 col.seut.version = 3
+                
+            else:
+                col.seut.version = 3
         
         for col, data in assignments.items():
             col.seut.ref_col = bpy.data.collections[data[0]]
@@ -205,6 +234,7 @@ def patch_collections_v0996():
         rename_collections(scn)
         sort_collections(scn)
         scn.view_layers['SEUT'].update()
+        scn.seut.version = 4
 
 
 def patch_linked_objs():
@@ -213,12 +243,7 @@ def patch_linked_objs():
     for empty in bpy.data.objects:
         if empty.type != 'EMPTY' or not 'file' in empty:
             continue
-        if empty.seut.version >= 2:
-            continue
-
-        empty.seut.version = 2
             
         for obj in empty.children:
             if '(L)' in obj.name and not obj.seut.linked:
                 obj.seut.linked = True
-                obj.seut.version = 2
