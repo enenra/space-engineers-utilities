@@ -49,6 +49,7 @@ class SEUT_OT_Import(Operator):
     def execute(self, context):
 
         result = import_fbx(self, context, self.filepath)
+        remap_materials(self, context)
 
         return result
 
@@ -120,9 +121,6 @@ def import_fbx(self, context, filepath):
                             new = obj.seut.highlight_objects.add()
                             new.obj = bpy.data.objects[entry]
     
-    # Then run material remap
-    remap_materials(self, context)
-
     xml_path = os.path.splitext(filepath)[0] + '.xml'
     if os.path.exists(xml_path):
         import_materials(self, context, xml_path)

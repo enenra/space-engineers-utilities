@@ -18,7 +18,7 @@ from bpy.types import (Panel,
 
 from bpy.types                  import Operator
 
-from .seut_ot_import        import import_fbx
+from .seut_ot_import        import import_fbx, remap_materials
 from ..seut_collections     import *
 from ..seut_errors          import seut_report
 
@@ -68,7 +68,7 @@ class SEUT_OT_ImportComplete(Operator):
             if os.path.isdir(f) or (os.path.splitext(f)[1] != ".fbx" and os.path.splitext(f)[1] != ".FBX"):
                 continue
 
-            if basename != f[:f.find(".")] and basename + "Construction" != f[:f.find("_")] and basename != f[:f.find("_")]:
+            if basename != os.path.splitext(f)[0] and basename + "Construction" != f[:f.find("_")] and basename != f[:f.find("_")]:
                 continue
 
             fbx_type = determine_fbx_type(f)
@@ -109,6 +109,8 @@ class SEUT_OT_ImportComplete(Operator):
             if fbx_type['col_type'] != 'main':
                 scene.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children[col.name].hide_viewport = True
         
+        remap_materials(self, context)
+
         sort_collections(scene, context)
         
         seut_report(self, context, 'INFO', True, 'I021', col_counter - failed_counter, col_counter)

@@ -43,32 +43,9 @@ def remap_materials(self, context):
         seut_report(self, context, 'ERROR', True, 'E021', materials_path)
         return {'CANCELLED'}
 
-    available_mats = {}
     for file in blends:
         with bpy.data.libraries.load(os.path.join(materials_path, file), link=True) as (data_from, data_to):
             data_to.materials = data_from.materials
-
-        for mat in data_to.materials:
-            if mat.asset_data is not None:
-                available_mats[mat.name] = file
-            if mat is not None and mat.users < 1:
-                bpy.data.materials.remove(mat, do_unlink=True)
-        
-        for img in data_from.images:
-            if img is not None and img in bpy.data.images:
-                img = bpy.data.images[img]
-                if img.users < 1:
-                    bpy.data.images.remove(img, do_unlink=True)
-                
-        for ng in data_from.node_groups:
-            if ng is not None and ng in bpy.data.node_groups:
-                ng = bpy.data.node_groups[ng]
-                if ng.users < 1:
-                    bpy.data.node_groups.remove(ng, do_unlink=True)
-    
-    if available_mats == {}:
-        seut_report(self, context, 'ERROR', True, 'E026', materials_path)
-        return {'FINISHED'}
 
     for scn in bpy.data.scenes:
         context.window.scene = scn
@@ -89,20 +66,34 @@ def remap_materials(self, context):
                     old_material = slot.material
                     new_material = None
 
-                    if old_material.name in available_mats:
-                        new_material = old_material.name
-                    elif old_material.name[:-4] in available_mats:
+                    if old_material.name[:-4] in bpy.data.materials:
                         new_material = old_material.name[:-4]
+                    else:
+                        new_material = old_material.name
                     
-                    if wm.seut.fix_scratched_materials and "Scratched_" in new_material and new_material.replace("Scratched", "") in available_mats:
+                    if wm.seut.fix_scratched_materials and new_material is not None and "Scratched_" in new_material and new_material.replace("Scratched", "") in bpy.data.materials:
                         new_material = new_material.replace("Scratched", "")
 
                     if new_material is not None:
-                        with bpy.data.libraries.load(os.path.join(materials_path, available_mats[new_material]), link=True) as (data_from, data_to):
-                            data_to.materials = [name for name in data_from.materials if name == new_material]
                         for mat in bpy.data.materials:
-                            if mat is not None and mat.name == new_material and mat.library is not None:
+                            if mat.library is not None and mat.name == new_material:
                                 slot.material = mat
+
+    for mat in data_to.materials:
+        if mat is not None and mat.users < 1:
+            bpy.data.materials.remove(mat, do_unlink=True)
+    
+    for img in data_from.images:
+        if img is not None and img in bpy.data.images:
+            img = bpy.data.images[img]
+            if img.users < 1:
+                bpy.data.images.remove(img, do_unlink=True)
+            
+    for ng in data_from.node_groups:
+        if ng is not None and ng in bpy.data.node_groups:
+            ng = bpy.data.node_groups[ng]
+            if ng.users < 1:
+                bpy.data.node_groups.remove(ng, do_unlink=True)
 
     context.area.type = current_area
     context.window.scene = current_scene
