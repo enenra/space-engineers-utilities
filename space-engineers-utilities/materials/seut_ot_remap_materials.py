@@ -24,6 +24,7 @@ class SEUT_OT_RemapMaterials(Operator):
 def remap_materials(self, context):
     """Remap materials of objects in all scenes to linked asset materials"""
 
+    scene = context.scene
     preferences = get_preferences()
     current_scene = context.window.scene
     current_area = prep_context(context)
@@ -47,37 +48,54 @@ def remap_materials(self, context):
         with bpy.data.libraries.load(os.path.join(materials_path, file), link=True) as (data_from, data_to):
             data_to.materials = data_from.materials
 
-    for scn in bpy.data.scenes:
-        context.window.scene = scn
-
-        for obj in context.view_layer.objects:
-            if obj.type != 'MESH':
-                continue
-
+    for obj in context.view_layer.objects:
+        if obj.type != 'MESH':
+            continue
+        
+        parent_lc = None
+        for lc in scene.view_layers['SEUT'].layer_collection.children[f"SEUT ({scene.seut.subtypeId})"].children:
+            if obj.name in lc.collection.objects:
+                parent_lc = lc
+                break
+            
+        try:
             context.view_layer.objects.active = obj
 
-            try:
-                bpy.ops.object.material_slot_remove_unused()
-            except RuntimeError:
-                seut_report(self, context, 'WARNING', True, 'W003', obj.name)
+            if parent_lc is not None:
+                hide = parent_lc.hide_viewport
+                parent_lc.hide_viewport = False
 
-            for slot in obj.material_slots:
-                if slot.material is not None and slot.material.library is None:
-                    old_material = slot.material
-                    new_material = None
+            obj.select_set(True)
 
-                    if old_material.name[:-4] in bpy.data.materials:
-                        new_material = old_material.name[:-4]
-                    else:
-                        new_material = old_material.name
-                    
-                    if wm.seut.fix_scratched_materials and new_material is not None and "Scratched_" in new_material and new_material.replace("Scratched", "") in bpy.data.materials:
-                        new_material = new_material.replace("Scratched", "")
+            bpy.ops.object.material_slot_remove_unused({'object': obj})
 
-                    if new_material is not None:
-                        for mat in bpy.data.materials:
-                            if mat.library is not None and mat.name == new_material:
-                                slot.material = mat
+            obj.select_set(False)
+
+            if parent_lc is not None:
+                parent_lc.hide_viewport = hide
+
+        except Exception as e:
+            print(e)
+            seut_report(self, context, 'WARNING', True, 'W003', obj.name)
+
+
+        for slot in obj.material_slots:
+            if slot.material is not None and slot.material.library is None:
+                old_material = slot.material
+                new_material = None
+
+                if old_material.name[:-4] in bpy.data.materials:
+                    new_material = old_material.name[:-4]
+                else:
+                    new_material = old_material.name
+                
+                if wm.seut.fix_scratched_materials and new_material is not None and "Scratched_" in new_material and new_material.replace("Scratched", "") in bpy.data.materials:
+                    new_material = new_material.replace("Scratched", "")
+
+                if new_material is not None:
+                    for mat in bpy.data.materials:
+                        if mat.library is not None and mat.name == new_material:
+                            slot.material = mat
 
     for mat in data_to.materials:
         if mat is not None and mat.users < 1:
