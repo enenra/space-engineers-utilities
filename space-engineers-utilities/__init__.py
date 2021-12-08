@@ -274,7 +274,7 @@ def load_handler(dummy):
     try:
         init_relocate_matlibs()
         update_register_repos()
-        #check_all_repo_updates()
+        check_all_repo_updates()
         load_addon_prefs()
     except Exception as e:
         print(e)

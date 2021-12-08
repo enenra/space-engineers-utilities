@@ -41,7 +41,7 @@ class SEUT_OT_SetDevPaths(Operator):
             load_addon_prefs()
 
         update_register_repos()
-        #check_all_repo_updates()
+        check_all_repo_updates()
 
         return {'FINISHED'}
 
