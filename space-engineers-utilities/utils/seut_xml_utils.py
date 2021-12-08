@@ -4,9 +4,10 @@ import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
 
-def get_relevant_sbc(path: str, sbc_type: str, container_name: str, subtype_id: str):
+def get_relevant_sbc(path: str, sbc_type: str, container_name: str, subtype_id: str) -> list:
     """Returns the relevant element of an existing entry, if found."""
 
+    last_sbc = []
     for path, subdirs, files in os.walk(path):
         for name in files:
             if not name.endswith(".sbc"):
@@ -17,16 +18,18 @@ def get_relevant_sbc(path: str, sbc_type: str, container_name: str, subtype_id: 
                     entries_start = lines.find('<' + sbc_type + '>') + len('<' + sbc_type + '>')
                     entries_end = lines.find('</' + sbc_type + '>')
                     entries = lines[entries_start:entries_end]
+                    last_sbc =  [os.path.join(path, name), lines]
 
                     if '<SubtypeId>' + subtype_id + '</SubtypeId>' in entries:
                         start = entries.find('<SubtypeId>' + subtype_id + '</SubtypeId>')
                         start = entries[:start].rfind('<' + container_name)
                         end = start + entries[start:].find('</' + container_name + '>') + len('</' + container_name + '>')
                         return [os.path.join(path, name), lines, entries_start + start, entries_end + end]
-                    else:
-                        return [os.path.join(path, name), lines, None, None]
-    
-    return [None, None, None, None]
+                        
+    if last_sbc != []:
+        return [last_sbc[0], last_sbc[1], None, None]
+    else:
+        return [None, None, None, None]
 
 
 def update_add_subelement(parent, name: str, value=None, update=False, lines=None):
