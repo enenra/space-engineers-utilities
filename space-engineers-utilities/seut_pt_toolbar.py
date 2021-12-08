@@ -46,7 +46,7 @@ class SEUT_PT_Panel(Panel):
                 row.label(text="SEUT Update Available", icon='ERROR')
                 row = layout.row()
                 row.label(text="Go to Addon Preferences to update.")
-            elif not skip and repo.needs_update:
+            elif not skip and repo is not None and repo.needs_update:
                 if tuple(map(int, repo.current_version.split('.'))) > tuple(map(int, repo.latest_version.split('.'))) and repo.dev_mode:
                     pass
                 else:
@@ -57,7 +57,7 @@ class SEUT_PT_Panel(Panel):
                     row.label(text="Go to Addon Preferences to update.")
 
         else:
-            if not skip and repo.needs_update:
+            if not skip and repo is not None and repo.needs_update:
                 if tuple(map(int, repo.current_version.split('.'))) > tuple(map(int, repo.latest_version.split('.'))) and repo.dev_mode:
                     pass
                 else:
