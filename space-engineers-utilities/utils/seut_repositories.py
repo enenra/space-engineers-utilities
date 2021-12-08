@@ -57,8 +57,6 @@ class SEUT_OT_CheckUpdate(Operator):
 
 
     repo_name: StringProperty()
-    
-    location: StringProperty()
 
 
     def execute(self, context):
@@ -66,8 +64,7 @@ class SEUT_OT_CheckUpdate(Operator):
         wm = context.window_manager
         repo = wm.seut.repos[self.repo_name]
 
-        update_repo_from_config(repo, self.location)
-        check_repo_update(self.repo_name)
+        check_repo_update(repo)
         
         return {'FINISHED'}
 
@@ -129,8 +126,9 @@ def update_register_repos():
         repo.name = 'seut-assets'
         repo.text_name = 'SEUT Assets Repository'
         repo.git_url = "https://github.com/enenra/seut-assets"
+        repo.cfg_path = preferences.asset_path
     
-    update_repo_from_config(repo, preferences.asset_path)
+    update_repo_from_config(repo)
     
     # MWMB
     if 'MWMBuilder' in wm.seut.repos:
@@ -140,13 +138,14 @@ def update_register_repos():
         repo.name = 'MWMBuilder'
         repo.text_name = 'MWM Builder'
         repo.git_url = "https://github.com/cstahlhut/MWMBuilder"
+        repo.cfg_path = os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder')
             
-    update_repo_from_config(repo, os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder'))
+    update_repo_from_config(repo)
 
 
-def update_repo_from_config(repo: object, cfg_path: str):
+def update_repo_from_config(repo: object):
 
-    cfg_path = os.path.join(cfg_path, f"{repo.name}.cfg")
+    cfg_path = os.path.join(repo.cfg_path, f"{repo.name}.cfg")
     data = {}
     if os.path.exists(cfg_path):
         with open(cfg_path) as cfg_file:
@@ -170,14 +169,19 @@ def update_repo_from_config(repo: object, cfg_path: str):
         repo.dev_mode = False
 
 
-def check_repo_update(repository: str):
-    """Checks the GitHub API for the latest release of the given repository."""
-
+def check_all_repo_updates():
     wm = bpy.context.window_manager
-    repo = wm.seut.repos[repository]
+    check_repo_update(wm.seut.repos['space-engineers-utilities'])
+    check_repo_update(wm.seut.repos['seut-assets'])
+    check_repo_update(wm.seut.repos['MWMBuilder'])
+
+
+def check_repo_update(repo: object):
+    """Checks the GitHub API for the latest release of the given repository."""
 
     repo.needs_update = False
     repo.update_message = ""
+    update_repo_from_config(repo)
 
     user_reponame = repo.git_url[len("https://github.com/"):]
     url_tags = f"https://api.github.com/repos/{user_reponame}/tags"
@@ -320,8 +324,7 @@ def update_repo(repo: str, location: str, wipe: bool = False):
                     shutil.rmtree(temp_dir)
                     return {'CANCELLED'}
 
-                update_repo_from_config(repo, location)
-                check_repo_update(repo.name)
+                check_repo_update(repo)
                 return {'FINISHED'}
 
             else:

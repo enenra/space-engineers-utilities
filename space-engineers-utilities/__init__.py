@@ -88,7 +88,7 @@ from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEF
 from .utils.seut_repositories                   import SEUT_OT_GetUpdate
 from .utils.seut_repositories                   import SEUT_OT_CheckUpdate
 from .utils.seut_repositories                   import SEUT_OT_DownloadUpdate
-from .utils.seut_repositories                   import update_register_repos, check_repo_update
+from .utils.seut_repositories                   import update_register_repos, check_all_repo_updates
 from .utils.seut_patch_blend                    import SEUT_OT_PatchBLEND
 from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
 from .utils.seut_ot_discord_link                import SEUT_OT_DiscordLink
@@ -274,9 +274,7 @@ def load_handler(dummy):
     try:
         init_relocate_matlibs()
         update_register_repos()
-        #check_repo_update('space-engineers-utilities')
-        #check_repo_update('seut-assets')
-        #check_repo_update('MWMBuilder')
+        #check_all_repo_updates()
         load_addon_prefs()
     except Exception as e:
         print(e)

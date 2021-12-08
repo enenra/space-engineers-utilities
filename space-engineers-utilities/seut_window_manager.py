@@ -91,6 +91,7 @@ class SEUT_RepositoryProperty(PropertyGroup):
     name: StringProperty()
     text_name: StringProperty()
     git_url: StringProperty()
+    cfg_path: StringProperty()
     needs_update: BoolProperty(
         default=False
     )

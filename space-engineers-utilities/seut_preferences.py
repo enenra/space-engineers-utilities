@@ -41,9 +41,7 @@ class SEUT_OT_SetDevPaths(Operator):
             load_addon_prefs()
 
         update_register_repos()
-        #check_repo_update('space-engineers-utilities')
-        #check_repo_update('seut-assets')
-        #check_repo_update('MWMBuilder')
+        #check_all_repo_updates()
 
         return {'FINISHED'}
 
@@ -74,40 +72,42 @@ def update_asset_path(self, context):
     
     path = get_abs_path(self.asset_path)
 
-    if os.path.isdir(path):
+    if not os.path.exists(path):
+        os.makedirs(path, exist_ok=True)
 
-        materials_path = os.path.join(path, 'Materials')
-        if not os.path.exists(materials_path):
-            os.makedirs(materials_path)
-        relocate_matlibs(materials_path)
+    materials_path = os.path.join(path, 'Materials')
+    if not os.path.exists(materials_path):
+        os.makedirs(materials_path, exist_ok=True)
+    relocate_matlibs(materials_path)
 
-        preferences = get_preferences()
-        mwmb_path = os.path.join(os.path.dirname(materials_path), 'Tools', 'MWMBuilder', 'MwmBuilder.exe')
-        if os.path.exists(mwmb_path):
-            preferences.mwmb_path = mwmb_path
-        else:
-            preferences.mwmb_path = ""
+    preferences = get_preferences()
+    mwmb_path = os.path.join(os.path.dirname(materials_path), 'Tools', 'MWMBuilder', 'MwmBuilder.exe')
+    if os.path.exists(mwmb_path):
+        preferences.mwmb_path = mwmb_path
+    else:
+        preferences.mwmb_path = ""
 
-        # This is suboptimal but works.
-        found = False
-        libraries = bpy.context.preferences.filepaths.asset_libraries
-        if 'SEUT' in libraries:
-            libraries['SEUT'].path = path
-            found = True
+    # This is suboptimal but works.
+    found = False
+    libraries = bpy.context.preferences.filepaths.asset_libraries
+    if 'SEUT' in libraries:
+        libraries['SEUT'].path = path
+        found = True
 
+    if not found:
+        for al in libraries:
+            if al.path == path:
+                al.name = "SEUT"
+                found = True
+                break
+        
         if not found:
-            for al in libraries:
+            bpy.ops.preferences.asset_library_add(directory=path)
+            for al in bpy.context.preferences.filepaths.asset_libraries:
                 if al.path == path:
                     al.name = "SEUT"
-                    found = True
                     break
-            
-            if not found:
-                bpy.ops.preferences.asset_library_add(directory=path)
-                for al in bpy.context.preferences.filepaths.asset_libraries:
-                    if al.path == path:
-                        al.name = "SEUT"
-                        break
+    
     
     save_addon_prefs()
 
@@ -256,7 +256,6 @@ class SEUT_AddonPreferences(AddonPreferences):
                     op.location = get_abs_path(preferences.asset_path)
                     op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
                     op.repo_name = repo.name
-                    op.location = get_abs_path(preferences.asset_path)
                     op = row.operator('wm.get_update', text="", icon='URL')
                     op.repo_name = repo.name
                 else:
@@ -265,7 +264,6 @@ class SEUT_AddonPreferences(AddonPreferences):
                     split.label(text=repo.update_message, icon='CHECKMARK')
                     op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
                     op.repo_name = repo.name
-                    op.location = get_abs_path(preferences.asset_path)
                     op = row.operator('wm.get_update', text="", icon='URL')
                     op.repo_name = repo.name
                 
@@ -294,7 +292,6 @@ class SEUT_AddonPreferences(AddonPreferences):
                     op.wipe = True
                     op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
                     op.repo_name = repo.name
-                    op.location = get_abs_path(os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder'))
                     op = row.operator('wm.get_update', text="", icon='URL')
                     op.repo_name = repo.name
                 else:
@@ -303,7 +300,6 @@ class SEUT_AddonPreferences(AddonPreferences):
                     split.label(text=repo.update_message, icon='CHECKMARK')
                     op = row.operator('wm.check_update', text="", icon='FILE_REFRESH')
                     op.repo_name = repo.name
-                    op.location = get_abs_path(os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder'))
                     op = row.operator('wm.get_update', text="", icon='URL')
                     op.repo_name = repo.name
 
