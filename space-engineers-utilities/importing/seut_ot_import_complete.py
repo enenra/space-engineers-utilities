@@ -67,8 +67,10 @@ class SEUT_OT_ImportComplete(Operator):
 
             if os.path.isdir(f) or (os.path.splitext(f)[1] != ".fbx" and os.path.splitext(f)[1] != ".FBX"):
                 continue
-
-            if basename != os.path.splitext(f)[0] and basename + "Construction" != f[:f.find("_")] and basename != f[:f.find("_")]:
+                
+            if basename == os.path.splitext(f)[0] or f"{basename}Construction" in f or f"{basename}_Construction" in f or f"{basename}_BS" in f or f"{basename}_LOD" in f:
+                pass
+            else:
                 continue
 
             fbx_type = determine_fbx_type(f)
@@ -127,16 +129,17 @@ class SEUT_OT_ImportComplete(Operator):
 
 def get_basename(filename: str):
 
-    if filename.find("_") != -1:
-        filename = filename[:filename.find("_")]
-    
-    if filename.find("Construction") != -1:
+    filename = os.path.splitext(filename)[0]
+
+    if "_Construction" in filename:
+        filename = filename[:filename.find("_Construction")]
+    elif "Construction" in filename:
         filename = filename[:filename.find("Construction")]
-    
-    if filename.find(".fbx") != -1:
-        filename = filename[:filename.find(".fbx")]
-    elif filename.find(".FBX") != -1:
-        filename = filename[:filename.find(".FBX")]
+    elif "_BS" in filename:
+        filename = filename[:filename.find("_BS")]
+        
+    if "_LOD" in filename:
+        filename = filename[:filename.find("_LOD")]
     
     return filename
 
@@ -152,24 +155,32 @@ def determine_fbx_type(filename: str):
         }
 
     # LOD
-    if filename.find("_LOD") != -1:
+    if "_LOD" in filename:
         fbx_type['col_type'] = 'lod'
         fbx_type['type_index'] = int(re.search("(?<=_LOD)[0-9]{1,}", filename)[0])
     
     # BS / Construction
-    if filename.find("Construction_") != -1:
+    if "Construction_" in filename:
         if fbx_type['col_type'] is not None:
             fbx_type['ref_col_type'] = 'bs'
             fbx_type['ref_col_type_index'] = int(re.search("(?<=Construction_)[0-9]{1,}", filename)[0])
         else:
             fbx_type['col_type'] = 'bs'
             fbx_type['type_index'] = int(re.search("(?<=Construction_)[0-9]{1,}", filename)[0])
+    else:
+        if "_Construction" in filename:
+            if fbx_type['col_type'] is not None:
+                fbx_type['ref_col_type'] = 'bs'
+                fbx_type['ref_col_type_index'] = int(re.search("(?<=_Construction)[0-9]{1,}", filename)[0])
+            else:
+                fbx_type['col_type'] = 'bs'
+                fbx_type['type_index'] = int(re.search("(?<=_Construction)[0-9]{1,}", filename)[0])
 
-    if filename.find("_BS_LOD") != -1:
+    if "_BS_LOD" in filename:
             fbx_type['ref_col_type'] = 'bs'
             fbx_type['ref_col_type_index'] = 1
 
-    if filename.find("_BS") != -1:
+    if "_BS" in filename:
         if fbx_type['col_type'] is not None:
             fbx_type['ref_col_type'] = 'bs'
             fbx_type['ref_col_type_index'] = int(re.search("(?<=_BS)[0-9]{1,}", filename)[0])

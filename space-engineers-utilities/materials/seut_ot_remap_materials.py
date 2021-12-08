@@ -15,7 +15,6 @@ class SEUT_OT_RemapMaterials(Operator):
 
 
     def execute(self, context):
-
         return remap_materials(self, context)
 
     
