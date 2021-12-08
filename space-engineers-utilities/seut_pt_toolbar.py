@@ -27,7 +27,10 @@ class SEUT_PT_Panel(Panel):
         wm = context.window_manager
         skip = False
         try:
-            repo = wm.seut.repos['space-engineers-utilities']
+            for r in wm.seut.repos:
+                if r.needs_update:
+                    repo = r
+                    break
         except KeyError:
             skip = True
         
@@ -40,12 +43,10 @@ class SEUT_PT_Panel(Panel):
                 row = layout.row()
                 row.label(text="Go to Preferences to update.")
 
-        elif skip or repo.needs_update:
+        elif not skip and repo.needs_update:
             row = layout.row()
             row.alert = True
-            row.label(text=repo.update_message, icon='ERROR')
-            op = row.operator('wm.get_update', icon='IMPORT', text="")
-            op.repo_name = 'space-engineers-utilities'
+            row.label(text=f"Update available for {repo.text_name} - check Addon Preferences!", icon='ERROR')
 
         if not 'SEUT' in scene.view_layers:
             row = layout.row()
