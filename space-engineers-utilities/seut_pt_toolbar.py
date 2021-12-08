@@ -26,6 +26,7 @@ class SEUT_PT_Panel(Panel):
         scene = context.scene
         wm = context.window_manager
         skip = False
+        repo = None
         try:
             for r in wm.seut.repos:
                 if r.needs_update:
