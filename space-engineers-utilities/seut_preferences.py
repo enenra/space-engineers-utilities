@@ -110,6 +110,9 @@ def update_asset_path(self, context):
                     al.name = "SEUT"
                     break
 
+    if not 'seut-assets' in wm.seut.repos:
+        update_register_repos()
+        
     repo_assets = wm.seut.repos['seut-assets']
     repo_assets.cfg_path = path
     check_repo_update(repo_assets)
