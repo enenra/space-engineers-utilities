@@ -25,13 +25,16 @@ class SEUT_PT_Panel(Panel):
         layout = self.layout
         scene = context.scene
         wm = context.window_manager
+        
         skip = False
         repo = None
         try:
             for r in wm.seut.repos:
                 if r.needs_update:
-                    repo = r
-                    break
+                    if r.current_version == '0.0.0':
+                        continue
+                    else:
+                        repo = r
         except KeyError:
             skip = True
         
@@ -42,12 +45,27 @@ class SEUT_PT_Panel(Panel):
                 row.alert = True
                 row.label(text="SEUT Update Available", icon='ERROR')
                 row = layout.row()
-                row.label(text="Go to Preferences to update.")
+                row.label(text="Go to Addon Preferences to update.")
+            elif not skip and repo.needs_update:
+                if tuple(map(int, repo.current_version.split('.'))) > tuple(map(int, repo.latest_version.split('.'))) and repo.dev_mode:
+                    pass
+                else:
+                    row = layout.row()
+                    row.alert = True
+                    row.label(text=f"Update for {repo.text_name} available.", icon='ERROR')
+                    row = layout.row()
+                    row.label(text="Go to Addon Preferences to update.")
 
-        elif not skip and repo.needs_update:
-            row = layout.row()
-            row.alert = True
-            row.label(text=f"Update available for {repo.text_name} - check Addon Preferences!", icon='ERROR')
+        else:
+            if not skip and repo.needs_update:
+                if tuple(map(int, repo.current_version.split('.'))) > tuple(map(int, repo.latest_version.split('.'))) and repo.dev_mode:
+                    pass
+                else:
+                    row = layout.row()
+                    row.alert = True
+                    row.label(text=f"Update for {repo.text_name} available.", icon='ERROR')
+                    row = layout.row()
+                    row.label(text="Go to Addon Preferences to update.")
 
         if not 'SEUT' in scene.view_layers:
             row = layout.row()
