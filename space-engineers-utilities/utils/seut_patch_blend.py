@@ -140,8 +140,7 @@ def patch_collections_v0995():
             if not col.seut.scene is scn:
                 continue
 
-            if bpy.app.version >= (2, 91, 0):
-                col.color_tag = seut_collections[scn.seut.sceneType][col.seut.col_type]['color']
+            col.color_tag = seut_collections[scn.seut.sceneType][col.seut.col_type]['color']
 
     # This must happen after because the collection names might still be in flux beforehand
     for col in bpy.data.collections:

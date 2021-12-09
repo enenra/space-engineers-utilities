@@ -427,8 +427,7 @@ def rename_collections(scene: object):
                 name = f"{seut_collections[scene.seut.sceneType]['lod']['name']} ({scene.seut.subtypeId})"
         
         col.name = name.format(subtpye_id=scene.seut.subtypeId, ref_col_name=ref_col_name, ref_col_type_index=ref_col_type_index, type_index=type_index)
-        if bpy.app.version >= (2, 91, 0):
-            col.color_tag = color
+        col.color_tag = color
 
 
 def create_collections(context):
@@ -443,8 +442,7 @@ def create_collections(context):
         collections['seut'][0].seut.scene = scene
         collections['seut'][0].seut.col_type = 'seut'
         collections['seut'][0].seut.version = 3
-        if bpy.app.version >= (2, 91, 0):
-            collections['seut'][0].color_tag = 'COLOR_02'
+        collections['seut'][0].color_tag = 'COLOR_02'
         scene.collection.children.link(collections['seut'][0])
 
 
@@ -563,8 +561,7 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
         collection.seut.ref_col = ref_col
     if lod_distance != 0:
         collection.seut.lod_distance = lod_distance
-    if bpy.app.version >= (2, 91, 0):
-        collection.color_tag = color
+    collection.color_tag = color
     
     if 'seut' in collections and collections['seut'] is not None:
         collections['seut'][0].children.link(collection)

@@ -192,73 +192,68 @@ def create_seut_nodegroup(node):
     node_input.location = (-1512.5000, 0.0000)
 
     node_group.inputs.new('NodeSocketColor', 'CM Color')
+    node_group.inputs['CM Color'].hide_value = True
     links.new(node_input.outputs['CM Color'], node_add_paint.inputs[1])
 
     node_group.inputs.new('NodeSocketColor', 'CM Alpha')
+    node_group.inputs['CM Alpha'].hide_value = True
     links.new(node_input.outputs['CM Alpha'], node_bsdf.inputs['Metallic'])
     links.new(node_input.outputs['CM Alpha'], node_switch_alpha.inputs[2])
 
     node_group.inputs.new('NodeSocketColor', 'ADD Color')
+    node_group.inputs['ADD Color'].hide_value = True
     links.new(node_input.outputs['ADD Color'], node_separate_rgb.inputs[0])
     links.new(node_input.outputs['ADD Color'], node_add_switch.inputs[0])
 
     node_group.inputs.new('NodeSocketColor', 'ADD Alpha')
+    node_group.inputs['ADD Alpha'].hide_value = True
     links.new(node_input.outputs['ADD Alpha'], node_add_paint.inputs[0])
 
     node_group.inputs.new('NodeSocketColor', 'NG Color')
+    node_group.inputs['NG Color'].hide_value = True
     links.new(node_input.outputs['NG Color'], node_normal_map.inputs[1])
 
     node_group.inputs.new('NodeSocketColor', 'NG Alpha')
+    node_group.inputs['NG Alpha'].hide_value = True
     links.new(node_input.outputs['NG Alpha'], node_gloss_rough.inputs[1])
 
     node_group.inputs.new('NodeSocketColor', 'AM Color')
+    node_group.inputs['AM Color'].hide_value = True
     links.new(node_input.outputs['AM Color'], node_switch_alpha.inputs[1])
     links.new(node_input.outputs['AM Color'], node_invert_alpha.inputs[1])
 
     node_group.inputs.new('NodeSocketColor', 'Paint Color')
+    node_group.inputs['Paint Color'].hide_value = True
     links.new(node_input.outputs['Paint Color'], node_add_paint.inputs[2])
 
     node_group.inputs.new('NodeSocketFloat', 'TM Switch')
-    node_group.inputs[8].default_value = 1
-    node_group.inputs[8].min_value = 0
-    node_group.inputs[8].max_value = 1
+    node_group.inputs['TM Switch'].default_value = 1
+    node_group.inputs['TM Switch'].min_value = 0
+    node_group.inputs['TM Switch'].max_value = 1
+    node_group.inputs['TM Switch'].hide_value = True
     links.new(node_input.outputs['TM Switch'], node_switch_color.inputs[0])
     links.new(node_input.outputs['TM Switch'], node_switch_alpha.inputs[0])
 
     node_group.inputs.new('NodeSocketColor', 'Color Override')
+    node_group.inputs['Color Override'].hide_value = True
     links.new(node_input.outputs['Color Override'], node_color_override.inputs[2])
 
     node_group.inputs.new('NodeSocketColor', 'Color Override Alpha')
+    node_group.inputs['Color Override Alpha'].hide_value = True
     links.new(node_input.outputs['Color Override Alpha'], node_color_override.inputs[0])
 
     node_group.inputs.new('NodeSocketColor', 'Color Overlay')
+    node_group.inputs['Color Overlay'].hide_value = True
     links.new(node_input.outputs['Color Overlay'], node_color_overlay.inputs[2])
 
     node_group.inputs.new('NodeSocketColor', 'Color Overlay Alpha')
+    node_group.inputs['Color Overlay Alpha'].hide_value = True
     links.new(node_input.outputs['Color Overlay Alpha'], node_restrict_to_alpha.inputs[0])
 
-    # Backwards compatability
-    
-    if bpy.app.version >= (2, 90, 0):
-        node_group.inputs['CM Color'].hide_value = True
-        node_group.inputs['CM Alpha'].hide_value = True
-        node_group.inputs['ADD Color'].hide_value = True
-        node_group.inputs['ADD Alpha'].hide_value = True
-        node_group.inputs['NG Color'].hide_value = True
-        node_group.inputs['NG Alpha'].hide_value = True
-        node_group.inputs['AM Color'].hide_value = True
-        node_group.inputs['Paint Color'].hide_value = True
-        node_group.inputs['TM Switch'].hide_value = True
-        node_group.inputs['Color Override'].hide_value = True
-        node_group.inputs['Color Override Alpha'].hide_value = True
-        node_group.inputs['Color Overlay'].hide_value = True
-        node_group.inputs['Color Overlay Alpha'].hide_value = True
-
-    if bpy.app.version >= (2, 91, 0):
-        node_group.inputs.new('NodeSocketFloat', 'Emission Strength')
-        links.new(node_input.outputs['Emission Strength'], node_bsdf.inputs['Emission Strength'])
-        node_group.inputs['Emission Strength'].default_value = 5
-        node_group.inputs['Emission Strength'].hide_value = True
+    node_group.inputs.new('NodeSocketFloat', 'Emission Strength')
+    links.new(node_input.outputs['Emission Strength'], node_bsdf.inputs['Emission Strength'])
+    node_group.inputs['Emission Strength'].default_value = 5
+    node_group.inputs['Emission Strength'].hide_value = True
         
     # Moving this down here fixed a crash on scene initialization.
     links.new(node_bsdf.outputs[0], node_output.inputs[0])

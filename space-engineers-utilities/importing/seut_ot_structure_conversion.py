@@ -47,8 +47,7 @@ def convert_structure(self, context):
             seut_col = bpy.data.collections.new('SEUT' + tag)
             seut_col.seut.scene = scn
             seut_col.seut.col_type = 'seut'
-            if bpy.app.version >= (2, 91, 0):
-                seut_col.color_tag = 'COLOR_07'
+            seut_col.color_tag = 'COLOR_07'
             scn.collection.children.link(seut_col)
         
         assignments = {
@@ -93,9 +92,7 @@ def convert_structure(self, context):
                     else:
                         col.seut.col_type = value
                     
-                    if bpy.app.version >= (2, 91, 0):
-                        col.color_tag = seut_collections[scn.seut.sceneType][col.seut.col_type]['color']
-
+                    col.color_tag = seut_collections[scn.seut.sceneType][col.seut.col_type]['color']
                     col.seut.scene = scn
 
                     name = seut_collections[scn.seut.sceneType][value]['name']
