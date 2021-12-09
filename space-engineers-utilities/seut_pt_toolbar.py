@@ -25,6 +25,17 @@ class SEUT_PT_Panel(Panel):
         layout = self.layout
         scene = context.scene
         wm = context.window_manager
+
+        if bpy.app.version < (3, 0, 0):
+            row = layout.row()
+            row.alert = True
+            row.scale_y = 0.75
+            row.label(text="SEUT requires Blender 3.0+.")
+            row = layout.row()
+            row.alert = True
+            row.scale_y = 0.75
+            row.label(text="Please update your Blender installation!")
+            return
         
         skip = False
         repo = None

@@ -112,7 +112,7 @@ def update_asset_path(self, context):
 
     if not 'seut-assets' in wm.seut.repos:
         update_register_repos()
-        
+
     repo_assets = wm.seut.repos['seut-assets']
     repo_assets.cfg_path = path
     check_repo_update(repo_assets)
@@ -192,6 +192,12 @@ class SEUT_AddonPreferences(AddonPreferences):
         layout = self.layout
         wm = context.window_manager
         preferences = get_preferences()
+
+        if bpy.app.version < (3, 0, 0):
+            row = layout.row()
+            row.alert = True
+            row.label(text="SEUT requires Blender 3.0+. Please update your Blender installation!")
+            return
 
         self.dev_mode = get_addon().bl_info['dev_version'] > 0
 
