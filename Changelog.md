@@ -38,6 +38,7 @@
 * Changed: Reversed issue display sorting - now the newest issue is shown at the top. (Alpha 7)
 * Changed: Harag's FBXImporter is now included within the addon. (Alpha 7)
 * Changed: Display of Simple Navigation toggle. (Alpha 10)
+* Changed: SEUT now requires Blender 3.0+ . (Beta 1)
 * Changed #291: Reduced max allowed collision objects to 10 as per Keen change. (Alpha 6)
 * Changed #292: Switched all links to SEMREF to new SEMREF 2.0 website. (Alpha 6)
 * Changed #298: Removed Bounding Box Automatic. It was broken and not useful enough to invest time into fixing. (Alpha 6)
