@@ -12,7 +12,7 @@ from bpy.types      import Operator
 
 from .havok.seut_havok_hkt          import convert_fbx_to_fbxi_hkt, convert_fbxi_hkt_to_hkt
 from .seut_mwmbuilder               import mwmbuilder
-from .seut_export_utils             import ExportSettings, export_to_fbxfile, delete_temp_files, create_relative_path
+from .seut_export_utils             import ExportSettings, export_to_fbxfile, create_relative_path
 from .seut_export_utils             import correct_for_export_type, export_collection, get_col_filename
 from ..utils.seut_xml_utils         import *
 from ..seut_collections             import get_collections, get_rev_ref_cols, get_cols_by_type, get_first_free_index
@@ -342,12 +342,7 @@ def export_mwm(self, context):
     settings = ExportSettings(scene, None)
 
     mwmfile = join(path, scene.seut.subtypeId + ".mwm")
-    
-    try:
-        mwmbuilder(self, context, path, path, settings, mwmfile, materials_path)
-    finally:
-        if scene.seut.export_deleteLooseFiles:
-            delete_temp_files(self, context, path)
+    mwmbuilder(self, context, path, path, settings, mwmfile, materials_path)
 
     return {'FINISHED'}
 

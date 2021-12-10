@@ -543,21 +543,6 @@ def write_to_log(logfile, content, cmdline=None, cwd=None, loglines=[]):
         log.write(content)
 
 
-def delete_temp_files(self, context, path: str):
-    """Deletes all temp files for the scene currently being exported."""
-
-    scene = context.scene
-
-    file_list = [f for f in os.listdir(path) if (f"{scene.seut.subtypeId}_BS" in f or f"{scene.seut.subtypeId}_LOD" in f or f"{scene.seut.subtypeId}." in f) and (".fbx" in f or ".xml" in f or ".hkt" in f or ".log" in f)]
-
-    try:
-        for f in file_list:
-            os.remove(os.path.join(path, f))
-
-    except EnvironmentError:
-        seut_report(self, context, 'ERROR', False, 'E020')
-
-
 class ExportSettings:
     def __init__(self, scene, depsgraph, mwmDir=None):
         self.scene = scene # ObjectSource.getObjects() uses .utils.scene() instead
