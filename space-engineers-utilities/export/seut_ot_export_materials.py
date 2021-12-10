@@ -37,12 +37,11 @@ class SEUT_OT_ExportMaterials(Operator):
 def export_materials(self, context):
     """Export local materials to XML file"""
     
-    scene = context.scene
     offset = bpy.path.basename(bpy.context.blend_data.filepath).find(".blend")
     filename = bpy.path.basename(bpy.context.blend_data.filepath)[:offset]
     
     # This culls the MatLb_ from the filename
-    filename = filename[7:]
+    filename = filename.replace("MatLib_", "")
 
     materials = ET.Element('MaterialsLib')
     materials.set('Name', filename)
