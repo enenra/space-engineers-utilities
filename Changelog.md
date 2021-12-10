@@ -47,7 +47,7 @@
 * Changed #269: Preferences screen now requires users to define an `Asset Directory` (parent folder of previous `Materials`-folder) and the path to the Space Engineers install location. (Alpha 7)
 * Fixed: Empty resizing after export. (Alpha 1)
 * Fixed: Issues with different modes and pre 2.91 Blender. (Alpha 2)
-* Fixed: Rare issue when fixing scratched materials on import. (Alpha 3)
+* Fixed: Rare issue when fixing scratched materials on import. (Beta 1)
 * Fixed: Rare issue with MatLib linking / unlinking. (Alpha 3)
 * Fixed: Issues with material creation and pre 2.90 Blender. (Alpha 3)
 * Fixed: Mountpoints not being saved on export if MP mode is still active. (Alpha 4)
