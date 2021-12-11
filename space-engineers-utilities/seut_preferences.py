@@ -125,8 +125,12 @@ def update_asset_path(self, context):
 def relocate_matlibs(path):
     for lib in bpy.data.libraries:
         if not os.path.exists(lib.filepath):
-            if os.path.exists(os.path.join(path, lib.name[7:])):
-                bpy.ops.wm.lib_relocate(library=lib.name, directory=path, filename=lib.name[7:])
+            if os.path.exists(os.path.join(path, lib.name.replace("MatLib_", ""))):
+                bpy.ops.wm.lib_relocate(library=lib.name, directory=path, filename=lib.name.replace("MatLib_", ""))
+            elif os.path.exists(os.path.join(path, lib.name.replace("MatLib_", "")[:-4])):
+                bpy.ops.wm.lib_relocate(library=lib.name, directory=path, filename=lib.name.replace("MatLib_", "")[:-4])
+            elif os.path.exists(os.path.join(path, lib.name[:-4])):
+                bpy.ops.wm.lib_relocate(library=lib.name, directory=path, filename=lib.name[:-4])
             elif os.path.exists(os.path.join(path, lib.name)):
                 bpy.ops.wm.lib_relocate(library=lib.name, directory=path, filename=lib.name)
 
