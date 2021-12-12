@@ -50,11 +50,11 @@ def export_transparent_mat(self, context, subtype_id):
         lines_entry = lines[start:end]
         update = True
     
-    lines_entry = update_add_subelement(def_definition, 'AlphaMistingEnable', material.seut.alpha_misting_enable, update, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'AlphaMistingEnable', str(material.seut.alpha_misting_enable).lower(), update, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'AlphaMistingStart', round(material.seut.alpha_misting_start, 2), update, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'AlphaMistingEnd', round(material.seut.alpha_misting_end, 2), update, lines_entry)
     
-    lines_entry = update_add_subelement(def_definition, 'CanBeAffectedByOtherLights', material.seut.affected_by_other_lights, update, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'CanBeAffectedByOtherLights', str(material.seut.affected_by_other_lights).lower(), update, lines_entry)
     
     lines_entry = update_add_subelement(def_definition, 'SoftParticleDistanceScale', round(material.seut.soft_particle_distance_scale, 2), update, lines_entry)
 
@@ -123,15 +123,16 @@ def export_transparent_mat(self, context, subtype_id):
     lines_entry = update_add_subelement(def_definition, 'Fresnel', round(material.seut.fresnel, 2), update, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'ReflectionShadow', round(material.seut.reflection_shadow, 2), update, lines_entry)
 
+    lines_entry = update_add_subelement(def_definition, 'Gloss', round(material.seut.gloss, 2), update, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'GlossTextureAdd', round(material.seut.gloss_texture_add, 2), update, lines_entry)
 
     ng_path = get_seut_texture_path('NG', material)
     ng_path = os.path.splitext(ng_path)[0] + ".dds"
     ng_path = create_relative_path(ng_path, 'Textures')
-    lines_entry = update_add_subelement(def_definition, 'Gloss', ng_path, update, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'GlossTexture', ng_path, update, lines_entry)
 
     lines_entry = update_add_subelement(def_definition, 'SpecularColorFactor', round(material.seut.specular_color_factor, 2), update, lines_entry)
-    lines_entry = update_add_subelement(def_definition, 'IsFlareOccluder', material.seut.is_flare_occluder, update, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'IsFlareOccluder', str(material.seut.is_flare_occluder).lower(), update, lines_entry)
 
     if file_to_update is None or scene.seut.export_sbc_type == 'new':
         temp_string = ET.tostring(definitions, 'utf-8')
