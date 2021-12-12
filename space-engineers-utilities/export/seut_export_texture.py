@@ -17,18 +17,18 @@ def export_material_textures(self, context, material):
     nodes = material.node_tree.nodes
     textures = {}
 
-    if 'CM' in nodes and nodes['CM'].image is not None and os.path.exists(nodes['CM'].image.filepath):
+    if 'CM' in nodes and nodes['CM'].image is not None and os.path.exists(get_abs_path(nodes['CM'].image.filepath)):
         textures['cm'] = get_abs_path(nodes['CM'].image.filepath)
 
-    if 'ADD' in nodes and nodes['ADD'].image is not None and os.path.exists(nodes['ADD'].image.filepath):
+    if 'ADD' in nodes and nodes['ADD'].image is not None and os.path.exists(get_abs_path(nodes['ADD'].image.filepath)):
         textures['add'] = get_abs_path(nodes['ADD'].image.filepath)
 
-    if 'NG' in nodes and nodes['NG'].image is not None and os.path.exists(nodes['NG'].image.filepath):
+    if 'NG' in nodes and nodes['NG'].image is not None and os.path.exists(get_abs_path(nodes['NG'].image.filepath)):
         textures['ng'] = get_abs_path(nodes['NG'].image.filepath)
         
-    if 'ALPHAMASK' in nodes and nodes['ALPHAMASK'].image is not None and os.path.exists(nodes['ALPHAMASK'].image.filepath):
+    if 'ALPHAMASK' in nodes and nodes['ALPHAMASK'].image is not None and os.path.exists(get_abs_path(nodes['ALPHAMASK'].image.filepath)):
         textures['alphamask'] = get_abs_path(nodes['ALPHAMASK'].image.filepath)
-    
+
     if len(textures) <= 0:
         return {'CANCELLED'}
 
