@@ -52,6 +52,7 @@ errors = {
     'E044': "An error ocurred during MWM conversion. See *.mwm.log file (generated if 'Delete Temp Files' is toggled off) for details.",
     'E045': "Model path must be located within the Mod's directory ('{variable_1}').",
     'E046': "Could not convert '{variable_1}'-texture of material '{variable_2}' to DDS.\n{variable_3}",
+    'E047': "An access violation error occurred during Havok conversion.",
 }
 
 warnings = {

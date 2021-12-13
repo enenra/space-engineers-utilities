@@ -606,6 +606,8 @@ class ExportSettings:
             if e.returncode not in successfulExitCodes:
                 if e.returncode == 4294967295:
                     seut_report(self, context, 'ERROR', False, 'E037')
+                elif e.returncode == 3221225477:
+                    seut_report(self, context, 'ERROR', False, 'E047')
                 else:
                     seut_report(self, context, 'ERROR', False, 'E035', str(tooltype))
                 raise
