@@ -144,8 +144,16 @@ def update_register_repos():
 def update_repo_from_config(repo: object):
 
     preferences = get_preferences()
+    addon = get_addon()
     
     if repo.name == 'space-engineers-utilities':
+        repo.current_version = str(addon.bl_info['version'])[1:-1].replace(', ', '.')
+        repo.dev_tag = addon.bl_info['dev_tag']
+        repo.dev_version = addon.bl_info['dev_version']
+        if repo.dev_version > 0:
+            repo.dev_mode = True
+        else:
+            repo.dev_mode = False
         return
 
     cfg_path = os.path.join(repo.cfg_path, f"{repo.name}.cfg")
