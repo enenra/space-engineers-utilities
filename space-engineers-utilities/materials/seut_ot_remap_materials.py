@@ -96,21 +96,17 @@ def remap_materials(self, context):
                         if mat.library is not None and mat.name == new_material:
                             slot.material = mat
 
-    for mat in data_to.materials:
-        if mat is not None and mat.users < 1:
+    for mat in bpy.data.materials:
+        if mat is not None and mat.library is not None and mat.users < 1:
             bpy.data.materials.remove(mat, do_unlink=True)
     
-    for img in data_from.images:
-        if img is not None and img in bpy.data.images:
-            img = bpy.data.images[img]
-            if img.users < 1:
-                bpy.data.images.remove(img, do_unlink=True)
+    for img in bpy.data.images:
+        if img is not None and img.library is not None and img.users < 1:
+            bpy.data.images.remove(img, do_unlink=True)
             
-    for ng in data_from.node_groups:
-        if ng is not None and ng in bpy.data.node_groups:
-            ng = bpy.data.node_groups[ng]
-            if ng.users < 1:
-                bpy.data.node_groups.remove(ng, do_unlink=True)
+    for ng in bpy.data.node_groups:
+        if ng is not None and ng.library is not None and ng.users < 1:
+            bpy.data.node_groups.remove(ng, do_unlink=True)
 
     context.area.type = current_area
     context.window.scene = current_scene
