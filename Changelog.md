@@ -14,6 +14,7 @@
 * Added: Finer control over how / whether to export to SBC. (Alpha 9)
 * Added: Link to Collisions Tutorial when a `Collision`-type collection is selected. (Alpha 11)
 * Added: Support for new Keen file naming scheme in Complete Import. (Beta 1)
+* Added: Error indicating an Access Violation Error having occurred during HKT conversion. (Beta 3)
 * Added #24: Support for TransparentMaterials display in Blender and export to SBC. (Alpha 6)
 * Added #269: Panel for texture conversion from and to `DDS`. (Alpha 6)
 * Added #269: Export icon to `DDS`-format by default. (Alpha 6)
