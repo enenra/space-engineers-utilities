@@ -93,7 +93,7 @@ def remap_materials(self, context):
 
                 if new_material is not None:
                     for mat in bpy.data.materials:
-                        if mat.library is not None and mat.name == new_material:
+                        if mat.name == new_material:
                             slot.material = mat
 
     for mat in bpy.data.materials:
