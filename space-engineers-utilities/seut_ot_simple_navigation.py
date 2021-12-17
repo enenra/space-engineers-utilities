@@ -17,8 +17,15 @@ class SEUT_OT_SimpleNavigation(Operator):
 
         scene = context.scene
         wm = context.window_manager
+        collections = get_collections(scene)
 
         if not wm.seut.simpleNavigationToggle:
+            for col in bpy.data.collections:
+                if col is not None and col.seut.scene is scene:
+                    if col.seut.col_type == 'seut':
+                        continue
+                    else:
+                        context.view_layer.layer_collection.children[collections['seut'][0].name].children[col.name].hide_viewport = False
             return {'FINISHED'}
 
         check = False
