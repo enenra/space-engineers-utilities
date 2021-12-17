@@ -47,7 +47,6 @@ class SEUT_OT_Import_Materials(Operator):
 
 def import_materials(self, context, filepath):
 
-    wm = context.window_manager
     preferences = get_preferences()
     materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
     
@@ -103,6 +102,8 @@ def import_materials(self, context, filepath):
                 add_node = node
             elif node.name == 'ALPHAMASK':
                 am_node = node
+            elif node.name == 'SEUT_NODE_GROUP':
+                ng = node
 
         cm_img = None
         ng_img = None
@@ -112,6 +113,16 @@ def import_materials(self, context, filepath):
         for param in mat:
             if param.attrib['Name'] == 'Technique':
                 material.seut.technique = param.text
+
+                for i in ng.inputs:
+                    if i.name == 'TM Switch':
+                        if material.seut.technique in ['GLASS', 'HOLO', 'SHIELD']:
+                            i.default_value = 1
+                            material.blend_method = 'BLEND'
+                        else:
+                            i.default_value = 0
+                            material.blend_method = 'CLIP'
+                        break
 
             elif param.attrib['Name'] == 'ColorMetalTexture':
                 cm_img = load_image(self, context, param.text, materials_path)
@@ -170,7 +181,6 @@ def import_materials(self, context, filepath):
                 materials_string = materials_string + ", " + name
 
         seut_report(self, context, 'INFO', True, 'I019', len(imported), filepath, materials_string)
-
         return {'FINISHED'}
 
 

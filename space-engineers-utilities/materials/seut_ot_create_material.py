@@ -227,7 +227,7 @@ def create_seut_nodegroup(node):
     links.new(node_input.outputs['Paint Color'], node_add_paint.inputs[2])
 
     node_group.inputs.new('NodeSocketFloat', 'TM Switch')
-    node_group.inputs['TM Switch'].default_value = 1
+    node_group.inputs['TM Switch'].default_value = 0
     node_group.inputs['TM Switch'].min_value = 0
     node_group.inputs['TM Switch'].max_value = 1
     node_group.inputs['TM Switch'].hide_value = True
