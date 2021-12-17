@@ -144,6 +144,9 @@ def update_register_repos():
 def update_repo_from_config(repo: object):
 
     preferences = get_preferences()
+    
+    if repo.name == 'space-engineers-utilities':
+        return
 
     cfg_path = os.path.join(repo.cfg_path, f"{repo.name}.cfg")
     data = {}
