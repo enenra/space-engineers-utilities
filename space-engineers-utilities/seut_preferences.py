@@ -220,6 +220,9 @@ class SEUT_AddonPreferences(AddonPreferences):
             row = layout.row()
             row.alert = True
             row.label(text="An error occurred during draw of Blender Addon Updater UI. Make sure BAU is up to date.")
+
+        if not 'space-engineers-utilities' in wm.seut.repos:
+            update_register_repos()
             
         if addon_utils.check('blender_addon_updater') != (True, True):
             row = layout.row()
