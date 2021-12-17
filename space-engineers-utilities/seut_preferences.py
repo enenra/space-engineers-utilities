@@ -214,7 +214,13 @@ class SEUT_AddonPreferences(AddonPreferences):
         link.section = 'reference'
         link.page = '6127826/SEUT+Preferences'
 
-        draw_bau_ui(self, context)
+        try:
+            draw_bau_ui(self, context)
+        except:
+            row = layout.row()
+            row.alert = True
+            row.label(text="An error occurred during draw of Blender Addon Updater UI. Make sure BAU is up to date.")
+            
         if addon_utils.check('blender_addon_updater') != (True, True):
             row = layout.row()
             row.label(text="Update Status:")
