@@ -63,6 +63,7 @@
 * Fixed: Rare error when creating a new collection but no collection is currently active. (Alpha 7)
 * Fixed: Error on export if custom material has no nodes. (Alpha 10)
 * Fixed: Materials Library Export always saved library as "Default Materials" instead of with its name. (Alpha 10)
+* Fixed: Issue with collection renaming when the SEUT collection isn't the first collection in the list. (Beta 4)
 * Fixed #283: Enabled mountpoint area creation when a side area is selected. (Alpha 6)
 * Fixed #287: Let users reduce icon render mode camera distance down to 0. (Alpha 6)
 * Fixed #296: Blender crash in some cases after renaming a copied scene. (Alpha 6)
