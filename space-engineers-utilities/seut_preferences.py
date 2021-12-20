@@ -258,7 +258,9 @@ class SEUT_AddonPreferences(AddonPreferences):
         box = layout.box()
         split = box.split(factor=0.60)
         split.label(text="Assets", icon='ASSET_MANAGER')
-        split.operator('wm.mass_convert_textures', icon='FILE_REFRESH')
+        row = split.row(align=True)
+        row.operator('wm.mass_convert_textures', icon='FILE_REFRESH')
+        row.operator('wm.console_toggle', text="", icon='CONSOLE')
         box.prop(self, "asset_path", expand=True)
 
         if os.path.exists(preferences.asset_path):
