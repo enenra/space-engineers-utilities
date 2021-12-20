@@ -269,7 +269,7 @@ class SEUT_OT_RecreateCollections(Operator):
             temp_mat = create_material()
             bpy.data.materials.remove(temp_mat)
 
-        create_collections(context)
+        create_collections(scene, context)
 
         tag = ' (' + scene.seut.subtypeId + ')'
         context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children['Main' + tag]
@@ -333,7 +333,7 @@ class SEUT_OT_CreateCollection(Operator):
         else:
             index = get_first_free_index(get_cols_by_type(scene, self.col_type))
 
-        create_seut_collection(context, self.col_type, index, ref_col)
+        create_seut_collection(scene, self.col_type, index, ref_col)
         sort_collections(scene, context)
 
         return {'FINISHED'}
@@ -432,10 +432,9 @@ def rename_collections(scene: object):
         col.color_tag = color
 
 
-def create_collections(context):
+def create_collections(scene, context = None):
     """Recreates the collections SEUT requires"""
 
-    scene = context.scene
     collections = get_collections(scene)
 
     if collections['seut'] is None:
@@ -452,12 +451,12 @@ def create_collections(context):
         if collections[key] == None:
             if key == 'main':
                 collections['main'] = []
-                collections['main'].append(create_seut_collection(context, 'main'))
+                collections['main'].append(create_seut_collection(scene, 'main'))
             elif key == 'bs':
                 collections['bs'] = []
-                collections['bs'].append(create_seut_collection(context, 'bs', 1))
-                collections['bs'].append(create_seut_collection(context, 'bs', 2))
-                collections['bs'].append(create_seut_collection(context, 'bs', 3))
+                collections['bs'].append(create_seut_collection(scene, 'bs', 1))
+                collections['bs'].append(create_seut_collection(scene, 'bs', 2))
+                collections['bs'].append(create_seut_collection(scene, 'bs', 3))
 
     # In two loops to ensure the cols that are referenced exist.
     for key in collections.keys():
@@ -465,25 +464,24 @@ def create_collections(context):
 
             if key == 'hkt':
                 collections['hkt'] = []
-                collections['hkt'].append(create_seut_collection(context, 'hkt', ref_col=get_seut_collection(scene, 'main')))
+                collections['hkt'].append(create_seut_collection(scene, 'hkt', ref_col=get_seut_collection(scene, 'main')))
 
             elif key == 'lod':
                 collections['lod'] = []
-                collections['lod'].append(create_seut_collection(context, 'lod', 1, collections['main'][0]))
-                collections['lod'].append(create_seut_collection(context, 'lod', 2, collections['main'][0]))
-                collections['lod'].append(create_seut_collection(context, 'lod', 3, collections['main'][0]))
+                collections['lod'].append(create_seut_collection(scene, 'lod', 1, collections['main'][0]))
+                collections['lod'].append(create_seut_collection(scene, 'lod', 2, collections['main'][0]))
+                collections['lod'].append(create_seut_collection(scene, 'lod', 3, collections['main'][0]))
                 if 'bs' in collections and len(collections['bs']) > 0:
-                    collections['lod'].append(create_seut_collection(context, 'lod', 1, get_seut_collection(scene, 'bs', type_index=1)))
+                    collections['lod'].append(create_seut_collection(scene, 'lod', 1, get_seut_collection(scene, 'bs', type_index=1)))
 
     sort_collections(scene, context)
 
     return collections
 
 
-def create_seut_collection(context, col_type: str, type_index=None, ref_col=None):
+def create_seut_collection(scene, col_type: str, type_index=None, ref_col=None):
     """Creates a SEUT collection with the specified characteristics."""
 
-    scene = context.scene
     collections = get_collections(scene)
 
     name = seut_collections[scene.seut.sceneType][col_type]['schema']
@@ -493,7 +491,7 @@ def create_seut_collection(context, col_type: str, type_index=None, ref_col=None
     ref_col_type_index = ""
     
     if 'seut' not in collections or col_type not in collections:
-        collections = create_collections(context)
+        collections = create_collections(scene)
 
     if scene.seut.sceneType == 'mainScene':
 

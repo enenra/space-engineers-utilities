@@ -93,13 +93,13 @@ class SEUT_OT_ImportComplete(Operator):
                 if col_type in collections and type_index in cols:
                     col = cols[type_index]
                 else:
-                    col = create_seut_collection(context, col_type, type_index, ref_col)
+                    col = create_seut_collection(scene, col_type, type_index, ref_col)
 
             elif col_type == 'main':
                 if 'main' in collections:
                     col = collections['main'][0]
                 else:
-                    col = create_seut_collection(context, 'main', None, None)
+                    col = create_seut_collection(scene, 'main', None, None)
                         
             col_counter += 1
             context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children[col.name]

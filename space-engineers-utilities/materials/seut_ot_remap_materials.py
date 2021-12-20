@@ -20,7 +20,7 @@ class SEUT_OT_RemapMaterials(Operator):
     
 
 # The original version of this code was written by Kamikaze
-def remap_materials(self, context):
+def remap_materials(self, context, all_objects = False):
     """Remap materials of objects in all scenes to linked asset materials"""
 
     scene = context.scene
@@ -47,7 +47,12 @@ def remap_materials(self, context):
         with bpy.data.libraries.load(os.path.join(materials_path, file), link=True) as (data_from, data_to):
             data_to.materials = data_from.materials
 
-    for obj in context.view_layer.objects:
+    if all_objects:
+        objs = bpy.data.objects
+    else:
+        objs = context.view_layer.objects
+
+    for obj in objs:
         if obj.type != 'MESH':
             continue
         

@@ -34,7 +34,7 @@ def setup_mountpoints(self, context):
     if smat_mp is None:
         smat_mp = create_internal_material(context, 'MOUNTPOINT')
 
-    collection = create_seut_collection(context, 'mountpoints')
+    collection = create_seut_collection(scene, 'mountpoints')
 
     # Create empty tree for sides
     if scene.seut.gridScale == 'small':

@@ -2,12 +2,14 @@ import bpy
 
 from bpy.types import Operator
 
-from ..empties.seut_empties          import empty_types
-from ..export.seut_export_utils      import get_subpart_reference
-from ..seut_collections              import get_collections, rename_collections, create_collections, seut_collections
-from ..seut_mirroring                import save_rotation
-from ..seut_errors                   import seut_report
-from ..seut_utils                    import link_subpart_scene, get_parent_collection
+from ..empties.seut_empties                 import empty_types
+from ..export.seut_export_utils             import get_subpart_reference
+from ..materials.seut_ot_remap_materials    import remap_materials
+from ..utils.seut_patch_blend               import apply_patches
+from ..seut_collections                     import get_collections, rename_collections, create_collections, seut_collections
+from ..seut_mirroring                       import save_rotation
+from ..seut_errors                          import seut_report
+from ..seut_utils                           import link_subpart_scene, get_parent_collection
 
 class SEUT_OT_StructureConversion(Operator):
     """Ports blend files created with the old plugin to the new structure"""
@@ -118,11 +120,13 @@ def convert_structure(self, context):
             else:
                 seut_layer_col.children[col.name].hide_viewport = True
         
-        create_collections(context)
-        rename_collections(scn)
+        create_collections(scn)
 
         collections = get_collections(scn)
-        collections['hkt'][0].seut.ref_col = collections['main'][0]
+        if collections['hkt'] is not None:
+            collections['hkt'][0].seut.ref_col = collections['main'][0]
+
+        rename_collections(scn)
 
         # Convert custom properties of empties from harag's to the default blender method.
         for obj in scn.objects:
@@ -235,6 +239,9 @@ def convert_structure(self, context):
                     if bpy.data.scenes[i].seut.subtypeId == subpart_scene_name:
                         bpy.data.scenes[i].seut.sceneType = 'subpart'
     
+    
+    apply_patches()
+    remap_materials(self, context, True)
     seut_report(self, context, 'INFO', True, 'I012')
 
     return {'FINISHED'}

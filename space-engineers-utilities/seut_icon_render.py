@@ -27,7 +27,7 @@ def setup_icon_render(self, context):
         scene.seut.renderToggle = 'off'
         return {'CANCELLED'}
 
-    collection = create_seut_collection(context, 'render')
+    collection = create_seut_collection(scene, 'render')
     
     if scene.render.filepath == '/tmp\\':
         scene.render.filepath = '//'

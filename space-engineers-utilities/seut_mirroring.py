@@ -89,7 +89,7 @@ def setup_mirroring(self, context):
     if smat_z is None:
         smat_z = create_internal_material(context, 'MIRROR_Z')
 
-    collection = create_seut_collection(context, 'mirroring')
+    collection = create_seut_collection(scene, 'mirroring')
     
     # Compile rotation / position / size information
     empty_x_rot_raw = mirroring_presets[scene.seut.mirroring_X]
