@@ -5,7 +5,7 @@ import os
 from bpy.types              import Operator
 from bpy.props              import StringProperty
 
-from ..seut_collections     import get_cols_by_type, get_first_free_index, rename_collections, seut_collections, sort_collections
+from ..seut_collections     import *
 from ..seut_errors          import get_abs_path
 
 
@@ -156,7 +156,8 @@ def patch_collections_v0995():
 
         tag = ' (' + col.seut.scene.seut.subtypeId + ')'
         if col.seut.col_type == 'hkt' and 'Main' + tag in bpy.data.collections:
-            col.seut.ref_col = bpy.data.collections['Main' + tag]
+            if len(get_rev_ref_cols(get_collections(col.seut.scene), bpy.data.collections['Main' + tag], 'hkt')) < 1:
+                col.seut.ref_col = bpy.data.collections['Main' + tag]
 
 
 def patch_highlight_empty_references():
