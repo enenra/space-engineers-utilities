@@ -566,7 +566,7 @@ class SEUT_Scene(PropertyGroup):
     )
     export_medium_grid: BoolProperty(
         name="Medium",
-        description="Use a 3:5 ratio instead of 1:5 when exporting to small grid",
+        description="Use a 3:5 ratio instead of 1:5 when exporting to small grid.\nThis means a 1x1x1 large grid block will be exported to 3x3x3 small grid",
         default=False
     )
     export_sbc_type: EnumProperty(
