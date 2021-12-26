@@ -68,6 +68,7 @@ warnings = {
     'W010': "Library '{variable_1}' could not be relocated in '{variable_2}'.",
     'W011': "Loading of image '{variable_1}' failed.",
     'W012': "Material '{variable_1}' is a DLC material. Keen requires any model using it to be DLC-locked.",
+    'W013': "Object '{variable_1}' has no geometry.",
 }
 
 infos = {
@@ -195,7 +196,11 @@ def check_uvms(self, context, obj):
             uv = obj.data.uv_layers.active.data[loop.index].uv
             if uv == Vector((0.0, 0.0)):
                 at_zero += 1
-            
+        
+        if obj_total <= 0:
+            seut_report(self, context, 'WARNING', False, 'W013', obj.name)
+            return {'CONTINUE'}
+
         if (at_zero / obj_total) > 0.25 and at_zero > 10:
             seut_report(self, context, 'ERROR', True, 'E042', obj.name, at_zero, obj_total)
         elif (at_zero / obj_total) > 0.005 and at_zero > 10:
