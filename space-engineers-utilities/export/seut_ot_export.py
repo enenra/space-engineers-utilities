@@ -294,10 +294,11 @@ def export_lod(self, context):
     check_export_col_dict(self, context, lod_cols)
 
     # BS LODs
-    if collections['bs'] is not None:
-        for ref_col in collections['bs']:
-            lod_cols = get_cols_by_type(scene, 'lod', ref_col)
-            check_export_col_dict(self, context, lod_cols)
+    if 'bs' in collections:
+        if collections['bs'] is not None:
+            for ref_col in collections['bs']:
+                lod_cols = get_cols_by_type(scene, 'lod', ref_col)
+                check_export_col_dict(self, context, lod_cols)
 
     return {'FINISHED'}
 

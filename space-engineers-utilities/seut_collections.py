@@ -639,13 +639,14 @@ def get_cols_by_type(scene, col_type: str, ref_col: object = None) -> dict:
     collections = get_collections(scene)
     cols_by_type = {}
 
-    if collections[col_type] is not None:
-        for col in collections[col_type]:
-            if ref_col is not None:
-                if col.seut.ref_col == ref_col:
+    if col_type in collections:
+        if collections[col_type] is not None:
+            for col in collections[col_type]:
+                if ref_col is not None:
+                    if col.seut.ref_col == ref_col:
+                        cols_by_type[col.seut.type_index] = col
+                else:
                     cols_by_type[col.seut.type_index] = col
-            else:
-                cols_by_type[col.seut.type_index] = col
 
     return cols_by_type
 
