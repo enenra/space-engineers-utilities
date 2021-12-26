@@ -193,14 +193,15 @@ def create_mat_entry(self, context, tree, mat):
         seut_report(self, context, 'INFO', False, 'I001', mat.name)
 
     else:
-        if not images['cm'] == None:
-            create_texture_entry(self, context, mat_entry, mat.name, images, 'cm', 'CM', 'ColorMetalTexture')
-        if not images['ng'] == None:
-            create_texture_entry(self, context, mat_entry, mat.name, images, 'ng', 'NG', 'NormalGlossTexture')
-        if not images['add'] == None:
-            create_texture_entry(self, context, mat_entry, mat.name, images, 'add', 'ADD', 'AddMapsTexture')
-        if not images['am'] == None:
-            create_texture_entry(self, context, mat_entry, mat.name, images, 'am', 'ALPHAMASK', 'AlphamaskTexture')
+        if mat.seut.technique not in ['HOLO', 'GLASS']:
+            if not images['cm'] == None:
+                create_texture_entry(self, context, mat_entry, mat.name, images, 'cm', 'CM', 'ColorMetalTexture')
+            if not images['ng'] == None:
+                create_texture_entry(self, context, mat_entry, mat.name, images, 'ng', 'NG', 'NormalGlossTexture')
+            if not images['add'] == None:
+                create_texture_entry(self, context, mat_entry, mat.name, images, 'add', 'ADD', 'AddMapsTexture')
+            if not images['am'] == None:
+                create_texture_entry(self, context, mat_entry, mat.name, images, 'am', 'ALPHAMASK', 'AlphamaskTexture')
 
 
 def create_lod_entry(tree, distance: int, path: str, filename: str):
