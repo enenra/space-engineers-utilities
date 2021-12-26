@@ -69,7 +69,7 @@ class SEUT_PT_Panel(Panel):
 
         else:
             if not skip and repo is not None and repo.needs_update:
-                if tuple(map(int, repo.current_version.split('.'))) > tuple(map(int, repo.latest_version.split('.'))) and repo.dev_mode:
+                if tuple(map(int, repo.current_version.split('.'))) > tuple(map(int, repo.latest_version.split('-')[0].split('.'))) and repo.dev_mode:
                     pass
                 else:
                     row = layout.row()
