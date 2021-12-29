@@ -168,17 +168,14 @@ def unlink_objects_in_hierarchy(obj):
     bpy.data.objects.remove(obj, do_unlink=True)
 
 
-def get_parent_collection(context, child):
+def get_parent_collection(context, obj):
     scene = context.scene
-
     collections = get_collections(scene)
     
-    for key, value in collections.items():
-        if value is not None:
-            for col in value:
-                for obj in col.objects:
-                    if obj is not None and obj == child:
-                        return col
+    for col_type in collections.values():
+        for col in col_type:
+            if obj.name in col.objects:
+                return col
     
     return None
 
