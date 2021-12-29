@@ -140,10 +140,10 @@ def import_materials(self, context, filepath):
                 material.seut.facing = param.text
 
             elif param.attrib['Name'] == 'WindScale':
-                material.seut.windScale = param.text
+                material.seut.windScale = float(param.text)
 
             elif param.attrib['Name'] == 'WindFrequency':
-                material.seut.windFrequency = param.text                
+                material.seut.windFrequency = float(param.text)
 
         if not cm_img is None:
             cm_node.image = cm_img
