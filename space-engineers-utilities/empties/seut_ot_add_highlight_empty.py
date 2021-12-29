@@ -98,19 +98,10 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         location = bpy.data.objects[target_object.name].location
         rotation = bpy.data.objects[target_object.name].rotation_euler
 
+        context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children[collections['seut'][0].name].children[parent_collection.name]
         bpy.ops.object.add(type='EMPTY', location=location, rotation=rotation)
         empty = bpy.context.view_layer.objects.active
         empty.parent = target_object.parent
-
-        parent_collection = get_parent_collection(context, empty)
-        if parent_collection != collections['main'][0]:
-            collections['main'][0].objects.link(empty)
-
-            if parent_collection is None:
-                scene.collection.objects.unlink(empty)
-            else:
-                parent_collection.objects.unlink(empty)
-
         empty.empty_display_type = 'CUBE'
 
         if uses_index:
