@@ -315,11 +315,11 @@ class SEUT_PT_Panel_Materials(Panel):
             box.prop(material.seut, 'technique', icon='IMGDISPLAY')
             box.prop(material.seut, 'facing')
             
-            if material.seut.technique == 'FOLIAGE':
+            if material.seut.technique in ['FOLIAGE', 'ALPHA_MASKED']:
                 box.prop(material.seut, 'windScale', icon='SORTSIZE')
                 box.prop(material.seut, 'windFrequency', icon='GROUP')
 
-            if material.seut.technique == 'GLASS' or material.seut.technique == 'HOLO' or material.seut.technique == 'SHIELD':
+            if material.seut.technique in ['GLASS', 'HOLO', 'SHIELD']:
                 box = layout.box()
                 box.label(text="Transparent Material Options", icon='SETTINGS')
 
