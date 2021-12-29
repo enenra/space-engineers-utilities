@@ -166,9 +166,9 @@ def create_mat_entry(self, context, tree, mat):
     if mat.seut.facing != 'None':
         add_subelement(mat_entry, 'Facing', mat.seut.facing)
     if mat.seut.windScale != 0:
-        add_subelement(mat_entry, 'WindScale', mat.seut.windScale)
+        add_subelement(mat_entry, 'WindScale', round(mat.seut.windScale, 3))
     if mat.seut.windFrequency != 0:
-        add_subelement(mat_entry, 'WindFrequency', mat.seut.windFrequency)
+        add_subelement(mat_entry, 'WindFrequency', round(mat.seut.windFrequency, 3))
     
     images = {
         'cm': None,
