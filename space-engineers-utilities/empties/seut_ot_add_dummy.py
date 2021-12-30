@@ -28,7 +28,7 @@ empties = {
     'light': {'name': "light_", 'index': True},
     'camera': {'name': "dummy_camera", 'index': False},
     'upgrade': {'name': "detector_upgrade_", 'index': True},
-    'vent': {'name': "vent_", 'index': True},
+    'vent': {'name': "vent_00", 'index': True},
     'gear_lock': {'name': "gear_lock_", 'index': True},
     'shiptool': {'name': "dummy_detector_shiptool_", 'index': True},
     'electric_motor': {'name': "dummy_electric_motor", 'index': False},
