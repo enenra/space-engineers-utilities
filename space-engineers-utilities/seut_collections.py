@@ -501,7 +501,7 @@ def create_seut_collection(scene, col_type: str, type_index=None, ref_col=None):
 
         # HKT
         elif col_type == 'hkt':
-            if ref_col is None or ref_col.seut.col_type == 'none':
+            if ref_col is None or ref_col.seut.col_type in ['none', 'seut']:
                 ref_col_name = 'None'
             else:
                 ref_col_name = f"{seut_collections[scene.seut.sceneType][ref_col.seut.col_type]['name']}"
@@ -521,7 +521,7 @@ def create_seut_collection(scene, col_type: str, type_index=None, ref_col=None):
 
         # LOD
         elif col_type == 'lod':
-            if ref_col is None or ref_col.seut.col_type == 'none':
+            if ref_col is None or ref_col.seut.col_type in ['none', 'seut']:
                 return None
 
             cols = get_cols_by_type(scene, 'lod', ref_col)
