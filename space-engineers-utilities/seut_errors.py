@@ -203,9 +203,9 @@ def check_uvms(self, context, obj):
 
         if (at_zero / obj_total) > 0.25 and at_zero > 10:
             seut_report(self, context, 'ERROR', True, 'E042', obj.name, at_zero, obj_total)
+            return {'CANCELLED'}
         elif (at_zero / obj_total) > 0.005 and at_zero > 10:
             seut_report(self, context, 'WARNING', True, 'W002', obj.name)
-            return {'CANCELLED'}
     
     return {'CONTINUE'}
 
