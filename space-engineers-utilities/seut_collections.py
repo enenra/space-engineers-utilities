@@ -672,6 +672,9 @@ def get_rev_ref_cols(collections: dict, collection: object, col_type: str) -> li
 
     output = []
 
+    if col_type not in collections:
+        return output
+
     if collections[col_type] == None:
         return output
 
