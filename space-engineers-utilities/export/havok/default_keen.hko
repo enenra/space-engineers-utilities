@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hkoptions>
+	<hkobject class="hctConfigurationSetData">
+		<hkparam name="filterManagerVersion">65536</hkparam>
+		<hkparam name="activeConfiguration">0</hkparam>
+	</hkobject>
+	<hkobject class="hctConfigurationData">
+		<hkparam name="configurationName">Default</hkparam>
+		<hkparam name="numFilters">3</hkparam>
+	</hkobject>
+	<hkobject name="Transform Scene" class="hctFilterData">
+		<hkparam name="id">2860016997</hkparam>
+		<hkparam name="ver">66050</hkparam>
+		<hkparam name="hasOptions">true</hkparam>
+	</hkobject>
+	<hkobject name="Transform Scene" class="hctSceneTransformOptions">
+		<hkparam name="preset">CUSTOM</hkparam>
+		<hkparam name="applyToNodes">true</hkparam>
+		<hkparam name="applyToBuffers">true</hkparam>
+		<hkparam name="applyToFloatChannels">true</hkparam>
+		<hkparam name="applyToLights">false</hkparam>
+		<hkparam name="applyToCameras">false</hkparam>
+		<hkparam name="flipWinding">false</hkparam>
+		<hkparam name="matrix">(0.010000 0.000000 0.000000 0.000000)(0.000000 0.000000 -0.010000 0.000000)(0.000000 0.010000 0.000000 0.000000)(0.000000 0.000000 0.000000 1.000000)</hkparam>
+	</hkobject>
+	<hkobject name="[Physics 2012] Create Rigid Bodies" class="hctFilterData">
+		<hkparam name="id">3018294383</hkparam>
+		<hkparam name="ver">67842</hkparam>
+		<hkparam name="hasOptions">true</hkparam>
+	</hkobject>
+	<hkobject name="[Physics 2012] Create Rigid Bodies" class="hctCreateRigidBodiesOptions">
+		<hkparam name="bestFittingShapes">false</hkparam>
+		<hkparam name="mergeMeshDuplicates">true</hkparam>
+		<hkparam name="wrapWithMopp">true</hkparam>
+		<hkparam name="listShapesMoppThreshold">5</hkparam>
+		<hkparam name="enableMoppChunks">true</hkparam>
+		<hkparam name="spuOptimizedMopps">false</hkparam>
+		<hkparam name="spuOptimizedConvex">false</hkparam>
+		<hkparam name="landscapeWelding">WELD_COUNTERCLOCKWISE</hkparam>
+		<hkparam name="weldOpenEdges">false</hkparam>
+		<hkparam name="weldAcrossAllMopps">false</hkparam>
+		<hkparam name="markEdgesBadWinding">false</hkparam>
+		<hkparam name="collapseShapeOffsetsIntoShapes">true</hkparam>
+		<hkparam name="enableAutomaticShapeShrinking">false</hkparam>
+		<hkparam name="defaultConvexRadius">0.050000</hkparam>
+		<hkparam name="maxVertexDisplacement">0.030000</hkparam>
+		<hkparam name="relShrinkRadius">0.001000</hkparam>
+		<hkparam name="quantizationError">0.001000</hkparam>
+		<hkparam name="exportDestructionInformation">true</hkparam>
+		<hkparam name="joinOverlappingMeshMaterials">false</hkparam>
+		<hkparam name="materialPrefix">hkm_</hkparam>
+		<hkparam name="meshShapeType">BV_COMPRESSED_MESH_SHAPE</hkparam>
+		<hkparam name="namedMaterialSource">MATERIAL_NONE</hkparam>
+	</hkobject>
+	<hkobject name="Write to Platform" class="hctFilterData">
+		<hkparam name="id">2876798309</hkparam>
+		<hkparam name="ver">66048</hkparam>
+		<hkparam name="hasOptions">true</hkparam>
+	</hkobject>
+	<hkobject name="Write to Platform" class="hctPlatformWriterOptions">
+		<hkparam name="filename">$(assetPath)</hkparam>
+		<hkparam name="tagfile">true</hkparam>
+		<hkparam name="preset">MSVC_WIN32</hkparam>
+		<hkparam name="bytesInPointer">4</hkparam>
+		<hkparam name="littleEndian">1</hkparam>
+		<hkparam name="reusePaddingOptimized">0</hkparam>
+		<hkparam name="emptyBaseClassOptimized">1</hkparam>
+		<hkparam name="removeMetadata">false</hkparam>
+		<hkparam name="userTag">0</hkparam>
+		<hkparam name="saveEnvironmentData">false</hkparam>
+		<hkparam name="xmlFormat">false</hkparam>
+	</hkobject>
+</hkoptions>
