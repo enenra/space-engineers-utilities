@@ -133,6 +133,10 @@ def setup_icon_render(self, context):
 
     node_bright_contrast.inputs[1].default_value = 0.35
     node_bright_contrast.inputs[2].default_value = 0.35
+    
+    scene.node_tree.nodes['RGB'].mute = scene.seut.renderColorOverlay
+    scene.node_tree.nodes['RGB to BW'].mute = scene.seut.renderColorOverlay
+    scene.node_tree.nodes['Combine RGBA'].mute = scene.seut.renderColorOverlay
 
     # Force update render resolution
     scene.seut.renderResolution = scene.seut.renderResolution
