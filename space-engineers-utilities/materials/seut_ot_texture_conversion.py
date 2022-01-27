@@ -234,7 +234,10 @@ def convert_texture(path_in: str, path_out: str, preset: str, settings=[]):
         args = get_conversion_args(preset, path_in, path_out, settings)
         
         result = call_tool(args)
-        result[1] = result[1].decode("utf-8", "ignore")
+        if result[1] is not None:
+            result[1] = result[1].decode("utf-8", "ignore")
+        else:
+            result[1] = "None"
         return result
 
 
