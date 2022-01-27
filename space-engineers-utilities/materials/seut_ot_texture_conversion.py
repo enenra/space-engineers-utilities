@@ -246,6 +246,9 @@ def get_conversion_args(preset: str, path_in: str, path_out: str, settings=[]) -
     args[len(args) - 1] = path_out
 
     if preset == 'custom' and settings != []:
-        args.append(settings)
+        pos = 2
+        for i in settings:
+            args.insert(pos, i)
+            pos += 1
 
     return list(args)
