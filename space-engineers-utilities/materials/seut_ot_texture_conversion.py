@@ -166,7 +166,7 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
                     if skip:
                         continue
                 
-                if target_dir.find('Textures') != -1:
+                if target_dir.find('\Textures\\') == -1:
                     target = os.path.join(target_dir, os.path.splitext(file)[0] + '.' + output_type)
                 else:
                     target = os.path.join(target_dir, create_relative_path(tex_dir, 'Textures'), os.path.splitext(file)[0] + '.' + output_type)
