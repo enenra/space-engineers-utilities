@@ -320,12 +320,12 @@ def update_repo(repo: object, wipe: bool = False):
     location = repo.cfg_path
     git_url = repo.git_url.replace("github.com/", "api.github.com/repos/")
 
-    if time.time() - repo.last_check >= 4000:
-        response_releases = requests.get(git_url + "/releases")
-    else:
-        response_releases = repo.cache_releases
-
     try:
+        if time.time() - repo.last_check >= 4000:
+            response_releases = requests.get(git_url + "/releases")
+        else:
+            response_releases = repo.cache_releases
+
         if response_releases.status_code == 200:
             json_releases = response_releases.json()
 
