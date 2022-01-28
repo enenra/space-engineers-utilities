@@ -52,7 +52,7 @@ def update_game_path(self, context):
     path = get_abs_path(self.game_path)
 
     if os.path.isdir(path):
-        if not path.endswith('SpaceEngineers'):
+        if not path.endswith('SpaceEngineers') or not os.path.exists(os.path.join(path, 'Bin64', 'SpaceEngineers.exe')):
             seut_report(self, context, 'ERROR', False, 'E012', "Game Directory", path)
             self.game_path = ""
     else:
@@ -75,6 +75,10 @@ def update_asset_path(self, context):
 
     if not os.path.exists(path):
         os.makedirs(path, exist_ok=True)
+    
+    if path.endswith('SpaceEngineers') or path.endswith('SpaceEngineersModSDK'):
+        seut_report(self, context, 'ERROR', False, 'E012', "Asset Directory", path)
+        self.asset_path = ""
 
     materials_path = os.path.join(path, 'Materials')
     if not os.path.exists(materials_path):
