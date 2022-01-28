@@ -270,6 +270,17 @@ class SEUT_WindowManager(PropertyGroup):
     latest_version: StringProperty(
         name="Latest Version"
     )
+    cache_releases: StringProperty(
+        name="Releases Cache"
+    )
+    cache_tags: StringProperty(
+        name="Tags Cache"
+    )
+    last_check: FloatProperty(
+        subtype='TIME',
+        unit='TIME',
+        default=0.0
+    )
 
     # Issues
     issues: CollectionProperty(

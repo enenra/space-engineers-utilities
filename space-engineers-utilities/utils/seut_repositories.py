@@ -2,6 +2,7 @@ import bpy
 import os
 import re
 import json
+import time
 import requests
 import webbrowser
 import tempfile
@@ -208,10 +209,18 @@ def check_repo_update(repo: object):
     current_version = tuple(map(int, repo.current_version.split('.')))
     
     try:
-        response_tags = requests.get(url_tags)
-        response_releases = requests.get(url_releases)
+        if time.time() - repo.last_check >= 4000:
+            response_tags = requests.get(url_tags)
+            response_releases = requests.get(url_releases)
+        else:
+            response_tags = repo.cache_tags
+            response_releases = repo.cache_releases
 
         if response_tags.status_code == 200 and response_releases.status_code == 200:
+            repo.cache_tags = response_tags
+            repo.cache_releases = response_releases
+            repo.last_check = time.time()
+
             json_tags = response_tags.json()
             json_releases = response_releases.json()
 
@@ -310,7 +319,11 @@ def update_repo(repo: object, wipe: bool = False):
     tag = repo.latest_version
     location = repo.cfg_path
     git_url = repo.git_url.replace("github.com/", "api.github.com/repos/")
-    response_releases = requests.get(git_url + "/releases")
+
+    if time.time() - repo.last_check >= 4000:
+        response_releases = requests.get(git_url + "/releases")
+    else:
+        response_releases = repo.cache_releases
 
     try:
         if response_releases.status_code == 200:
