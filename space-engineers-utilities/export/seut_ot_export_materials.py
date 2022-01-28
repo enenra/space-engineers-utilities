@@ -22,6 +22,10 @@ class SEUT_OT_ExportMaterials(Operator):
         for mat in bpy.data.materials:
             if mat.library is None and mat.asset_data is not None and not mat.name.startswith('SMAT_'):
                 counter += 1
+        
+        if not counter > 0:
+            Operator.poll_message_set("No materials marked as assets available in BLEND file")
+
         return counter > 0
 
 
