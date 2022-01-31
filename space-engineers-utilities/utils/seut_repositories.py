@@ -209,21 +209,24 @@ def check_repo_update(repo: object):
     current_version = tuple(map(int, repo.current_version.split('.')))
     
     try:
+        skip = False
         if time.time() - repo.last_check >= 4000:
             response_tags = requests.get(url_tags)
             response_releases = requests.get(url_releases)
-        else:
-            response_tags = repo.cache_tags
-            response_releases = repo.cache_releases
-
-        if response_tags.status_code == 200 and response_releases.status_code == 200:
-            repo.cache_tags = response_tags
-            repo.cache_releases = response_releases
-            repo.last_check = time.time()
-
             json_tags = response_tags.json()
             json_releases = response_releases.json()
 
+            if response_tags.status_code == 200 and response_releases.status_code == 200:
+                repo.cache_tags = json.dumps(json_tags)
+                repo.cache_releases = json.dumps(json_releases)
+                repo.last_check = time.time()
+
+        else:
+            json_tags = json.loads(repo.cache_tags)
+            json_releases = json.loads(repo.cache_releases)
+            skip = True
+
+        if skip or (response_tags.status_code == 200 and response_releases.status_code == 200):
             versions = list()
 
             for tag in json_tags:
@@ -323,12 +326,11 @@ def update_repo(repo: object, wipe: bool = False):
     try:
         if time.time() - repo.last_check >= 4000:
             response_releases = requests.get(git_url + "/releases")
+            json_releases = response_releases.json()
         else:
-            response_releases = repo.cache_releases
+            json_releases = json.loads(repo.cache_releases)
 
         if response_releases.status_code == 200:
-            json_releases = response_releases.json()
-
             found = False
             download_url = ""
             for release in json_releases:
