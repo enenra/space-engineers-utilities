@@ -98,6 +98,13 @@ class SEUT_RepositoryProperty(PropertyGroup):
     update_message: StringProperty()
     current_version: StringProperty()
     latest_version: StringProperty()
+    last_check: FloatProperty(
+        subtype='TIME',
+        unit='TIME',
+        default=0.0
+    )
+    cache_releases: StringProperty()
+    cache_tags: StringProperty()
     dev_mode: BoolProperty(
         default=False
     )
@@ -259,27 +266,6 @@ class SEUT_WindowManager(PropertyGroup):
     # Updater
     repos: CollectionProperty(
         type=SEUT_RepositoryProperty
-    )
-
-    needs_update: BoolProperty(
-        default = False
-    )
-    update_message: StringProperty(
-        name="Update Message"
-    )
-    latest_version: StringProperty(
-        name="Latest Version"
-    )
-    cache_releases: StringProperty(
-        name="Releases Cache"
-    )
-    cache_tags: StringProperty(
-        name="Tags Cache"
-    )
-    last_check: FloatProperty(
-        subtype='TIME',
-        unit='TIME',
-        default=0.0
     )
 
     # Issues
