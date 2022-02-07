@@ -85,7 +85,7 @@ def export_xml(self, context, collection) -> str:
             matRef.set('Name', mat.name)
 
     # Write LOD references into the XML, if applicable
-    if collection.seut.col_type in ['main', 'bs']:
+    if collection.seut.col_type in ['main', 'bs'] and 'lod' in collections:
         if not collections['lod'] is None:
             cols = get_rev_ref_cols(collections, collection, 'lod')
             for col in cols:
