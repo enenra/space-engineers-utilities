@@ -173,7 +173,14 @@ def export_transparent_mat(self, context, subtype_id):
             target_file = os.path.splitext(target_file)[0] + f"_{subtype_id}.sbc"
         counter = 1
         while os.path.exists(target_file):
-            target_file = os.path.splitext(target_file)[0] + f"_{counter}.sbc"
+            target_file = os.path.splitext(target_file)[0]
+            split = target_file.split("_")
+            try:
+                number = int(split[len(split)-1]) + 1
+                target_file = target_file[:target_file.rfind("_")]
+                target_file = f"{target_file}_{number}.sbc"
+            except:
+                target_file = target_file + "_1.sbc"
 
     elif file_to_update is not None and start is None and end is None:
         target_file = os.path.join(path_data, file_to_update)

@@ -677,7 +677,14 @@ def export_sbc(self, context):
         # This covers the case where a file exists but the SBC export setting forces new file creation.
         counter = 1
         while os.path.exists(target_file):
-            target_file = os.path.splitext(target_file)[0] + f"_{counter}.sbc"
+            target_file = os.path.splitext(target_file)[0]
+            split = target_file.split("_")
+            try:
+                number = int(split[len(split)-1]) + 1
+                target_file = target_file[:target_file.rfind("_")]
+                target_file = f"{target_file}_{number}.sbc"
+            except:
+                target_file = target_file + "_1.sbc"
 
     exported_xml = open(target_file, "w")
     exported_xml.write(xml_formatted)
