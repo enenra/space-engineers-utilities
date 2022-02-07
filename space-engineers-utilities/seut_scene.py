@@ -284,9 +284,14 @@ def update_mod_path(self, context):
         self.mod_path = ""
     
     if self.export_exportPath == "":
-        self.export_exportPath = os.path.join(self.mod_path, "Models", "Cubes", self.gridScale)
+        if scene.seut.sceneType in ['mainScene', 'subpart']:
+            self.export_exportPath = os.path.join(self.mod_path, "Models", "Cubes", self.gridScale)
+        elif scene.seut.sceneType == 'character':
+            self.export_exportPath = os.path.join(self.mod_path, "Models", "Characters")
+        elif scene.seut.sceneType == 'character_animation':
+            self.export_exportPath = os.path.join(self.mod_path, "Models", "Characters", "Animations")
     else:
-        self.export_exportPath = os.path.join(self.mod_path, self.export_exportPath[self.export_exportPath.find("Models"):])
+        self.export_exportPath = os.path.join(self.mod_path, self.export_exportPath[self.export_exportPath.rfind("Models"):])
     
     if scene.render.filepath == "":
         scene.render.filepath = os.path.join(self.mod_path, "Textures", "GUI", "Icons", "Cubes")
