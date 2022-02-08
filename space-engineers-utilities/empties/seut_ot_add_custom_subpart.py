@@ -13,6 +13,12 @@ class SEUT_OT_AddCustomSubpart(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
 
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return 'SEUT' in scene.view_layers
+
+
     name: StringProperty(
         name="Subpart Name",
         description="The name of the custom subpart empty",

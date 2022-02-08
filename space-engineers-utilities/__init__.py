@@ -98,7 +98,7 @@ from .utils.seut_ot_issue_display               import SEUT_OT_ClearIssues
 
 from .seut_preferences                  import SEUT_AddonPreferences
 from .seut_preferences                  import SEUT_OT_SetDevPaths
-from .seut_preferences                  import load_addon_prefs, init_relocate_matlibs
+from .seut_preferences                  import load_addon_prefs, init_relocate_matlibs, load_configs
 from .seut_preferences                  import load_icons, unload_icons
 from .seut_pt_toolbar                   import SEUT_PT_Panel
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Collections
@@ -276,6 +276,7 @@ def load_handler(dummy):
         update_register_repos()
         check_all_repo_updates()
         load_addon_prefs()
+        load_configs()
     except Exception as e:
         print(e)
         pass
