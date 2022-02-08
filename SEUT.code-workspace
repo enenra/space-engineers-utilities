@@ -5,6 +5,9 @@
         },
         {
             "path": "C:\\Program Files\\Blender Foundation\\Blender 3.0\\3.0\\scripts"
+        },
+        {
+            "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SpaceEngineersModSDK"
         }
     ]
 }
