@@ -173,6 +173,8 @@ def get_parent_collection(context, obj):
     collections = get_collections(scene)
     
     for col_type in collections.values():
+        if col_type is None:
+            continue
         for col in col_type:
             if obj.name in col.objects:
                 return col
