@@ -29,7 +29,7 @@
 		<hkparam name="hasOptions">true</hkparam>
 	</hkobject>
 	<hkobject name="[Physics 2012] Create Rigid Bodies" class="hctCreateRigidBodiesOptions">
-		<hkparam name="bestFittingShapes">false</hkparam>
+		<hkparam name="bestFittingShapes">true</hkparam>
 		<hkparam name="mergeMeshDuplicates">true</hkparam>
 		<hkparam name="wrapWithMopp">true</hkparam>
 		<hkparam name="listShapesMoppThreshold">5</hkparam>
