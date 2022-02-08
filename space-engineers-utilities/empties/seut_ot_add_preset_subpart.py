@@ -53,7 +53,7 @@ class SEUT_OT_AddPresetSubpart(Operator):
         # Determine name strings.
         custom_prop_name = "file"
         empty_name = self.detector_type
-        uses_index = empties['highlight_empties'][self.detector_type]['index']
+        uses_index = empties['preset_subparts'][self.detector_type]['index']
 
         bpy.ops.object.add(type='EMPTY')
         empty = context.view_layer.objects.active
