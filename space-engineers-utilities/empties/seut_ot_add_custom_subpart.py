@@ -27,7 +27,6 @@ class SEUT_OT_AddCustomSubpart(Operator):
 
 
     def execute(self, context):
-        scene = context.scene
             
         custom_prop_name = "file"
 

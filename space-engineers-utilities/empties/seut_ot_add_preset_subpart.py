@@ -44,7 +44,6 @@ class SEUT_OT_AddPresetSubpart(Operator):
 
 
     def execute(self, context):
-        scene = context.scene
 
         target_object = None
         if 0 in context.selected_objects:
