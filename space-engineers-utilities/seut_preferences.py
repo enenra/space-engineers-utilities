@@ -275,7 +275,7 @@ class SEUT_AddonPreferences(AddonPreferences):
 
             if not os.path.exists(os.path.join(repo.cfg_path, f"{repo.name}.cfg")):
                 row.alert = True
-                row.label(text="Assets Status:", icon='TOOL_SETTINGS')
+                row.label(text=f"Assets ({repo.current_version}):", icon='TOOL_SETTINGS')
                 if repo.update_message == "Rate limit exceeded!":
                     icon = 'CANCEL'
                 else:
@@ -287,7 +287,7 @@ class SEUT_AddonPreferences(AddonPreferences):
                 if repo.needs_update:
                     row.alert = True
                     split = row.split(factor=0.30)
-                    split.label(text="Assets Status:", icon='ASSET_MANAGER')
+                    split.label(text=f"Assets ({repo.current_version}):", icon='ASSET_MANAGER')
                     if repo.update_message == "Rate limit exceeded!":
                         icon = 'CANCEL'
                     else:
@@ -301,7 +301,7 @@ class SEUT_AddonPreferences(AddonPreferences):
                     op.repo_name = repo.name
                 else:
                     split = row.split(factor=0.30)
-                    split.label(text="Assets Status:", icon='ASSET_MANAGER')
+                    split.label(text=f"Assets ({repo.current_version}):", icon='ASSET_MANAGER')
                     if repo.update_message == "Rate limit exceeded!":
                         icon = 'CANCEL'
                     else:
@@ -318,7 +318,7 @@ class SEUT_AddonPreferences(AddonPreferences):
 
             if preferences.mwmb_path == "":
                 row.alert = True
-                row.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
+                row.label(text=f"MWMBuilder ({repo.current_version}):", icon='TOOL_SETTINGS')
                 if repo.update_message == "Rate limit exceeded!":
                     icon = 'CANCEL'
                 else:
@@ -331,7 +331,7 @@ class SEUT_AddonPreferences(AddonPreferences):
                 if repo.needs_update:
                     row.alert = True
                     split = row.split(factor=0.30)
-                    split.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
+                    split.label(text=f"MWMBuilder ({repo.current_version}):", icon='TOOL_SETTINGS')
                     if repo.update_message == "Rate limit exceeded!":
                         icon = 'CANCEL'
                     else:
@@ -346,7 +346,7 @@ class SEUT_AddonPreferences(AddonPreferences):
                     op.repo_name = repo.name
                 else:
                     split = row.split(factor=0.30)
-                    split.label(text="MWMBuilder Status:", icon='TOOL_SETTINGS')
+                    split.label(text=f"MWMBuilder ({repo.current_version}):", icon='TOOL_SETTINGS')
                     if repo.update_message == "Rate limit exceeded!":
                         icon = 'CANCEL'
                     else:
