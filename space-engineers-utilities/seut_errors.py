@@ -1,9 +1,14 @@
 import bpy
+import sys
+import io
 import os
 import time
 
 from mathutils  import Vector
 
+
+log = io.StringIO()
+previous_message = ""
 
 errors = {
     'E001': "Import error. Imported object not found.",
@@ -93,6 +98,7 @@ infos = {
     'I019': "Successfully imported {variable_1} materials from '{variable_2}': {variable_3}",
     'I020': "Material '{variable_1}' was skipped because it already exists in the BLEND file.",
     'I021': "{variable_1} of {variable_2} files successfully imported. Refer to Blender System Console for details.",
+    'I022': "Successfully exported log to '{variable_1}'.",
 }
 
 
@@ -250,11 +256,11 @@ def seut_report(self, context, report_type: str, can_report: bool, code: str, va
 
     if report_type == 'ERROR':
         show_popup_report(context, "Report: Error", text)
-        print("SEUT Error: " + text + " (" + code + ")")
+        print(f"SEUT Error: {text} ({code})")
     elif report_type == 'WARNING':
-        print("SEUT Warning: " + text + " (" + code + ")")
+        print(f"SEUT Warning: {text} ({code})")
     elif report_type == 'INFO':
-        print("SEUT Info: " + text + " (" + code + ")")
+        print(f"SEUT Info: {text} ({code})")
     
     add_to_issues(context, report_type, text, code, None)
 
@@ -286,3 +292,55 @@ def add_to_issues(context, issue_type: str, text: str, code: str, reference: str
         issue.reference = reference
     if issue_type == 'ERROR':
         wm.seut.issue_alert = True
+
+
+def init_logging():
+    """Duplicates output to a global variable for saving to a log file"""
+
+    global log
+
+    def anonymize_paths(message):
+        if "\\Users\\" in message:
+            loc = message.find("\\Users\\")
+            start = message[len("\\Users\\") + loc:]
+            end = start.find("\\")
+            message = message[:len("\\Users\\") + loc] + "SEUT-USER" + message[-len(start) + end:]
+        return message
+    
+    class OutLogger(object):
+        def __init__(self):
+            self.terminal = sys.stdout
+            self.out = log
+
+        def write(self, message):
+            self.terminal.write(message)
+
+            global previous_message
+            if message == previous_message:
+                return
+            previous_message = message
+            self.out.write(anonymize_paths(message))
+
+        def flush(self):
+            self.out.flush()
+
+    class ErrLogger(object):
+        def __init__(self):
+            self.terminal = sys.stderr
+            self.out = log
+
+        def write(self, message):
+            self.terminal.write(message)
+
+            global previous_message
+            if message == previous_message:
+                return
+            previous_message = message
+            self.out.write(anonymize_paths(message))
+
+        def flush(self):
+            self.terminal.flush()
+            self.out.flush()
+
+    sys.stdout = OutLogger()
+    sys.stderr = ErrLogger()

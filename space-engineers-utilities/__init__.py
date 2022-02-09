@@ -95,6 +95,7 @@ from .utils.seut_ot_discord_link                import SEUT_OT_DiscordLink
 from .utils.seut_ot_issue_display               import SEUT_OT_IssueDisplay
 from .utils.seut_ot_issue_display               import SEUT_OT_DeleteIssue
 from .utils.seut_ot_issue_display               import SEUT_OT_ClearIssues
+from .utils.seut_ot_issue_display               import SEUT_OT_ExportLog
 
 from .seut_preferences                  import SEUT_AddonPreferences
 from .seut_preferences                  import SEUT_OT_SetDevPaths
@@ -125,7 +126,7 @@ from .seut_window_manager               import SEUT_RepositoryProperty
 from .seut_window_manager               import SEUT_IssueProperty
 from .seut_window_manager               import SEUT_WindowManager
 from .seut_utils                        import SEUT_OT_UpdateSubpartInstances
-from .seut_utils                        import get_preferences
+from .seut_errors                       import init_logging
 
 
 classes = (
@@ -161,6 +162,7 @@ classes = (
     SEUT_OT_IssueDisplay,
     SEUT_OT_DeleteIssue,
     SEUT_OT_ClearIssues,
+    SEUT_OT_ExportLog,
     SEUT_OT_AddHighlightEmpty,
     SEUT_OT_AddDummy,
     SEUT_OT_AddPresetSubpart,
@@ -270,13 +272,14 @@ def menu_draw(self, context):
 
 @persistent
 def load_handler(dummy):
-        
+    
     try:
         init_relocate_matlibs()
         update_register_repos()
         check_all_repo_updates()
         load_addon_prefs()
         load_configs()
+        init_logging()
     except Exception as e:
         print(e)
         pass
