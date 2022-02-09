@@ -267,7 +267,7 @@ class SEUT_OT_IconRenderPreview(Operator):
 
         scene.render.filepath = path
 
-        seut_report(self, context, 'INFO', True, 'I018', os.path.join(scene.render.filepath, scene.seut.subtypeId + '.' + scene.seut.render_output_type.lower()))
+        seut_report(self, context, 'INFO', True, 'I018', os.path.join(get_abs_path(scene.render.filepath), scene.seut.subtypeId + '.' + scene.seut.render_output_type.lower()))
 
         return {'FINISHED'}
 
