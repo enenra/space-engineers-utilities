@@ -272,22 +272,23 @@ def export_fbx(self, context, collection) -> str:
 
             # Additional parenting checks
             rescale = False
-            if 'highlight' in empty and len(empty.seut.highlight_objects) > 0:
-
-                highlights = ""
-                for entry in empty.seut.highlight_objects:
-                    if not empty is None and not entry.obj is None:
-                        if empty.parent is not None and entry.obj.parent is not None and empty.parent != entry.obj.parent:
-                            seut_report(self, context, 'WARNING', True, 'W007', empty.name, entry.obj.name)
-
-                        if highlights == "":
-                            highlights = entry.obj.name
-                        else:
-                            highlights = highlights + ';' + entry.obj.name
-
-                empty['highlight'] = highlights
-
+            if 'highlight' in empty:
                 rescale = True
+                
+                if len(empty.seut.highlight_objects) > 0:
+
+                    highlights = ""
+                    for entry in empty.seut.highlight_objects:
+                        if not empty is None and not entry.obj is None:
+                            if empty.parent is not None and entry.obj.parent is not None and empty.parent != entry.obj.parent:
+                                seut_report(self, context, 'WARNING', True, 'W007', empty.name, entry.obj.name)
+
+                            if highlights == "":
+                                highlights = entry.obj.name
+                            else:
+                                highlights = highlights + ';' + entry.obj.name
+
+                    empty['highlight'] = highlights
             
             elif 'file' in empty and empty.seut.linkedScene is not None:
                 linked_scene = empty.seut.linkedScene
