@@ -29,21 +29,8 @@ bl_info = {
 
 import bpy
 
-from bpy.app.handlers import persistent
-from bpy.props import (StringProperty,
-                       BoolProperty,
-                       IntProperty,
-                       FloatProperty,
-                       FloatVectorProperty,
-                       EnumProperty,
-                       PointerProperty,
-                       CollectionProperty,
-                       )
-from bpy.types import (Panel,
-                       Operator,
-                       AddonPreferences,
-                       PropertyGroup,
-                       )
+from bpy.app.handlers   import persistent
+from bpy.props          import PointerProperty
 
 from .empties.seut_empties                      import SEUT_MT_ContextMenu
 from .empties.seut_empties                      import SEUT_PT_EmptyLink
@@ -211,7 +198,6 @@ classes = (
 
 
 def register():
-    
     for cls in classes:
         bpy.utils.register_class(cls)
 
