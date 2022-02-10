@@ -71,6 +71,7 @@ class SEUT_OT_ConvertTextures(Operator):
         output_path = get_abs_path(wm.seut.texconv_output_dir)
         if not os.path.exists(output_path):
             os.makedirs(output_path)
+
         if wm.seut.texconv_input_type == 'file':
             result = convert_texture(get_abs_path(wm.seut.texconv_input_file), output_path, wm.seut.texconv_preset, settings)
             if result[0] == 0:
@@ -108,7 +109,6 @@ class SEUT_OT_MassConvertTextures(Operator):
 
     def execute(self, context):
 
-        wm = context.window_manager
         preferences = get_preferences()
         target_dir = preferences.asset_path
 
@@ -247,6 +247,12 @@ def get_conversion_args(preset: str, path_in: str, path_out: str, settings=[]) -
     args[0] = os.path.join(get_tool_dir(), 'texconv.exe')
     args[1] = path_in
     args[len(args) - 1] = path_out
+
+    idx_ft = args.index('-ft')
+    if '_ng.' in path_in and args[idx_ft + 1] == 'TIF' and '-srgbi' not in args:
+        args.insert(idx_ft + 2, '-f')
+        args.insert(idx_ft + 3, 'R8G8B8A8_UNORM')
+        args.insert(idx_ft + 4, '-srgbi')
 
     if preset == 'custom' and settings != []:
         pos = 2
