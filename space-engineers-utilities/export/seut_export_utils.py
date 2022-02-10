@@ -137,7 +137,7 @@ def create_texture_entry(self, context, mat_entry, mat_name: str, images: dict, 
     rel_path = create_relative_path(images[tex_type].filepath, "Textures")
     
     if not rel_path:
-        seut_report(self, context, 'ERROR', True, 'E007', tex_name, mat_name)
+        seut_report(self, context, 'ERROR', False, 'E007', tex_name, mat_name)
         return
     else:
         add_subelement(mat_entry, tex_name_long, os.path.splitext(rel_path)[0] + ".dds")
