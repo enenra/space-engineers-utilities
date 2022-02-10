@@ -215,7 +215,7 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
 
         elif duration > 60:
             m, s = divmod(duration, 60)
-            seut_report(self, context, 'INFO', can_report, 'I009', f"{converted}/{total}", f" in {m}m {s}s")
+            seut_report(self, context, 'INFO', can_report, 'I009', f"{converted}/{total}", f" in {m}m {round(s, 1)}s")
         else:
             seut_report(self, context, 'INFO', can_report, 'I009', f"{converted}/{total}", f" in {round(duration, 1)}s")
 
