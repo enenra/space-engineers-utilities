@@ -28,13 +28,13 @@ class SEUT_Asset(PropertyGroup):
 
     is_dlc: BoolProperty(
         name='DLC',
-        description="",
+        description="This asset contains geometry, materials or textures only used in DLC",
         default=False,
         update=update_vanilla_dlc
     )
     is_vanilla: BoolProperty(
         name='Vanilla',
-        description="",
+        description="This asset contains no custom textures",
         default=False,
         update=update_vanilla_dlc
     )
