@@ -17,7 +17,7 @@ bl_info = {
     "author": "enenra, Stollie",
     "version": (1, 0, 0),
     "dev_version": 1,
-    "dev_tag": "alpha",
+    "dev_tag": "beta",
     "blender": (3, 0, 0),
     "location": "View3D > Tools",
     "doc_url": "https://semref.atlassian.net/wiki/spaces/tools/pages/33261/Space+Engineers+Utilities",
