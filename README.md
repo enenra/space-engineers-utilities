@@ -31,7 +31,6 @@ A Blender 3.0+ addon to streamline working on assets for Space Engineers.
 * Easily **create and manage** empties for different purposes by selecting from exhaustive lists.
 
 ### Export
-* Define a **RescaleFactor** to easily export to various sizes.
 * Define **LOD Distances** to set from which distance your LOD models are displayed.
 * **Export simultaneously** to large and small grids.
 * Directly export to **MWM**-format, ready to be loaded into the game.
