@@ -1,8 +1,5 @@
 import bpy
 import os
-import re
-import glob
-import subprocess
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 import shutil
@@ -341,9 +338,30 @@ def export_mwm(self, context):
     preferences = get_preferences()
     path = get_abs_path(scene.seut.export_exportPath)
     materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
-    settings = ExportSettings(scene, None)
 
+    settings = ExportSettings(scene, None)
     mwmfile = join(path, scene.seut.subtypeId + ".mwm")
+
+    # This duplicates HKTs if none are defined for BS but one exists for main.
+    hkts = []
+    bses = []
+    for f in os.listdir(path):
+        if f is None:
+            continue
+        if not os.path.isfile(f):
+            continue
+
+        if os.path.splitext(f)[1] == 'hkt':
+            hkts.append(f)
+
+        elif "_BS" in os.path.basename(f):
+            bses.append(f)
+
+    if len(hkts) == 1:
+        if not "_BS" in os.path.basename(hkts[0]):
+            for bs in bses:
+                shutil.copyfile(hkts[0], os.path.splitext(bs)[0] + '.hkt')
+
     mwmbuilder(self, context, path, path, settings, mwmfile, materials_path)
 
     return {'FINISHED'}
