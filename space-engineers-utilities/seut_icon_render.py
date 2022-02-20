@@ -200,10 +200,7 @@ class SEUT_OT_IconRenderPreview(Operator):
         wm = context.window_manager
 
         if not os.path.isdir(get_abs_path(scene.render.filepath)):
-            seut_report(self, context, 'ERROR', False, 'E003', 'Render', get_abs_path(scene.render.filepath))
-            return {'CANCELLED'}
-            
-        tag = ' (' + scene.seut.subtypeId + ')'
+            os.makedirs(get_abs_path(scene.render.filepath))
 
         clear_selection(context)
 
@@ -284,8 +281,7 @@ class SEUT_OT_CopyRenderOptions(Operator):
         scene = context.scene
 
         if not os.path.isdir(get_abs_path(scene.render.filepath)):
-            seut_report(self, context, 'ERROR', False, 'E003', 'Render', get_abs_path(scene.render.filepath))
-            return {'CANCELLED'}
+            os.makedirs(get_abs_path(scene.render.filepath))
         
         for scn in bpy.data.scenes:
             scn.render.filepath = scene.render.filepath

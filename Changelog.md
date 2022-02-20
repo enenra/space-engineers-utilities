@@ -9,6 +9,7 @@
 * Improved #315: Conversion of `NG`-textures to `TIF`. (Beta 1)
 * Improved #303: Specify why materials cannot be exported on button hover. (Beta 1)
 * Improved #266: Allow for instancing of character animation scenes under the `dummy_character`-empty. (Beta 1)
+* Improved: Icon render now creates missing directories in a given path. (Beta 2)
 * Improved: Don't write texture references for `HOLO` and `GLASS`-technique materials to xml. (Beta 1)
 * Improved: Simple Navigation no longer affects Render, Mirroring or Mountpoint-collections. (Beta 1)
 * Improved: Logic to find parent collection of object. (Beta 1)
