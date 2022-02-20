@@ -348,19 +348,19 @@ def export_mwm(self, context):
     for f in os.listdir(path):
         if f is None:
             continue
-        if not os.path.isfile(f):
+        if os.path.isdir(f):
             continue
 
-        if os.path.splitext(f)[1] == 'hkt':
+        if f == f"{scene.seut.subtypeId}.hkt" or (f"{scene.seut.subtypeId}_BS" in f and os.path.splitext(f)[1] == '.hkt'):
             hkts.append(f)
 
-        elif "_BS" in os.path.basename(f):
+        elif f"{scene.seut.subtypeId}_BS" in f and os.path.splitext(f)[1] == '.fbx':
             bses.append(f)
 
     if len(hkts) == 1:
         if not "_BS" in os.path.basename(hkts[0]):
             for bs in bses:
-                shutil.copyfile(hkts[0], os.path.splitext(bs)[0] + '.hkt')
+                shutil.copyfile(os.path.join(path, hkts[0]), os.path.join(path, os.path.splitext(bs)[0] + '.hkt'))
 
     mwmbuilder(self, context, path, path, settings, mwmfile, materials_path)
 
