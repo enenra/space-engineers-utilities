@@ -463,7 +463,8 @@ class SEUT_PT_Panel_Export(Panel):
                 col.prop(scene.seut, "export_medium_grid", icon='CUBE')
         
         box.prop(scene.seut, "mod_path", text="Mod")
-        box.prop(scene.seut, "export_exportPath", text="Model")
+        if scene.seut.mod_path != "":
+            box.prop(scene.seut, "export_exportPath", text="Model")
 
 
 class SEUT_PT_Panel_Import(Panel):

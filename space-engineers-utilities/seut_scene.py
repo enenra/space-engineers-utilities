@@ -589,8 +589,8 @@ class SEUT_Scene(PropertyGroup):
         min=0
     )
     export_exportPath: StringProperty(
-        name="Export Folder",
-        description="What folder to export to",
+        name="Model Folder",
+        description="What folder to export this scene to. Must be located within Mod-folder",
         subtype="DIR_PATH",
         update=update_export_exportPath
     )
