@@ -6,7 +6,7 @@ from bpy.types      import Operator
 from math           import pi
 
 from .seut_collections              import get_collections, get_cols_by_type
-from .seut_errors                   import check_collection, seut_report
+from .seut_errors                   import check_collection, get_abs_path, seut_report
 
 
 class SEUT_OT_UpdateSubpartInstances(Operator):
@@ -264,6 +264,7 @@ def lock_object(target):
 def create_relative_path(path: str, folder_name: str):
     """Returns the path capped off before the last occurrence of the foldername, returns False if foldername is not found in path"""
     
+    path = get_abs_path(path)
     offset = path.rfind(folder_name + "\\")
 
     if offset == -1:
