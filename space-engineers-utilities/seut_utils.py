@@ -1,5 +1,6 @@
 import bpy
 import sys
+import os
 
 from bpy.types      import Operator
 from math           import pi
@@ -310,3 +311,15 @@ def get_enum_items(rna_type, property: str, id: str = None) -> dict:
         return output[id]
 
     return output
+
+
+def check_vanilla_texture(path: str) -> bool:
+    """Returns whether a texture is a vanilla texture."""
+
+    preferences = get_preferences()
+    assets_textures = os.path.join(preferences.asset_path, "Textures")
+
+    if assets_textures in path and os.path.join(assets_textures, "Custom") not in path:
+        return True
+    else:
+        return False

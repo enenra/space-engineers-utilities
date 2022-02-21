@@ -4,18 +4,18 @@ import os
 
 from ..materials.seut_ot_texture_conversion     import convert_texture
 from ..seut_errors                              import *
-from ..seut_utils                               import create_relative_path
+from ..seut_utils                               import check_vanilla_texture, create_relative_path
 
 
 def export_material_textures(self, context, material):
     """Checks if source file is newer than converted file, if so, exports to DDS."""
 
-    if material.node_tree is None or material.node_tree.nodes is None:
-        return {'CANCELLED'}
-
     scene = context.scene
     nodes = material.node_tree.nodes
     textures = {}
+
+    if material.node_tree is None or material.node_tree.nodes is None:
+        return {'CANCELLED'}
 
     if 'CM' in nodes and nodes['CM'].image is not None and os.path.exists(get_abs_path(nodes['CM'].image.filepath)):
         textures['cm'] = get_abs_path(nodes['CM'].image.filepath)
@@ -33,6 +33,10 @@ def export_material_textures(self, context, material):
         return {'CANCELLED'}
 
     for preset, source in textures.items():
+
+        # Skip if texture is a vanilla texture and thus does not need to be converted.
+        if check_vanilla_texture(source):
+            continue
 
         if create_relative_path(source, 'Textures'):
             target = os.path.join(get_abs_path(scene.seut.mod_path), create_relative_path(source, 'Textures'))

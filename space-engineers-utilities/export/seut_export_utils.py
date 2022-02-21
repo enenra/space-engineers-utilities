@@ -24,6 +24,7 @@ def export_xml(self, context, collection) -> str:
     """Exports the XML definition for a collection"""
 
     scene = context.scene
+    preferences = get_preferences()
     collections = get_collections(scene)
 
     # Create XML tree and add initial parameters.
@@ -70,9 +71,14 @@ def export_xml(self, context, collection) -> str:
         elif mat.library is None and mat.asset_data is not None:
             if not mat.asset_data.seut.is_vanilla:
                 is_unique = True
-        # Case 4: local -> entry
+        # Case 4: local -> entry unless the textures are from the assets folder (with exception of Custom-folder in Textures) and thus vanilla
         elif mat.library is None and mat.asset_data is None:
-            is_unique = True
+            nodes = mat.node_tree.nodes
+            for img_type in ['CM', 'ADD', 'NG', 'ALPHAMASK']:
+                if img_type in nodes and nodes[img_type].image is not None and os.path.exists(get_abs_path(nodes[img_type].image.filepath)):
+                    if not check_vanilla_texture(nodes[img_type].image.filepath):
+                        is_unique = True
+                        break
             
         if is_unique:
             create_mat_entry(self, context, model, mat)
