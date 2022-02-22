@@ -1,5 +1,6 @@
 import bpy
 import os
+import math
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 import shutil
@@ -459,13 +460,17 @@ def export_sbc(self, context):
             center_loc_y += parent_obj.location.y
             center_loc_z += parent_obj.location.z
             parent_obj = parent_obj.parent
+        
+        center_x = math.floor((center_loc_x + (scene.seut.bBox_X * (scale * medium_grid_scalar / 2))) / scale * medium_grid_scalar)
+        center_y = math.floor((center_loc_x + (scene.seut.bBox_Y * (scale * medium_grid_scalar / 2))) / scale * medium_grid_scalar)
+        center_z = math.floor((center_loc_x + (scene.seut.bBox_Z * (scale * medium_grid_scalar / 2))) / scale * medium_grid_scalar)
 
         def_Center = 'Center'
         if not update_sbc:
             def_Center = add_subelement(def_definition, 'Center')
-        lines_entry = update_add_attrib(def_Center, 'x', round(medium_grid_scalar * center_loc_x / grid_size), update_sbc, lines_entry)
-        lines_entry = update_add_attrib(def_Center, 'y', round(medium_grid_scalar * center_loc_z / grid_size), update_sbc, lines_entry)   # This looks wrong but it's correct: Blender has different forward than SE.
-        lines_entry = update_add_attrib(def_Center, 'z', round(medium_grid_scalar * center_loc_y / grid_size), update_sbc, lines_entry)
+        lines_entry = update_add_attrib(def_Center, 'x', center_x, update_sbc, lines_entry)
+        lines_entry = update_add_attrib(def_Center, 'y', center_z, update_sbc, lines_entry)   # This looks wrong but it's correct: Blender has different forward than SE.
+        lines_entry = update_add_attrib(def_Center, 'z', center_y, update_sbc, lines_entry)
 
     if not update_sbc:
         def_ModelOffset = add_subelement(def_definition, 'ModelOffset')
