@@ -461,9 +461,9 @@ def export_sbc(self, context):
             center_loc_z += parent_obj.location.z
             parent_obj = parent_obj.parent
         
-        center_x = math.floor((center_loc_x + (scene.seut.bBox_X * (scale * medium_grid_scalar / 2))) / scale * medium_grid_scalar)
-        center_y = math.floor((center_loc_x + (scene.seut.bBox_Y * (scale * medium_grid_scalar / 2))) / scale * medium_grid_scalar)
-        center_z = math.floor((center_loc_x + (scene.seut.bBox_Z * (scale * medium_grid_scalar / 2))) / scale * medium_grid_scalar)
+        center_x = math.floor((center_loc_x + (scene.seut.bBox_X * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
+        center_y = math.floor((center_loc_x + (scene.seut.bBox_Y * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
+        center_z = math.floor((center_loc_x + (scene.seut.bBox_Z * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
 
         def_Center = 'Center'
         if not update_sbc:
