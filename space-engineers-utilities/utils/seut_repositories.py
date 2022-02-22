@@ -46,7 +46,7 @@ class SEUT_OT_GetUpdate(Operator):
             webbrowser.open(f"{repo.git_url}/releases/")
         else:
             webbrowser.open(f"{repo.git_url}/releases/tag/v{repo.latest_version}")
-        
+
         return {'FINISHED'}
 
 
@@ -66,7 +66,7 @@ class SEUT_OT_CheckUpdate(Operator):
         repo = wm.seut.repos[self.repo_name]
 
         check_repo_update(repo)
-        
+
         return {'FINISHED'}
 
 
@@ -88,9 +88,9 @@ class SEUT_OT_DownloadUpdate(Operator):
 
         wm = context.window_manager
         repo = wm.seut.repos[self.repo_name]
-        
+
         update_repo(repo, self.wipe)
-        
+
         return {'FINISHED'}
 
 
@@ -108,7 +108,7 @@ def update_register_repos():
         repo.name = 'space-engineers-utilities'
         repo.text_name = 'SEUT'
         repo.git_url = addon.bl_info['git_url']
-        
+
     repo.current_version = str(addon.bl_info['version'])[1:-1].replace(', ', '.')
     repo.dev_tag = addon.bl_info['dev_tag']
     repo.dev_version = addon.bl_info['dev_version']
@@ -126,9 +126,9 @@ def update_register_repos():
         repo.text_name = 'SEUT Assets'
         repo.git_url = "https://github.com/enenra/seut-assets"
         repo.cfg_path = preferences.asset_path
-    
+
     update_repo_from_config(repo)
-    
+
     # MWMB
     if 'MWMBuilder' in wm.seut.repos:
         repo = wm.seut.repos['MWMBuilder']
@@ -138,7 +138,7 @@ def update_register_repos():
         repo.text_name = 'MWM Builder'
         repo.git_url = "https://github.com/cstahlhut/MWMBuilder"
         repo.cfg_path = os.path.join(preferences.asset_path, 'Tools', 'MWMBuilder')
-            
+
     update_repo_from_config(repo)
 
 
@@ -146,7 +146,7 @@ def update_repo_from_config(repo: object):
 
     preferences = get_preferences()
     addon = get_addon()
-    
+
     if repo.name == 'space-engineers-utilities':
         repo.current_version = str(addon.bl_info['version'])[1:-1].replace(', ', '.')
         repo.dev_tag = addon.bl_info['dev_tag']
@@ -207,7 +207,7 @@ def check_repo_update(repo: object):
     url_tags = f"https://api.github.com/repos/{user_reponame}/tags"
     url_releases = f"https://api.github.com/repos/{user_reponame}/releases"
     current_version = tuple(map(int, repo.current_version.split('.')))
-    
+
     try:
         skip = False
         if time.time() - repo.last_check >= 4000:
@@ -269,7 +269,7 @@ def check_repo_update(repo: object):
 
             current_version = tuple(current_version)
             repo.latest_version = latest_version_name
-            
+
             if current_version < latest_version:
                 if current_version == (0, 0, 0):
                     outdated = f"{repo.text_name} not installed."
@@ -284,7 +284,7 @@ def check_repo_update(repo: object):
 
             else:
                 if repo.dev_mode:
-                    
+
                     # Version number is the same and latest is not a dev version.
                     if is_dev == -1:
                         outdated = f"{repo.text_name} {latest_version_name} (release version) available!"
@@ -305,10 +305,10 @@ def check_repo_update(repo: object):
                 else:
                     repo.update_message = f"{repo.text_name} is up to date."
                     repo.needs_update = False
-        
+
         elif response_tags.status_code == 403 or response_releases.status_code == 403:
             repo.update_message = "Rate limit exceeded!"
-        
+
         else:
             repo.update_message = "No valid releases found."
 
@@ -318,19 +318,21 @@ def check_repo_update(repo: object):
 
 
 def update_repo(repo: object, wipe: bool = False):
-    
+
     tag = repo.latest_version
     location = repo.cfg_path
     git_url = repo.git_url.replace("github.com/", "api.github.com/repos/")
 
     try:
+        skip = False
         if time.time() - repo.last_check >= 4000:
             response_releases = requests.get(git_url + "/releases")
             json_releases = response_releases.json()
         else:
             json_releases = json.loads(repo.cache_releases)
+            skip = True
 
-        if response_releases.status_code == 200:
+        if skip or response_releases.status_code == 200:
             found = False
             download_url = ""
             for release in json_releases:
@@ -340,7 +342,7 @@ def update_repo(repo: object, wipe: bool = False):
                             download_url = asset['browser_download_url']
                             found = True
                             break
-                        
+
             if found:
                 temp_dir = tempfile.mkdtemp()
                 download_path = os.path.join(temp_dir, f"{repo.name}_{tag}.zip")
@@ -368,7 +370,7 @@ def update_repo(repo: object, wipe: bool = False):
             else:
                 repo.update_message = "Release could not be found."
                 return {'CANCELLED'}
-            
+
 
         elif response_releases.status_code == 403:
             repo.update_message = "Rate limit exceeded!"
@@ -392,7 +394,7 @@ def download_copy(url, directory, save_path, repo, chunk_size=128):
 
     with zipfile.ZipFile(save_path, 'r') as zip_ref:
         zip_ref.extractall(directory)
-    
+
     os.remove(save_path)
 
     init = glob.glob(directory + f"/**/{repo.name}.cfg", recursive = True)[0]
