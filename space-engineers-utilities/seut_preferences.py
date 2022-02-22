@@ -284,6 +284,8 @@ class SEUT_AddonPreferences(AddonPreferences):
                 row.label(text=repo.update_message, icon=icon)
                 op = row.operator('wm.download_update', text="Download & Install", icon='IMPORT')
                 op.repo_name = repo.name
+                op = row.operator('wm.get_update', text="", icon='URL')
+                op.repo_name = repo.name
             else:
                 if repo.needs_update:
                     row.alert = True
@@ -328,6 +330,8 @@ class SEUT_AddonPreferences(AddonPreferences):
                 op = row.operator('wm.download_update', text="Download & Install", icon='IMPORT')
                 op.repo_name = repo.name
                 op.wipe = True
+                op = row.operator('wm.get_update', text="", icon='URL')
+                op.repo_name = repo.name
             else:
                 if repo.needs_update:
                     row.alert = True
