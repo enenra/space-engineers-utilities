@@ -32,12 +32,12 @@ class SEUT_OT_SetDevPaths(Operator):
             preferences.game_path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SpaceEngineers\\"
             preferences.asset_path = "D:\\Modding\\Space Engineers\\SEUT\\seut-assets\\"
             preferences.havok_path = "D:\\Modding\\Space Engineers\\SEUT\\Tools\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
-        
+
         # Stollie
         elif os.path.isdir("C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\Materials\\"):
             preferences.asset_path = "C:\\3D_Projects\\SpaceEngineers\\MaterialLibraries\\"
             preferences.havok_path = "C:\\3D_Projects\\BlenderPlugins\\Havok\\HavokContentTools\\hctStandAloneFilterManager.exe"
-        
+
         else:
             load_addon_prefs()
 
@@ -49,7 +49,7 @@ class SEUT_OT_SetDevPaths(Operator):
 def update_game_path(self, context):
     if self.game_path == "":
         return
-    
+
     path = get_abs_path(self.game_path)
 
     if os.path.isdir(path):
@@ -62,7 +62,7 @@ def update_game_path(self, context):
         else:
           seut_report(self, context, 'ERROR', False, 'E003', 'SpaceEngineers', path)
           self.game_path = ""
-    
+
     save_addon_prefs()
 
 
@@ -71,12 +71,12 @@ def update_asset_path(self, context):
 
     if self.asset_path == "":
         return
-    
+
     path = get_abs_path(self.asset_path)
 
     if not os.path.exists(path):
         os.makedirs(path, exist_ok=True)
-    
+
     if path.endswith('SpaceEngineers') or path.endswith('SpaceEngineersModSDK'):
         seut_report(self, context, 'ERROR', False, 'E012', "Asset Directory", path)
         self.asset_path = ""
@@ -106,7 +106,7 @@ def update_asset_path(self, context):
                 al.name = "SEUT"
                 found = True
                 break
-        
+
         if not found:
             bpy.ops.preferences.asset_library_add(directory=path)
             for al in bpy.context.preferences.filepaths.asset_libraries:
@@ -155,12 +155,12 @@ def update_havok_path(self, context):
         return
 
     path = get_abs_path(self.havok_path)
-    
+
     self.havok_path_before = verify_tool_path(self, context, path, "Havok Stand Alone Filter Manager", filename)
     self.havok_path = verify_tool_path(self, context, path, "Havok Stand Alone Filter Manager", filename)
 
     save_addon_prefs()
-    
+
 
 class SEUT_AddonPreferences(AddonPreferences):
     """Saves the preferences set by the user"""
@@ -228,7 +228,7 @@ class SEUT_AddonPreferences(AddonPreferences):
 
         if not 'space-engineers-utilities' in wm.seut.repos:
             update_register_repos()
-            
+
         if addon_utils.check('blender_addon_updater') != (True, True):
             row = layout.row()
             row.label(text="Update Status:")
@@ -265,7 +265,8 @@ class SEUT_AddonPreferences(AddonPreferences):
         split.label(text="Assets", icon='ASSET_MANAGER')
         row = split.row(align=True)
         row.operator('wm.mass_convert_textures', icon='FILE_REFRESH')
-        row.operator('wm.console_toggle', text="", icon='CONSOLE')
+        if sys.platform == "win32":
+            row.operator('wm.console_toggle', text="", icon='CONSOLE')
         box.prop(self, "asset_path", expand=True)
 
         if os.path.exists(preferences.asset_path):
@@ -311,7 +312,7 @@ class SEUT_AddonPreferences(AddonPreferences):
                     op.repo_name = repo.name
                     op = row.operator('wm.get_update', text="", icon='URL')
                     op.repo_name = repo.name
-                
+
             repo = wm.seut.repos['MWMBuilder']
             box2 = box.box()
             row = box2.row(align=True)
@@ -372,7 +373,7 @@ def load_icons():
 
 
 def unload_icons():
-    
+
     for pcoll in preview_collections.values():
         bpy.utils.previews.remove(pcoll)
     preview_collections.clear()
@@ -417,7 +418,7 @@ def save_addon_prefs():
     path = os.path.join(bpy.utils.user_resource('CONFIG'), 'space-engineers-utilities.cfg')
 
     data = get_config()
-    
+
     with open(path, 'w') as cfg_file:
         json.dump(data, cfg_file, indent = 4)
 
@@ -445,7 +446,7 @@ def load_addon_prefs():
 
 def load_configs():
     """Loads all the json config files."""
-    
+
     load_empty_json('dummies')
     load_empty_json('highlight_empties')
     load_empty_json('preset_subparts')
@@ -461,18 +462,18 @@ def load_empty_json(empty_type):
 
     if not os.path.exists(path):
         return
-    
+
     with open(path) as cfg_file:
         data = json.load(cfg_file)
-        
+
     if not empty_type in data:
         return
-    
+
     entries = data[empty_type]
-        
+
     for key, entry in entries.items():
         empties[empty_type][key] = {
-            'name': entry['name'], 
-            'description': entry['description'], 
+            'name': entry['name'],
+            'description': entry['description'],
             'index': entry['index']
         }
