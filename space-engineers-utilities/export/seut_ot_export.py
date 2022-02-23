@@ -44,6 +44,8 @@ def export(self, context):
     scene = context.scene
     preferences = get_preferences()
 
+    active_col = context.view_layer.active_layer_collection
+
     bl_info = get_addon().bl_info
     version = str(bl_info['version']).replace("(","").replace(")","").replace(", ",".")
     if bl_info['dev_version'] > 0:
@@ -153,8 +155,9 @@ def export(self, context):
         scene.seut.export_exportPath = path
         
     scene.seut.linkSubpartInstances = subparts
-        
+    
     context.area.type = current_area
+    context.view_layer.active_layer_collection = active_col
 
     return {'FINISHED'}
 
