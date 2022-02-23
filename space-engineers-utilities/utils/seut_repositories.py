@@ -196,7 +196,7 @@ def check_all_repo_updates():
     check_repo_update(wm.seut.repos['MWMBuilder'])
 
 
-def check_repo_update(repo: object, force = False):
+def check_repo_update(repo: object):
     """Checks the GitHub API for the latest release of the given repository."""
 
     repo.needs_update = False
@@ -210,7 +210,7 @@ def check_repo_update(repo: object, force = False):
 
     try:
         skip = False
-        if force or time.time() - repo.last_check >= 4000:
+        if time.time() - repo.last_check >= 4000:
             response_tags = requests.get(url_tags)
             response_releases = requests.get(url_releases)
             json_tags = response_tags.json()
@@ -364,7 +364,7 @@ def update_repo(repo: object, wipe: bool = False):
                     shutil.rmtree(temp_dir)
                     return {'CANCELLED'}
 
-                check_repo_update(repo, True)
+                check_repo_update(repo)
                 return {'FINISHED'}
 
             else:
