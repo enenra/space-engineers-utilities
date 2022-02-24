@@ -2,6 +2,7 @@
 * Added #317: API caching to prevent "Rate Limit exceeded!"-errors. (Beta 1)
 * Added #306: Config files for empty-type storage to `SEUT Assets`. (Beta 1)
 * Added #300: Button to export Blender logs for easy issue search. (Beta 1)
+* Added: Empty type descriptions & usage instructions to SEUT Empty Panel. (Beta 3)
 * Improved #321: Asset dir is not allowed to be set as game directory or SDK directory. (Beta 1)
 * Improved #320: Setting Game directory should check for presence of game `EXE`-file. (Beta 1)
 * Improved #318: Characters and character animations default pathing improved. (Beta 1)

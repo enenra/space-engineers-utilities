@@ -1,7 +1,10 @@
+from distutils.fancy_getopt import wrap_text
 import bpy
 
 from bpy.types  import Operator, Menu, UIList, PropertyGroup, Panel
 from bpy.props  import PointerProperty, IntProperty, StringProperty
+
+from ..seut_preferences             import empties
 
 
 empty_types = {
@@ -128,13 +131,42 @@ class SEUT_PT_EmptyLink(Panel):
     # Only display this panel if active object is of type empty and has either 'file' or 'highlight' as a custom property
     @classmethod
     def poll(cls, context):
-        return bpy.context.view_layer.objects.active.type == 'EMPTY' and ('file' in bpy.context.view_layer.objects.active or 'highlight' in bpy.context.view_layer.objects.active)
+
+        match = False
+        for empty_type in ['dummies', 'highlight_empties', 'preset_subparts']:
+            hits = [marker for marker in empties[empty_type] if(marker in bpy.context.view_layer.objects.active.name)]
+            if len(hits) > 0:
+                match = True
+                break
+
+        return bpy.context.view_layer.objects.active.type == 'EMPTY' and ('file' in bpy.context.view_layer.objects.active or 'highlight' in bpy.context.view_layer.objects.active) or match
 
 
     def draw(self, context):
         layout = self.layout
-        scene = context.scene
         empty = context.view_layer.objects.active
+
+        entry = None
+        for empty_type in ['dummies', 'highlight_empties', 'preset_subparts']:
+            hits = [marker for marker in empties[empty_type] if(marker in empty.name)]
+            if len(hits) > 0:
+                entry = hits[0]
+                break
+        
+        if entry is not None:
+            box = layout.box()
+            box.label(text=empties[empty_type][entry]['name'], icon='EMPTY_DATA')
+            
+            paragraphs = empties[empty_type][entry]['description'].split('\n')
+            
+            for p in paragraphs:
+                lines = wrap_text(p, int(context.region.width / 7.75))
+                for l in lines:
+                    row = box.row()
+                    row.scale_y = 0.6
+                    row.label(text=l)
+            
+            layout.separator()
 
         if 'file' in empty:
             row = layout.row()
