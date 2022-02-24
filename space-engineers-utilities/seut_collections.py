@@ -238,6 +238,14 @@ class SEUT_Collection(PropertyGroup):
         update = update_lod_distance
     )
 
+    hkt_convex_radius: FloatProperty(
+        name = "Convex Radius",
+        description = "Determines the spacing of the Havok collider around the collider geometry in the Collision collection. Higher values are better for performance, lower values are more accurate. 0.05 is default",
+        default = 0.05,
+        min = 0.005,
+        max = 1
+    )
+
 
 class SEUT_OT_RecreateCollections(Operator):
     """Recreates any missing collections for the current scene type"""

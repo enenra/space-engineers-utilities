@@ -24,6 +24,8 @@ def convert_fbxi_hkt_to_hkt(self, context, settings: ExportSettings, source: str
     
     havok_options = get_hko_content(adjustments)
 
+    # print(havok_options)
+
     hko = tempfile.NamedTemporaryFile(mode='wt', prefix='space_engineers_', suffix=".hko", delete=False) # wt mode is write plus text mode.	
     try:
         with hko.file as tempfile_to_process:
@@ -52,7 +54,7 @@ def get_hko_content(adjustments: dict = None) -> str:
 
     # This file is taken entirely from Balmung's fork of Harag's plugin. No reason to reinvent the wheel.
     # https://github.com/Hotohori/se-blender/blob/master/src/python/space_engineers/havok_options.py
-    path = os.path.join(bpy.utils.user_resource("SCRIPTS"), 'addons', __package__[:__package__.find(".")], 'export', 'havok', 'default.hko')
+    path = os.path.join(bpy.utils.user_resource("SCRIPTS"), 'addons', __package__[:__package__.find(".")], 'export', 'havok', 'default_keen.hko')
 
     with open(path, 'r') as file:
         hko = file.read()

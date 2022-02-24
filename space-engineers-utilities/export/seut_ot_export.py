@@ -264,12 +264,16 @@ def export_hkt(self, context):
             fbx_hkt_file = join(path, f"{get_col_filename(col)}.hkt.fbx")
             hkt_file = join(path, f"{get_col_filename(col)}.hkt")
 
+            adjustments = {
+                'defaultConvexRadius': col.seut.hkt_convex_radius
+            }
+
             # Export as FBX
             export_to_fbxfile(settings, scene, fbx_hkt_file, col.objects, ishavokfbxfile=True)
 
             # Then create the HKT file.
             convert_fbx_to_fbxi_hkt(context, settings, fbx_hkt_file, hkt_file)
-            convert_fbxi_hkt_to_hkt(self, context, settings, hkt_file, hkt_file)
+            convert_fbxi_hkt_to_hkt(self, context, settings, hkt_file, hkt_file, adjustments)
 
     return {'FINISHED'}
 
