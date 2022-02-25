@@ -49,6 +49,8 @@ def export_xml(self, context, collection) -> str:
 
         if mat == None:
             continue
+        if mat.node_tree is None:
+            continue
         if mat.users == 0 or mat.users == 1 and mat.use_fake_user:
             continue
         # This is a legacy check to filter out the old material presets.
