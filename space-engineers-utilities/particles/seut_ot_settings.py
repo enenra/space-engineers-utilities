@@ -26,7 +26,6 @@ class SEUT_OT_SettingsAdd(Operator):
 
 
     def execute(self, context):
-        scene = context.scene
         holder = context.active_object
         
         bpy.ops.object.particle_system_add()

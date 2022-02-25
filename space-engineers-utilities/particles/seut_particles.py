@@ -22,7 +22,6 @@ class SEUT_PT_Panel_Particle(Panel):
 
     def draw(self, context):
         layout = self.layout
-        scene = context.scene
         holder = context.active_object
 
         box = layout.box()
@@ -57,7 +56,6 @@ class SEUT_PT_Panel_ParticleGeneration(Panel):
 
     def draw(self, context):
         layout = self.layout
-        scene = context.scene
         holder = context.active_object
 
         if holder is not None:

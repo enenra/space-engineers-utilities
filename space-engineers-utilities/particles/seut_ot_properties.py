@@ -18,7 +18,6 @@ class SEUT_OT_PropertiesAdd(Operator):
 
 
     def execute(self, context):
-        scene = context.scene
         holder = context.active_object
         particle_setting = bpy.data.particles[holder.particle_systems.active.name]
         
@@ -44,7 +43,6 @@ class SEUT_OT_PropertiesRemove(Operator):
 
 
     def execute(self, context):
-        scene = context.scene
         holder = context.active_object
         particle_setting = bpy.data.particles[holder.particle_systems.active.name]
         
