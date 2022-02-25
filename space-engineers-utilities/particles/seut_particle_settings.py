@@ -97,8 +97,8 @@ def items_properties(context, scene):
 
 def update_property_name(self, context):
     self.name = self.name_internal
-    self.prop_animation_type = properties[self.name]['animation_type']
-    self.prop_type = properties[self.name]['type']
+    self.prop_animation_type = particles['properties'][self.name]['animation_type']
+    self.prop_type = particles['properties'][self.name]['type']
 
 
 class SEUT_ParticleProperty(PropertyGroup):
