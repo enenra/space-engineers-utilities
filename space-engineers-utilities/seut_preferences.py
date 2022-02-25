@@ -15,6 +15,7 @@ from .seut_bau                      import draw_bau_ui, get_config, set_config
 
 preview_collections = {}
 empties = {}
+particles = {}
 
 
 class SEUT_OT_SetDevPaths(Operator):
@@ -454,6 +455,7 @@ def load_configs():
     load_empty_json('dummies')
     load_empty_json('highlight_empties')
     load_empty_json('preset_subparts')
+    load_particle_json()
 
 
 def load_empty_json(empty_type):
@@ -480,4 +482,32 @@ def load_empty_json(empty_type):
             'name': entry['name'],
             'description': entry['description'],
             'index': entry['index']
+        }
+
+
+def load_particle_json():
+    """Loads particle properties from json file."""
+
+    preferences = get_preferences()
+    path = os.path.join(preferences.asset_path, "Config", "particles.cfg")
+    global particles
+    particles = {}
+
+    if not os.path.exists(path):
+        return
+
+    with open(path) as cfg_file:
+        data = json.load(cfg_file)
+
+    if not 'properties' in data:
+        return
+
+    entries = data['properties']
+
+    for key, entry in entries.items():
+        particles['properties'][key] = {
+            'name': entry['name'],
+            'description': entry['description'],
+            'animation_type': entry['animation_type'],
+            'type': entry['type']
         }
