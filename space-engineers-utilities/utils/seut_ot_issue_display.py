@@ -193,11 +193,16 @@ class SEUT_OT_ExportLog(Operator):
         
         path = f"{os.path.splitext(bpy.data.filepath)[0]}_{time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime())}.log"
         
+        repo = wm.seut.repos['space-engineers-utilities']
+        seut_version = f"{repo.current_version}"
+        if repo.dev_mode:
+            seut_version = seut_version + f"-{repo.dev_tag}.{repo.dev_version}"
+
         info = [
             f"----------------------------------------------------------------",
             f"Time:\t\t{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}",
             f"Blender:\t{bpy.app.version_string}",
-            f"SEUT:\t\t{wm.seut.repos['space-engineers-utilities'].current_version}",
+            f"SEUT:\t\t{seut_version}",
             f"----------------------------------------------------------------",
             f"Game Dir:\t{anonymize_paths(preferences.game_path)}",
             f"Assets:\t\t{wm.seut.repos['seut-assets'].current_version}\t Path: {anonymize_paths(preferences.asset_path)}",
