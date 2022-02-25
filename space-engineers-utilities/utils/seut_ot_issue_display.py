@@ -6,7 +6,7 @@ import subprocess
 from bpy.types              import Operator
 from bpy.props              import StringProperty, IntProperty
 
-from ..seut_errors      import log, seut_report
+from ..seut_errors      import log, seut_report, anonymize_paths
 from ..seut_utils       import wrap_text, get_preferences
 
 
@@ -199,15 +199,15 @@ class SEUT_OT_ExportLog(Operator):
             f"Blender:\t{bpy.app.version_string}",
             f"SEUT:\t\t{wm.seut.repos['space-engineers-utilities'].current_version}",
             f"----------------------------------------------------------------",
-            f"Game Dir:\t{preferences.game_path}",
-            f"Assets:\t\t{wm.seut.repos['seut-assets'].current_version}\t Path: {preferences.asset_path}",
-            f"MWMB:\t\t{wm.seut.repos['MWMBuilder'].current_version}\t Path: {preferences.mwmb_path}",
-            f"Havok Path:\t{preferences.havok_path}",
+            f"Game Dir:\t{anonymize_paths(preferences.game_path)}",
+            f"Assets:\t\t{wm.seut.repos['seut-assets'].current_version}\t Path: {anonymize_paths(preferences.asset_path)}",
+            f"MWMB:\t\t{wm.seut.repos['MWMBuilder'].current_version}\t Path: {anonymize_paths(preferences.mwmb_path)}",
+            f"Havok Path:\t{anonymize_paths(preferences.havok_path)}",
             f"----------------------------------------------------------------",
-            f"BLEND Path:\t\t{bpy.data.filepath}",
-            f"Icon Path:\t\t{scene.render.filepath}",
-            f"Mod Path:\t\t{scene.seut.mod_path}",
-            f"Export Path:\t{scene.seut.export_exportPath}",
+            f"BLEND Path:\t\t{anonymize_paths(bpy.data.filepath)}",
+            f"Icon Path:\t\t{anonymize_paths(scene.render.filepath)}",
+            f"Mod Path:\t\t{anonymize_paths(scene.seut.mod_path)}",
+            f"Export Path:\t{anonymize_paths(scene.seut.export_exportPath)}",
             f"----------------------------------------------------------------\n"
         ]
         

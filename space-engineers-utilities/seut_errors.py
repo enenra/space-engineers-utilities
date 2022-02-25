@@ -299,14 +299,6 @@ def init_logging():
 
     global log
 
-    def anonymize_paths(message):
-        if "\\Users\\" in message:
-            loc = message.find("\\Users\\")
-            start = message[len("\\Users\\") + loc:]
-            end = start.find("\\")
-            message = message[:len("\\Users\\") + loc] + "SEUT-USER" + message[-len(start) + end:]
-        return message
-    
     class OutLogger(object):
         def __init__(self):
             self.terminal = sys.stdout
@@ -344,3 +336,12 @@ def init_logging():
 
     sys.stdout = OutLogger()
     sys.stderr = ErrLogger()
+
+
+def anonymize_paths(message):
+    if "\\Users\\" in message:
+        loc = message.find("\\Users\\")
+        start = message[len("\\Users\\") + loc:]
+        end = start.find("\\")
+        message = message[:len("\\Users\\") + loc] + "SEUT-USER" + message[-len(start) + end:]
+    return message
