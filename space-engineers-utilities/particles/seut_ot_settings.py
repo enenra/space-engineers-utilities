@@ -3,7 +3,7 @@ import bpy
 from bpy.types  import Operator
 from bpy.props  import StringProperty
 
-from .seut_particle_settings    import properties
+from ..seut_preferences    import particles
 
 
 class SEUT_OT_SettingsAdd(Operator):
@@ -34,10 +34,10 @@ class SEUT_OT_SettingsAdd(Operator):
         particle_setting = holder.particle_systems.active.settings
         particle_setting.name = self.name + " (" + holder.name + ")"
 
-        for key in properties.keys():
+        for key in particles['properties'].keys():
             item = particle_setting.seut.properties.add()
             item.name_internal = key
-            item.prop_animation_type = properties[key]['animation_type']
-            item.prop_type = properties[key]['type']
+            item.prop_animation_type = particles['properties'][key]['animation_type']
+            item.prop_type = particles['properties'][key]['type']
 
         return {'FINISHED'}

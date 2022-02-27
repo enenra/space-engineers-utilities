@@ -492,6 +492,7 @@ def load_particle_json():
     path = os.path.join(preferences.asset_path, "Config", "particles.cfg")
     global particles
     particles = {}
+    particles['properties'] = {}
 
     if not os.path.exists(path):
         return

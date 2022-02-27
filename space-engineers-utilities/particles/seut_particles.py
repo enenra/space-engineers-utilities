@@ -3,7 +3,7 @@ import textwrap
 
 from bpy.types  import Panel
 
-from .seut_particle_settings    import properties
+from ..seut_preferences    import particles
 
 class SEUT_PT_Panel_Particle(Panel):
     """Creates the Particle menu"""
@@ -84,6 +84,7 @@ class SEUT_PT_Panel_ParticleGeneration(Panel):
                     # layout.label(text="Animation Type: " + particle_property.prop_animation_type)
                     # layout.label(text="Type: " + particle_property.prop_type)
 
+                    properties = particles['properties']
                     box = layout.box()
                     box.label(text=properties[particle_property.name]['name'], icon='SETTINGS')
 
