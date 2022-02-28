@@ -461,6 +461,9 @@ def load_configs():
 def load_empty_json(empty_type):
     """Loads an individual config file for an empty type."""
 
+    # TODO: Swap this to a generalized method that doesn't care about filenames and just looks for the dicts with empty types inside of the configs.
+    # This way, more empties can be added by users without issues with overwriting.
+
     preferences = get_preferences()
     path = os.path.join(preferences.asset_path, "Config", empty_type + ".cfg")
     global empties
