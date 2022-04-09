@@ -365,7 +365,7 @@ class SEUT_AddonPreferences(AddonPreferences):
 
         box = layout.box()
         box.label(text="External Tools", icon='TOOL_SETTINGS')
-        box.prop(self, "havok_path", text="Havok File Manager", expand=True)
+        box.prop(self, "havok_path", text="Havok Filter Manager", expand=True)
 
 
 def load_icons():
