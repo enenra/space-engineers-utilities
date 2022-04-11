@@ -234,7 +234,7 @@ def export_hkt(self, context):
     if not result == {'CONTINUE'}:
         return result
 
-    if not collections['hkt'] is None and collections['hkt'] != []:
+    if 'hkt' in collections and not collections['hkt'] is None and collections['hkt'] != []:
         for col in collections['hkt']:
             result = check_collection(self, context, scene, col, True)
             if not result == {'CONTINUE'}:
