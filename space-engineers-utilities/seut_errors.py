@@ -77,7 +77,7 @@ warnings = {
 }
 
 infos = {
-    'I001': "Local material '{variable_1}' does not contain any valid textures. Skipping XML entry.",
+    'I001': "Successfully exported log to '{variable_1}'.",
     'I002': "Successfully converted '{variable_1}'-texture of material '{variable_2}' to DDS.",
     'I003': "All textures are up to date.",
     'I004': "'{variable_1}' has been created.",
@@ -98,7 +98,6 @@ infos = {
     'I019': "Successfully imported {variable_1} materials from '{variable_2}': {variable_3}",
     'I020': "Material '{variable_1}' was skipped because it already exists in the BLEND file.",
     'I021': "{variable_1} of {variable_2} files successfully imported. Refer to Blender System Console for details.",
-    'I022': "Successfully exported log to '{variable_1}'.",
 }
 
 

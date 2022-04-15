@@ -223,6 +223,6 @@ class SEUT_OT_ExportLog(Operator):
 
         subprocess.Popen(f'explorer /select,"{path}"')
 
-        seut_report(self, context, 'INFO', False, 'I022', path)
+        seut_report(self, context, 'INFO', False, 'I001', path)
         
         return {'FINISHED'}

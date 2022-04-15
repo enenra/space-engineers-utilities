@@ -198,7 +198,6 @@ def create_mat_entry(self, context, tree, mat):
 
     if images['cm'] == None and images['ng'] == None and images['add'] == None and images['am'] == None:
         tree.remove(mat_entry)
-        seut_report(self, context, 'INFO', False, 'I001', mat.name)
 
     else:
         if mat.seut.technique not in ['HOLO', 'GLASS']:
