@@ -265,15 +265,15 @@ def create_relative_path(path: str, folder_name: str):
     """Returns the path capped off before the last occurrence of the foldername, returns False if foldername is not found in path"""
     
     path = get_abs_path(path)
-    offset = path.rfind(folder_name + "\\")
+    offset = path.rfind("\\" + folder_name + "\\")
 
     if offset == -1:
-        if path.endswith(folder_name):
-            return path[path.rfind(folder_name):]
+        if path.endswith("\\" + folder_name):
+            return path[path.rfind("\\" + folder_name) + 1:]
         else:
             return False
     else:
-        return path[offset:]
+        return path[offset + 1:]
 
 
 def wrap_text(text: str, width: int):
