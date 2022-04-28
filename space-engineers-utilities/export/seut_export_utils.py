@@ -497,6 +497,30 @@ def export_collection(self, context, collection):
     return result_xml, result_fbx
 
 
+def convert_position_to_cell(context, grid_size, medium_grid_scalar, empty) -> list:
+    """Converts the location of an object to its cell location within the block bounds"""
+
+    scene = context.scene
+
+    loc_x = empty.location.x
+    loc_y = empty.location.y
+    loc_z = empty.location.z
+
+    parent_obj = empty.parent
+
+    while parent_obj is not None:
+        loc_x += parent_obj.location.x
+        loc_y += parent_obj.location.y
+        loc_z += parent_obj.location.z
+        parent_obj = parent_obj.parent
+    
+    x = math.floor((loc_x + (scene.seut.bBox_X * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
+    y = math.floor((loc_x + (scene.seut.bBox_Y * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
+    z = math.floor((loc_x + (scene.seut.bBox_Z * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
+
+    return [x, y, z]
+
+
 # STOLLIE: Standard output error operator class for catching error return codes.
 class StdoutOperator():
     def report(self, type, message):

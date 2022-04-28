@@ -11,7 +11,7 @@ from bpy.types      import Operator
 from .havok.seut_havok_hkt          import convert_fbx_to_fbxi_hkt, convert_fbxi_hkt_to_hkt
 from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, export_to_fbxfile, create_relative_path
-from .seut_export_utils             import correct_for_export_type, export_collection, get_col_filename
+from .seut_export_utils             import correct_for_export_type, export_collection, get_col_filename, convert_position_to_cell
 from ..utils.seut_xml_utils         import *
 from ..seut_collections             import get_collections, get_rev_ref_cols, get_cols_by_type, get_first_free_index
 from ..seut_errors                  import *
@@ -452,28 +452,14 @@ def export_sbc(self, context):
             break
 
     if center_empty is not None:
-        center_loc_x = center_empty.location.x
-        center_loc_y = center_empty.location.y
-        center_loc_z = center_empty.location.z
-
-        parent_obj = center_empty.parent
-
-        while parent_obj is not None:
-            center_loc_x += parent_obj.location.x
-            center_loc_y += parent_obj.location.y
-            center_loc_z += parent_obj.location.z
-            parent_obj = parent_obj.parent
-        
-        center_x = math.floor((center_loc_x + (scene.seut.bBox_X * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
-        center_y = math.floor((center_loc_x + (scene.seut.bBox_Y * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
-        center_z = math.floor((center_loc_x + (scene.seut.bBox_Z * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
+        loc = convert_position_to_cell(context, grid_size, medium_grid_scalar, center_empty)
 
         def_Center = 'Center'
         if not update_sbc:
             def_Center = add_subelement(def_definition, 'Center')
-        lines_entry = update_add_attrib(def_Center, 'x', center_x, update_sbc, lines_entry)
-        lines_entry = update_add_attrib(def_Center, 'y', center_z, update_sbc, lines_entry)   # This looks wrong but it's correct: Blender has different forward than SE.
-        lines_entry = update_add_attrib(def_Center, 'z', center_y, update_sbc, lines_entry)
+        lines_entry = update_add_attrib(def_Center, 'x', loc[0], update_sbc, lines_entry)
+        lines_entry = update_add_attrib(def_Center, 'y', loc[2], update_sbc, lines_entry)   # This looks wrong but it's correct: Blender has different forward than SE.
+        lines_entry = update_add_attrib(def_Center, 'z', loc[1], update_sbc, lines_entry)
 
     if not update_sbc:
         def_ModelOffset = add_subelement(def_definition, 'ModelOffset')
@@ -664,6 +650,22 @@ def export_sbc(self, context):
         lines_entry = update_add_optional_subelement(def_definition, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId, update_sbc, lines_entry)
     elif update_sbc and scene.seut.mirroringScene == 'None' and get_subelement(lines_entry, 'MirroringBlock') != -1:
         lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringBlock'),"")
+    
+    mirroringcenter_empty = None
+    for obj in collections['main'][0].objects:
+        if obj is not None and obj.type == 'EMPTY' and obj.name.startswith('MirroringCenter'):
+            mirroringcenter_empty = obj
+            break
+
+    if mirroringcenter_empty is not None:
+        loc = convert_position_to_cell(context, grid_size, medium_grid_scalar, mirroringcenter_empty)
+
+        def_MirroringCenter = 'MirroringCenter'
+        if not update_sbc:
+            def_MirroringCenter = add_subelement(def_definition, 'MirroringCenter')
+        lines_entry = update_add_attrib(def_MirroringCenter, 'x', loc[0], update_sbc, lines_entry)
+        lines_entry = update_add_attrib(def_MirroringCenter, 'y', loc[2], update_sbc, lines_entry)   # This looks wrong but it's correct: Blender has different forward than SE.
+        lines_entry = update_add_attrib(def_MirroringCenter, 'z', loc[1], update_sbc, lines_entry)
 
     # Write to file, place in export folder
     if not update_sbc:
