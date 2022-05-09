@@ -734,6 +734,12 @@ class SEUT_Scene(PropertyGroup):
     environment_items: CollectionProperty(
         type=SEUT_PlanetPropertiesEnvironmentItems
     )
+    environment_items_index: IntProperty(
+        default=0
+    )
     ore_mappings: CollectionProperty(
         type=SEUT_PlanetPropertiesOreMappings
+    )
+    ore_mappings_index: IntProperty(
+        default=0
     )

@@ -28,10 +28,14 @@ class SEUT_PlanetPropertiesDistributionRulesLayers(PropertyGroup):
 class SEUT_PlanetPropertiesDistributionRules(PropertyGroup):
     """Placement rules of Material Groups"""
     
-    name: StringProperty()
-
+    name: StringProperty(
+        name="Name"
+    )
     layers: CollectionProperty(
         type=SEUT_PlanetPropertiesDistributionRulesLayers
+    )
+    layers_index: IntProperty(
+        default=0
     )
     height_min: IntProperty(
         name="Height Min"
@@ -65,6 +69,9 @@ class SEUT_PlanetPropertiesMaterialGroups(PropertyGroup):
     rules: CollectionProperty(
         type=SEUT_PlanetPropertiesDistributionRules
     )
+    rules_index: IntProperty(
+        default=0
+    )
 
 
 class SEUT_PlanetPropertiesBiomes(PropertyGroup):
@@ -73,7 +80,8 @@ class SEUT_PlanetPropertiesBiomes(PropertyGroup):
     name: StringProperty()
 
     value: IntProperty(
-        name="Value"
+        name="Value",
+        min=0
     )
 
 
@@ -106,19 +114,32 @@ class SEUT_PlanetPropertiesItems(PropertyGroup):
 class SEUT_PlanetPropertiesEnvironmentItems(PropertyGroup):
     """Environment Item Entries"""
     
-    name: StringProperty()
-
+    name: StringProperty(
+        name="Name"
+    )
     biomes: CollectionProperty(
         type=SEUT_PlanetPropertiesBiomes
+    )
+    biomes_index: IntProperty(
+        default=0
     )
     materials: CollectionProperty(
         type=SEUT_PlanetPropertiesMaterials
     )
+    materials_index: IntProperty(
+        default=0
+    )
     items: CollectionProperty(
         type=SEUT_PlanetPropertiesItems
     )
+    items_index: IntProperty(
+        default=0
+    )
     rules: CollectionProperty(
         type=SEUT_PlanetPropertiesDistributionRules
+    )
+    rules_index: IntProperty(
+        default=0
     )
 
 
