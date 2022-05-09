@@ -316,3 +316,46 @@ class SEUT_OT_Planet_Material_Remove(Operator):
         environment_item.materials.remove(environment_item.materials_index)
 
         return {'FINISHED'}
+
+
+class SEUT_OT_Planet_OreMappings_Add(Operator):
+    """Adds an Ore Mapping to a Planet"""
+    bl_idname = "planet.add_ore_mapping"
+    bl_label = "Add Ore Mapping"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        scene = context.scene
+        
+        item = scene.seut.ore_mappings.add()
+        item.value = len(scene.seut.ore_mappings)
+
+        return {'FINISHED'}
+
+
+class SEUT_OT_Planet_OreMappings_Remove(Operator):
+    """Removes an Ore Mapping from a Planet"""
+    bl_idname = "planet.remove_ore_mapping"
+    bl_label = "Remove Ore Mapping"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        scene = context.scene
+
+        scene.seut.ore_mappings.remove(scene.seut.ore_mappings_index)
+
+        return {'FINISHED'}

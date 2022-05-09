@@ -149,10 +149,12 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
     name: StringProperty()
 
     value: IntProperty(
-        name="Value"
+        name="Value",
+        default=0,
+        min=0
     )
     ore_type: StringProperty(
-        name="Type"
+        name="Ore Type"
     )
     start: IntProperty(
         name="Start",
@@ -160,6 +162,7 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
     )
     depth: IntProperty(
         name="Depth",
+        default=1,
         min=1
     )
     target_color: StringProperty(

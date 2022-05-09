@@ -76,7 +76,7 @@ class SEUT_UL_PlanetOreMappings(UIList):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
-        layout.label(text=f"{item.value} ({str(item.ore_type)})", icon='PROPERTIES')
+        layout.label(text=f"{item.value} ({str(item.ore_type)})", icon='TEXTURE_DATA')
 
     def invoke(self, context, event):
         pass
@@ -129,6 +129,7 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
         col.operator("planet.add_material_group", icon='ADD', text="")
         col.operator("planet.remove_material_group", icon='REMOVE', text="")
 
+        # Material Groups
         if len(scene.seut.material_groups) > 0:
             try:
                 material_group = scene.seut.material_groups[scene.seut.material_groups_index]
@@ -148,6 +149,7 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
                     op = col.operator("planet.remove_distribution_rule", icon='REMOVE', text="")
                     op.rule_type = 'material_group'
 
+                    # Distribution Rules
                     if len(material_group.rules) > 0:
                         try:
                             rule = material_group.rules[material_group.rules_index]
@@ -172,6 +174,7 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
                                 op = col.operator("planet.remove_distribution_rule_layer", icon='REMOVE', text="")
                                 op.rule_type = 'material_group'
 
+                                # Layers
                                 if len(rule.layers) > 0:
                                     try:
                                         layer = rule.layers[rule.layers_index]
@@ -216,6 +219,7 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
         col.operator("planet.add_environment_item", icon='ADD', text="")
         col.operator("planet.remove_environment_item", icon='REMOVE', text="")
 
+        # Environment Items
         if len(scene.seut.environment_items) > 0:
             try:
                 environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
@@ -231,6 +235,7 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                     col.operator("planet.add_biome", icon='ADD', text="")
                     col.operator("planet.remove_biome", icon='REMOVE', text="")
 
+                    # Biomes
                     if len(environment_item.biomes) > 0:
                         try:
                             biome = environment_item.biomes[environment_item.biomes_index]
@@ -247,6 +252,7 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                     col.operator("planet.add_material", icon='ADD', text="")
                     col.operator("planet.remove_material", icon='REMOVE', text="")
 
+                    # Materials
                     if len(environment_item.materials) > 0:
                         try:
                             material = environment_item.materials[environment_item.materials_index]
@@ -265,6 +271,7 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                     op = col.operator("planet.remove_distribution_rule", icon='REMOVE', text="")
                     op.rule_type = 'environment_item'
 
+                    # Distribution Rules
                     if len(environment_item.rules) > 0:
                         try:
                             rule = environment_item.rules[environment_item.rules_index]
@@ -289,7 +296,8 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                                 op.rule_type = 'environment_item'
                                 op = col.operator("planet.remove_distribution_rule_layer", icon='REMOVE', text="")
                                 op.rule_type = 'environment_item'
-
+                                
+                                # Layers
                                 if len(rule.layers) > 0:
                                     try:
                                         layer = rule.layers[rule.layers_index]
@@ -322,3 +330,27 @@ class SEUT_PT_Panel_PlanetOreMappings(Panel):
 
     def draw(self, context):
         layout = self.layout
+        scene = context.scene
+
+        box = layout.box()
+        box.label(text="Ore Mappings", icon='TEXTURE_DATA')
+        row = box.row()
+        row.template_list("SEUT_UL_PlanetOreMappings", "", scene.seut, "ore_mappings", scene.seut, "ore_mappings_index", rows=3)
+
+        col = row.column(align=True)
+        col.operator("planet.add_ore_mapping", icon='ADD', text="")
+        col.operator("planet.remove_ore_mapping", icon='REMOVE', text="")
+
+        # Ore Mappings
+        if len(scene.seut.ore_mappings) > 0:
+            try:
+                ore_mapping = scene.seut.ore_mappings[scene.seut.ore_mappings_index]
+                box.prop(ore_mapping, 'value')
+                box.prop(ore_mapping, 'ore_type')
+                box.prop(ore_mapping, 'start')
+                box.prop(ore_mapping, 'depth')
+                box.prop(ore_mapping, 'target_color')
+                box.prop(ore_mapping, 'color_influence')
+            
+            except IndexError:
+                pass

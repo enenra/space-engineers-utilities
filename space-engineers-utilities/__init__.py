@@ -83,7 +83,9 @@ from .planets.seut_planet_operators             import (SEUT_OT_Planet_MaterialG
                                                         SEUT_OT_Planet_Biome_Add,
                                                         SEUT_OT_Planet_Biome_Remove,
                                                         SEUT_OT_Planet_Material_Add,
-                                                        SEUT_OT_Planet_Material_Remove)
+                                                        SEUT_OT_Planet_Material_Remove,
+                                                        SEUT_OT_Planet_OreMappings_Add,
+                                                        SEUT_OT_Planet_OreMappings_Remove)
 from .planets.seut_planet_ui                    import (SEUT_UL_PlanetDistributionRulesLayers,
                                                         SEUT_UL_PlanetDistributionRules,
                                                         SEUT_UL_PlanetMaterialGroups,
@@ -229,6 +231,8 @@ classes = (
     SEUT_OT_Planet_Biome_Remove,
     SEUT_OT_Planet_Material_Add,
     SEUT_OT_Planet_Material_Remove,
+    SEUT_OT_Planet_OreMappings_Add,
+    SEUT_OT_Planet_OreMappings_Remove,
     SEUT_UL_PlanetDistributionRulesLayers,
     SEUT_UL_PlanetDistributionRules,
     SEUT_UL_PlanetMaterialGroups,
