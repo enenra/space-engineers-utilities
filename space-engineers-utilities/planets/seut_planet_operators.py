@@ -318,6 +318,50 @@ class SEUT_OT_Planet_Material_Remove(Operator):
         return {'FINISHED'}
 
 
+class SEUT_OT_Planet_Item_Add(Operator):
+    """Adds an Item"""
+    bl_idname = "planet.add_item"
+    bl_label = "Add Item"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        scene = context.scene
+        environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
+
+        item = environment_item.items.add()
+
+        return {'FINISHED'}
+
+
+class SEUT_OT_Planet_Item_Remove(Operator):
+    """Removes an Item"""
+    bl_idname = "planet.remove_item"
+    bl_label = "Remove Item"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        scene = context.scene
+        environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
+
+        environment_item.items.remove(environment_item.items_index)
+
+        return {'FINISHED'}
+
+
 class SEUT_OT_Planet_OreMappings_Add(Operator):
     """Adds an Ore Mapping to a Planet"""
     bl_idname = "planet.add_ore_mapping"

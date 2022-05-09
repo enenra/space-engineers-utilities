@@ -60,6 +60,17 @@ class SEUT_UL_PlanetMaterials(UIList):
         pass
 
 
+class SEUT_UL_PlanetItems(UIList):
+    """Creates the Planet Items UI list"""
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+
+        layout.label(text=item.subtype_id, icon='RNA')
+
+    def invoke(self, context, event):
+        pass
+
+
 class SEUT_UL_PlanetEnvironmentItems(UIList):
     """Creates the Planet Environment Items UI list"""
 
@@ -257,6 +268,25 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                         try:
                             material = environment_item.materials[environment_item.materials_index]
                             box2.prop(material, 'name')
+                        except IndexError:
+                            pass
+
+                    box2 = box.box()
+                    box2.label(text="Items", icon='RNA')
+                    row = box2.row()
+                    row.template_list("SEUT_UL_PlanetItems", "", environment_item, "items", environment_item, "items_index", rows=3)
+
+                    col = row.column(align=True)
+                    col.operator("planet.add_item", icon='ADD', text="")
+                    col.operator("planet.remove_item", icon='REMOVE', text="")
+
+                    # Items
+                    if len(environment_item.items) > 0:
+                        try:
+                            item = environment_item.items[environment_item.items_index]
+                            box2.prop(item, 'type_id')
+                            box2.prop(item, 'subtype_id')
+                            box2.prop(item, 'density')
                         except IndexError:
                             pass
                     

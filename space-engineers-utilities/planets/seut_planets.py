@@ -21,7 +21,9 @@ class SEUT_PlanetPropertiesDistributionRulesLayers(PropertyGroup):
         name="Material"
     )
     depth: IntProperty(
-        name="Depth"
+        name="Depth",
+        default=0,
+        min=1
     )
 
 
@@ -38,22 +40,34 @@ class SEUT_PlanetPropertiesDistributionRules(PropertyGroup):
         default=0
     )
     height_min: IntProperty(
-        name="Height Min"
+        name="Height Min",
+        default=0,
+        min=0
     )
     height_max: IntProperty(
-        name="Height Max"
+        name="Height Max",
+        default=0,
+        min=0
     )
     latitude_min: IntProperty(
-        name="Latitude Min"
+        name="Latitude Min",
+        default=0,
+        min=0
     )
     latitude_max: IntProperty(
-        name="Latitude Max"
+        name="Latitude Max",
+        default=0,
+        min=0
     )
     slope_min: IntProperty(
-        name="Slope Min"
+        name="Slope Min",
+        default=0,
+        min=0
     )
     slope_max: IntProperty(
-        name="Slope Max"
+        name="Slope Max",
+        default=0,
+        min=0
     )
 
 
@@ -64,7 +78,10 @@ class SEUT_PlanetPropertiesMaterialGroups(PropertyGroup):
         name="Name"
     )
     value: IntProperty(
-        name="Value"
+        name="Value",
+        default=0,
+        min=0,
+        max=255
     )
     rules: CollectionProperty(
         type=SEUT_PlanetPropertiesDistributionRules
@@ -81,7 +98,9 @@ class SEUT_PlanetPropertiesBiomes(PropertyGroup):
 
     value: IntProperty(
         name="Value",
-        min=0
+        default=0,
+        min=0,
+        max=255
     )
 
 
@@ -89,7 +108,7 @@ class SEUT_PlanetPropertiesMaterials(PropertyGroup):
     """Materials of Environment Items"""
 
     name: StringProperty(
-        name="Value"
+        name="Voxel Material"
     )
 
 
@@ -99,10 +118,10 @@ class SEUT_PlanetPropertiesItems(PropertyGroup):
     name: StringProperty()
 
     type_id: StringProperty(
-        name="Value"
+        name="TypeId"
     )
     subtype_id: StringProperty(
-        name="Value"
+        name="SubtypeId"
     )
     density: FloatProperty(
         name="Density",
@@ -151,13 +170,15 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
     value: IntProperty(
         name="Value",
         default=0,
-        min=0
+        min=0,
+        max=255
     )
     ore_type: StringProperty(
         name="Ore Type"
     )
     start: IntProperty(
         name="Start",
+        default=0,
         min=0
     )
     depth: IntProperty(
@@ -170,5 +191,6 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
     )
     color_influence: IntProperty(
         name="Color Influence",
+        default=0,
         min=0
     )
