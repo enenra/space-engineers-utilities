@@ -13,6 +13,7 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
+from .planets.seut_planets          import SEUT_PlanetPropertiesEnvironmentItems, SEUT_PlanetPropertiesMaterialGroups, SEUT_PlanetPropertiesOreMappings
 from .seut_mirroring                import clean_mirroring, setup_mirroring
 from .seut_mountpoints              import clean_mountpoints, setup_mountpoints
 from .seut_icon_render              import clean_icon_render, setup_icon_render
@@ -376,6 +377,7 @@ class SEUT_Scene(PropertyGroup):
             ('character', 'Character', 'This scene contains a character model'),
             ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
             # ('particle_effect', 'Particle Effect', 'This scene contains a particle effect'),
+            ('planet_editor', 'Planet Editor', ''),
             ),
         default='mainScene',
         update=update_sceneType
@@ -720,4 +722,18 @@ class SEUT_Scene(PropertyGroup):
         min=0,
         max=10,
         update=update_renderDistance
+    )
+
+    # Planet Editor
+    material_groups: CollectionProperty(
+        type=SEUT_PlanetPropertiesMaterialGroups
+    )
+    material_groups_index: IntProperty(
+        default=0
+    )
+    environment_items: CollectionProperty(
+        type=SEUT_PlanetPropertiesEnvironmentItems
+    )
+    ore_mappings: CollectionProperty(
+        type=SEUT_PlanetPropertiesOreMappings
     )

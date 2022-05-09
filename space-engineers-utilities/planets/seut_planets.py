@@ -148,19 +148,3 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
         name="Color Influence",
         min=0
     )
-
-
-class SEUT_PlanetProperties(PropertyGroup):
-    """Holder for planet properties"""
-
-    name: StringProperty()
-
-    voxel_materials: CollectionProperty(
-        type=SEUT_PlanetPropertiesMaterialGroups
-    )
-    environment_items: CollectionProperty(
-        type=SEUT_PlanetPropertiesEnvironmentItems
-    )
-    ore_mappings: CollectionProperty(
-        type=SEUT_PlanetPropertiesOreMappings
-    )
