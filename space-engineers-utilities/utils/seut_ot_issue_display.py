@@ -1,7 +1,9 @@
 import bpy
 import os
 import time
+import sys
 import subprocess
+import traceback
 
 from bpy.types              import Operator
 from bpy.props              import StringProperty, IntProperty
@@ -190,6 +192,11 @@ class SEUT_OT_ExportLog(Operator):
         wm = context.window_manager
         scene = context.scene
         preferences = get_preferences()
+
+        try:
+            traceback.print_tb(tb=sys.last_traceback)
+        except AttributeError:
+            pass
         
         path = f"{os.path.splitext(bpy.data.filepath)[0]}_{time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime())}.log"
         
@@ -215,6 +222,8 @@ class SEUT_OT_ExportLog(Operator):
             f"Export Path:\t{anonymize_paths(scene.seut.export_exportPath)}",
             f"----------------------------------------------------------------\n"
         ]
+
+        seut_report(self, context, 'INFO', False, 'I001', path)
         
         with open(path, "w") as f:
             for l in info:
@@ -222,7 +231,5 @@ class SEUT_OT_ExportLog(Operator):
             print(log.getvalue(), file=f)
 
         subprocess.Popen(f'explorer /select,"{path}"')
-
-        seut_report(self, context, 'INFO', False, 'I001', path)
         
         return {'FINISHED'}
