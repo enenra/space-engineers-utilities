@@ -1,15 +1,16 @@
-# Changelog
-* Added #317: API caching to prevent "Rate Limit exceeded!"-errors. (Beta 1)
-* Added #306: Config files for empty-type storage to `SEUT Assets`. (Beta 1)
-* Added #300: Button to export Blender logs for easy issue search. (Beta 1)
+[# Changelog
+* Added [#317](https://github.com/enenra/space-engineers-utilities/issues/317): API caching to prevent "Rate Limit exceeded!"-errors. (Beta 1)
+* Added [#306](https://github.com/enenra/space-engineers-utilities/issues/306): Config files for empty-type storage to `SEUT Assets`. (Beta 1)
+* Added [#300](https://github.com/enenra/space-engineers-utilities/issues/300): Button to export Blender logs for easy issue search. (Beta 1)
 * Added: Empty type descriptions & usage instructions to SEUT Empty Panel. (Beta 3)
-* Improved #321: Asset dir is not allowed to be set as game directory or SDK directory. (Beta 1)
-* Improved #320: Setting Game directory should check for presence of game `EXE`-file. (Beta 1)
-* Improved #318: Characters and character animations default pathing improved. (Beta 1)
-* Improved #316: New `SBC` files are numbered correctly. (Beta 1)
-* Improved #315: Conversion of `NG`-textures to `TIF`. (Beta 1)
-* Improved #303: Specify why materials cannot be exported on button hover. (Beta 1)
-* Improved #266: Allow for instancing of character animation scenes under the `dummy_character`-empty. (Beta 1)
+* Improved [#334](https://github.com/enenra/space-engineers-utilities/issues/334): Suppress texture resolution warning if texture could not be loaded in the first place. (Beta 4)
+* Improved [#321](https://github.com/enenra/space-engineers-utilities/issues/321): Asset dir is not allowed to be set as game directory or SDK directory. (Beta 1)
+* Improved [#320](https://github.com/enenra/space-engineers-utilities/issues/320): Setting Game directory should check for presence of game `EXE`-file. (Beta 1)
+* Improved [#318](https://github.com/enenra/space-engineers-utilities/issues/318): Characters and character animations default pathing improved. (Beta 1)
+* Improved [#316](https://github.com/enenra/space-engineers-utilities/issues/316): New `SBC` files are numbered correctly. (Beta 1)
+* Improved [#315](https://github.com/enenra/space-engineers-utilities/issues/315): Conversion of `NG`-textures to `TIF`. (Beta 1)
+* Improved [#303](https://github.com/enenra/space-engineers-utilities/issues/303): Specify why materials cannot be exported on button hover. (Beta 1)
+* Improved [#266](https://github.com/enenra/space-engineers-utilities/issues/266): Allow for instancing of character animation scenes under the `dummy_character`-empty. (Beta 1)
 * Improved: Display button for manual install of SEUT Assets / MWMB first install. (Beta 3)
 * Improved: If a texture is located in the SEUT Assets folder but not the `Custom`-subfolder, it is not converted to `DDS` on export. (Beta 2)
 * Improved: Model-path input is now only available if a Mod-path has been set. (Beta 2)
@@ -24,15 +25,15 @@
 * Improved: Highlight description for SEUT Asset Browser parameters. (Beta 1)
 * Improved: Time needed to convert textures in seconds was not rounded. (Beta 1)
 * Improved: Further reduced info spam in SEUT Notifications. (Beta 3)
-* Fixed #332: Fixed issue where custom materials were exported as material references instead of material definitions in some cases. (Beta 4)
-* Fixed #329: Error on export if material had no node tree. (Beta 3)
-* Fixed #325: Center empty coordinates were using the wrong coordinate system. (Beta 3)
-* Fixed #324: Highlight empty without target getting rescaled on export. (Beta 1)
-* Fixed #322: Various issues with automatic texture conversion to `DDS` on model export. (Beta 1)
-* Fixed #319: Error during export of character scene. (Beta 1)
-* Fixed #313: Error during error handling of UVM issue. (Beta 1)
-* Fixed #312: Image nodes that do not contain images should be ignored. (Beta 1)
-* Fixed #311: Issue where MaxRequests was exceeded. (Beta 1)
+* Fixed [#332](https://github.com/enenra/space-engineers-utilities/issues/332): Fixed issue where custom materials were exported as material references instead of material definitions in some cases. (Beta 4)
+* Fixed [#329](https://github.com/enenra/space-engineers-utilities/issues/329): Error on export if material had no node tree. (Beta 3)
+* Fixed [#325](https://github.com/enenra/space-engineers-utilities/issues/325): Center empty coordinates were using the wrong coordinate system. (Beta 3)
+* Fixed [#324](https://github.com/enenra/space-engineers-utilities/issues/324): Highlight empty without target getting rescaled on export. (Beta 1)
+* Fixed [#322](https://github.com/enenra/space-engineers-utilities/issues/322): Various issues with automatic texture conversion to `DDS` on model export. (Beta 1)
+* Fixed [#319](https://github.com/enenra/space-engineers-utilities/issues/319): Error during export of character scene. (Beta 1)
+* Fixed [#313](https://github.com/enenra/space-engineers-utilities/issues/313): Error during error handling of UVM issue. (Beta 1)
+* Fixed [#312](https://github.com/enenra/space-engineers-utilities/issues/312): Image nodes that do not contain images should be ignored. (Beta 1)
+* Fixed [#311](https://github.com/enenra/space-engineers-utilities/issues/311): Issue where MaxRequests was exceeded. (Beta 1)
 * Fixed: Error when attempting directory conversion of textures via custom preset. (Beta 4)
 * Fixed: Incorrect check for presence of collision collection on export. (Beta 3)
 * Fixed: Misnamed Havok Filter Manager in Preferences panel. (Beta 3)
@@ -47,10 +48,10 @@
 * Fixed: Rare issue with `BLEND` patching of scenes containing unsupported collection types. (Beta 1)
 * Fixed: Turning off color overlay for icons not applying correctly. (Beta 1)
 
-# Installation
+[# Installation
 Refer to the [install guide](https://space-engineers-modding.github.io/modding-reference/tutorials/tools/3d-modelling/seut/setup.html).
 
-# How to Update
+[# How to Update
 1. Open a new, empty, file in Blender.
 2. Go to `Edit --> Preferences... --> Add-ons` and remove `Modding: Space Engineers Utilities`.
 3. Click `Install...` and select the newly downloaded `space_engineers_utilities_***.zip`.

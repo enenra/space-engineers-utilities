@@ -151,8 +151,9 @@ def create_texture_entry(self, context, mat_entry, mat_name: str, images: dict, 
     else:
         add_subelement(mat_entry, tex_name_long, os.path.splitext(rel_path)[0] + ".dds")
     
-    if not is_valid_resolution(images[tex_type].size[0]) or not is_valid_resolution(images[tex_type].size[1]):
-        seut_report(self, context, 'WARNING', True, 'W004', tex_name, mat_name, f"{images[tex_type].size[0]}x{images[tex_type].size[1]}")
+    if not images[tex_type].size[0] == 0 and images[tex_type].size[1] == 0:
+        if not is_valid_resolution(images[tex_type].size[0]) or not is_valid_resolution(images[tex_type].size[1]):
+            seut_report(self, context, 'WARNING', True, 'W004', tex_name, mat_name, f"{images[tex_type].size[0]}x{images[tex_type].size[1]}")
 
 
 def is_valid_resolution(number: int) -> bool:
