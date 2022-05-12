@@ -181,16 +181,10 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
 
     commands = []
     for tex in files_to_convert:
-        if target_dir.find('Textures') != -1:
-            path_out = target_dir
-        else:
-            path_out =  create_relative_path(os.path.dirname(tex), 'Textures')
-            path_out = os.path.join(target_dir, path_out)
-
-        os.makedirs(path_out, exist_ok=True)
-        target_file = os.path.join(path_out, os.path.splitext(os.path.basename(tex))[0])
+        os.makedirs(target_dir, exist_ok=True)
+        target_file = os.path.join(target_dir, os.path.splitext(os.path.basename(tex))[0])
     
-        commands.append(get_conversion_args(preset, tex, path_out, settings))
+        commands.append(get_conversion_args(preset, tex, target_dir, settings))
         
     total = len(files_to_convert)
     if total > 0:
@@ -248,10 +242,16 @@ def convert_texture(path_in: str, path_out: str, preset: str, settings=[]):
 
 def get_conversion_args(preset: str, path_in: str, path_out: str, settings=[]) -> list:
 
-    args = presets[preset]
+    args = list(presets[preset])
     args[0] = os.path.join(get_tool_dir(), 'texconv.exe')
     args[1] = path_in
     args[len(args) - 1] = path_out
+
+    if preset == 'custom' and settings != []:
+        pos = 2
+        for i in settings:
+            args.insert(pos, i)
+            pos += 1
 
     # Some SE NG files are not in sRGBi, which affects their display in Blender
     idx_ft = args.index('-ft')
@@ -259,11 +259,5 @@ def get_conversion_args(preset: str, path_in: str, path_out: str, settings=[]) -
         args.insert(idx_ft + 2, '-f')
         args.insert(idx_ft + 3, 'R8G8B8A8_UNORM')
         args.insert(idx_ft + 4, '-srgbi')
-
-    if preset == 'custom' and settings != []:
-        pos = 2
-        for i in settings:
-            args.insert(pos, i)
-            pos += 1
 
     return list(args)
