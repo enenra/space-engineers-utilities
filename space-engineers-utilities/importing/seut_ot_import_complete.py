@@ -157,6 +157,7 @@ def determine_fbx_type(filename: str):
     # LOD
     if "_LOD" in filename:
         fbx_type['col_type'] = 'lod'
+        fbx_type['ref_col_type'] = 'main'
         fbx_type['type_index'] = int(re.search("(?<=_LOD)[0-9]{1,}", filename)[0])
     
     # BS / Construction
