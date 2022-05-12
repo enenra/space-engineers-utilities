@@ -69,23 +69,24 @@ def export_xml(self, context, collection) -> str:
         # Case 2: linked but no asset -> no entry (compatibility)
         elif mat.library is not None and mat.asset_data is None:
             continue
-        # Case 3: local + asset -> entry (unless vanilla)
+        # Case 3: local + asset -> entry
         elif mat.library is None and mat.asset_data is not None:
-            if not mat.asset_data.seut.is_vanilla:
-                is_unique = True
-        # Case 4: local -> entry unless the textures are from the assets folder (with exception of Custom-folder in Textures) and thus vanilla
+            is_unique = True
+        # Case 4: local -> entry
         elif mat.library is None and mat.asset_data is None:
+            is_unique = True
+            
+        if is_unique:
+            create_mat_entry(self, context, model, mat)
+            
+            # Only convert the textures if the material contains a non-vanilla one (determined by path being in SEUT Textures folder)
             nodes = mat.node_tree.nodes
             for img_type in ['CM', 'ADD', 'NG', 'ALPHAMASK']:
                 if img_type in nodes and nodes[img_type].image is not None and os.path.exists(get_abs_path(nodes[img_type].image.filepath)):
                     if not check_vanilla_texture(nodes[img_type].image.filepath):
-                        is_unique = True
+                        export_material_textures(self, context, mat)
                         break
-            
-        if is_unique:
-            create_mat_entry(self, context, model, mat)
-            if mat.asset_data is None or (mat.asset_data is not None and not mat.asset_data.seut.is_vanilla):
-                export_material_textures(self, context, mat)
+
             if mat.seut.technique in ['GLASS', 'HOLO', 'SHIELD'] and scene.seut.export_sbc_type in ['update', 'new']:
                 export_transparent_mat(self, context, mat.name)
         else:

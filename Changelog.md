@@ -24,6 +24,7 @@
 * Improved: Highlight description for SEUT Asset Browser parameters. (Beta 1)
 * Improved: Time needed to convert textures in seconds was not rounded. (Beta 1)
 * Improved: Further reduced info spam in SEUT Notifications. (Beta 3)
+* Fixed #332: Fixed issue where custom materials were exported as material references instead of material definitions in some cases. (Beta 4)
 * Fixed #329: Error on export if material had no node tree. (Beta 3)
 * Fixed #325: Center empty coordinates were using the wrong coordinate system. (Beta 3)
 * Fixed #324: Highlight empty without target getting rescaled on export. (Beta 1)
