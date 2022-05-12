@@ -1,4 +1,4 @@
-[# Changelog
+# Changelog
 * Added [#317](https://github.com/enenra/space-engineers-utilities/issues/317): API caching to prevent "Rate Limit exceeded!"-errors. (Beta 1)
 * Added [#306](https://github.com/enenra/space-engineers-utilities/issues/306): Config files for empty-type storage to `SEUT Assets`. (Beta 1)
 * Added [#300](https://github.com/enenra/space-engineers-utilities/issues/300): Button to export Blender logs for easy issue search. (Beta 1)
@@ -48,10 +48,10 @@
 * Fixed: Rare issue with `BLEND` patching of scenes containing unsupported collection types. (Beta 1)
 * Fixed: Turning off color overlay for icons not applying correctly. (Beta 1)
 
-[# Installation
+# Installation
 Refer to the [install guide](https://space-engineers-modding.github.io/modding-reference/tutorials/tools/3d-modelling/seut/setup.html).
 
-[# How to Update
+# How to Update
 1. Open a new, empty, file in Blender.
 2. Go to `Edit --> Preferences... --> Add-ons` and remove `Modding: Space Engineers Utilities`.
 3. Click `Install...` and select the newly downloaded `space_engineers_utilities_***.zip`.
