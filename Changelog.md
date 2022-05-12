@@ -32,6 +32,7 @@
 * Fixed #313: Error during error handling of UVM issue. (Beta 1)
 * Fixed #312: Image nodes that do not contain images should be ignored. (Beta 1)
 * Fixed #311: Issue where MaxRequests was exceeded. (Beta 1)
+* Fixed: Error when attempting directory conversion of textures via custom preset. (Beta 4)
 * Fixed: Incorrect check for presence of collision collection on export. (Beta 3)
 * Fixed: Misnamed Havok Filter Manager in Preferences panel. (Beta 3)
 * Fixed: Build stage collections not using correct collisions until reload. (Beta 2)

@@ -143,8 +143,13 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
 
     wm = context.window_manager
 
-    idx_ft = presets[preset].index('-ft')
-    output_type = presets[preset][idx_ft + 1]
+    if preset == 'custom':
+        idx_ft = settings.index('-ft')
+        output_type = settings[idx_ft + 1]
+
+    else:
+        idx_ft = presets[preset].index('-ft')
+        output_type = presets[preset][idx_ft + 1]
 
     files_to_convert = []
 
