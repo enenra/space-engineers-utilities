@@ -170,7 +170,10 @@ class SEUT_PT_EmptyLink(Panel):
 
         if 'file' in empty:
             row = layout.row()
-            row.label(text="Subpart Scene:", icon = 'EMPTY_DATA')
+            if empty.name.find('dummy_character') != -1:
+                row.label(text="Animation Scene:", icon = 'ARMATURE_DATA')
+            else:
+                row.label(text="Subpart Scene:", icon = 'EMPTY_DATA')
 
             # col = row.column(align=True)
             # link = col.operator('wm.semref_link', text="", icon='INFO')
