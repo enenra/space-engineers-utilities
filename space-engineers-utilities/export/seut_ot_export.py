@@ -342,6 +342,7 @@ def export_mwm(self, context):
     preferences = get_preferences()
     path = get_abs_path(scene.seut.export_exportPath)
     materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
+    collections = get_collections(scene)
 
     settings = ExportSettings(scene, None)
     mwmfile = join(path, scene.seut.subtypeId + ".mwm")
@@ -360,6 +361,12 @@ def export_mwm(self, context):
 
         elif f"{scene.seut.subtypeId}_BS" in f and os.path.splitext(f)[1] == '.fbx':
             bses.append(f)
+
+    # If there are empty collision collections for BS collections, do not duplicate main's HKT for them.
+    if 'hkt' in collections and not collections['hkt'] is None and collections['hkt'] != []:
+        for col in collections['hkt']:
+            if col.seut.ref_col.seut.col_type == 'bs' and len(col.objects) == 0:
+                bses.remove(f"{scene.seut.subtypeId}_BS{col.seut.ref_col.seut.type_index}.fbx")
 
     if len(hkts) == 1:
         if not "_BS" in os.path.basename(hkts[0]):
