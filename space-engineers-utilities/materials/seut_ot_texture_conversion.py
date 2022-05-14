@@ -110,7 +110,7 @@ class SEUT_OT_MassConvertTextures(Operator):
     def execute(self, context):
 
         preferences = get_preferences()
-        target_dir = preferences.asset_path
+        target_dir = os.path.join(preferences.asset_path, 'Textures')
 
         dirs_to_convert = [
             "Models\\Cubes",
@@ -171,21 +171,19 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
                     if skip:
                         continue
                 
-                if target_dir.find('\Textures\\') == -1:
+                if target_dir.find('\Textures\\') == -1 and not target_dir.endswith('\Textures'):
                     target = os.path.join(target_dir, os.path.splitext(file)[0] + '.' + output_type)
                 else:
-                    target = os.path.join(target_dir, create_relative_path(tex_dir, 'Textures'), os.path.splitext(file)[0] + '.' + output_type)
+                    target = os.path.join(os.path.dirname(target_dir), create_relative_path(tex_dir, 'Textures'), os.path.splitext(file)[0] + '.' + output_type)
 
                 if not os.path.exists(target) or os.path.getmtime(source) > os.path.getmtime(target):
-                    files_to_convert.append(os.path.join(tex_dir, file))
+                    files_to_convert.append([os.path.join(tex_dir, file), target])
 
     commands = []
     for tex in files_to_convert:
-        os.makedirs(target_dir, exist_ok=True)
-        target_file = os.path.join(target_dir, os.path.splitext(os.path.basename(tex))[0])
-    
-        commands.append(get_conversion_args(preset, tex, target_dir, settings))
-        
+        os.makedirs(os.path.dirname(tex[1]), exist_ok=True)    
+        commands.append(get_conversion_args(preset, tex[0], os.path.dirname(tex[1]), settings))
+
     total = len(files_to_convert)
     if total > 0:
         if log_to_file:
@@ -200,7 +198,7 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
 
         converted = 0
         for r in results:
-            idx_o = presets[preset].index('-o')
+            idx_o = r[2].index('-o')
             target_file = os.path.join(r[2][idx_o + 1], os.path.splitext(os.path.basename(r[2][1]))[0] + '.' + output_type)
             if r[0] == 0:
                 converted += 1
