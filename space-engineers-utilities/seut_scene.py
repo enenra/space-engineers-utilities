@@ -217,6 +217,8 @@ def update_subtypeId(self, context):
         scene.seut.material_groups_palette.name =f"MaterialGroups ({scene.seut.subtypeId})"
     if scene.seut.biomes_palette is not None:
         scene.seut.biomes_palette.name =f"Biomes ({scene.seut.subtypeId})"
+    if scene.seut.ore_mappings_palette is not None:
+        scene.seut.ore_mappings_palette.name =f"OreMappings ({scene.seut.subtypeId})"
         
     scene.name = scene.seut.subtypeId
 
@@ -754,4 +756,7 @@ class SEUT_Scene(PropertyGroup):
     )
     ore_mappings_index: IntProperty(
         default=0
+    )
+    ore_mappings_palette: PointerProperty(
+        type=bpy.types.Palette
     )

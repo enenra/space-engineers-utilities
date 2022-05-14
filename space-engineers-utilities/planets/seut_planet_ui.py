@@ -101,7 +101,15 @@ class SEUT_UL_PlanetOreMappings(UIList):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
-        layout.label(text=f"{item.value} ({str(item.ore_type)})", icon='TEXTURE_DATA')
+        split = layout.split(factor=0.85)
+        row = split.row()
+        row.label(text=item.ore_type, icon='TEXTURE_DATA')
+
+        colors = context.scene.seut.ore_mappings_palette.colors
+        for c in colors:
+            if int(round(c.color[2] * 255, 0)) == item.value:
+                split.prop(c, 'color', text="")
+                break
 
     def invoke(self, context, event):
         pass

@@ -409,6 +409,11 @@ class SEUT_OT_Planet_OreMappings_Add(Operator):
     def execute(self, context):
         scene = context.scene
         
+        if scene.seut.ore_mappings_palette is None:
+            palette = bpy.data.palettes.new(f"OreMappings ({scene.name})")
+            palette.use_fake_user = True
+            scene.seut.ore_mappings_palette = palette
+        
         item = scene.seut.ore_mappings.add()
         item.value = len(scene.seut.ore_mappings)
 
@@ -432,6 +437,14 @@ class SEUT_OT_Planet_OreMappings_Remove(Operator):
         scene = context.scene
 
         scene.seut.ore_mappings.remove(scene.seut.ore_mappings_index)
+        
+        for c in scene.seut.ore_mappings_palette.colors:
+            found = False
+            for om in scene.seut.ore_mappings:
+                if om.value == int(round(c.color[2] * 255)) and c.color[0] == 0 and c.color[1] == 0:
+                    found = True
+            if not found:
+                scene.seut.ore_mappings_palette.colors.remove(c)
 
         return {'FINISHED'}
 

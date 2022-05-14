@@ -49,6 +49,24 @@ def update_biomes_value(self, context):
     color.color[2] = 0
 
 
+def update_ore_mappings_value(self, context):
+    scene = context.scene
+    palette = scene.seut.ore_mappings_palette
+
+    for c in palette.colors:
+        found = False
+        for om in scene.seut.ore_mappings:
+            if round(om.value / 255, 3) == round(c.color[2], 3) and c.color[0] == 0 and c.color[1] == 0:
+                found = True
+        if not found:
+            palette.colors.remove(c)
+    
+    color = palette.colors.new()
+    color.color[0] = 0
+    color.color[1] = 0
+    color.color[2] = round(self.value / 255, 3)
+
+
 class SEUT_PlanetPropertiesDistributionRulesLayers(PropertyGroup):
     """Layer definitions of Material Group placement rules"""
     
@@ -210,7 +228,8 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
         name="Value",
         default=0,
         min=0,
-        max=255
+        max=255,
+        update=update_ore_mappings_value
     )
     ore_type: StringProperty(
         name="Ore Type"
