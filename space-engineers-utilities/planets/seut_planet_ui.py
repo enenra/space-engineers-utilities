@@ -30,7 +30,13 @@ class SEUT_UL_PlanetMaterialGroups(UIList):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
-        layout.label(text=f"{item.name} ({str(item.value)})", icon='MATERIAL_DATA')
+        split = layout.split(factor=0.85)
+        row = split.row()
+        row.label(text=item.name, icon='MATERIAL_DATA')
+        for c in context.scene.seut.material_groups_palette.colors:
+            if int(round(c.color[0] * 255, 0)) == item.value:
+                split.prop(c, 'color', text="")
+                break
 
     def invoke(self, context, event):
         pass

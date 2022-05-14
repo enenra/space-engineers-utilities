@@ -12,6 +12,25 @@ from bpy.props  import (EnumProperty,
                         )
 
 
+def update_material_groups_value(self, context):
+    scene = context.scene
+
+    palette = scene.seut.material_groups_palette
+
+    for c in palette.colors:
+        found = False
+        for mg in scene.seut.material_groups:
+            if round(mg.value / 255, 3) == round(c.color[0], 3) and c.color[1] == 0 and c.color[2] == 0:
+                found = True
+        if not found:
+            palette.colors.remove(c)
+    
+    color = palette.colors.new()
+    color.color[0] = round(self.value / 255, 3)
+    color.color[1] = 0
+    color.color[2] = 0
+
+
 class SEUT_PlanetPropertiesDistributionRulesLayers(PropertyGroup):
     """Layer definitions of Material Group placement rules"""
     
@@ -81,7 +100,8 @@ class SEUT_PlanetPropertiesMaterialGroups(PropertyGroup):
         name="Value",
         default=0,
         min=0,
-        max=255
+        max=255,
+        update=update_material_groups_value
     )
     rules: CollectionProperty(
         type=SEUT_PlanetPropertiesDistributionRules

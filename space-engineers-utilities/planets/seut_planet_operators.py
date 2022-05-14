@@ -32,6 +32,12 @@ class SEUT_OT_Planet_MaterialGroup_Add(Operator):
         
         item = scene.seut.material_groups.add()
         item.name = "MaterialGroup"
+        item.value = 0
+        
+        if scene.seut.material_groups_palette is None:
+            palette = bpy.data.palettes.new(f"MaterialGroups ({scene.name})")
+            palette.use_fake_user = True
+            scene.seut.material_groups_palette = palette
 
         return {'FINISHED'}
 
@@ -53,6 +59,15 @@ class SEUT_OT_Planet_MaterialGroup_Remove(Operator):
         scene = context.scene
 
         scene.seut.material_groups.remove(scene.seut.material_groups_index)
+        
+        for c in scene.seut.material_groups_palette.colors:
+            found = False
+            for mg in scene.seut.material_groups:
+                if mg.value == int(round(c.color[0] * 255)) and c.color[1] == 0 and c.color[2] == 0:
+                    found = True
+            if not found:
+                scene.seut.material_groups_palette.colors.remove(c)
+
 
         return {'FINISHED'}
 
