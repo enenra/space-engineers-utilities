@@ -33,7 +33,9 @@ class SEUT_UL_PlanetMaterialGroups(UIList):
         split = layout.split(factor=0.85)
         row = split.row()
         row.label(text=item.name, icon='MATERIAL_DATA')
-        for c in context.scene.seut.material_groups_palette.colors:
+
+        colors = context.scene.seut.material_groups_palette.colors
+        for c in colors:
             if int(round(c.color[0] * 255, 0)) == item.value:
                 split.prop(c, 'color', text="")
                 break
@@ -47,7 +49,15 @@ class SEUT_UL_PlanetBiomes(UIList):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
-        layout.label(text=str(item.value), icon='WORLD_DATA')
+        split = layout.split(factor=0.85)
+        row = split.row()
+        row.label(text=str(item.value), icon='WORLD_DATA')
+        
+        colors = context.scene.seut.biomes_palette.colors
+        for c in colors:
+            if int(round(c.color[1] * 255, 0)) == item.value:
+                split.prop(c, 'color', text="")
+                break
 
     def invoke(self, context, event):
         pass

@@ -212,8 +212,11 @@ def update_subtypeId(self, context):
         rename_collections(scene)
         scene.seut.subtypeBefore = scene.seut.subtypeId
 
-    # Planet Editor Color Palettes    
-    scene.seut.material_groups_palette.name =f"MaterialGroups ({scene.seut.subtypeId})"
+    # Planet Editor Color Palettes
+    if scene.seut.material_groups_palette is not None:
+        scene.seut.material_groups_palette.name =f"MaterialGroups ({scene.seut.subtypeId})"
+    if scene.seut.biomes_palette is not None:
+        scene.seut.biomes_palette.name =f"Biomes ({scene.seut.subtypeId})"
         
     scene.name = scene.seut.subtypeId
 
@@ -742,6 +745,9 @@ class SEUT_Scene(PropertyGroup):
     )
     environment_items_index: IntProperty(
         default=0
+    )
+    biomes_palette: PointerProperty(
+        type=bpy.types.Palette
     )
     ore_mappings: CollectionProperty(
         type=SEUT_PlanetPropertiesOreMappings

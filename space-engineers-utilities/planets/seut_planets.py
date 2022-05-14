@@ -14,7 +14,6 @@ from bpy.props  import (EnumProperty,
 
 def update_material_groups_value(self, context):
     scene = context.scene
-
     palette = scene.seut.material_groups_palette
 
     for c in palette.colors:
@@ -28,6 +27,25 @@ def update_material_groups_value(self, context):
     color = palette.colors.new()
     color.color[0] = round(self.value / 255, 3)
     color.color[1] = 0
+    color.color[2] = 0
+
+
+def update_biomes_value(self, context):
+    scene = context.scene
+    palette = scene.seut.biomes_palette
+
+    for c in palette.colors:
+        found = False
+        for ei in scene.seut.environment_items:
+            for biome in ei.biomes:
+                if round(biome.value / 255, 3) == round(c.color[1], 3) and c.color[0] == 0 and c.color[2] == 0:
+                    found = True
+        if not found:
+            palette.colors.remove(c)
+    
+    color = palette.colors.new()
+    color.color[0] = 0
+    color.color[1] = round(self.value / 255, 3)
     color.color[2] = 0
 
 
@@ -120,7 +138,8 @@ class SEUT_PlanetPropertiesBiomes(PropertyGroup):
         name="Value",
         default=0,
         min=0,
-        max=255
+        max=255,
+        update=update_biomes_value
     )
 
 

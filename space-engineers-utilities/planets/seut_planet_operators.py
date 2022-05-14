@@ -30,14 +30,14 @@ class SEUT_OT_Planet_MaterialGroup_Add(Operator):
     def execute(self, context):
         scene = context.scene
         
-        item = scene.seut.material_groups.add()
-        item.name = "MaterialGroup"
-        item.value = 0
-        
         if scene.seut.material_groups_palette is None:
             palette = bpy.data.palettes.new(f"MaterialGroups ({scene.name})")
             palette.use_fake_user = True
             scene.seut.material_groups_palette = palette
+        
+        item = scene.seut.material_groups.add()
+        item.name = "MaterialGroup"
+        item.value = 0
 
         return {'FINISHED'}
 
@@ -261,6 +261,11 @@ class SEUT_OT_Planet_Biome_Add(Operator):
     def execute(self, context):
         scene = context.scene
         environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
+        
+        if scene.seut.biomes_palette is None:
+            palette = bpy.data.palettes.new(f"Biomes ({scene.name})")
+            palette.use_fake_user = True
+            scene.seut.biomes_palette = palette
 
         item = environment_item.biomes.add()
         item.value = len(environment_item.biomes)
@@ -286,6 +291,15 @@ class SEUT_OT_Planet_Biome_Remove(Operator):
         environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
 
         environment_item.biomes.remove(environment_item.biomes_index)
+        
+        for c in scene.seut.biomes_palette.colors:
+            found = False
+            for ei in scene.seut.environment_items:
+                for biome in ei.biomes:
+                    if biome.value == int(round(c.color[1] * 255)) and c.color[0] == 0 and c.color[2] == 0:
+                        found = True
+            if not found:
+                scene.seut.biomes_palette.colors.remove(c)
 
         return {'FINISHED'}
 
