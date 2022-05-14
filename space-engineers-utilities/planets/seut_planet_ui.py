@@ -1,5 +1,3 @@
-from ast import Index
-from msilib.schema import Icon
 import bpy
 
 from bpy.types  import Panel, UIList
@@ -384,3 +382,67 @@ class SEUT_PT_Panel_PlanetOreMappings(Panel):
             
             except IndexError:
                 pass
+
+
+class SEUT_PT_Panel_PlanetExport(Panel):
+    """Creates the planet export panel for SEUT"""
+    bl_idname = "SEUT_PT_Panel_PlanetExport"
+    bl_label = "Export"
+    bl_category = "SEUT"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_options = {'DEFAULT_CLOSED'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+
+        # Export
+        row = layout.row()
+        row.scale_y = 2.0
+        row.operator('planet.export_all', icon='EXPORT')
+        row = layout.row()
+        row.scale_y = 1.1
+        row.operator('planet.bake', icon='OUTPUT')
+
+        # Options
+        box = layout.box()
+        box.label(text="Options", icon='SETTINGS')
+
+        row = box.row()
+        row.prop(scene.seut, "export_sbc_type", expand=True)
+        
+        box.prop(scene.seut, "mod_path", text="Mod")
+
+
+class SEUT_PT_Panel_PlanetImport(Panel):
+    """Creates the planet import panel for SEUT"""
+    bl_idname = "SEUT_PT_Panel_PlanetImport"
+    bl_label = "Import"
+    bl_category = "SEUT"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def draw(self, context):
+        layout = self.layout
+
+        row = layout.row()
+        row.scale_y = 2.0
+        row.operator('planet.import_sbc', icon='IMPORT')
+        
+        box = layout.box()
+        box.label(text='Options', icon='SETTINGS')

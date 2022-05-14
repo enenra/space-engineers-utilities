@@ -11,6 +11,8 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
+from .seut_planet_io    import *
+
 
 class SEUT_OT_Planet_MaterialGroup_Add(Operator):
     """Adds a Material Group to a Planet"""
@@ -403,3 +405,75 @@ class SEUT_OT_Planet_OreMappings_Remove(Operator):
         scene.seut.ore_mappings.remove(scene.seut.ore_mappings_index)
 
         return {'FINISHED'}
+
+
+class SEUT_OT_Planet_ExportAll(Operator):
+    """Exports all planet data to the Mod Folder"""
+    bl_idname = "planet.export_all"
+    bl_label = "Export"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        scene = context.scene
+
+        result = export_planet_sbc(scene)
+
+        return result
+
+
+class SEUT_OT_Planet_Bake(Operator):
+    """Bakes planet maps and places them in the Mod Folder"""
+    bl_idname = "planet.bake"
+    bl_label = "Bake"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        scene = context.scene
+
+        result = bake_planet_map(scene)
+
+        return result
+
+
+class SEUT_OT_Planet_ImportSBC(Operator):
+    """Imports a SBC planet definition"""
+    bl_idname = "planet.import_sbc"
+    bl_label = "Import Planet Definition"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    filter_glob: StringProperty(
+        default='*.sbc',
+        options={'HIDDEN'}
+        )
+
+    filepath: StringProperty(
+        subtype="FILE_PATH"
+        )
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+
+        result = import_planet_sbc(self.filepath)
+
+        return result

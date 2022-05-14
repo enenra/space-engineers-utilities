@@ -87,7 +87,10 @@ from .planets.seut_planet_operators             import (SEUT_OT_Planet_MaterialG
                                                         SEUT_OT_Planet_Item_Add,
                                                         SEUT_OT_Planet_Item_Remove,
                                                         SEUT_OT_Planet_OreMappings_Add,
-                                                        SEUT_OT_Planet_OreMappings_Remove)
+                                                        SEUT_OT_Planet_OreMappings_Remove,
+                                                        SEUT_OT_Planet_ExportAll,
+                                                        SEUT_OT_Planet_Bake,
+                                                        SEUT_OT_Planet_ImportSBC)
 from .planets.seut_planet_ui                    import (SEUT_UL_PlanetDistributionRulesLayers,
                                                         SEUT_UL_PlanetDistributionRules,
                                                         SEUT_UL_PlanetMaterialGroups,
@@ -99,7 +102,9 @@ from .planets.seut_planet_ui                    import (SEUT_UL_PlanetDistributi
                                                         SEUT_PT_Panel_Planet, 
                                                         SEUT_PT_Panel_PlanetComplexMaterials, 
                                                         SEUT_PT_Panel_PlanetEnvironmentItems, 
-                                                        SEUT_PT_Panel_PlanetOreMappings)
+                                                        SEUT_PT_Panel_PlanetOreMappings,
+                                                        SEUT_PT_Panel_PlanetExport,
+                                                        SEUT_PT_Panel_PlanetImport)
 from .planets.seut_planets                      import (SEUT_PlanetPropertiesOreMappings,
                                                         SEUT_PlanetPropertiesBiomes,
                                                         SEUT_PlanetPropertiesDistributionRules,
@@ -238,6 +243,9 @@ classes = (
     SEUT_OT_Planet_Item_Remove,
     SEUT_OT_Planet_OreMappings_Add,
     SEUT_OT_Planet_OreMappings_Remove,
+    SEUT_OT_Planet_ExportAll,
+    SEUT_OT_Planet_Bake,
+    SEUT_OT_Planet_ImportSBC,
     SEUT_UL_PlanetDistributionRulesLayers,
     SEUT_UL_PlanetDistributionRules,
     SEUT_UL_PlanetMaterialGroups,
@@ -250,6 +258,8 @@ classes = (
     SEUT_PT_Panel_PlanetComplexMaterials, 
     SEUT_PT_Panel_PlanetEnvironmentItems, 
     SEUT_PT_Panel_PlanetOreMappings,
+    SEUT_PT_Panel_PlanetExport,
+    SEUT_PT_Panel_PlanetImport,
     SEUT_PlanetPropertiesDistributionRulesLayers,
     SEUT_PlanetPropertiesDistributionRules,
     SEUT_PlanetPropertiesMaterialGroups,
