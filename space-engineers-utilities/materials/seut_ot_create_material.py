@@ -238,7 +238,7 @@ def create_seut_nodegroup(node):
     node_group.inputs['Color Override'].hide_value = True
     links.new(node_input.outputs['Color Override'], node_color_override.inputs[2])
 
-    node_group.inputs.new('NodeSocketColor', 'Color Override Alpha')
+    node_group.inputs.new('NodeSocketFloat', 'Color Override Alpha')
     node_group.inputs['Color Override Alpha'].hide_value = True
     links.new(node_input.outputs['Color Override Alpha'], node_color_override.inputs[0])
 
@@ -246,7 +246,7 @@ def create_seut_nodegroup(node):
     node_group.inputs['Color Overlay'].hide_value = True
     links.new(node_input.outputs['Color Overlay'], node_color_overlay.inputs[2])
 
-    node_group.inputs.new('NodeSocketColor', 'Color Overlay Alpha')
+    node_group.inputs.new('NodeSocketFloat', 'Color Overlay Alpha')
     node_group.inputs['Color Overlay Alpha'].hide_value = True
     links.new(node_input.outputs['Color Overlay Alpha'], node_restrict_to_alpha.inputs[0])
 
