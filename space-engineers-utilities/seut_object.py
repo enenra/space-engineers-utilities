@@ -193,6 +193,15 @@ class SEUT_Object(PropertyGroup):
         default=500
     )
 
+    # Planet Editor
+    planet_editor_type: EnumProperty(
+        items=(
+            ('none', 'None', ''),
+            ('bake_target', 'Bake Target', ''),
+            ('bake_source', 'Bake Source', '')
+            ),
+        default='none'
+    )
     
     # Deprecated with SEUT 0.9.95
     linkedObject: PointerProperty(

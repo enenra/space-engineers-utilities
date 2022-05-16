@@ -72,7 +72,8 @@ from .particles.seut_particles                  import (SEUT_PT_Panel_Particle,
                                                         SEUT_PT_Panel_ExportParticle,
                                                         SEUT_PT_Panel_ImportParticle)
 
-from .planets.seut_planet_operators             import (SEUT_OT_Planet_MaterialGroup_Add, 
+from .planets.seut_planet_operators             import (SEUT_OT_Planet_RecreateSetup,
+                                                        SEUT_OT_Planet_MaterialGroup_Add, 
                                                         SEUT_OT_Planet_MaterialGroup_Remove,
                                                         SEUT_OT_Planet_DistributionRule_Add,
                                                         SEUT_OT_Planet_DistributionRule_Remove,
@@ -227,6 +228,7 @@ classes = (
     SEUT_ParticleProperty,
     SEUT_ParticleSettings,
 
+    SEUT_OT_Planet_RecreateSetup,
     SEUT_OT_Planet_MaterialGroup_Add, 
     SEUT_OT_Planet_MaterialGroup_Remove,
     SEUT_OT_Planet_DistributionRule_Add,

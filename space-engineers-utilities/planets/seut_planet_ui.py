@@ -133,6 +133,14 @@ class SEUT_PT_Panel_Planet(Panel):
     def draw(self, context):
         layout = self.layout
 
+        row = layout.row()
+        row.scale_y = 2.0
+        row.operator('planet.recreate_setup', icon='MATSPHERE')
+
+        # Options
+        box = layout.box()
+        box.label(text="Options", icon='SETTINGS')
+
 
 class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
     """Creates the Planet Complex Materials menu"""

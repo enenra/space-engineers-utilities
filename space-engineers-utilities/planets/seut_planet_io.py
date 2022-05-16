@@ -11,6 +11,16 @@ def export_planet_sbc(scene: bpy.types.Scene):
 def bake_planet_map(scene: bpy.types.Scene, map_type: str = 'height'):
     """"""
 
+    # allow for setting which objects to bake from?
+
+    # set baking options, check target images etc.
+
+    # select & set target, select image nodes?
+
+    # bake to side images
+
+    # rotate side images, then save to mod folder
+
     return
 
 

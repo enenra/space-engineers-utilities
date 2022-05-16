@@ -14,6 +14,29 @@ from bpy.props  import (EnumProperty,
 from .seut_planet_io    import *
 
 
+class SEUT_OT_Planet_RecreateSetup(Operator):
+    """(Re)-spawns the planet editor object setup"""
+    bl_idname = "planet.recreate_setup"
+    bl_label = "Recreate Setup"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        scene = context.scene
+
+        # Find objects in seut-assets
+
+        # spawn objects & register them
+        
+        return {'FINISHED'}
+
+
 class SEUT_OT_Planet_MaterialGroup_Add(Operator):
     """Adds a Material Group to a Planet"""
     bl_idname = "planet.add_material_group"
