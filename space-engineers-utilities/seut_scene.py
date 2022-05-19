@@ -760,3 +760,10 @@ class SEUT_Scene(PropertyGroup):
     ore_mappings_palette: PointerProperty(
         type=bpy.types.Palette
     )
+
+    bake_target: PointerProperty(
+        type=bpy.types.Object
+    )
+    bake_source: PointerProperty(
+        type=bpy.types.Object
+    )

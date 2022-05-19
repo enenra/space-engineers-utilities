@@ -11,6 +11,9 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
+from ..seut_preferences import get_preferences
+from ..seut_collections import get_collections
+from ..seut_errors      import get_abs_path, seut_report
 from .seut_planet_io    import *
 
 
@@ -24,15 +27,57 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+        if scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers:
+            if scene.seut.bake_target is not None and scene.seut.bake_source is not None:
+                Operator.poll_message_set("All objects are present.")
+                return False
+        return True
 
 
     def execute(self, context):
         scene = context.scene
+        preferences = get_preferences()
+        collections = get_collections(scene)
 
-        # Find objects in seut-assets
+        if preferences.asset_path == "":
+            seut_report(self, context, 'ERROR', True, 'E012', "Asset Directory", get_abs_path(preferences.asset_path))
+            return {'CANCELLED'}
 
-        # spawn objects & register them
+        file_path = os.path.join(get_abs_path(preferences.asset_path), 'Models', 'planet_editor.blend')
+        if not os.path.exists(file_path):
+            print("Could not find shit, chief.") # TODO: seut_report replacement
+            return {'CANCELLED'}
+        
+        if not 'main' in collections or collections['main'] == [] or collections['main'][0] is None:
+            print("Could not find shit, chief.") # TODO: seut_report replacement
+            return {'CANCELLED'}
+        
+        context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children[collections['seut'][0].name].children[collections['main'][0].name]
+
+        def append_object(context: bpy.context, file_path: os.path, name: str) -> object:
+            existing_objects = set(context.scene.objects)
+            bpy.ops.wm.append(
+                filepath=os.path.join(file_path, 'Object', name),
+                directory=os.path.join(file_path, 'Object'),
+                filename=name
+            )
+            new_objects = set(context.scene.objects)
+            imported_objects = new_objects.copy()
+
+            for new in new_objects:
+                for existing in existing_objects:
+                    if new == existing:
+                        imported_objects.remove(new)
+
+            return next(iter(imported_objects))
+
+        if scene.seut.bake_target is None:
+            scene.seut.bake_target = append_object(context, file_path, 'BAKE TARGET')
+            bpy.ops.asset.clear()
+        if scene.seut.bake_source is None:
+            scene.seut.bake_source = append_object(context, file_path, 'BAKE SOURCE')
+            bpy.ops.asset.clear()
         
         return {'FINISHED'}
 
