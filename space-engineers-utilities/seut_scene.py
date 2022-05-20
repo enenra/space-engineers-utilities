@@ -733,9 +733,9 @@ class SEUT_Scene(PropertyGroup):
     )
 
     # Planet Editor
-
     sd_texture: StringProperty(
-        name="Texture"
+        name="Texture",
+        subtype="FILE_PATH"
     )
     sd_size: IntProperty(
         name="Size",
