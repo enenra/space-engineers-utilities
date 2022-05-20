@@ -138,6 +138,8 @@ class SEUT_PT_Panel_Planet(Panel):
         row.scale_y = 2.0
         row.operator('planet.recreate_setup', icon='MATSPHERE')
 
+        layout.separator()
+
         box = layout.box()
         box.label(text="Surface Detail", icon='OUTLINER_DATA_LIGHTPROBE')
         box.prop(scene.seut, "sd_texture")
@@ -478,16 +480,9 @@ class SEUT_PT_Panel_PlanetExport(Panel):
         # Options
         box = layout.box()
         box.label(text="Options", icon='SETTINGS')
-
-        col = box.column(align=True)
-        row = col.row()
-        row.prop(scene.seut, "bake_source", text="")
-        row.enabled = False
-        row = col.row()
-        row.prop(scene.seut, "bake_target", text="")
-        row.active = False
         
-        box.prop(scene.seut, "bake_type", text="Type")
+        row = box.row()
+        row.prop(scene.seut, "bake_type", expand=True)
         split = box.split(factor=0.40)
         split.label(text="Resolution:")
         split.prop(scene.seut, "bake_resolution", text="")

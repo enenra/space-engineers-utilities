@@ -18,19 +18,16 @@ def export_planet_maps(scene: bpy.types.Scene):
     for img in bpy.data.images:
         for side in sides:
             if img.name == side and scene.seut.export_map_height:
-                img.filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
-                img.file_format = 'PNG'
-                img.save()
+                filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
+                img.save_render(filepath, scene=scene)
 
             elif img.name == side + '_mat' and scene.seut.export_map_biome:
-                img.filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
-                img.file_format = 'PNG'
-                img.save()
+                filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
+                img.save_render(filepath, scene=scene)
 
             elif img.name == side + '_add' and scene.seut.export_map_spots:
-                img.filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
-                img.file_format = 'PNG'
-                img.save()
+                filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
+                img.save_render(filepath, scene=scene)
 
     return {'FINISHED'}
 
@@ -59,7 +56,7 @@ def bake_planet_map(context: bpy.types.Context):
             width=resolution,
             height=resolution, 
             alpha=False,
-            float_buffer=False,
+            float_buffer=True,
             is_data=True,
             tiled=False
         )
@@ -70,16 +67,17 @@ def bake_planet_map(context: bpy.types.Context):
     for slot in bake_target.material_slots:
         mats.append(slot.material)
 
+    # TODO: SURFACE material changes go in here
     if bake_type == 'height':
-        suffix = None
-        scene.render.bake.image_settings.color_depth = 16
+        suffix = ""
+        scene.render.bake.image_settings.color_depth = '16'
         scene.render.bake.image_settings.color_mode = 'BW'
     elif bake_type == 'biome':
         suffix = "_mat"
-        scene.render.bake.image_settings.color_depth = 32
+        scene.render.bake.image_settings.color_depth = '16'
         scene.render.bake.image_settings.color_mode = 'RGB'
     else:
-        scene.render.bake.image_settings.color_depth = 32
+        scene.render.bake.image_settings.color_depth = '16'
         scene.render.bake.image_settings.color_mode = 'RGB'
         suffix = "_add"
 

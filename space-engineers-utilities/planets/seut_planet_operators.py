@@ -562,13 +562,16 @@ class SEUT_OT_Planet_Bake(Operator):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+        if scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers:
+            if scene.seut.bake_target is None or scene.seut.bake_source is None:
+                Operator.poll_message_set("Bake source or bake target are missing.")
+                return False
+            return True
 
 
     def execute(self, context):
-        scene = context.scene
 
-        result = bake_planet_map(scene)
+        result = bake_planet_map(context)
 
         return result
 
