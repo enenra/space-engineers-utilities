@@ -19,14 +19,20 @@ def export_planet_maps(scene: bpy.types.Scene):
         for side in sides:
             if img.name == side and scene.seut.export_map_height:
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
+                scene.render.image_settings.color_depth = '16'
+                scene.render.image_settings.color_mode = 'BW'
                 img.save_render(filepath, scene=scene)
 
             elif img.name == side + '_mat' and scene.seut.export_map_biome:
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
+                scene.render.image_settings.color_depth = '8'
+                scene.render.image_settings.color_mode = 'RGB'
                 img.save_render(filepath, scene=scene)
 
             elif img.name == side + '_add' and scene.seut.export_map_spots:
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
+                scene.render.image_settings.color_depth = '8'
+                scene.render.image_settings.color_mode = 'RGB'
                 img.save_render(filepath, scene=scene)
 
     return {'FINISHED'}
@@ -74,10 +80,10 @@ def bake_planet_map(context: bpy.types.Context):
         scene.render.bake.image_settings.color_mode = 'BW'
     elif bake_type == 'biome':
         suffix = "_mat"
-        scene.render.bake.image_settings.color_depth = '16'
+        scene.render.bake.image_settings.color_depth = '8'
         scene.render.bake.image_settings.color_mode = 'RGB'
     else:
-        scene.render.bake.image_settings.color_depth = '16'
+        scene.render.bake.image_settings.color_depth = '8'
         scene.render.bake.image_settings.color_mode = 'RGB'
         suffix = "_add"
 
