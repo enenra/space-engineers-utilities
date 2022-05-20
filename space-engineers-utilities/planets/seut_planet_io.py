@@ -8,20 +8,84 @@ def export_planet_sbc(scene: bpy.types.Scene):
     return
 
 
-def bake_planet_map(scene: bpy.types.Scene, map_type: str = 'height'):
+def export_planet_maps(scene: bpy.types.Scene):
     """"""
 
-    # allow for setting which objects to bake from?
+    sides = ['front', 'back', 'left', 'right', 'top', 'bottom']
 
-    # set baking options, check target images etc.
+    for img in bpy.data.images:
+        for side in sides:
+            if img.name == side or img.name == side + '_mat' or img.name == side + '_add':
+                img.filepath = os.path.join(scene.seut.mod_path, 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
+                img.file_format = 'PNG'
+                img.save()
 
-    # select & set target, select image nodes?
+    return {'FINISHED'}
 
-    # bake to side images
 
-    # rotate side images, then save to mod folder
+def bake_planet_map(context: bpy.types.Context):
+    """"""
 
-    return
+    scene = context.scene
+
+    bake_type = scene.seut.bake_type
+    bake_resolution = int(scene.seut.bake_resolution)
+    bake_target = scene.seut.bake_target
+    bake_source = scene.seut.bake_source
+
+    engine = scene.render.engine
+    scene.render.engine = 'CYCLES'
+    scene.render.bake.use_selected_to_active = True
+
+    def check_create_image(name: str, resolution: int) -> bpy.types.Image:
+
+        if name in bpy.data.images:
+            img = bpy.data.images[name]
+            bpy.data.images.remove(img)
+
+        img = bpy.data.images.new(
+            name=name,
+            width=resolution,
+            height=resolution, 
+            alpha=False,
+            float_buffer=False,
+            is_data=True,
+            tiled=False
+        )
+
+        return img
+    
+    mats = []
+    for slot in bake_target.material_slots:
+        mats.append(slot.material)
+
+    suffix = None
+    if bake_type == 'height':
+        pass
+    elif bake_type == 'biome':
+        suffix = "_mat"
+    else:
+        suffix = "_add"
+
+    for mat in mats:
+        node = mat.node_tree.nodes['IMAGE']
+        node.image = check_create_image(mat.name + suffix, bake_resolution)
+        node.select = True
+
+    bake_source.hide_viewport = False
+    bake_source.select_set(True)
+    bake_source.hide_set(False)
+
+    bake_target.hide_viewport = False
+    bake_target.select_set(True)
+    bake_target.hide_set(False)
+    context.window.view_layer.objects.active = bake_target
+
+    bpy.ops.object.bake(type='COMBINED')
+
+    scene.render.engine = engine
+
+    return {'FINISHED'}
 
 
 def import_planet_sbc(path: os.path):

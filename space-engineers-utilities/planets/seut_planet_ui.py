@@ -440,9 +440,6 @@ class SEUT_PT_Panel_PlanetExport(Panel):
         row = layout.row()
         row.scale_y = 2.0
         row.operator('planet.export_all', icon='EXPORT')
-        row = layout.row()
-        row.scale_y = 1.1
-        row.operator('planet.bake', icon='OUTPUT')
 
         # Options
         box = layout.box()
@@ -452,6 +449,30 @@ class SEUT_PT_Panel_PlanetExport(Panel):
         row.prop(scene.seut, "export_sbc_type", expand=True)
         
         box.prop(scene.seut, "mod_path", text="Mod")
+
+        layout.separator()
+
+        # Bake
+        row = layout.row()
+        row.scale_y = 1.1
+        row.operator('planet.bake', icon='OUTPUT')
+
+        # Options
+        box = layout.box()
+        box.label(text="Options", icon='SETTINGS')
+
+        col = box.column(align=True)
+        row = col.row()
+        row.prop(scene.seut, "bake_source", text="")
+        row.enabled = False
+        row = col.row()
+        row.prop(scene.seut, "bake_target", text="")
+        row.active = False
+        
+        box.prop(scene.seut, "bake_type", text="Type")
+        split = box.split(factor=0.40)
+        split.label(text="Resolution:")
+        split.prop(scene.seut, "bake_resolution", text="")
 
 
 class SEUT_PT_Panel_PlanetImport(Panel):

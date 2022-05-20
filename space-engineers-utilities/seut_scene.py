@@ -767,3 +767,22 @@ class SEUT_Scene(PropertyGroup):
     bake_source: PointerProperty(
         type=bpy.types.Object
     )
+    bake_type: EnumProperty(
+        name='Bake Type',
+        items=(
+            ('height', 'Height Map', ''),
+            ('biome', 'Biome Map', ''),
+            ('spots', 'Ore Spots', '')
+            ),
+        default='height'
+    )
+    bake_resolution: EnumProperty(
+        name='Bake Resolution',
+        items=(
+            ('128', '128x128', ''), # TODO: Yeet
+            ('2048', '2048x2048', ''),
+            ('8192', '8192x8192', ''),
+            ('32768', '32768x32768', '')
+            ),
+        default='2048'
+    )

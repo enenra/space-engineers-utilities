@@ -20,7 +20,7 @@ from .seut_planet_io    import *
 class SEUT_OT_Planet_RecreateSetup(Operator):
     """(Re)-spawns the planet editor object setup"""
     bl_idname = "planet.recreate_setup"
-    bl_label = "Recreate Setup"
+    bl_label = "Spawn Setup"
     bl_options = {'REGISTER', 'UNDO'}
 
 
@@ -74,10 +74,13 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
 
         if scene.seut.bake_target is None:
             scene.seut.bake_target = append_object(context, file_path, 'BAKE TARGET')
-            bpy.ops.asset.clear()
         if scene.seut.bake_source is None:
             scene.seut.bake_source = append_object(context, file_path, 'BAKE SOURCE')
-            bpy.ops.asset.clear()
+        
+        mats = ['front', 'back', 'right', 'left', 'top', 'bottom', 'SURFACE']
+        for mat in bpy.data.materials:
+            if mat.name in mats:
+                mat.use_fake_user = True
         
         return {'FINISHED'}
 
@@ -527,13 +530,24 @@ class SEUT_OT_Planet_ExportAll(Operator):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+        if scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers:
+            if not os.path.exists(scene.seut.mod_path):
+                Operator.poll_message_set("Mod must first be defined.")
+                return False
+
+            return True
 
 
     def execute(self, context):
         scene = context.scene
 
-        result = export_planet_sbc(scene)
+        result_sbc = export_planet_sbc(scene)
+        result_maps = export_planet_maps(scene)
+
+        if result_sbc == {'FINISHED'} and result_maps == {'FINISHED'}:
+            result = {'FINISHED'}
+        else:
+            result = {'CANCELLED'}
 
         return result
 
