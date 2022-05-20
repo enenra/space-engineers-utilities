@@ -131,15 +131,28 @@ class SEUT_PT_Panel_Planet(Panel):
 
 
     def draw(self, context):
+        scene = context.scene
         layout = self.layout
 
         row = layout.row()
         row.scale_y = 2.0
         row.operator('planet.recreate_setup', icon='MATSPHERE')
 
-        # Options
         box = layout.box()
-        box.label(text="Options", icon='SETTINGS')
+        box.label(text="Surface Detail", icon='OUTLINER_DATA_LIGHTPROBE')
+        box.prop(scene.seut, "sd_texture")
+        box.prop(scene.seut, "sd_size")
+        box.prop(scene.seut, "sd_scale")
+        col = box.column(align=True)
+        col.prop(scene.seut, "sd_slope_min")
+        col.prop(scene.seut, "sd_slope_max")
+        box.prop(scene.seut, "sd_transition")
+
+        box = layout.box()
+        box.label(text="Hill Parameters", icon='IPO_ELASTIC')
+        col = box.column(align=True)
+        col.prop(scene.seut, "hill_param_min", text="Minimum")
+        col.prop(scene.seut, "hill_param_max", text="Maximum")
 
 
 class SEUT_PT_Panel_PlanetComplexMaterials(Panel):

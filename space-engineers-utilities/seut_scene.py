@@ -733,6 +733,45 @@ class SEUT_Scene(PropertyGroup):
     )
 
     # Planet Editor
+
+    sd_texture: StringProperty(
+        name="Texture"
+    )
+    sd_size: IntProperty(
+        name="Size",
+        min=0
+    )
+    sd_scale: IntProperty(
+        name="Scale",
+        min=1,
+        max=100
+    )
+    sd_slope_min: IntProperty(
+        name="Slope Minimum",
+        min=0,
+        max=90
+    )
+    sd_slope_max: IntProperty(
+        name="Slope Maximum",
+        min=0,
+        max=90
+    )
+    sd_transition: IntProperty(
+        name="Transition",
+        min=0
+    )
+    
+    hill_param_min: FloatProperty(
+        name="Hills Parameter Minimum",
+        min=-1,
+        max=0
+    )
+    hill_param_max: FloatProperty(
+        name="Hills Parameter Maximum",
+        min=0,
+        max=1
+    )
+
     material_groups: CollectionProperty(
         type=SEUT_PlanetPropertiesMaterialGroups
     )
