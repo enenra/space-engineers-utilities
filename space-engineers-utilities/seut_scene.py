@@ -786,3 +786,18 @@ class SEUT_Scene(PropertyGroup):
             ),
         default='2048'
     )
+    export_map_height: BoolProperty(
+        name="Height Map",
+        description="Whether to export the height map",
+        default=True
+    )
+    export_map_biome: BoolProperty(
+        name="Biome Map",
+        description="Whether to export the biome map",
+        default=True
+    )
+    export_map_spots: BoolProperty(
+        name="Ore Spots Map",
+        description="Whether to export the ore spots map",
+        default=True
+    )

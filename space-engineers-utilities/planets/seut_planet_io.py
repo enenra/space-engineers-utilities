@@ -1,22 +1,34 @@
 import bpy
 import os
 
+from ..seut_utils   import get_abs_path
+
 
 def export_planet_sbc(scene: bpy.types.Scene):
     """"""
 
-    return
+    return {'FINISHED'}
 
 
 def export_planet_maps(scene: bpy.types.Scene):
-    """"""
+    """Saves the baked images saved in the BLEND file to the mod folder"""
 
     sides = ['front', 'back', 'left', 'right', 'top', 'bottom']
 
     for img in bpy.data.images:
         for side in sides:
-            if img.name == side or img.name == side + '_mat' or img.name == side + '_add':
-                img.filepath = os.path.join(scene.seut.mod_path, 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
+            if img.name == side and scene.seut.export_map_height:
+                img.filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
+                img.file_format = 'PNG'
+                img.save()
+
+            elif img.name == side + '_mat' and scene.seut.export_map_biome:
+                img.filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
+                img.file_format = 'PNG'
+                img.save()
+
+            elif img.name == side + '_add' and scene.seut.export_map_spots:
+                img.filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
                 img.file_format = 'PNG'
                 img.save()
 
@@ -24,7 +36,7 @@ def export_planet_maps(scene: bpy.types.Scene):
 
 
 def bake_planet_map(context: bpy.types.Context):
-    """"""
+    """Bakes the bake source to the bake target"""
 
     scene = context.scene
 
@@ -37,8 +49,7 @@ def bake_planet_map(context: bpy.types.Context):
     scene.render.engine = 'CYCLES'
     scene.render.bake.use_selected_to_active = True
 
-    def check_create_image(name: str, resolution: int) -> bpy.types.Image:
-
+    def create_image(name: str, resolution: int) -> bpy.types.Image:
         if name in bpy.data.images:
             img = bpy.data.images[name]
             bpy.data.images.remove(img)
@@ -59,17 +70,22 @@ def bake_planet_map(context: bpy.types.Context):
     for slot in bake_target.material_slots:
         mats.append(slot.material)
 
-    suffix = None
     if bake_type == 'height':
-        pass
+        suffix = None
+        scene.render.bake.image_settings.color_depth = 16
+        scene.render.bake.image_settings.color_mode = 'BW'
     elif bake_type == 'biome':
         suffix = "_mat"
+        scene.render.bake.image_settings.color_depth = 32
+        scene.render.bake.image_settings.color_mode = 'RGB'
     else:
+        scene.render.bake.image_settings.color_depth = 32
+        scene.render.bake.image_settings.color_mode = 'RGB'
         suffix = "_add"
 
     for mat in mats:
         node = mat.node_tree.nodes['IMAGE']
-        node.image = check_create_image(mat.name + suffix, bake_resolution)
+        node.image = create_image(mat.name + suffix, bake_resolution)
         node.select = True
 
     bake_source.hide_viewport = False
@@ -93,4 +109,4 @@ def import_planet_sbc(path: os.path):
 
     # offer options for what parts should be imported? tickboxes.
 
-    return
+    return {'FINISHED'}
