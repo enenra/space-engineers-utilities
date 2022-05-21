@@ -26,6 +26,16 @@ def update_sceneType(self, context):
     scene = context.scene
     collections = get_collections(scene, True)
 
+    # There can be only one Planet Editor per BLEND file
+    if self.sceneType == 'planet_editor':
+        for scn in bpy.data.scenes:
+            if scn.seut.sceneType == 'planet_editor' and scn is not scene:
+                if self.previous_scene_type == "":
+                    self.sceneType = 'mainScene'
+                else:
+                    self.sceneType = self.previous_scene_type
+                seut_report(self, context, 'ERROR', False, 'E048')
+
     for key, cols in collections.items():
         if cols is None:
             continue
@@ -43,6 +53,8 @@ def update_sceneType(self, context):
                         bpy.data.collections.remove(col)
                     else:
                         col.color_tag = 'COLOR_07'
+    
+    self.previous_scene_type = self.sceneType
 
 
 def update_GridScale(self, context):
@@ -211,14 +223,6 @@ def update_subtypeId(self, context):
     if scene.seut.subtypeId != scene.seut.subtypeBefore and scene.seut.subtypeBefore != "":
         rename_collections(scene)
         scene.seut.subtypeBefore = scene.seut.subtypeId
-
-    # Planet Editor Color Palettes
-    if scene.seut.material_groups_palette is not None:
-        scene.seut.material_groups_palette.name =f"MaterialGroups ({scene.seut.subtypeId})"
-    if scene.seut.biomes_palette is not None:
-        scene.seut.biomes_palette.name =f"Biomes ({scene.seut.subtypeId})"
-    if scene.seut.ore_mappings_palette is not None:
-        scene.seut.ore_mappings_palette.name =f"OreMappings ({scene.seut.subtypeId})"
         
     scene.name = scene.seut.subtypeId
 
@@ -390,6 +394,7 @@ class SEUT_Scene(PropertyGroup):
         default='mainScene',
         update=update_sceneType
     )
+    previous_scene_type: StringProperty()
     linkSubpartInstances: BoolProperty(
         name="Link Subpart Instances",
         description="Whether to link instances of subparts to their empties",
