@@ -13,6 +13,7 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
+from .planets.seut_planets          import SEUT_PlanetPropertiesEnvironmentItems, SEUT_PlanetPropertiesMaterialGroups, SEUT_PlanetPropertiesOreMappings
 from .seut_mirroring                import clean_mirroring, setup_mirroring
 from .seut_mountpoints              import clean_mountpoints, setup_mountpoints
 from .seut_icon_render              import clean_icon_render, setup_icon_render
@@ -24,6 +25,16 @@ from .seut_utils                    import link_subpart_scene, unlink_subpart_sc
 def update_sceneType(self, context):
     scene = context.scene
     collections = get_collections(scene, True)
+
+    # There can be only one Planet Editor per BLEND file
+    if self.sceneType == 'planet_editor':
+        for scn in bpy.data.scenes:
+            if scn.seut.sceneType == 'planet_editor' and scn is not scene:
+                if self.previous_scene_type == "":
+                    self.sceneType = 'mainScene'
+                else:
+                    self.sceneType = self.previous_scene_type
+                seut_report(self, context, 'ERROR', False, 'E048')
 
     for key, cols in collections.items():
         if cols is None:
@@ -42,6 +53,8 @@ def update_sceneType(self, context):
                         bpy.data.collections.remove(col)
                     else:
                         col.color_tag = 'COLOR_07'
+    
+    self.previous_scene_type = self.sceneType
 
 
 def update_GridScale(self, context):
@@ -376,10 +389,12 @@ class SEUT_Scene(PropertyGroup):
             ('character', 'Character', 'This scene contains a character model'),
             ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
             # ('particle_effect', 'Particle Effect', 'This scene contains a particle effect'),
+            ('planet_editor', 'Planet Editor (Alpha)', 'This scene can be used to create a Space Engineers planet with'),
             ),
         default='mainScene',
         update=update_sceneType
     )
+    previous_scene_type: StringProperty()
     linkSubpartInstances: BoolProperty(
         name="Link Subpart Instances",
         description="Whether to link instances of subparts to their empties",
@@ -720,4 +735,113 @@ class SEUT_Scene(PropertyGroup):
         min=0,
         max=10,
         update=update_renderDistance
+    )
+
+    # Planet Editor
+    sd_texture: StringProperty(
+        name="Texture",
+        subtype="FILE_PATH"
+    )
+    sd_size: IntProperty(
+        name="Size",
+        min=0
+    )
+    sd_scale: IntProperty(
+        name="Scale",
+        min=1,
+        max=100
+    )
+    sd_slope_min: IntProperty(
+        name="Slope Minimum",
+        min=0,
+        max=90
+    )
+    sd_slope_max: IntProperty(
+        name="Slope Maximum",
+        min=0,
+        max=90
+    )
+    sd_transition: IntProperty(
+        name="Transition",
+        min=0
+    )
+    
+    hill_params_min: FloatProperty(
+        name="Hills Parameter Minimum",
+        min=-1,
+        max=0
+    )
+    hill_params_max: FloatProperty(
+        name="Hills Parameter Maximum",
+        min=0,
+        max=1
+    )
+
+    material_groups: CollectionProperty(
+        type=SEUT_PlanetPropertiesMaterialGroups
+    )
+    material_groups_index: IntProperty(
+        default=0
+    )
+    material_groups_palette: PointerProperty(
+        type=bpy.types.Palette
+    )
+    environment_items: CollectionProperty(
+        type=SEUT_PlanetPropertiesEnvironmentItems
+    )
+    environment_items_index: IntProperty(
+        default=0
+    )
+    biomes_palette: PointerProperty(
+        type=bpy.types.Palette
+    )
+    ore_mappings: CollectionProperty(
+        type=SEUT_PlanetPropertiesOreMappings
+    )
+    ore_mappings_index: IntProperty(
+        default=0
+    )
+    ore_mappings_palette: PointerProperty(
+        type=bpy.types.Palette
+    )
+
+    bake_target: PointerProperty(
+        type=bpy.types.Object
+    )
+    bake_source: PointerProperty(
+        type=bpy.types.Object
+    )
+    bake_type: EnumProperty(
+        name='Bake Type',
+        items=(
+            ('height', 'Height Map', ''),
+            ('biome', 'Biome Map', ''),
+            ('spots', 'Ore Spots', '')
+            ),
+        default='height'
+    )
+    bake_resolution: EnumProperty(
+        name='Bake Resolution',
+        items=(
+            ('128', '128x128', ''), # TODO: Yeet
+            ('2048', '2048x2048', ''),
+            ('8192', '8192x8192', ''),
+            ('32768', '32768x32768', '')
+            ),
+        default='2048'
+    )
+    export_map_height: BoolProperty(
+        name="Height Map",
+        description="Whether to export the height map",
+        default=True
+    )
+    export_map_biome: BoolProperty(
+        name="Biome Map",
+        description="Whether to export the biome map",
+        default=True
+    )
+    export_map_spots: BoolProperty(
+        name="Ore Spots Map",
+        description="Whether to export the ore spots map",
+        default=True
     )

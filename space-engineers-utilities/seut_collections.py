@@ -119,6 +119,14 @@ seut_collections = {
             'schema': 'Main ({subtpye_id})',
             'color': 'COLOR_04'
             },
+    },
+    'planet_editor': {
+        'main': {
+            'name': 'Main',
+            'type': 'Planet Editor',
+            'schema': 'Main ({subtpye_id})',
+            'color': 'COLOR_04'
+            },
     }
 }
 

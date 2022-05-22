@@ -57,19 +57,64 @@ from .materials.seut_ot_remap_materials         import SEUT_OT_RemapMaterials
 from .materials.seut_ot_create_material         import SEUT_OT_MatCreate
 from .materials.seut_ot_texture_conversion      import SEUT_OT_ConvertTextures
 from .materials.seut_ot_texture_conversion      import SEUT_OT_MassConvertTextures
-from .particles.seut_particle_settings          import SEUT_ParticlePropertyKeys
-from .particles.seut_particle_settings          import SEUT_ParticlePropertyValue2D
-from .particles.seut_particle_settings          import SEUT_ParticleProperty
-from .particles.seut_particle_settings          import SEUT_ParticleSettings
-from .particles.seut_particle_settings          import SEUT_UL_ParticleProperties
-from .particles.seut_particle_settings          import SEUT_UL_ParticlePropertyValues2D
+
+from .particles.seut_particle_settings          import (SEUT_ParticlePropertyKeys,
+                                                        SEUT_ParticlePropertyValue2D,
+                                                        SEUT_ParticleProperty,
+                                                        SEUT_ParticleSettings,
+                                                        SEUT_UL_ParticleProperties,
+                                                        SEUT_UL_ParticlePropertyValues2D)
 from .particles.seut_ot_settings                import SEUT_OT_SettingsAdd
 from .particles.seut_ot_properties              import SEUT_OT_PropertiesAdd
 from .particles.seut_ot_properties              import SEUT_OT_PropertiesRemove
-from .particles.seut_particles                  import SEUT_PT_Panel_Particle
-from .particles.seut_particles                  import SEUT_PT_Panel_ParticleGeneration
-from .particles.seut_particles                  import SEUT_PT_Panel_ExportParticle
-from .particles.seut_particles                  import SEUT_PT_Panel_ImportParticle
+from .particles.seut_particles                  import (SEUT_PT_Panel_Particle,
+                                                        SEUT_PT_Panel_ParticleGeneration,
+                                                        SEUT_PT_Panel_ExportParticle,
+                                                        SEUT_PT_Panel_ImportParticle)
+
+from .planets.seut_planet_operators             import (SEUT_OT_Planet_RecreateSetup,
+                                                        SEUT_OT_Planet_MaterialGroup_Add, 
+                                                        SEUT_OT_Planet_MaterialGroup_Remove,
+                                                        SEUT_OT_Planet_DistributionRule_Add,
+                                                        SEUT_OT_Planet_DistributionRule_Remove,
+                                                        SEUT_OT_Planet_DistributionRuleLayer_Add,
+                                                        SEUT_OT_Planet_DistributionRuleLayer_Remove,
+                                                        SEUT_OT_Planet_EnvironmentItem_Add,
+                                                        SEUT_OT_Planet_EnvironmentItem_Remove,
+                                                        SEUT_OT_Planet_Biome_Add,
+                                                        SEUT_OT_Planet_Biome_Remove,
+                                                        SEUT_OT_Planet_Material_Add,
+                                                        SEUT_OT_Planet_Material_Remove,
+                                                        SEUT_OT_Planet_Item_Add,
+                                                        SEUT_OT_Planet_Item_Remove,
+                                                        SEUT_OT_Planet_OreMappings_Add,
+                                                        SEUT_OT_Planet_OreMappings_Remove,
+                                                        SEUT_OT_Planet_ExportAll,
+                                                        SEUT_OT_Planet_Bake,
+                                                        SEUT_OT_Planet_ImportSBC)
+from .planets.seut_planet_ui                    import (SEUT_UL_PlanetDistributionRulesLayers,
+                                                        SEUT_UL_PlanetDistributionRules,
+                                                        SEUT_UL_PlanetMaterialGroups,
+                                                        SEUT_UL_PlanetBiomes,
+                                                        SEUT_UL_PlanetMaterials,
+                                                        SEUT_UL_PlanetItems,
+                                                        SEUT_UL_PlanetEnvironmentItems,
+                                                        SEUT_UL_PlanetOreMappings,
+                                                        SEUT_PT_Panel_Planet, 
+                                                        SEUT_PT_Panel_PlanetComplexMaterials, 
+                                                        SEUT_PT_Panel_PlanetEnvironmentItems, 
+                                                        SEUT_PT_Panel_PlanetOreMappings,
+                                                        SEUT_PT_Panel_PlanetExport,
+                                                        SEUT_PT_Panel_PlanetImport)
+from .planets.seut_planets                      import (SEUT_PlanetPropertiesOreMappings,
+                                                        SEUT_PlanetPropertiesBiomes,
+                                                        SEUT_PlanetPropertiesDistributionRules,
+                                                        SEUT_PlanetPropertiesDistributionRulesLayers,
+                                                        SEUT_PlanetPropertiesEnvironmentItems,
+                                                        SEUT_PlanetPropertiesItems,
+                                                        SEUT_PlanetPropertiesMaterialGroups,
+                                                        SEUT_PlanetPropertiesMaterials)
+
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
 from .utils.seut_repositories                   import SEUT_OT_GetUpdate
@@ -177,10 +222,55 @@ classes = (
     SEUT_Materials,
     SEUT_OT_IconRenderPreview,
     SEUT_OT_CopyRenderOptions,
+    
     SEUT_ParticlePropertyKeys,
     SEUT_ParticlePropertyValue2D,
     SEUT_ParticleProperty,
     SEUT_ParticleSettings,
+
+    SEUT_OT_Planet_RecreateSetup,
+    SEUT_OT_Planet_MaterialGroup_Add, 
+    SEUT_OT_Planet_MaterialGroup_Remove,
+    SEUT_OT_Planet_DistributionRule_Add,
+    SEUT_OT_Planet_DistributionRule_Remove,
+    SEUT_OT_Planet_DistributionRuleLayer_Add,
+    SEUT_OT_Planet_DistributionRuleLayer_Remove,
+    SEUT_OT_Planet_EnvironmentItem_Add,
+    SEUT_OT_Planet_EnvironmentItem_Remove,
+    SEUT_OT_Planet_Biome_Add,
+    SEUT_OT_Planet_Biome_Remove,
+    SEUT_OT_Planet_Material_Add,
+    SEUT_OT_Planet_Material_Remove,
+    SEUT_OT_Planet_Item_Add,
+    SEUT_OT_Planet_Item_Remove,
+    SEUT_OT_Planet_OreMappings_Add,
+    SEUT_OT_Planet_OreMappings_Remove,
+    SEUT_OT_Planet_ExportAll,
+    SEUT_OT_Planet_Bake,
+    SEUT_OT_Planet_ImportSBC,
+    SEUT_UL_PlanetDistributionRulesLayers,
+    SEUT_UL_PlanetDistributionRules,
+    SEUT_UL_PlanetMaterialGroups,
+    SEUT_UL_PlanetBiomes,
+    SEUT_UL_PlanetMaterials,
+    SEUT_UL_PlanetItems,
+    SEUT_UL_PlanetEnvironmentItems,
+    SEUT_UL_PlanetOreMappings,
+    SEUT_PT_Panel_Planet,
+    SEUT_PT_Panel_PlanetComplexMaterials, 
+    SEUT_PT_Panel_PlanetEnvironmentItems, 
+    SEUT_PT_Panel_PlanetOreMappings,
+    SEUT_PT_Panel_PlanetExport,
+    SEUT_PT_Panel_PlanetImport,
+    SEUT_PlanetPropertiesDistributionRulesLayers,
+    SEUT_PlanetPropertiesDistributionRules,
+    SEUT_PlanetPropertiesMaterialGroups,
+    SEUT_PlanetPropertiesBiomes,
+    SEUT_PlanetPropertiesMaterials,
+    SEUT_PlanetPropertiesItems,
+    SEUT_PlanetPropertiesEnvironmentItems,
+    SEUT_PlanetPropertiesOreMappings,
+
     SEUT_OT_SettingsAdd,
     SEUT_OT_PropertiesAdd,
     SEUT_OT_PropertiesRemove,
