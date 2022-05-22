@@ -59,6 +59,7 @@ errors = {
     'E046': "Could not convert '{variable_1}'-texture of material '{variable_2}' to DDS.\n{variable_3}",
     'E047': "An access violation error occurred during Havok conversion.",
     'E048': "There can only be one Planet Editor scene per BLEND file.",
+    'E049': "One or more of the required files could not be located within the Assets Directory.",
 }
 
 warnings = {

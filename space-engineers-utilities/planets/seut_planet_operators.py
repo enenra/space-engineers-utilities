@@ -69,13 +69,26 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
                 for existing in existing_objects:
                     if new == existing:
                         imported_objects.remove(new)
+            
+            if len(imported_objects) < 1:
+                return -1
 
             return next(iter(imported_objects))
 
         if scene.seut.bake_target is None:
-            scene.seut.bake_target = append_object(context, file_path, 'BAKE TARGET')
+            appended_obj = append_object(context, file_path, 'BAKE TARGET')
+            if appended_obj == -1:
+                seut_report(self, context, 'ERROR', True, 'E049')
+                return {'CANCELLED'}
+            else:
+                scene.seut.bake_target = appended_obj
         if scene.seut.bake_source is None:
-            scene.seut.bake_source = append_object(context, file_path, 'BAKE SOURCE')
+            appended_obj = append_object(context, file_path, 'BAKE SOURCE')
+            if appended_obj == -1:
+                seut_report(self, context, 'ERROR', True, 'E049')
+                return {'CANCELLED'}
+            else:
+                scene.seut.bake_source = appended_obj
         
         mats = ['front', 'back', 'right', 'left', 'top', 'bottom', 'SURFACE']
         for mat in bpy.data.materials:
