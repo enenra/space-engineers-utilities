@@ -135,7 +135,7 @@ def add_attrib(element, name: str, value):
 def update_attrib(lines, element, name: str, value):
     """Adds an attribute to an element."""
 
-    entry = get_subelement(lines, element)
+    entry = get_subelement(lines, element)        
     attrib = get_attrib(entry, name)
 
     entry_updated = entry.replace(name + "=\"" + attrib + "\"", name + "=\"" + str(value) + "\"")
@@ -154,7 +154,7 @@ def get_attrib(entry: str, name: str):
         return -1
 
 
-def convert_back_xml(element, name: str, lines_entry: str) -> str:
+def convert_back_xml(element, name: str, lines_entry: str, definition_type: str = 'Definition') -> str:
     """Converts a temp xml entry back and replaces it inside the larger xml entry."""
 
     entry = ET.tostring(element, 'utf-8')
@@ -162,9 +162,13 @@ def convert_back_xml(element, name: str, lines_entry: str) -> str:
     entry = entry[entry.find("\n") + 1:]
 
     start = lines_entry.find('<' + name + '>')
-    end = lines_entry.find('</' + name + '>') + len('</' + name + '>')
-
-    return lines_entry.replace(lines_entry[start:end], entry)
+    
+    if start == -1:
+        start = lines_entry.find(f"</{definition_type}>")
+        return lines_entry[:start] + entry + lines_entry[start:]
+    else:
+        end = lines_entry.find('</' + name + '>') + len('</' + name + '>')
+        return lines_entry.replace(lines_entry[start:end], entry)
 
 
 def format_entry(lines: str, depth: int = 0) -> str:
