@@ -197,18 +197,6 @@ def export_planet_sbc(self, context: bpy.types.Context):
         xml_formatted = format_entry(xml_formatted)
         target_file = file_to_update
 
-    # Fixing the entries
-    xml_formatted = xml_formatted.replace("a_Side", "Side")
-    xml_formatted = xml_formatted.replace("b_StartX", "StartX")
-    xml_formatted = xml_formatted.replace("c_StartY", "StartY")
-    xml_formatted = xml_formatted.replace("d_EndX", "EndX")
-    xml_formatted = xml_formatted.replace("e_EndY", "EndY")
-    xml_formatted = xml_formatted.replace("f_PropertiesMask", "PropertiesMask")
-    xml_formatted = xml_formatted.replace("g_ExclusionMask", "ExclusionMask")
-    xml_formatted = xml_formatted.replace("h_Enabled", "Enabled")
-    xml_formatted = xml_formatted.replace("i_Default", "Default")
-    xml_formatted = xml_formatted.replace("j_PressurizedWhenOpen", "PressurizedWhenOpen")
-
     if update_sbc:
         target_file = file_to_update
     else:
