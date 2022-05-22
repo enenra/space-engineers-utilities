@@ -335,22 +335,13 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                         except IndexError:
                             pass
                     
-                    box2 = box.box()
-                    box2.label(text="Distribution Rules", icon='SYSTEM')
-                    row = box2.row()
-                    row.template_list("SEUT_UL_PlanetDistributionRules", "", environment_item, "rules", environment_item, "rules_index", rows=3)
-
-                    col = row.column(align=True)
-                    op = col.operator("planet.add_distribution_rule", icon='ADD', text="")
-                    op.rule_type = 'environment_item'
-                    op = col.operator("planet.remove_distribution_rule", icon='REMOVE', text="")
-                    op.rule_type = 'environment_item'
-
                     # Distribution Rules
+                    box2 = box.box()
+                    box2.label(text="Distribution Rule", icon='SYSTEM')
+                    
                     if len(environment_item.rules) > 0:
                         try:
                             rule = environment_item.rules[environment_item.rules_index]
-
                             box2.prop(rule, 'name')
                             box2.prop(rule, 'height_min')
                             box2.prop(rule, 'height_max')
@@ -358,28 +349,6 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                             box2.prop(rule, 'latitude_max')
                             box2.prop(rule, 'slope_min')
                             box2.prop(rule, 'slope_max')
-                            box2.separator()
-
-                            if rule is not None:
-                                box3 = box2.box()
-                                box3.label(text="Layers", icon='LAYER_ACTIVE')
-                                row = box3.row()
-                                row.template_list("SEUT_UL_PlanetDistributionRulesLayers", "", rule, "layers", rule, "layers_index", rows=3)
-
-                                col = row.column(align=True)
-                                op = col.operator("planet.add_distribution_rule_layer", icon='ADD', text="")
-                                op.rule_type = 'environment_item'
-                                op = col.operator("planet.remove_distribution_rule_layer", icon='REMOVE', text="")
-                                op.rule_type = 'environment_item'
-                                
-                                # Layers
-                                if len(rule.layers) > 0:
-                                    try:
-                                        layer = rule.layers[rule.layers_index]
-                                        box3.prop(layer, 'material')
-                                        box3.prop(layer, 'depth')
-                                    except IndexError:
-                                        pass
 
                         except IndexError:
                             pass

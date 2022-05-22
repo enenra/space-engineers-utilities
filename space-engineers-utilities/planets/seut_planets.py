@@ -94,35 +94,41 @@ class SEUT_PlanetPropertiesDistributionRules(PropertyGroup):
     layers_index: IntProperty(
         default=0
     )
-    height_min: IntProperty(
+    height_min: FloatProperty(
         name="Height Min",
         default=0,
-        min=0
+        min=0,
+        max=1
     )
-    height_max: IntProperty(
+    height_max: FloatProperty(
         name="Height Max",
         default=0,
-        min=0
+        min=0,
+        max=1
     )
-    latitude_min: IntProperty(
+    latitude_min: FloatProperty(
         name="Latitude Min",
         default=0,
-        min=0
+        min=-90,
+        max=90
     )
-    latitude_max: IntProperty(
+    latitude_max: FloatProperty(
         name="Latitude Max",
         default=0,
-        min=0
+        min=-90,
+        max=90
     )
-    slope_min: IntProperty(
+    slope_min: FloatProperty(
         name="Slope Min",
         default=0,
-        min=0
+        min=0,
+        max=90
     )
-    slope_max: IntProperty(
+    slope_max: FloatProperty(
         name="Slope Max",
         default=0,
-        min=0
+        min=0,
+        max=90
     )
 
 
