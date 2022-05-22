@@ -1,11 +1,125 @@
 import bpy
 import os
 
-from ..seut_utils   import get_abs_path
+from ..utils.seut_xml_utils import *
+from ..seut_errors          import seut_report
+from ..seut_utils           import get_abs_path
 
 
-def export_planet_sbc(scene: bpy.types.Scene):
-    """"""
+def export_planet_sbc(self, context: bpy.types.Context):
+    """Saves the SBC values to the mod folder"""
+
+    scene = context.scene
+    path_data = os.path.join(get_abs_path(scene.seut.mod_path), "Data")
+
+    # 3 options: no file and no entry, file but no entry, file and entry
+
+    # Create XML tree and add initial parameters.
+    output = get_relevant_sbc(os.path.dirname(path_data), 'PlanetGeneratorDefinitions', 'PlanetGeneratorDefinition', scene.seut.subtypeId)
+    if output is not None:
+        file_to_update = output[0]
+        lines = output[1]
+        start = output[2]
+        end = output[3]
+    
+    if output is not None and start is not None and end is not None and scene.seut.export_sbc_type == 'update':
+        update_sbc = True
+        lines_entry = lines[start:end]
+        definitions = None
+        def_definition = None
+    else:
+        update_sbc = False
+        lines_entry = ""
+        definitions = ET.Element('Definitions')
+
+    if not update_sbc:
+        add_attrib(definitions, 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+        add_attrib(definitions, 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema')
+
+        cube_blocks = add_subelement(definitions, 'PlanetGeneratorDefinitions')
+        def_definition = add_subelement(cube_blocks, 'PlanetGeneratorDefinition')
+
+        def_Id = add_subelement(def_definition, 'Id')
+        add_subelement(def_Id, 'TypeId', 'PlanetGeneratorDefinition')
+        add_subelement(def_Id, 'SubtypeId', scene.seut.subtypeId)
+        
+    
+    # Surface Detail
+    def_SurfaceDetail = 'SurfaceDetail'
+    if not update_sbc:
+        def_SurfaceDetail = add_subelement(def_definition, 'SurfaceDetail')
+
+    lines_entry = update_add_subelement(def_SurfaceDetail, 'Texture', get_abs_path(scene.seut.sd_texture), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_SurfaceDetail, 'Size', str(scene.seut.sd_size), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_SurfaceDetail, 'Scale', str(scene.seut.sd_scale), update_sbc, lines_entry)
+
+    def_SD_Slope = 'Slope'
+    if not update_sbc:
+        def_SD_Slope = add_subelement(def_SurfaceDetail, 'Slope')
+
+    lines_entry = update_add_attrib(def_SD_Slope, 'Min', str(scene.seut.sd_slope_min), update_sbc, lines_entry)
+    lines_entry = update_add_attrib(def_SD_Slope, 'Max', str(scene.seut.sd_slope_max), update_sbc, lines_entry)
+
+    lines_entry = update_add_subelement(def_SurfaceDetail, 'Transition', str(scene.seut.sd_transition), update_sbc, lines_entry)
+
+
+
+
+
+    # Write to file, place in export folder
+    if not update_sbc:
+        temp_string = ET.tostring(definitions, 'utf-8')
+        try:
+            temp_string.decode('ascii')
+        except UnicodeDecodeError:
+            seut_report(self, context, 'ERROR', True, 'E033')
+        xml_string = xml.dom.minidom.parseString(temp_string)
+        xml_formatted = xml_string.toprettyxml()
+    
+    else:
+        xml_formatted = lines.replace(lines[start:end], lines_entry)
+        xml_formatted = format_entry(xml_formatted)
+        target_file = file_to_update
+
+    # Fixing the entries
+    xml_formatted = xml_formatted.replace("a_Side", "Side")
+    xml_formatted = xml_formatted.replace("b_StartX", "StartX")
+    xml_formatted = xml_formatted.replace("c_StartY", "StartY")
+    xml_formatted = xml_formatted.replace("d_EndX", "EndX")
+    xml_formatted = xml_formatted.replace("e_EndY", "EndY")
+    xml_formatted = xml_formatted.replace("f_PropertiesMask", "PropertiesMask")
+    xml_formatted = xml_formatted.replace("g_ExclusionMask", "ExclusionMask")
+    xml_formatted = xml_formatted.replace("h_Enabled", "Enabled")
+    xml_formatted = xml_formatted.replace("i_Default", "Default")
+    xml_formatted = xml_formatted.replace("j_PressurizedWhenOpen", "PressurizedWhenOpen")
+
+    if update_sbc:
+        target_file = file_to_update
+    else:
+        filename = scene.seut.subtypeId
+        target_file = os.path.join(path_data, "PlanetDataFiles", filename + ".sbc")
+        if not os.path.exists(os.path.join(path_data, "PlanetDataFiles")):
+            os.makedirs(os.path.join(path_data, "PlanetDataFiles"))
+        
+        # This covers the case where a file exists but the SBC export setting forces new file creation.
+        counter = 1
+        while os.path.exists(target_file):
+            target_file = os.path.splitext(target_file)[0]
+            split = target_file.split("_")
+            try:
+                number = int(split[len(split)-1]) + 1
+                target_file = target_file[:target_file.rfind("_")]
+                target_file = f"{target_file}_{number}.sbc"
+            except:
+                target_file = target_file + "_1.sbc"
+
+    exported_xml = open(target_file, "w")
+    exported_xml.write(xml_formatted)
+
+    if not update_sbc:
+        seut_report(self, context, 'INFO', False, 'I004', target_file)
+    else:
+        seut_report(self, context, 'INFO', False, 'I015', scene.seut.subtypeId, target_file)
 
     return {'FINISHED'}
 

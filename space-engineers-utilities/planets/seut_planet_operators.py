@@ -102,7 +102,7 @@ class SEUT_OT_Planet_MaterialGroup_Add(Operator):
         scene = context.scene
         
         if scene.seut.material_groups_palette is None:
-            palette = bpy.data.palettes.new(f"MaterialGroups ({scene.name})")
+            palette = bpy.data.palettes.new(f"MaterialGroups")
             palette.use_fake_user = True
             scene.seut.material_groups_palette = palette
         
@@ -334,7 +334,7 @@ class SEUT_OT_Planet_Biome_Add(Operator):
         environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
         
         if scene.seut.biomes_palette is None:
-            palette = bpy.data.palettes.new(f"Biomes ({scene.name})")
+            palette = bpy.data.palettes.new(f"Biomes")
             palette.use_fake_user = True
             scene.seut.biomes_palette = palette
 
@@ -481,7 +481,7 @@ class SEUT_OT_Planet_OreMappings_Add(Operator):
         scene = context.scene
         
         if scene.seut.ore_mappings_palette is None:
-            palette = bpy.data.palettes.new(f"OreMappings ({scene.name})")
+            palette = bpy.data.palettes.new(f"OreMappings")
             palette.use_fake_user = True
             scene.seut.ore_mappings_palette = palette
         
@@ -541,7 +541,7 @@ class SEUT_OT_Planet_ExportAll(Operator):
     def execute(self, context):
         scene = context.scene
 
-        result_sbc = export_planet_sbc(scene)
+        result_sbc = export_planet_sbc(self, context)
         result_maps = export_planet_maps(scene)
 
         if result_sbc == {'FINISHED'} and result_maps == {'FINISHED'}:

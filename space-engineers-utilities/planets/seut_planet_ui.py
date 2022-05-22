@@ -460,10 +460,10 @@ class SEUT_PT_Panel_PlanetExport(Panel):
         box = layout.box()
         box.label(text="Options", icon='SETTINGS')
 
-        col = box.column(align=True)
-        row = col.row()
+        row = box.row()
         row.prop(scene.seut, "export_sbc_type", expand=True)
-        row = col.row(align=True)
+        
+        row = box.row(align=True)
         row.prop(scene.seut, "export_map_height", text="Height", icon='BOIDS')
         row.prop(scene.seut, "export_map_biome", text="Biome", icon='WORLD_DATA')
         row.prop(scene.seut, "export_map_spots", text="Ore Spots", icon='OUTLINER_OB_POINTCLOUD')
