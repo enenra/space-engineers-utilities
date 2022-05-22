@@ -75,10 +75,10 @@ class SEUT_PlanetPropertiesDistributionRulesLayers(PropertyGroup):
     material: StringProperty(
         name="Material"
     )
-    depth: IntProperty(
+    depth: FloatProperty(
         name="Depth",
         default=0,
-        min=1
+        min=0
     )
 
 

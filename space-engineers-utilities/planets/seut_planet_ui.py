@@ -210,12 +210,25 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
                         try:
                             rule = material_group.rules[material_group.rules_index]
                             box2.prop(rule, 'name')
-                            box2.prop(rule, 'height_min')
-                            box2.prop(rule, 'height_max')
-                            box2.prop(rule, 'latitude_min')
-                            box2.prop(rule, 'latitude_max')
-                            box2.prop(rule, 'slope_min')
-                            box2.prop(rule, 'slope_max')
+
+                            split = box2.split(factor=0.20)
+                            split.label(text="Height:")
+                            row = split.row(align=True)
+                            row.prop(rule, 'height_min', text="Min")
+                            row.prop(rule, 'height_max', text="Max")
+
+                            split = box2.split(factor=0.20)
+                            split.label(text="Latitude:")
+                            row = split.row(align=True)
+                            row.prop(rule, 'latitude_min', text="Min")
+                            row.prop(rule, 'latitude_max', text="Max")
+
+                            split = box2.split(factor=0.20)
+                            split.label(text="Slope:")
+                            row = split.row(align=True)
+                            row.prop(rule, 'slope_min', text="Min")
+                            row.prop(rule, 'slope_max', text="Max")
+
                             box2.separator()
 
                             if rule is not None:
@@ -342,13 +355,24 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                     if len(environment_item.rules) > 0:
                         try:
                             rule = environment_item.rules[environment_item.rules_index]
-                            box2.prop(rule, 'name')
-                            box2.prop(rule, 'height_min')
-                            box2.prop(rule, 'height_max')
-                            box2.prop(rule, 'latitude_min')
-                            box2.prop(rule, 'latitude_max')
-                            box2.prop(rule, 'slope_min')
-                            box2.prop(rule, 'slope_max')
+
+                            split = box2.split(factor=0.20)
+                            split.label(text="Height:")
+                            row = split.row(align=True)
+                            row.prop(rule, 'height_min', text="Min")
+                            row.prop(rule, 'height_max', text="Max")
+
+                            split = box2.split(factor=0.20)
+                            split.label(text="Latitude:")
+                            row = split.row(align=True)
+                            row.prop(rule, 'latitude_min', text="Min")
+                            row.prop(rule, 'latitude_max', text="Max")
+
+                            split = box2.split(factor=0.20)
+                            split.label(text="Slope:")
+                            row = split.row(align=True)
+                            row.prop(rule, 'slope_min', text="Min")
+                            row.prop(rule, 'slope_max', text="Max")
 
                         except IndexError:
                             pass

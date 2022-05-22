@@ -55,17 +55,17 @@ def export_planet_sbc(self, context: bpy.types.Context):
         sd_path = get_abs_path(scene.seut.sd_texture)
     lines_entry = update_add_subelement(def_SurfaceDetail, 'Texture', sd_path, update_sbc, lines_entry)
 
-    lines_entry = update_add_subelement(def_SurfaceDetail, 'Size', str(scene.seut.sd_size), update_sbc, lines_entry)
-    lines_entry = update_add_subelement(def_SurfaceDetail, 'Scale', str(scene.seut.sd_scale), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_SurfaceDetail, 'Size', scene.seut.sd_size, update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_SurfaceDetail, 'Scale', scene.seut.sd_scale, update_sbc, lines_entry)
 
     def_SD_Slope = 'Slope'
     if not update_sbc:
         def_SD_Slope = add_subelement(def_SurfaceDetail, 'Slope')
 
-    lines_entry = update_add_attrib(def_SD_Slope, 'Min', str(scene.seut.sd_slope_min), update_sbc, lines_entry)
-    lines_entry = update_add_attrib(def_SD_Slope, 'Max', str(scene.seut.sd_slope_max), update_sbc, lines_entry)
+    lines_entry = update_add_attrib(def_SD_Slope, 'Min', scene.seut.sd_slope_min, update_sbc, lines_entry)
+    lines_entry = update_add_attrib(def_SD_Slope, 'Max', scene.seut.sd_slope_max, update_sbc, lines_entry)
 
-    lines_entry = update_add_subelement(def_SurfaceDetail, 'Transition', str(scene.seut.sd_transition), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_SurfaceDetail, 'Transition', scene.seut.sd_transition, update_sbc, lines_entry)
     
     # Ore Mappings
     if len(scene.seut.ore_mappings) > 0:
@@ -76,29 +76,111 @@ def export_planet_sbc(self, context: bpy.types.Context):
         
         for om in scene.seut.ore_mappings:
             def_Ore = ET.SubElement(def_OreMappings, 'Ore')
-            add_attrib(def_Ore, 'Value', str(om.value))
-            add_attrib(def_Ore, 'Type', str(om.ore_type))
-            add_attrib(def_Ore, 'Start', str(om.start))
-            add_attrib(def_Ore, 'Depth', str(om.depth))
-            add_attrib(def_Ore, 'TargetColor', str(om.target_color)) # TODO: Convert to color + hex
-            add_attrib(def_Ore, 'ColorInfluence', str(om.color_influence))
+            add_attrib(def_Ore, 'Value', om.value)
+            add_attrib(def_Ore, 'Type', om.ore_type)
+            add_attrib(def_Ore, 'Start', om.start)
+            add_attrib(def_Ore, 'Depth', om.depth)
+            add_attrib(def_Ore, 'TargetColor', om.target_color) # TODO: Convert to color + hex
+            add_attrib(def_Ore, 'ColorInfluence', om.color_influence)
         
         if update_sbc:
             lines_entry = convert_back_xml(def_OreMappings, 'OreMappings', lines_entry, 'PlanetGeneratorDefinition')
 
     # Complex Materials
+    if len(scene.seut.material_groups) > 0:
+        if not update_sbc:
+            def_ComplexMaterials = add_subelement(def_definition, 'ComplexMaterials')
+        else:
+            def_ComplexMaterials = ET.Element('ComplexMaterials')
+        
+        for mg in scene.seut.material_groups:
+            def_MaterialGroup = ET.SubElement(def_ComplexMaterials, 'MaterialGroup')
+            add_attrib(def_MaterialGroup, 'Name', mg.name)
+            add_attrib(def_MaterialGroup, 'Value', mg.value)
+            
+            if len(mg.rules) > 0:
+                for r in mg.rules:
+                    def_Rule = ET.SubElement(def_MaterialGroup, 'Rule')
 
+                    if len(r.layers) > 0:
+                        def_Layers = add_subelement(def_Rule, 'Layers')
+
+                        for l in r.layers:
+                            def_Layer = ET.SubElement(def_Layers, 'Layer')
+                            add_attrib(def_Layer, 'Material', l.material)
+                            add_attrib(def_Layer, 'Depth', l.depth)
+                    
+                    def_Height = add_subelement(def_Rule, 'Height')
+                    add_attrib(def_Height, 'Min', round(r.height_min, 2))
+                    add_attrib(def_Height, 'Max', round(r.height_max, 2))
+                    
+                    def_Latitude = add_subelement(def_Rule, 'Latitude')
+                    add_attrib(def_Latitude, 'Min', round(r.latitude_min, 2))
+                    add_attrib(def_Latitude, 'Max', round(r.latitude_max, 2))
+                    
+                    def_Slope = add_subelement(def_Rule, 'Slope')
+                    add_attrib(def_Slope, 'Min', round(r.slope_min, 2))
+                    add_attrib(def_Slope, 'Max', round(r.slope_max, 2))
+
+        if update_sbc:
+            lines_entry = convert_back_xml(def_ComplexMaterials, 'ComplexMaterials', lines_entry, 'PlanetGeneratorDefinition')
 
     # Environment Items
+    if len(scene.seut.environment_items) > 0:
+        if not update_sbc:
+            def_EnvironmentItems = add_subelement(def_definition, 'EnvironmentItems')
+        else:
+            def_EnvironmentItems = ET.Element('EnvironmentItems')
 
+        for ei in scene.seut.environment_items:
+            def_Item = ET.SubElement(def_EnvironmentItems, 'Item')
+
+            if len(ei.biomes) > 0:
+                def_Biomes = ET.SubElement(def_Item, 'Biomes')
+                for biome in ei.biomes:
+                    def_Biome = ET.SubElement(def_Biomes, 'Biome')
+                    def_Biome.text = str(biome.value)
+
+            if len(ei.materials) > 0:
+                def_Materials = ET.SubElement(def_Item, 'Materials')
+                for mat in ei.materials:
+                    def_Material = ET.SubElement(def_Materials, 'Material')
+                    def_Material.text = mat.name
+
+            if len(ei.items) > 0:
+                def_SubItems = ET.SubElement(def_Item, 'Items')
+                for i in ei.items:
+                    def_SubItem = ET.SubElement(def_SubItems, 'Item')
+                    add_attrib(def_SubItem, 'TypeId', i.type_id)
+                    add_attrib(def_SubItem, 'SubtypeId', i.subtype_id)
+                    add_attrib(def_SubItem, 'Density', round(i.density, 2))
+
+            if len(ei.rules) > 0:
+                for r in ei.rules:
+                    def_Rule = ET.SubElement(def_Item, 'Rule')
+
+                    def_Height = add_subelement(def_Rule, 'Height')
+                    add_attrib(def_Height, 'Min', round(r.height_min, 2))
+                    add_attrib(def_Height, 'Max', round(r.height_max, 2))
+                    
+                    def_Latitude = add_subelement(def_Rule, 'Latitude')
+                    add_attrib(def_Latitude, 'Min', round(r.latitude_min, 2))
+                    add_attrib(def_Latitude, 'Max', round(r.latitude_max, 2))
+                    
+                    def_Slope = add_subelement(def_Rule, 'Slope')
+                    add_attrib(def_Slope, 'Min', round(r.slope_min, 2))
+                    add_attrib(def_Slope, 'Max', round(r.slope_max, 2))
+
+        if update_sbc:
+            lines_entry = convert_back_xml(def_EnvironmentItems, 'EnvironmentItems', lines_entry, 'PlanetGeneratorDefinition')
 
     # Hill Params
     def_HillParams = 'HillParams'
     if not update_sbc:
         def_HillParams = add_subelement(def_definition, 'HillParams')
 
-    lines_entry = update_add_attrib(def_HillParams, 'Min', str(round(scene.seut.hill_params_min, 2)), update_sbc, lines_entry)
-    lines_entry = update_add_attrib(def_HillParams, 'Max', str(round(scene.seut.hill_params_max, 2)), update_sbc, lines_entry)
+    lines_entry = update_add_attrib(def_HillParams, 'Min', round(scene.seut.hill_params_min, 2), update_sbc, lines_entry)
+    lines_entry = update_add_attrib(def_HillParams, 'Max', round(scene.seut.hill_params_max, 2), update_sbc, lines_entry)
     
     # Write to file, place in export folder
     if not update_sbc:
