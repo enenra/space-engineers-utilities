@@ -389,7 +389,7 @@ class SEUT_Scene(PropertyGroup):
             ('character', 'Character', 'This scene contains a character model'),
             ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
             # ('particle_effect', 'Particle Effect', 'This scene contains a particle effect'),
-            ('planet_editor', 'Planet Editor', ''),
+            ('planet_editor', 'Planet Editor (Alpha)', 'This scene can be used to create a Space Engineers planet with'),
             ),
         default='mainScene',
         update=update_sceneType
