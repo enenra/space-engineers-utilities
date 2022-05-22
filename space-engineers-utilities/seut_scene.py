@@ -766,12 +766,12 @@ class SEUT_Scene(PropertyGroup):
         min=0
     )
     
-    hill_param_min: FloatProperty(
+    hill_params_min: FloatProperty(
         name="Hills Parameter Minimum",
         min=-1,
         max=0
     )
-    hill_param_max: FloatProperty(
+    hill_params_max: FloatProperty(
         name="Hills Parameter Maximum",
         min=0,
         max=1

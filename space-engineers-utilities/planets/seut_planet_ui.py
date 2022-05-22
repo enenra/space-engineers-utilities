@@ -153,8 +153,8 @@ class SEUT_PT_Panel_Planet(Panel):
         box = layout.box()
         box.label(text="Hill Parameters", icon='IPO_ELASTIC')
         col = box.column(align=True)
-        col.prop(scene.seut, "hill_param_min", text="Minimum")
-        col.prop(scene.seut, "hill_param_max", text="Maximum")
+        col.prop(scene.seut, "hill_params_min", text="Minimum")
+        col.prop(scene.seut, "hill_params_max", text="Maximum")
 
 
 class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
@@ -462,7 +462,7 @@ class SEUT_PT_Panel_PlanetExport(Panel):
 
         row = box.row()
         row.prop(scene.seut, "export_sbc_type", expand=True)
-        
+
         row = box.row(align=True)
         row.prop(scene.seut, "export_map_height", text="Height", icon='BOIDS')
         row.prop(scene.seut, "export_map_biome", text="Biome", icon='WORLD_DATA')

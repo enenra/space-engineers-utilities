@@ -49,7 +49,12 @@ def export_planet_sbc(self, context: bpy.types.Context):
     if not update_sbc:
         def_SurfaceDetail = add_subelement(def_definition, 'SurfaceDetail')
 
-    lines_entry = update_add_subelement(def_SurfaceDetail, 'Texture', get_abs_path(scene.seut.sd_texture), update_sbc, lines_entry)
+    if scene.seut.sd_texture == "":
+        sd_path = ""
+    else:
+        sd_path = get_abs_path(scene.seut.sd_texture)
+    lines_entry = update_add_subelement(def_SurfaceDetail, 'Texture', sd_path, update_sbc, lines_entry)
+
     lines_entry = update_add_subelement(def_SurfaceDetail, 'Size', str(scene.seut.sd_size), update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_SurfaceDetail, 'Scale', str(scene.seut.sd_scale), update_sbc, lines_entry)
 
@@ -61,11 +66,40 @@ def export_planet_sbc(self, context: bpy.types.Context):
     lines_entry = update_add_attrib(def_SD_Slope, 'Max', str(scene.seut.sd_slope_max), update_sbc, lines_entry)
 
     lines_entry = update_add_subelement(def_SurfaceDetail, 'Transition', str(scene.seut.sd_transition), update_sbc, lines_entry)
+    
+    # Ore Mappings
+    if len(scene.seut.ore_mappings) > 0:
+        if not update_sbc:
+            def_OreMappings = add_subelement(def_definition, 'OreMappings')
+        else:
+            def_OreMappings = ET.Element('OreMappings')
+        
+        for om in scene.seut.ore_mappings:
+            def_Ore = ET.SubElement(def_OreMappings, 'Ore')
+            add_attrib(def_Ore, 'Value', str(om.value))
+            add_attrib(def_Ore, 'Type', str(om.ore_type))
+            add_attrib(def_Ore, 'Start', str(om.start))
+            add_attrib(def_Ore, 'Depth', str(om.depth))
+            add_attrib(def_Ore, 'TargetColor', str(om.target_color)) # TODO: Convert to color + hex
+            add_attrib(def_Ore, 'ColorInfluence', str(om.color_influence))
+        
+        if update_sbc:
+            lines_entry = convert_back_xml(def_OreMappings, 'OreMappings', lines_entry, 'PlanetGeneratorDefinition')
+
+    # Complex Materials
 
 
+    # Environment Items
 
 
+    # Hill Params
+    def_HillParams = 'HillParams'
+    if not update_sbc:
+        def_HillParams = add_subelement(def_definition, 'HillParams')
 
+    lines_entry = update_add_attrib(def_HillParams, 'Min', str(round(scene.seut.hill_params_min, 2)), update_sbc, lines_entry)
+    lines_entry = update_add_attrib(def_HillParams, 'Max', str(round(scene.seut.hill_params_max, 2)), update_sbc, lines_entry)
+    
     # Write to file, place in export folder
     if not update_sbc:
         temp_string = ET.tostring(definitions, 'utf-8')
