@@ -278,9 +278,3 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
         min=0,
         max=1.0
     )
-    color_influence: IntProperty(
-        name="Color Influence",
-        description="The strength with which the surface above the deposit is colored",
-        default=0,
-        min=0
-    )

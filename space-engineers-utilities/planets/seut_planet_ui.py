@@ -418,7 +418,6 @@ class SEUT_PT_Panel_PlanetOreMappings(Panel):
                 box.prop(ore_mapping, 'start')
                 box.prop(ore_mapping, 'depth')
                 box.prop(ore_mapping, 'target_color')
-                box.prop(ore_mapping, 'color_influence')
             
             except IndexError:
                 pass
