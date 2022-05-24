@@ -80,7 +80,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
             add_attrib(def_Ore, 'Type', om.ore_type)
             add_attrib(def_Ore, 'Start', om.start)
             add_attrib(def_Ore, 'Depth', om.depth)
-            add_attrib(def_Ore, 'TargetColor', om.target_color) # TODO: Convert to color + hex
+            add_attrib(def_Ore, 'TargetColor', '#%02x%02x%02x' % (int(om.target_color[0] * 255), int(om.target_color[1] * 255), int(om.target_color[2] * 255)))
             add_attrib(def_Ore, 'ColorInfluence', om.color_influence)
         
         if update_sbc:

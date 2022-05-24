@@ -270,9 +270,13 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
         default=1,
         min=1
     )
-    target_color: StringProperty(
+    target_color: FloatVectorProperty(
         name="Target Color",
-        description="The color that is applied to the ore spots above this ore deposit"
+        description="The color that is applied to the ore spots above this ore deposit.\nNote: Due to Blender weirdness, the color shown here is not the exact same color the game will use",
+        subtype='COLOR',
+        size=3,
+        min=0,
+        max=1.0
     )
     color_influence: IntProperty(
         name="Color Influence",
