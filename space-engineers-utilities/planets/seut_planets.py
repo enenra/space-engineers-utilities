@@ -73,10 +73,12 @@ class SEUT_PlanetPropertiesDistributionRulesLayers(PropertyGroup):
     name: StringProperty()
 
     material: StringProperty(
-        name="Material"
+        name="Material",
+        description="The Voxel Material the layer consists of"
     )
     depth: FloatProperty(
         name="Depth",
+        description="The thickness of this layer of voxels",
         default=0,
         min=0
     )
@@ -86,7 +88,8 @@ class SEUT_PlanetPropertiesDistributionRules(PropertyGroup):
     """Placement rules of Material Groups"""
     
     name: StringProperty(
-        name="Name"
+        name="Name",
+        description="The name of the material group"
     )
     layers: CollectionProperty(
         type=SEUT_PlanetPropertiesDistributionRulesLayers
@@ -96,36 +99,42 @@ class SEUT_PlanetPropertiesDistributionRules(PropertyGroup):
     )
     height_min: FloatProperty(
         name="Height Min",
+        description="The minimum height at which this material group should appear.\nNote: The maximum possible height (1.0) is always 6% of the spawned planets diameter in km. Ex.: the maximum height of a 120km diameter planet is 7.2km",
         default=0,
         min=0,
         max=1
     )
     height_max: FloatProperty(
         name="Height Max",
+        description="The maximum height at which this material group should appear.\nNote: The maximum possible height (1.0) is always 6% of the spawned planets diameter in km. Ex.: the maximum height of a 120km diameter planet is 7.2km",
         default=0,
         min=0,
         max=1
     )
     latitude_min: FloatProperty(
         name="Latitude Min",
+        description="The minimum latitude in degrees at which the material group should spawn",
         default=0,
         min=-90,
         max=90
     )
     latitude_max: FloatProperty(
         name="Latitude Max",
+        description="The maximum latitude in degrees at which the material group should spawn",
         default=0,
         min=-90,
         max=90
     )
     slope_min: FloatProperty(
         name="Slope Min",
+        description="The minimum slope / angle in degrees on which this material group should be placed",
         default=0,
         min=0,
         max=90
     )
     slope_max: FloatProperty(
         name="Slope Max",
+        description="The maximum slope / angle in degrees on which this material group should be placed",
         default=0,
         min=0,
         max=90
@@ -140,6 +149,7 @@ class SEUT_PlanetPropertiesMaterialGroups(PropertyGroup):
     )
     value: IntProperty(
         name="Value",
+        description="The luminosity value of the color in the Red channel onto which this material group should be placed",
         default=0,
         min=0,
         max=255,
@@ -160,6 +170,7 @@ class SEUT_PlanetPropertiesBiomes(PropertyGroup):
 
     value: IntProperty(
         name="Value",
+        description="The luminosity value of the color in the Green channel onto which these Environment Items should be placed",
         default=0,
         min=0,
         max=255,
@@ -171,7 +182,8 @@ class SEUT_PlanetPropertiesMaterials(PropertyGroup):
     """Materials of Environment Items"""
 
     name: StringProperty(
-        name="Voxel Material"
+        name="Voxel Material",
+        description="The SubtypeId of the Voxel Material"
     )
 
 
@@ -181,13 +193,16 @@ class SEUT_PlanetPropertiesItems(PropertyGroup):
     name: StringProperty()
 
     type_id: StringProperty(
-        name="TypeId"
+        name="TypeId",
+        description="The TypeId of the environment object"
     )
     subtype_id: StringProperty(
-        name="SubtypeId"
+        name="SubtypeId",
+        description="The SubtypeId of the environment object"
     )
     density: FloatProperty(
         name="Density",
+        description="The density at which this environment item should be placed",
         min=0.01,
         max=1.00
     )
@@ -197,7 +212,8 @@ class SEUT_PlanetPropertiesEnvironmentItems(PropertyGroup):
     """Environment Item Entries"""
     
     name: StringProperty(
-        name="Name"
+        name="Name",
+        description="The name of this environment items entry"
     )
     biomes: CollectionProperty(
         type=SEUT_PlanetPropertiesBiomes
@@ -232,29 +248,35 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
 
     value: IntProperty(
         name="Value",
+        description="The luminosity value of the color in the Blue channel onto which the Ore Mapping should be placed",
         default=0,
         min=0,
         max=255,
         update=update_ore_mappings_value
     )
     ore_type: StringProperty(
-        name="Ore Type"
+        name="Ore Type",
+        description="The SubtypeId of the voxel material to place"
     )
     start: IntProperty(
         name="Start",
+        description="The depth in meters below ground at which the deposit should start",
         default=0,
         min=0
     )
     depth: IntProperty(
         name="Depth",
+        description="The thickness of the ore deposit",
         default=1,
         min=1
     )
     target_color: StringProperty(
-        name="Target Color"
+        name="Target Color",
+        description="The color that is applied to the ore spots above this ore deposit"
     )
     color_influence: IntProperty(
         name="Color Influence",
+        description="The strength with which the surface above the deposit is colored",
         default=0,
         min=0
     )

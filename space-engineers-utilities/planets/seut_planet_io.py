@@ -53,7 +53,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
         sd_path = ""
     else:
         sd_path = get_abs_path(scene.seut.sd_texture)
-    lines_entry = update_add_subelement(def_SurfaceDetail, 'Texture', sd_path, update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_SurfaceDetail, 'Texture', sd_path, update_sbc, lines_entry) # TODO: remove file extension
 
     lines_entry = update_add_subelement(def_SurfaceDetail, 'Size', scene.seut.sd_size, update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_SurfaceDetail, 'Scale', scene.seut.sd_scale, update_sbc, lines_entry)

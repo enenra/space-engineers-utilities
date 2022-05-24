@@ -389,7 +389,7 @@ class SEUT_Scene(PropertyGroup):
             ('character', 'Character', 'This scene contains a character model'),
             ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
             # ('particle_effect', 'Particle Effect', 'This scene contains a particle effect'),
-            ('planet_editor', 'Planet Editor (Alpha)', 'This scene can be used to create a Space Engineers planet with'),
+            ('planet_editor', 'Planet Editor (Alpha)', 'This scene can be used to create a Space Engineers planet with. Only one can exist per BLEND file'),
             ),
         default='mainScene',
         update=update_sceneType
@@ -740,39 +740,47 @@ class SEUT_Scene(PropertyGroup):
     # Planet Editor
     sd_texture: StringProperty(
         name="Texture",
+        description="This texture is used like a heightmap on defined slopes in the terrain to add additional detail",
         subtype="FILE_PATH"
     )
     sd_size: IntProperty(
         name="Size",
+        description="Defines the size in which the Surface Detail texture is applied to the terrain. Larger values result in less detailed voxel geometry",
         min=0
     )
     sd_scale: IntProperty(
         name="Scale",
+        description="Defines how much the generated voxel geometry is offset from the terrain through the Surface Detail texture",
         min=1,
         max=100
     )
     sd_slope_min: IntProperty(
         name="Slope Minimum",
+        description="The minimum slope angle (in degrees) the Surface Detail texture should be applied to",
         min=0,
         max=90
     )
     sd_slope_max: IntProperty(
         name="Slope Maximum",
         min=0,
+        description="The maximum slope angle (in degrees) the Surface Detail texture should be applied to",
         max=90
     )
     sd_transition: IntProperty(
         name="Transition",
+        description="Defines the range of degrees over which the Surface Detail texture fades away",
         min=0
     )
     
     hill_params_min: FloatProperty(
         name="Hills Parameter Minimum",
         min=-1,
+        description="The minimum offset by which the terrain is displaced according to the height map",
         max=0
     )
     hill_params_max: FloatProperty(
         name="Hills Parameter Maximum",
+        description="The maximum offset by which the terrain is displaced according to the height map",
         min=0,
         max=1
     )
@@ -813,6 +821,7 @@ class SEUT_Scene(PropertyGroup):
     )
     bake_type: EnumProperty(
         name='Bake Type',
+        description="Which map type to bake from the current BAKE SOURCE",
         items=(
             ('height', 'Height Map', ''),
             ('biome', 'Biome Map', ''),
@@ -822,6 +831,7 @@ class SEUT_Scene(PropertyGroup):
     )
     bake_resolution: EnumProperty(
         name='Bake Resolution',
+        description="What resolution to bake the selected map type to. Higher resolutions result in higher bake times.\nNote: 128x128 maps are only suitable to do quick tests with",
         items=(
             ('128', '128x128', ''), # TODO: Yeet
             ('2048', '2048x2048', ''),
@@ -842,6 +852,6 @@ class SEUT_Scene(PropertyGroup):
     )
     export_map_spots: BoolProperty(
         name="Ore Spots Map",
-        description="Whether to export the ore spots map",
+        description="Whether to export the ore spots map",  # TODO: Implement support for ore spots
         default=True
     )
