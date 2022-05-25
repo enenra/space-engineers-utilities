@@ -8,7 +8,7 @@ from ..seut_errors                  import seut_report
 from ..seut_preferences             import empties
 
 
-def items_detector_types(context, scene):
+def items_detector_types(self, context):
 
     items = []
     for key, entry in empties['preset_subparts'].items():   # NOTE: This will error after a reload of the addon.
