@@ -78,8 +78,13 @@ class SEUT_UL_PlanetItems(UIList):
     """Creates the Planet Items UI list"""
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
-
-        layout.label(text=item.subtype_id, icon='RNA')
+        
+        name = ""
+        if item.subtype_id != "":
+            name = item.subtype_id
+        elif item.group_id != "":
+            name = item.group_id
+        layout.label(text=name, icon='RNA')
 
     def invoke(self, context, event):
         pass
@@ -344,6 +349,8 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                             item = environment_item.items[environment_item.items_index]
                             box2.prop(item, 'type_id')
                             box2.prop(item, 'subtype_id')
+                            box2.prop(item, 'group_id')
+                            box2.prop(item, 'modifier_id')
                             box2.prop(item, 'density')
                         except IndexError:
                             pass

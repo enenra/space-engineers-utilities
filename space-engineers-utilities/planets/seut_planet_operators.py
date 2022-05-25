@@ -16,6 +16,7 @@ from ..seut_preferences import get_preferences
 from ..seut_collections import get_collections
 from ..seut_errors      import get_abs_path, seut_report
 from .seut_planet_io    import *
+from .seut_planet_utils import *
 
 
 class SEUT_OT_Planet_RecreateSetup(Operator):
@@ -113,16 +114,8 @@ class SEUT_OT_Planet_MaterialGroup_Add(Operator):
 
 
     def execute(self, context):
-        scene = context.scene
         
-        if scene.seut.material_groups_palette is None:
-            palette = bpy.data.palettes.new(f"MaterialGroups")
-            palette.use_fake_user = True
-            scene.seut.material_groups_palette = palette
-        
-        item = scene.seut.material_groups.add()
-        item.name = "MaterialGroup"
-        item.value = 0
+        add_material_group(context)
 
         return {'FINISHED'}
 
@@ -347,16 +340,8 @@ class SEUT_OT_Planet_Biome_Add(Operator):
 
 
     def execute(self, context):
-        scene = context.scene
-        environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
         
-        if scene.seut.biomes_palette is None:
-            palette = bpy.data.palettes.new(f"Biomes")
-            palette.use_fake_user = True
-            scene.seut.biomes_palette = palette
-
-        item = environment_item.biomes.add()
-        item.value = len(environment_item.biomes)
+        add_biome(context)
 
         return {'FINISHED'}
 
@@ -495,15 +480,8 @@ class SEUT_OT_Planet_OreMappings_Add(Operator):
 
 
     def execute(self, context):
-        scene = context.scene
         
-        if scene.seut.ore_mappings_palette is None:
-            palette = bpy.data.palettes.new(f"OreMappings")
-            palette.use_fake_user = True
-            scene.seut.ore_mappings_palette = palette
-        
-        item = scene.seut.ore_mappings.add()
-        item.value = len(scene.seut.ore_mappings)
+        add_ore_mapping(context)
 
         return {'FINISHED'}
 
@@ -593,47 +571,69 @@ class SEUT_OT_Planet_Bake(Operator):
         return result
 
 
-selected_file = None
+last_dir = ""
+valid_files = {}
 
 
-def items_planet_def(context, scene):
+def items_planet_def(self, context):
 
-    items = []
-    items.append(('none', "None", "No planet definition selected"))
+    global last_dir
+    global valid_files
 
-    if not os.path.exists(selected_file) or not os.path.isfile(selected_file):
-        return items
+    if os.path.dirname(self.filepath) == last_dir:
+        if self.filepath in valid_files:
+            return valid_files[self.filepath]
+        else:
+            return []
 
-    try:
-        tree = ET.parse(selected_file)
-    except:
-        return items
+    else:
+        for f in os.listdir(os.path.dirname(self.filepath)):
+            if os.path.splitext(f)[1] != '.sbc':
+                continue
+            
+            file = os.path.join(os.path.dirname(self.filepath), f)
+            with open(file) as f_open:
+                if '<TypeId>PlanetGeneratorDefinition</TypeId>' in f_open.read():
+                    
+                    try:
+                        tree = ET.parse(file)
+                    except:
+                        return []
 
-    root = tree.getroot()
-    if not root.tag == 'Definitions':
-        return items
+                    root = tree.getroot()
+                    if not root.tag == 'Definitions':
+                        return []
 
-    for definition in root:
-        if definition.tag == 'PlanetGeneratorDefinitions':
-            for planet in definition:
-                for elem in planet:
-                    if elem.tag == 'Id':
-                        for elem2 in elem:
-                            if elem2.tag == 'SubtypeId':
-                                items.append((elem2.text, elem2.text, ""))
-                                break
-                        break
+                    for definition in root:
+                        if definition.tag == 'PlanetGeneratorDefinitions':
+                            for planet in definition:
+                                for elem in planet:
+                                    if elem.tag == 'Id':
+                                        for elem2 in elem:
+                                            if elem2.tag == 'SubtypeId':
+                                                if not file in valid_files:
+                                                    valid_files[file] = []
+                                                valid_files[file].append((elem2.text, elem2.text, ""))
+                                                break
+                                        break
 
-        elif definition.tag == 'Definition' and '{http://www.w3.org/2001/XMLSchema-instance}type' in definition.attrib and definition.attrib['{http://www.w3.org/2001/XMLSchema-instance}type'] == 'PlanetGeneratorDefinition':
-            for elem in definition:
-                if elem.tag == 'Id':
-                    for elem2 in elem:
-                        if elem2.tag == 'SubtypeId':
-                            items.append((elem2.text, elem2.text, ""))
-                            break
-                    break
-    
-    return items
+                        elif definition.tag == 'Definition' and '{http://www.w3.org/2001/XMLSchema-instance}type' in definition.attrib and definition.attrib['{http://www.w3.org/2001/XMLSchema-instance}type'] == 'PlanetGeneratorDefinition':
+                            for elem in definition:
+                                if elem.tag == 'Id':
+                                    for elem2 in elem:
+                                        if elem2.tag == 'SubtypeId':
+                                            if not file in valid_files:
+                                                valid_files[file] = []
+                                            valid_files[file].append((elem2.text, elem2.text, ""))
+                                            break
+                                    break
+                                
+        last_dir = os.path.dirname(self.filepath)
+        if self.filepath in valid_files:
+            return valid_files[self.filepath]
+        else:
+            return []
+
 
 class SEUT_OT_Planet_ImportSBC(Operator, ImportHelper):
     """Imports a SBC planet definition"""
@@ -689,14 +689,14 @@ class SEUT_OT_Planet_ImportSBC(Operator, ImportHelper):
     def draw(self, context):
         layout = self.layout
 
-        global selected_file
-        selected_file = self.filepath
-
         box = layout.box()
         row = box.row()
         row.label(text="Options", icon='SETTINGS')
-        if os.path.isfile(self.filepath):
-            row.label(text=os.path.basename(self.filepath), icon='FILE')
+
+        if not  self.filepath in valid_files:
+            row = box.row()
+            row.alert = True
+            row.label(text="No Planet Definition SBC selected.")
 
         box.prop(self, 'planet_def')
         col = box.column(align=True)

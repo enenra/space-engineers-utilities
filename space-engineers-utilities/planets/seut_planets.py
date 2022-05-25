@@ -200,6 +200,14 @@ class SEUT_PlanetPropertiesItems(PropertyGroup):
         name="SubtypeId",
         description="The SubtypeId of the environment object"
     )
+    group_id: StringProperty(
+        name="GroupId",
+        description="The GroupId of the environment object"
+    )
+    modifier_id: StringProperty(
+        name="ModifierId",
+        description="The ModifierId of the environment object"
+    )
     density: FloatProperty(
         name="Density",
         description="The density at which this environment item should be placed",

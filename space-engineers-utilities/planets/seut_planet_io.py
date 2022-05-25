@@ -4,7 +4,7 @@ import os
 from ..utils.seut_xml_utils import *
 from ..seut_errors          import seut_report
 from ..seut_utils           import get_abs_path
-
+from .seut_planet_utils     import *
 
 def export_planet_sbc(self, context: bpy.types.Context):
     """Saves the SBC values to the mod folder"""
@@ -329,13 +329,20 @@ def bake_planet_map(context: bpy.types.Context):
 def import_planet_sbc(self, context):
     """"""
 
+    if self.planet_def == 'none':
+        return {'CANCELLED'}
+
+    scene = context.scene
     tree = ET.parse(self.filepath)
     root = tree.getroot()
 
     planet_root = None
 
     for definition in root:
-        if definition.tag == 'PlanetGeneratorDefinitions':
+        if planet_root is not None:
+            break
+
+        elif definition.tag == 'PlanetGeneratorDefinitions':
             for planet in definition:
                 for elem in planet:
                     if elem.tag == 'Id':
@@ -343,9 +350,8 @@ def import_planet_sbc(self, context):
                             if elem2.tag == 'SubtypeId' and elem2.text == self.planet_def:
                                 planet_root = planet
                                 break
-                        break
+                    break
                 break
-            break
 
         elif definition.tag == 'Definition' and '{http://www.w3.org/2001/XMLSchema-instance}type' in definition.attrib and definition.attrib['{http://www.w3.org/2001/XMLSchema-instance}type'] == 'PlanetGeneratorDefinition':
             for elem in definition:
@@ -354,15 +360,87 @@ def import_planet_sbc(self, context):
                         if elem2.tag == 'SubtypeId' and elem2.text == self.planet_def:
                             planet_root = definition
                             break
-                    break
-            break
+                break
     
     for elem in planet_root:
         if elem.tag == 'OreMappings' and self.import_ore_mappings:
-            return
+            for ore in elem:
+                ore_mapping = add_ore_mapping(context)
+                ore_mapping.value = int(ore.attrib['Value'])
+                ore_mapping.ore_type = ore.attrib['Type']
+                ore_mapping.start = int(ore.attrib['Start'])
+                ore_mapping.depth = int(ore.attrib['Depth'])
+                hex = ore.attrib['TargetColor'][1:]
+                r, g, b = tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
+                ore_mapping.target_color = (r / 255, g / 255, b / 255)
+
         if elem.tag == 'ComplexMaterials' and self.import_material_groups:
-            return
+            for mg in elem:
+                material_group = add_material_group(context)
+                material_group.name = mg.attrib['Name']
+                material_group.value = int(mg.attrib['Value'])
+
+                for r in mg:
+                    rule = material_group.rules.add()
+                    rule.name = "Rule " + str(len(material_group.rules))
+
+                    for i in r:
+                        if i.tag == 'Height':
+                            rule.height_min = float(i.attrib['Min'])
+                            rule.height_max = float(i.attrib['Max'])
+                        elif i.tag == 'Latitude':
+                            rule.latitude_min = float(i.attrib['Min'])
+                            rule.latitude_max = float(i.attrib['Max'])
+                        elif i.tag == 'Slope':
+                            rule.slope_min = float(i.attrib['Min'])
+                            rule.slope_max = float(i.attrib['Max'])
+                        elif i.tag == 'Layers':
+                            for l in i:
+                                layer = rule.layers.add()
+                                layer.material = l.attrib['Material']
+                                layer.depth = int(l.attrib['Depth'])
+
         if elem.tag == 'EnvironmentItems' and self.import_environment_items:
-            return
-            
+            for i in elem:
+                item = scene.seut.environment_items.add()
+                item.name = "EnvironmentItem " + str(len(scene.seut.environment_items))
+
+                for e in i:
+                    if e.tag == 'Biomes':
+                        for b in e:
+                            biome = add_biome(context, item)
+                            biome.value = int(b.text)
+                    
+                    elif e.tag == 'Materials':
+                        for m in e:
+                            material = item.materials.add()
+                            material.name = m.text
+
+                    elif e.tag == 'Items':
+                        for itm in e:
+                            single_item = item.items.add()
+                            single_item.type_id = itm.attrib['TypeId']
+                            if 'SubtypeId' in itm.attrib:
+                                single_item.subtype_id = itm.attrib['SubtypeId']
+                            if 'GroupId' in itm.attrib:
+                                single_item.group_id = itm.attrib['GroupId']
+                            if 'ModifierId' in itm.attrib:
+                                single_item.modifier_id = itm.attrib['ModifierId']
+                            single_item.density = float(itm.attrib['Density'])
+
+                    elif e.tag == 'Rule':
+                        for r in e:
+                            rule = item.rules.add()
+
+                            for i in r:
+                                if i.tag == 'Height':
+                                    rule.height_min = float(i.attrib['Min'])
+                                    rule.height_max = float(i.attrib['Max'])
+                                elif i.tag == 'Latitude':
+                                    rule.latitude_min = float(i.attrib['Min'])
+                                    rule.latitude_max = float(i.attrib['Max'])
+                                elif i.tag == 'Slope':
+                                    rule.slope_min = float(i.attrib['Min'])
+                                    rule.slope_max = float(i.attrib['Max'])
+
     return {'FINISHED'}
