@@ -501,6 +501,3 @@ class SEUT_PT_Panel_PlanetImport(Panel):
         row = layout.row()
         row.scale_y = 2.0
         row.operator('planet.import_sbc', icon='IMPORT')
-        
-        box = layout.box()
-        box.label(text='Options', icon='SETTINGS')

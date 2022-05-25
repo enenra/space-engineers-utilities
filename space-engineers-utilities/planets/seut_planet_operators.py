@@ -1,15 +1,16 @@
 import bpy
 
-from bpy.types  import Operator
-from bpy.props  import (EnumProperty,
-                        FloatProperty,
-                        FloatVectorProperty,
-                        IntProperty,
-                        StringProperty,
-                        BoolProperty,
-                        PointerProperty,
-                        CollectionProperty
-                        )
+from bpy.types              import Operator
+from bpy.props              import (EnumProperty,
+                                    FloatProperty,
+                                    FloatVectorProperty,
+                                    IntProperty,
+                                    StringProperty,
+                                    BoolProperty,
+                                    PointerProperty,
+                                    CollectionProperty
+                                    )
+from bpy_extras.io_utils    import ImportHelper
 
 from ..seut_preferences import get_preferences
 from ..seut_collections import get_collections
@@ -592,21 +593,84 @@ class SEUT_OT_Planet_Bake(Operator):
         return result
 
 
-class SEUT_OT_Planet_ImportSBC(Operator):
+selected_file = None
+
+
+def items_planet_def(context, scene):
+
+    items = []
+    items.append(('none', "None", "No planet definition selected"))
+
+    if not os.path.exists(selected_file) or not os.path.isfile(selected_file):
+        return items
+
+    try:
+        tree = ET.parse(selected_file)
+    except:
+        return items
+
+    root = tree.getroot()
+    if not root.tag == 'Definitions':
+        return items
+
+    for definition in root:
+        if definition.tag == 'PlanetGeneratorDefinitions':
+            for planet in definition:
+                for elem in planet:
+                    if elem.tag == 'Id':
+                        for elem2 in elem:
+                            if elem2.tag == 'SubtypeId':
+                                items.append((elem2.text, elem2.text, ""))
+                                break
+                        break
+
+        elif definition.tag == 'Definition' and '{http://www.w3.org/2001/XMLSchema-instance}type' in definition.attrib and definition.attrib['{http://www.w3.org/2001/XMLSchema-instance}type'] == 'PlanetGeneratorDefinition':
+            for elem in definition:
+                if elem.tag == 'Id':
+                    for elem2 in elem:
+                        if elem2.tag == 'SubtypeId':
+                            items.append((elem2.text, elem2.text, ""))
+                            break
+                    break
+    
+    return items
+
+class SEUT_OT_Planet_ImportSBC(Operator, ImportHelper):
     """Imports a SBC planet definition"""
     bl_idname = "planet.import_sbc"
     bl_label = "Import Planet Definition"
     bl_options = {'REGISTER', 'UNDO'}
 
 
+    filename_ext = ".sbc"
+
     filter_glob: StringProperty(
         default='*.sbc',
         options={'HIDDEN'}
-        )
-
+    )
     filepath: StringProperty(
         subtype="FILE_PATH"
-        )
+    )
+    planet_def: EnumProperty(
+        name='Planet',
+        items=items_planet_def,
+        default=0
+    )
+    import_ore_mappings: BoolProperty(
+        name="Ore Mappings",
+        description="Whether to import Ore Mappings",
+        default=True
+    )
+    import_material_groups: BoolProperty(
+        name="Material Groups",
+        description="Whether to import Material Groups",
+        default=True
+    )
+    import_environment_items: BoolProperty(
+        name="Environment Items",
+        description="Whether to import Environment Items",
+        default=True
+    )
 
 
     @classmethod
@@ -617,6 +681,32 @@ class SEUT_OT_Planet_ImportSBC(Operator):
 
     def execute(self, context):
 
-        result = import_planet_sbc(self.filepath)
+        result = import_planet_sbc(self, context)
 
         return result
+
+
+    def draw(self, context):
+        layout = self.layout
+
+        global selected_file
+        selected_file = self.filepath
+
+        box = layout.box()
+        row = box.row()
+        row.label(text="Options", icon='SETTINGS')
+        if os.path.isfile(self.filepath):
+            row.label(text=os.path.basename(self.filepath), icon='FILE')
+
+        box.prop(self, 'planet_def')
+        col = box.column(align=True)
+        col.prop(self, 'import_ore_mappings', icon='TEXTURE_DATA')
+        col.prop(self, 'import_material_groups', icon='MATERIAL_DATA')
+        col.prop(self, 'import_environment_items', icon='SCENE_DATA')
+
+
+    def invoke(self, context, event):
+
+        context.window_manager.fileselect_add(self)
+        
+        return {'RUNNING_MODAL'}

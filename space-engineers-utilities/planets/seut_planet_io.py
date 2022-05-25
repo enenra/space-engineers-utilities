@@ -326,9 +326,43 @@ def bake_planet_map(context: bpy.types.Context):
     return {'FINISHED'}
 
 
-def import_planet_sbc(path: os.path):
+def import_planet_sbc(self, context):
     """"""
 
-    # offer options for what parts should be imported? tickboxes.
+    tree = ET.parse(self.filepath)
+    root = tree.getroot()
 
+    planet_root = None
+
+    for definition in root:
+        if definition.tag == 'PlanetGeneratorDefinitions':
+            for planet in definition:
+                for elem in planet:
+                    if elem.tag == 'Id':
+                        for elem2 in elem:
+                            if elem2.tag == 'SubtypeId' and elem2.text == self.planet_def:
+                                planet_root = planet
+                                break
+                        break
+                break
+            break
+
+        elif definition.tag == 'Definition' and '{http://www.w3.org/2001/XMLSchema-instance}type' in definition.attrib and definition.attrib['{http://www.w3.org/2001/XMLSchema-instance}type'] == 'PlanetGeneratorDefinition':
+            for elem in definition:
+                if elem.tag == 'Id':
+                    for elem2 in elem:
+                        if elem2.tag == 'SubtypeId' and elem2.text == self.planet_def:
+                            planet_root = definition
+                            break
+                    break
+            break
+    
+    for elem in planet_root:
+        if elem.tag == 'OreMappings' and self.import_ore_mappings:
+            return
+        if elem.tag == 'ComplexMaterials' and self.import_material_groups:
+            return
+        if elem.tag == 'EnvironmentItems' and self.import_environment_items:
+            return
+            
     return {'FINISHED'}
