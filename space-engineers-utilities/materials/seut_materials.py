@@ -122,14 +122,14 @@ class SEUT_Materials(PropertyGroup):
     )
     windScale: FloatProperty(
         name="Wind Scale:",
-        description="Only relevant for trees and bushes",
+        description="Determines the amount of displacement of the material",
         default=0,
         min=0,
         max=1
     )
     windFrequency: FloatProperty(
         name="Wind Frequency:",
-        description="Only relevant for trees and bushes",
+        description="Determines the speed of the displacement animation of the material",
         default=0,
         min=0,
         max=100
