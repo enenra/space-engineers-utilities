@@ -833,7 +833,7 @@ class SEUT_Scene(PropertyGroup):
         name='Bake Resolution',
         description="What resolution to bake the selected map type to. Higher resolutions result in higher bake times.\nNote: 128x128 maps are only suitable to do quick tests with",
         items=(
-            ('128', '128x128', ''), # TODO: Yeet
+            ('128', '128x128', ''),
             ('2048', '2048x2048', ''),
             ('8192', '8192x8192', ''),
             ('32768', '32768x32768', '')
@@ -852,6 +852,6 @@ class SEUT_Scene(PropertyGroup):
     )
     export_map_spots: BoolProperty(
         name="Ore Spots Map",
-        description="Whether to export the ore spots map",  # TODO: Implement support for ore spots
+        description="Whether to export the ore spots map",
         default=True
     )

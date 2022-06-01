@@ -25,7 +25,6 @@ class SEUT_OT_StructureConversion(Operator):
         return result
     
 
-# TODO: Rework
 def convert_structure(self, context):
     """Converts blend files created with the old plugin to the new structure"""
 
@@ -42,7 +41,6 @@ def convert_structure(self, context):
             for col in bpy.data.collections:
                 if col.seut.scene == scn and not col.seut.col_type == 'seut':
                     bpy.data.collections.remove(col)
-
 
         else:
             scn.view_layers[0].name = 'SEUT'

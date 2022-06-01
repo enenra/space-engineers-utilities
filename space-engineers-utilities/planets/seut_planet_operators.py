@@ -48,11 +48,11 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
 
         file_path = os.path.join(get_abs_path(preferences.asset_path), 'Models', 'planet_editor.blend')
         if not os.path.exists(file_path):
-            print("Could not find shit, chief.") # TODO: seut_report replacement
+            seut_report(self, context, 'ERROR', True, 'E049')
             return {'CANCELLED'}
         
         if not 'main' in collections or collections['main'] == [] or collections['main'][0] is None:
-            print("Could not find shit, chief.") # TODO: seut_report replacement
+            seut_report(self, context, 'ERROR', True, 'E049')
             return {'CANCELLED'}
         
         context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children[collections['seut'][0].name].children[collections['main'][0].name]
