@@ -59,7 +59,7 @@ def export_material_textures(self, context, material):
                     pass
             
             else:
-                return {'FINISHED'}
+                continue
 
             if output[0] == 0:
                 seut_report(self, context, 'INFO', False, 'I002', preset, material.name)

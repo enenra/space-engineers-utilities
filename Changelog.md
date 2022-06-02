@@ -38,6 +38,7 @@
 * Fixed [#313](https://github.com/enenra/space-engineers-utilities/issues/313): Error during error handling of UVM issue. (Beta 1)
 * Fixed [#312](https://github.com/enenra/space-engineers-utilities/issues/312): Image nodes that do not contain images should be ignored. (Beta 1)
 * Fixed [#311](https://github.com/enenra/space-engineers-utilities/issues/311): Issue where MaxRequests was exceeded. (Beta 1)
+* Fixed: In some cases, SEUT did not automatically convert textures to DDS. (Beta 6)
 * Fixed: In some cases, SEUT would write infinite broken mountpoints to the SBC file on update. (Beta 5)
 * Fixed: In newly created Materials, the node group sometimes was not set up properly. (Beta 5)
 * Fixed: Error when attempting directory conversion of textures via custom preset. (Beta 4)
