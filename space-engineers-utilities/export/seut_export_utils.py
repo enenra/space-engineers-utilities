@@ -105,6 +105,7 @@ def export_xml(self, context, collection) -> str:
     xml_formatted = format_xml(self, context, model)
 
     path = os.path.join(path, f"{get_col_filename(collection)}.xml")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     exported_xml = open(path, "w")
     exported_xml.write(xml_formatted)
 
