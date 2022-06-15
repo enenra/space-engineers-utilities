@@ -26,7 +26,7 @@ class SEUT_OT_PatchBLEND(Operator):
 def check_patch_needed() -> bool:
     
     for scn in bpy.data.scenes:
-        if scn.seut.version < 4:
+        if 'SEUT' in scn.view_layers and scn.seut.version < 4:
             return True
 
     for col in bpy.data.collections:
