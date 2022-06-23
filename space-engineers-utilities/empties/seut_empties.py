@@ -134,7 +134,7 @@ class SEUT_PT_EmptyLink(Panel):
 
         match = False
         for empty_type in ['dummies', 'highlight_empties', 'preset_subparts']:
-            hits = [marker for marker in empties[empty_type] if(marker in bpy.context.view_layer.objects.active.name)]
+            hits = [marker for marker in empties[empty_type] if(marker in bpy.context.view_layer.objects.active.name or marker[:-1] in bpy.context.view_layer.objects.active.name)]
             if len(hits) > 0:
                 match = True
                 break
@@ -148,7 +148,7 @@ class SEUT_PT_EmptyLink(Panel):
 
         entry = None
         for empty_type in ['dummies', 'highlight_empties', 'preset_subparts']:
-            hits = [marker for marker in empties[empty_type] if(marker in empty.name)]
+            hits = [marker for marker in empties[empty_type] if(marker in empty.name or marker[:-1] in empty.name)]
             if len(hits) > 0:
                 entry = hits[0]
                 break
