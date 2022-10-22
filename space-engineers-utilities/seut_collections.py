@@ -112,14 +112,6 @@ seut_collections = {
             'color': 'COLOR_04'
             },
     },
-    'particle_effect': {
-        'main': {
-            'name': 'Main',
-            'type': 'Particle Effect',
-            'schema': 'Main ({subtpye_id})',
-            'color': 'COLOR_04'
-            },
-    },
     'planet_editor': {
         'main': {
             'name': 'Main',

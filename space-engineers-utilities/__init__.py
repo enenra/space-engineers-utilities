@@ -58,20 +58,6 @@ from .materials.seut_ot_create_material         import SEUT_OT_MatCreate
 from .materials.seut_ot_texture_conversion      import SEUT_OT_ConvertTextures
 from .materials.seut_ot_texture_conversion      import SEUT_OT_MassConvertTextures
 
-from .particles.seut_particle_settings          import (SEUT_ParticlePropertyKeys,
-                                                        SEUT_ParticlePropertyValue2D,
-                                                        SEUT_ParticleProperty,
-                                                        SEUT_ParticleSettings,
-                                                        SEUT_UL_ParticleProperties,
-                                                        SEUT_UL_ParticlePropertyValues2D)
-from .particles.seut_ot_settings                import SEUT_OT_SettingsAdd
-from .particles.seut_ot_properties              import SEUT_OT_PropertiesAdd
-from .particles.seut_ot_properties              import SEUT_OT_PropertiesRemove
-from .particles.seut_particles                  import (SEUT_PT_Panel_Particle,
-                                                        SEUT_PT_Panel_ParticleGeneration,
-                                                        SEUT_PT_Panel_ExportParticle,
-                                                        SEUT_PT_Panel_ImportParticle)
-
 from .planets.seut_planet_operators             import (SEUT_OT_Planet_RecreateSetup,
                                                         SEUT_OT_Planet_MaterialGroup_Add, 
                                                         SEUT_OT_Planet_MaterialGroup_Remove,
@@ -172,10 +158,6 @@ classes = (
     SEUT_PT_Panel_IconRender,
     SEUT_PT_Panel_Export,
     SEUT_PT_Panel_Import,
-    SEUT_PT_Panel_Particle,
-    SEUT_PT_Panel_ParticleGeneration,
-    SEUT_PT_Panel_ExportParticle,
-    SEUT_PT_Panel_ImportParticle,
     SEUT_PT_Panel_Materials,
     SEUT_PT_Panel_TextureConversion,
     SEUT_PT_Panel_Asset,
@@ -222,11 +204,6 @@ classes = (
     SEUT_Materials,
     SEUT_OT_IconRenderPreview,
     SEUT_OT_CopyRenderOptions,
-    
-    SEUT_ParticlePropertyKeys,
-    SEUT_ParticlePropertyValue2D,
-    SEUT_ParticleProperty,
-    SEUT_ParticleSettings,
 
     SEUT_OT_Planet_RecreateSetup,
     SEUT_OT_Planet_MaterialGroup_Add, 
@@ -270,10 +247,6 @@ classes = (
     SEUT_PlanetPropertiesItems,
     SEUT_PlanetPropertiesEnvironmentItems,
     SEUT_PlanetPropertiesOreMappings,
-
-    SEUT_OT_SettingsAdd,
-    SEUT_OT_PropertiesAdd,
-    SEUT_OT_PropertiesRemove,
     SEUT_MountpointAreas,
     SEUT_Scene,
     SEUT_Collection,
@@ -281,8 +254,6 @@ classes = (
     SEUT_RepositoryProperty,
     SEUT_IssueProperty,
     SEUT_WindowManager,
-    SEUT_UL_ParticleProperties,
-    SEUT_UL_ParticlePropertyValues2D,
     SEUT_OT_UpdateSubpartInstances,
 )
 
@@ -299,7 +270,6 @@ def register():
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
     bpy.types.Collection.seut = PointerProperty(type=SEUT_Collection)
-    bpy.types.ParticleSettings.seut = PointerProperty(type=SEUT_ParticleSettings)
     bpy.types.WindowManager.seut = PointerProperty(type=SEUT_WindowManager)
 
     bpy.app.handlers.load_post.append(load_handler)
@@ -324,7 +294,6 @@ def unregister():
     del bpy.types.Scene.seut
     del bpy.types.Object.seut
     del bpy.types.Collection.seut
-    del bpy.types.ParticleSettings.seut
     del bpy.types.WindowManager.seut
 
     bpy.app.handlers.load_post.remove(load_handler)

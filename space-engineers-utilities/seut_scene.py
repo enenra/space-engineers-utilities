@@ -388,7 +388,6 @@ class SEUT_Scene(PropertyGroup):
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene'),
             ('character', 'Character', 'This scene contains a character model'),
             ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
-            # ('particle_effect', 'Particle Effect', 'This scene contains a particle effect'),
             ('planet_editor', 'Planet Editor (Alpha)', 'This scene can be used to create a Space Engineers planet with. Only one can exist per BLEND file'),
             ),
         default='mainScene',
