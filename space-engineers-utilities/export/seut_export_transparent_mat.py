@@ -57,11 +57,13 @@ def export_transparent_mat(self, context, subtype_id):
     lines_entry = update_add_subelement(def_definition, 'CanBeAffectedByOtherLights', str(material.seut.affected_by_other_lights).lower(), update, lines_entry)
     
     lines_entry = update_add_subelement(def_definition, 'SoftParticleDistanceScale', round(material.seut.soft_particle_distance_scale, 2), update, lines_entry)
-
+    
     cm_path = get_seut_texture_path('CM', material)
-    cm_path = os.path.splitext(cm_path)[0] + ".dds"
-    cm_path = create_relative_path(cm_path, 'Textures')
-    lines_entry = update_add_subelement(def_definition, 'Texture', cm_path, update, lines_entry)
+    if cm_path is not None:
+        cm_path = os.path.splitext(cm_path)[0] + ".dds"
+        cm_path = create_relative_path(cm_path, 'Textures')
+        seut_report(self, context, 'WARNING', True, 'W014', material.name, 'CM')
+    lines_entry = update_add_subelement(def_definition, 'Texture', str(cm_path), update, lines_entry)
     
     if not update:
         def_color = add_subelement(def_definition, 'Color')
@@ -127,9 +129,11 @@ def export_transparent_mat(self, context, subtype_id):
     lines_entry = update_add_subelement(def_definition, 'GlossTextureAdd', round(material.seut.gloss_texture_add, 2), update, lines_entry)
 
     ng_path = get_seut_texture_path('NG', material)
-    ng_path = os.path.splitext(ng_path)[0] + ".dds"
-    ng_path = create_relative_path(ng_path, 'Textures')
-    lines_entry = update_add_subelement(def_definition, 'GlossTexture', ng_path, update, lines_entry)
+    if ng_path is not None:
+        ng_path = os.path.splitext(ng_path)[0] + ".dds"
+        ng_path = create_relative_path(ng_path, 'Textures')
+        seut_report(self, context, 'WARNING', True, 'W014', material.name, 'NG')
+    lines_entry = update_add_subelement(def_definition, 'GlossTexture', str(ng_path), update, lines_entry)
 
     lines_entry = update_add_subelement(def_definition, 'SpecularColorFactor', round(material.seut.specular_color_factor, 2), update, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'IsFlareOccluder', str(material.seut.is_flare_occluder).lower(), update, lines_entry)
