@@ -277,7 +277,7 @@ def export_fbx(self, context, collection) -> str:
             # Check parenting
             if empty.parent is None and not empty.seut.linked:
                 seut_report(self, context, 'WARNING', True, 'W005', empty.name, collection.name)
-            elif empty.parent.parent is not None:
+            elif empty.parent.parent is not None and scene.seut.sceneType != 'character':
                 seut_report(self, context, 'WARNING', True, 'W006', empty.name, empty.parent.name, collection.name)
 
             # Additional parenting checks
