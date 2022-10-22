@@ -536,7 +536,8 @@ class SEUT_OT_Planet_ExportAll(Operator):
     def execute(self, context):
         scene = context.scene
 
-        result_sbc = export_planet_sbc(self, context)
+        if scene.seut.export_sbc_type in ['update', 'new']:
+            result_sbc = export_planet_sbc(self, context)
         result_maps = export_planet_maps(scene)
 
         if result_sbc == {'FINISHED'} and result_maps == {'FINISHED'}:
