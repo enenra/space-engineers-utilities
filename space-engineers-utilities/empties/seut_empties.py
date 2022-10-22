@@ -27,7 +27,7 @@ def update_obj(self, context):
             highlights = ""
             for entry in empty.seut.highlight_objects:
 
-                if entry.obj.name.find("_section") == -1:
+                if entry.obj.name.find("_section") == -1 and entry.obj.name.find("subpart") == -1:
                     entry.obj.name = entry.obj.name + "_section"
 
                 if highlights == "":

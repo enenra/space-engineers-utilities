@@ -5,6 +5,7 @@
 * Added: All new Planet Editor, allowing the creation of both planet-related SBC as well height- and biome maps. (Beta 5)
 * Added: `CLOUD_LAYER` material technique. (Beta 5)
 * Added: Empty type descriptions & usage instructions to SEUT Empty Panel. (Beta 3)
+* Improved [#341](https://github.com/enenra/space-engineers-utilities/issues/341): If a subpart empty is the highlight object, it does not need the `_section`-tag. (Beta 6)
 * Improved [#340](https://github.com/enenra/space-engineers-utilities/issues/340): Always set animation timeline to zero before export to prevent issues. (Beta 6)
 * Improved [#334](https://github.com/enenra/space-engineers-utilities/issues/334): Suppress texture resolution warning if texture could not be loaded in the first place. (Beta 4)
 * Improved [#321](https://github.com/enenra/space-engineers-utilities/issues/321): Asset dir is not allowed to be set as game directory or SDK directory. (Beta 1)
