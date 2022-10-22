@@ -231,7 +231,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
 def export_planet_maps(scene: bpy.types.Scene):
     """Saves the baked images saved in the BLEND file to the mod folder"""
 
-    sides = ['front', 'back', 'left', 'right', 'top', 'bottom']
+    sides = ['front', 'back', 'left', 'right', 'up', 'down']
 
     for img in bpy.data.images:
         for side in sides:

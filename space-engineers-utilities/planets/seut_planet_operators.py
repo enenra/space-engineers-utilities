@@ -92,7 +92,7 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
             else:
                 scene.seut.bake_source = appended_obj
         
-        mats = ['front', 'back', 'right', 'left', 'top', 'bottom', 'SURFACE']
+        mats = ['front', 'back', 'right', 'left', 'up', 'down', 'SURFACE']
         for mat in bpy.data.materials:
             if mat.name in mats:
                 mat.use_fake_user = True

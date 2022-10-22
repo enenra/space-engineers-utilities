@@ -28,6 +28,7 @@
 * Improved: Highlight description for SEUT Asset Browser parameters. (Beta 1)
 * Improved: Time needed to convert textures in seconds was not rounded. (Beta 1)
 * Improved: Further reduced info spam in SEUT Notifications. (Beta 3)
+* Fixed [#337](https://github.com/enenra/space-engineers-utilities/issues/337): Misnamed output textures in planet editor. (Beta 6)
 * Fixed [#333](https://github.com/enenra/space-engineers-utilities/issues/333): Complete import fails for models with more than 3 LOD stages. (Beta 4)
 * Fixed [#332](https://github.com/enenra/space-engineers-utilities/issues/332): Fixed issue where custom materials were exported as material references instead of material definitions in some cases. (Beta 4)
 * Fixed [#329](https://github.com/enenra/space-engineers-utilities/issues/329): Error on export if material had no node tree. (Beta 3)
