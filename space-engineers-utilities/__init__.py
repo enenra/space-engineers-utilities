@@ -18,7 +18,7 @@ bl_info = {
     "version": (1, 0, 0),
     "dev_version": 6,
     "dev_tag": "beta",
-    "blender": (3, 0, 0),
+    "blender": (3, 3, 0),
     "location": "View3D > Tools",
     "doc_url": "https://semref.atlassian.net/wiki/spaces/tools/pages/33261/Space+Engineers+Utilities",
     "tracker_url": "https://github.com/enenra/space-engineers-utilities/issues",
