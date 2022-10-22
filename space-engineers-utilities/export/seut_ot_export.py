@@ -190,6 +190,9 @@ def export_main(self, context):
     if not result == {'CONTINUE'}:
         return result
 
+    # This prevents issues ingame. Might have to be revisited for animations.
+    scene.frame_current = 0
+
     found_armatures = False
     unparented_objects = 0
     for obj in collections['main'][0].objects:
