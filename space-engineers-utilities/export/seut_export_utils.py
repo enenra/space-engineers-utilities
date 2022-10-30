@@ -644,6 +644,8 @@ class ExportSettings:
                     seut_report(self, context, 'ERROR', False, 'E037')
                 elif e.returncode == 3221225477:
                     seut_report(self, context, 'ERROR', False, 'E047')
+                elif e.returncode == 3221225781:
+                    seut_report(self, context, 'ERROR', False, 'E050')
                 else:
                     seut_report(self, context, 'ERROR', False, 'E035', str(tooltype))
                 raise

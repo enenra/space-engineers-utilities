@@ -60,6 +60,7 @@ errors = {
     'E047': "An access violation error occurred during Havok conversion.",
     'E048': "There can only be one Planet Editor scene per BLEND file.",
     'E049': "One or more of the required files could not be located within the Assets Directory.",
+    'E050': "There was an error during export: Missing Visual C++ Redistributable for Visual Studio.",
 }
 
 warnings = {
