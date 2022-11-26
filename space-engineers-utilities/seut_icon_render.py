@@ -213,6 +213,9 @@ class SEUT_OT_IconRenderPreview(Operator):
         collections = get_collections(scene)
 
         # This is done in two steps so that objects which are in the main collection as well as other collections are guaranteed to be visible.
+
+        hide_status = {}
+
         for key, value in collections.items():
             if value is None:
                 continue
@@ -222,6 +225,10 @@ class SEUT_OT_IconRenderPreview(Operator):
                     for obj in sub_col.objects:
                         if obj is None:
                             continue
+
+                        hide_status[obj.name] = []
+                        hide_status[obj.name].append(obj.hide_render)
+                        hide_status[obj.name].append(obj.hide_viewport)
                         obj.hide_render = True
                         obj.hide_viewport = True
 
@@ -257,8 +264,13 @@ class SEUT_OT_IconRenderPreview(Operator):
                     for obj in sub_col.objects:
                         if obj is None:
                             continue
-                        obj.hide_render = False
-                        obj.hide_viewport = False
+
+                        if obj.name in hide_status:
+                            obj.hide_render = hide_status[obj.name][0]
+                            obj.hide_viewport = hide_status[obj.name][1]
+                        else:
+                            obj.hide_render = False
+                            obj.hide_viewport = False
 
         wm.seut.simpleNavigationToggle = simple_nav
 

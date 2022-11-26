@@ -15,6 +15,7 @@
 * Improved [#315](https://github.com/enenra/space-engineers-utilities/issues/315): Conversion of `NG`-textures to `TIF`. (Beta 1)
 * Improved [#303](https://github.com/enenra/space-engineers-utilities/issues/303): Specify why materials cannot be exported on button hover. (Beta 1)
 * Improved [#266](https://github.com/enenra/space-engineers-utilities/issues/266): Allow for instancing of character animation scenes under the `dummy_character`-empty. (Beta 1)
+* Improved: Collection and object visibility now persists through icon renders. (RC 2)
 * Improved: Suppress empty parenting warning (W006) if scene type is `Character`. (RC 1)
 * Improved: If a BS has an empty Collision collection associated with it, SEUT will not copy the Main collection's collisions for it. (Beta 4)
 * Improved: Display button for manual install of SEUT Assets / MWMB first install. (Beta 3)
