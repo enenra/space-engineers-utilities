@@ -98,7 +98,10 @@ def setup_icon_render(self, context):
     node_render_layers = tree.nodes.new(type='CompositorNodeRLayers')
     node_color_correction = tree.nodes.new(type='CompositorNodeColorCorrection')
     node_rgb_to_bw = tree.nodes.new(type='CompositorNodeRGBToBW')
-    node_combine_rgba = tree.nodes.new(type='CompositorNodeCombRGBA')
+    if bpy.app.version < (3, 4, 0):
+        node_combine_color = tree.nodes.new(type='CompositorNodeCombRGBA')
+    else:
+        node_combine_color = tree.nodes.new(type='CompositorNodeCombineColor')
     node_rgb = tree.nodes.new(type='CompositorNodeRGB')
     node_mix_rgb = tree.nodes.new(type='CompositorNodeMixRGB')
     node_bright_contrast = tree.nodes.new(type='CompositorNodeBrightContrast')
@@ -107,7 +110,7 @@ def setup_icon_render(self, context):
     node_render_layers.location = (-860.0, 300.0)
     node_color_correction.location = (-460.0, 300.0)
     node_rgb_to_bw.location = (40.0, 300.0)
-    node_combine_rgba.location = (240.0, 280.0)
+    node_combine_color.location = (240.0, 280.0)
     node_rgb.location = (240.0, 60.0)
     node_mix_rgb.location = (460.0, 300.0)
     node_bright_contrast.location = (720.0, 300.0)
@@ -115,11 +118,11 @@ def setup_icon_render(self, context):
 
     tree.links.new(node_render_layers.outputs[0], node_color_correction.inputs[0])
     tree.links.new(node_color_correction.outputs[0], node_rgb_to_bw.inputs[0])
-    tree.links.new(node_rgb_to_bw.outputs[0], node_combine_rgba.inputs[0])
-    tree.links.new(node_rgb_to_bw.outputs[0], node_combine_rgba.inputs[1])
-    tree.links.new(node_rgb_to_bw.outputs[0], node_combine_rgba.inputs[2])
-    tree.links.new(node_render_layers.outputs[1], node_combine_rgba.inputs[3])
-    tree.links.new(node_combine_rgba.outputs[0], node_mix_rgb.inputs[1])
+    tree.links.new(node_rgb_to_bw.outputs[0], node_combine_color.inputs[0])
+    tree.links.new(node_rgb_to_bw.outputs[0], node_combine_color.inputs[1])
+    tree.links.new(node_rgb_to_bw.outputs[0], node_combine_color.inputs[2])
+    tree.links.new(node_render_layers.outputs[1], node_combine_color.inputs[3])
+    tree.links.new(node_combine_color.outputs[0], node_mix_rgb.inputs[1])
     tree.links.new(node_rgb.outputs[0], node_mix_rgb.inputs[2])
     tree.links.new(node_mix_rgb.outputs[0], node_bright_contrast.inputs[0])
     tree.links.new(node_bright_contrast.outputs[0], node_viewer.inputs[0])
@@ -134,9 +137,9 @@ def setup_icon_render(self, context):
     node_bright_contrast.inputs[1].default_value = 0.35
     node_bright_contrast.inputs[2].default_value = 0.35
     
-    scene.node_tree.nodes['RGB'].mute = scene.seut.renderColorOverlay
-    scene.node_tree.nodes['RGB to BW'].mute = scene.seut.renderColorOverlay
-    scene.node_tree.nodes['Combine RGBA'].mute = scene.seut.renderColorOverlay
+    node_rgb.mute = scene.seut.renderColorOverlay
+    node_rgb_to_bw.mute = scene.seut.renderColorOverlay
+    node_combine_color.mute = scene.seut.renderColorOverlay
 
     # Force update render resolution
     scene.seut.renderResolution = scene.seut.renderResolution

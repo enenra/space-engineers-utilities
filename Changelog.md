@@ -44,6 +44,7 @@
 * Fixed [#313](https://github.com/enenra/space-engineers-utilities/issues/313): Error during error handling of UVM issue. (Beta 1)
 * Fixed [#312](https://github.com/enenra/space-engineers-utilities/issues/312): Image nodes that do not contain images should be ignored. (Beta 1)
 * Fixed [#311](https://github.com/enenra/space-engineers-utilities/issues/311): Issue where MaxRequests was exceeded. (Beta 1)
+* Fixed: `Icon Render Mode` errors in Blender 3.4 . (RC 2)
 * Fixed: "Patch BLEND File" appearing if another scene in the BLEND-file was not initialized. (RC 1)
 * Fixed: Error in some cases when export path did not exist. (RC 1)
 * Fixed: In some cases, SEUT did not automatically convert textures to DDS. (RC 1)

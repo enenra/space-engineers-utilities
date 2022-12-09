@@ -169,8 +169,12 @@ def update_renderColorOverlay(self, context):
         scene.node_tree.nodes['RGB'].mute = scene.seut.renderColorOverlay
     if scene.node_tree.nodes['RGB to BW'] is not None:
         scene.node_tree.nodes['RGB to BW'].mute = scene.seut.renderColorOverlay
-    if scene.node_tree.nodes['Combine RGBA'] is not None:
-        scene.node_tree.nodes['Combine RGBA'].mute = scene.seut.renderColorOverlay
+    if bpy.app.version < (3, 4, 0):
+        if scene.node_tree.nodes['Combine RGBA'] is not None:
+            scene.node_tree.nodes['Combine RGBA'].mute = scene.seut.renderColorOverlay
+    else:
+        if scene.node_tree.nodes['Combine Color'] is not None:
+            scene.node_tree.nodes['Combine Color'].mute = scene.seut.renderColorOverlay
 
 
 def update_renderZoom(self, context):
