@@ -1,5 +1,5 @@
 import bpy
-import re
+import os
 
 from bpy.types  import Operator
 from bpy.types  import PropertyGroup
@@ -11,6 +11,7 @@ from bpy.props  import (EnumProperty,
                         BoolProperty,
                         PointerProperty)
 
+from .seut_errors                       import seut_report
 from .materials.seut_ot_create_material import create_material
 
 seut_collections = {
@@ -190,6 +191,18 @@ def update_lod_distance(self, context):
         except TypeError:
             pass
 
+def update_hkt_file(self, context):
+
+    if self.hkt_file in ["", self.hkt_file_before]:
+        self.hkt_file_before = self.hkt_file
+        return
+    
+    if os.path.isdir(self.hkt_file) or os.path.splitext(self.hkt_file)[1].lower() != '.hkt':
+        seut_report(self, context, 'ERROR', False, 'E015', 'External Collision File', '.hkt')
+        self.hkt_file = self.hkt_file_before
+        
+    self.hkt_file_before = self.hkt_file
+
 
 class SEUT_Collection(PropertyGroup):
     """Holder for the varios collection properties"""
@@ -237,6 +250,17 @@ class SEUT_Collection(PropertyGroup):
         min = 0,
         update = update_lod_distance
     )
+
+    hkt_file: StringProperty(
+        name = "Ext. File",
+        description = "External HKT file to be used as the collision instead of any objects defined in this collision collection",
+        subtype = "FILE_PATH",
+        update = update_hkt_file
+        )
+
+    hkt_file_before: StringProperty(
+        subtype = "FILE_PATH"
+        )
 
 
 class SEUT_OT_RecreateCollections(Operator):

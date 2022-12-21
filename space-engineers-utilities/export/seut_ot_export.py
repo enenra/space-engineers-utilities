@@ -239,40 +239,46 @@ def export_hkt(self, context):
 
     if 'hkt' in collections and not collections['hkt'] is None and collections['hkt'] != []:
         for col in collections['hkt']:
-            result = check_collection(self, context, scene, col, True)
-            if not result == {'CONTINUE'}:
-                continue
 
-            cancelled = False
-            for obj in col.objects:
+            # Use external file
+            if col.seut.hkt_file != "":
+                shutil.copyfile(get_abs_path(col.seut.hkt_file), join(path, f"{get_col_filename(col)}.hkt"))
 
-                # Check for unapplied modifiers
-                if len(obj.modifiers) > 0:
-                    seut_report(self, context, 'ERROR', True, 'E034', obj.name)
-                    cancelled = True
-                    break
-                
-                # TODO: Investigate this again, and only apply rigidbody if there isn't one already
-                context.view_layer.objects.active = obj
-                # bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) # This runs on all objects instead of just the active one for some reason. Breaks when there's instanced subparts.
-                bpy.ops.rigidbody.object_add(type='ACTIVE')
+            else:
+                result = check_collection(self, context, scene, col, True)
+                if not result == {'CONTINUE'}:
+                    continue
 
-            if cancelled:
-                return {'CANCELLED'}
-            
-            if len(col.objects) > 10:
-                seut_report(self, context, 'ERROR', True, 'E022', col.name, len(col.objects))
-                continue
-            
-            fbx_hkt_file = join(path, f"{get_col_filename(col)}.hkt.fbx")
-            hkt_file = join(path, f"{get_col_filename(col)}.hkt")
+                cancelled = False
+                for obj in col.objects:
 
-            # Export as FBX
-            export_to_fbxfile(settings, scene, fbx_hkt_file, col.objects, ishavokfbxfile=True)
+                    # Check for unapplied modifiers
+                    if len(obj.modifiers) > 0:
+                        seut_report(self, context, 'ERROR', True, 'E034', obj.name)
+                        cancelled = True
+                        break
 
-            # Then create the HKT file.
-            convert_fbx_to_fbxi_hkt(context, settings, fbx_hkt_file, hkt_file)
-            convert_fbxi_hkt_to_hkt(self, context, settings, hkt_file, hkt_file)
+                    # TODO: Investigate this again, and only apply rigidbody if there isn't one already
+                    context.view_layer.objects.active = obj
+                    # bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) # This runs on all objects instead of just the active one for some reason. Breaks when there's instanced subparts.
+                    bpy.ops.rigidbody.object_add(type='ACTIVE')
+
+                if cancelled:
+                    return {'CANCELLED'}
+
+                if len(col.objects) > 10:
+                    seut_report(self, context, 'ERROR', True, 'E022', col.name, len(col.objects))
+                    continue
+
+                fbx_hkt_file = join(path, f"{get_col_filename(col)}.hkt.fbx")
+                hkt_file = join(path, f"{get_col_filename(col)}.hkt")
+
+                # Export as FBX
+                export_to_fbxfile(settings, scene, fbx_hkt_file, col.objects, ishavokfbxfile=True)
+
+                # Then create the HKT file.
+                convert_fbx_to_fbxi_hkt(context, settings, fbx_hkt_file, hkt_file)
+                convert_fbxi_hkt_to_hkt(self, context, settings, hkt_file, hkt_file)
 
     return {'FINISHED'}
 

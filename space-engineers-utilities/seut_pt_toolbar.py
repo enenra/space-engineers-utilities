@@ -205,6 +205,8 @@ class SEUT_PT_Panel_Collections(Panel):
 
             if active_col.seut.col_type == 'lod':
                 box.prop(active_col.seut,'lod_distance')
+            elif active_col.seut.col_type == 'hkt':
+                box.prop(active_col.seut,'hkt_file')
 
         if show_button:
             row = layout.row()
