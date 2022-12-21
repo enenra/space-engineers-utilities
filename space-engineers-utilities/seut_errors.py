@@ -16,7 +16,7 @@ errors = {
     'E003': "{variable_1} path '{variable_2}' doesn't exist.",
     'E004': "No SubtypeId set for scene '{variable_1}'.",
     'E005': "Linking to scene '{variable_1}' from '{variable_2}' would create a subpart instancing loop.",
-    'E006': "Invalid colletion setup: Missing indexes in '{variable_1}'-collections.",
+    'E006': "Invalid collection setup: Missing indexes in '{variable_1}'-collections.",
     'E007': "'{variable_1}' texture filepath in local material '{variable_2}' does not contain 'Textures\\'. Cannot be transformed into relative path.",
     'E008': "BLEND file must be saved before export.",
     'E009': "Cannot create empties for more than one object at a time.",
