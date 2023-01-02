@@ -299,8 +299,8 @@ class SEUT_OT_Planet_EnvironmentItem_Add(Operator):
         item = scene.seut.environment_items.add()
         item.name = "EnvironmentItem"
 
-        item = scene.seut.environment_items[scene.seut.environment_items_index].rules.add()
-        item.name = "Rule"
+        rule = item.rules.add()
+        rule.name = "Rule"
 
         return {'FINISHED'}
 
