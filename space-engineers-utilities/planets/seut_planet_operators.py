@@ -1,4 +1,5 @@
 import bpy
+import os
 
 from bpy.types              import Operator
 from bpy.props              import (EnumProperty,
