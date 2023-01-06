@@ -287,25 +287,12 @@ class SEUT_Keyframes(PropertyGroup):
     )
 
 
-class SEUT_Fcurves(PropertyGroup):
-    """Holder for the various Keyframe properties"""
+class SEUT_Actions(PropertyGroup):
+    """Holder for the various Action properties"""
 
-    name: StringProperty()
-    
     keyframes: CollectionProperty(
         type = SEUT_Keyframes
     )
     keyframes_index: IntProperty(
-        default = 0
-    )
-
-
-class SEUT_Actions(PropertyGroup):
-    """Holder for the various Action properties"""
-
-    fcurves: CollectionProperty(
-        type = SEUT_Fcurves
-    )
-    fcurves_index: IntProperty(
         default = 0
     )

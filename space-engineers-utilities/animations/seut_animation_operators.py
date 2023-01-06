@@ -156,7 +156,7 @@ class SEUT_OT_Animation_Trigger_Remove(Operator):
 
 
 class SEUT_OT_Animation_Function_Add(Operator):
-    """Adds a slot to the Animation Function UL"""
+    """Associates the selected Keyframe with a function"""
     bl_idname = "animation.add_function"
     bl_label = "Add Animation Function"
     bl_options = {'REGISTER', 'UNDO'}
@@ -175,22 +175,18 @@ class SEUT_OT_Animation_Function_Add(Operator):
             (k for k in active_fcurve.keyframe_points if k.select_control_point == True), None
         )
 
-        seut_fcurve = get_or_create_prop(action.seut.fcurves, active_fcurve)
-        seut_kf = get_or_create_prop(seut_fcurve.keyframes, active_keyframe)
+        seut_kf = get_or_create_prop(action.seut.keyframes, active_keyframe)
 
         item = seut_kf.functions.add()
         item.name = item.function_type
 
-        collection_property_cleanup(action.seut.fcurves, action.fcurves)
-        for sf in action.seut.fcurves:
-            for af in action.fcurves:
-                collection_property_cleanup(sf.keyframes, af.keyframe_points)
+        collection_property_cleanup(action.seut.keyframes)
 
         return {'FINISHED'}
 
 
 class SEUT_OT_Animation_Function_Remove(Operator):
-    """Removes a slot from the Animation Function UL"""
+    """Removes a function from the selected Keyframe"""
     bl_idname = "animation.remove_function"
     bl_label = "Remove Animation Function"
     bl_options = {'REGISTER', 'UNDO'}
@@ -208,20 +204,13 @@ class SEUT_OT_Animation_Function_Remove(Operator):
         active_keyframe = next(
             (k for k in active_fcurve.keyframe_points if k.select_control_point == True), None
         )
-
-        seut_fcurve = next(
-            (f for f in action.seut.fcurves if f.name == str(active_fcurve)), None
-        )
         seut_kf = next(
-            (k for k in seut_fcurve.keyframes if k.name == str(active_keyframe)), None
+            (k for k in action.seut.keyframes if k.name == str(active_keyframe)), None
         )
 
         seut_kf.functions.remove(seut_kf.functions_index)
         seut_kf.functions_index = min(max(0, seut_kf.functions_index - 1), len(seut_kf.functions) - 1)
         
-        collection_property_cleanup(action.seut.fcurves, action.fcurves)
-        for sf in action.seut.fcurves:
-            for af in action.fcurves:
-                collection_property_cleanup(sf.keyframes, af.keyframe_points)
+        collection_property_cleanup(action.seut.keyframes)
 
         return {'FINISHED'}

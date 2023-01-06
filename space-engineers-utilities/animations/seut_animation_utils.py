@@ -1,13 +1,15 @@
 import bpy
 
 
-def collection_property_cleanup(coll_prop, ext_prop):
+def collection_property_cleanup(coll_prop):
 
     cleanup = [coll.name for coll in coll_prop]
 
-    for ext in ext_prop:
-        if str(ext) in cleanup:
-            cleanup.remove(str(ext))
+    for a in bpy.data.actions:
+        for f in a.fcurves:
+            for k in f.keyframe_points:
+                if str(k) in cleanup:
+                    cleanup.remove(str(k))
 
     for c in cleanup:
         coll_prop.remove(next(i for i, it in enumerate(coll_prop) if it == coll_prop[c]))

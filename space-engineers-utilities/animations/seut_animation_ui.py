@@ -153,12 +153,6 @@ class SEUT_PT_Panel_Keyframes(Panel):
             row = layout.row()
             row.alert = True
             row.label(text="One or more Keyframes use 'Bezier' interpolation, which is not supported.", icon='ERROR')
-            
-        auto_easing = any(k.easing == 'AUTO' for k in keyframes)
-        if auto_easing:
-            row = layout.row()
-            row.alert = True
-            row.label(text="One or more Keyframes use 'Automatic Easing', which is not supported.", icon='ERROR')
 
         count = 0
         for k in keyframes:
@@ -172,27 +166,26 @@ class SEUT_PT_Panel_Keyframes(Panel):
                 (k for k in fcurve.keyframe_points if k.select_control_point == True), None
             )
 
-            seut_fcurve = next(
-                (f for f in action.seut.fcurves if f.name == str(fcurve)), None
+            seut_kf = next(
+                (k for k in action.seut.keyframes if k.name == str(active_keyframe)), None
             )
-            if seut_fcurve is None:
+            if seut_kf is None:
                 layout.operator("animation.add_function", icon='ADD')
                 return
 
-            seut_kf = next(
-                (k for k in seut_fcurve.keyframes if k.name == str(active_keyframe)), None
-            )
+            if len(seut_kf.functions) <= 0:
+                layout.operator("animation.add_function", icon='ADD')
 
-            box = layout.box()
-            box.label(text="Functions", icon='CONSOLE')
+            else:
+                box = layout.box()
+                box.label(text="Functions", icon='CONSOLE')
 
-            row = box.row()
-            row.template_list("SEUT_UL_AnimationFunctions", "", seut_kf, "functions", seut_kf, "functions_index", rows=3)
-            col = row.column(align=True)
-            col.operator("animation.add_function", icon='ADD', text="")
-            col.operator("animation.remove_function", icon='REMOVE', text="")
+                row = box.row()
+                row.template_list("SEUT_UL_AnimationFunctions", "", seut_kf, "functions", seut_kf, "functions_index", rows=3)
+                col = row.column(align=True)
+                col.operator("animation.add_function", icon='ADD', text="")
+                col.operator("animation.remove_function", icon='REMOVE', text="")
 
-            if len(seut_kf.functions) > 0:
                 kf_function = seut_kf.functions[seut_kf.functions_index]
                 if kf_function is not None:
                     
