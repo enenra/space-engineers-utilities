@@ -39,6 +39,12 @@ class SEUT_OT_Animation_Add(Operator):
         item = wm.seut.animations.add()
         item.name = "Animation Set"
 
+        if len(wm.seut.animations) > 1:
+            idx = 2
+            while f"Animation Set {idx}" in wm.seut.animations:
+                idx += 1
+            item.name = f"Animation Set {idx}"
+
         return {'FINISHED'}
 
 

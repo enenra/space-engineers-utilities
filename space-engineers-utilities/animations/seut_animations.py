@@ -157,9 +157,8 @@ class SEUT_AnimationTriggers(PropertyGroup):
 class SEUT_Animations(PropertyGroup):
     """SEUT Animation prop holder"""
 
-    name: StringProperty(
-        name = "Name"
-    )
+    name: StringProperty()
+    
     triggers: CollectionProperty(
         type = SEUT_AnimationTriggers
     )
