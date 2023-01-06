@@ -89,6 +89,11 @@ def update_animations_index(self, context):
     wm = context.window_manager
     scene = context.scene
     animation_set = wm.seut.animations[wm.seut.animations_index]
+
+    for scn in bpy.data.scenes:
+        scn.frame_current = 0
+        for vl in scn.view_layers:
+            vl.update()
     
     for sp in animation_set.subparts:
         if sp is None or sp.obj is None:
