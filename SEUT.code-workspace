@@ -1,13 +1,16 @@
 {
 	"folders": [
         {
+            "name": "space-engineers-utilities",
             "path": "."
         },
         {
-            "path": "C:\\Program Files\\Blender Foundation\\Blender 3.0\\3.0\\scripts"
+            "name": "scripts",
+            "path": "C:/Program Files/Blender Foundation/Blender 3.4/3.4/scripts"
         },
         {
-            "path": "..\\..\\..\\..\\SEUT\\seut-assets\\Config"
+            "name": "Config",
+            "path": "../../../../SEUT/seut-assets/Config"
         }
     ]
 }

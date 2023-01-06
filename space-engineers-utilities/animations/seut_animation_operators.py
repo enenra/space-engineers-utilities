@@ -17,6 +17,8 @@ from ..seut_preferences import get_preferences
 from ..seut_collections import get_collections
 from ..seut_errors      import get_abs_path, seut_report
 
+from .seut_animation_utils  import *
+
 
 class SEUT_OT_Animation_Add(Operator):
     """Adds an Animation to the Animation UL"""
@@ -28,12 +30,14 @@ class SEUT_OT_Animation_Add(Operator):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
 
 
     def execute(self, context):
-        
-        add_material_group(context)
+        wm = context.window_manager
+    
+        item = wm.seut.animations.add()
+        item.name = "Animation Set"
 
         return {'FINISHED'}
 
@@ -48,21 +52,176 @@ class SEUT_OT_Animation_Remove(Operator):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
 
 
     def execute(self, context):
+        wm = context.window_manager
+
+        wm.seut.animations.remove(wm.seut.animations_index)
+        wm.seut.animations_index = min(max(0, wm.seut.animations_index - 1), len(wm.seut.animations) - 1)
+
+        return {'FINISHED'}
+
+
+class SEUT_OT_Animation_SubpartEmpty_Add(Operator):
+    """Adds a slot to the Subpart Empty UL"""
+    bl_idname = "animation.add_subpart_empty"
+    bl_label = "Add Subpart Empty"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
         scene = context.scene
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
 
-        scene.seut.material_groups.remove(scene.seut.material_groups_index)
+
+    def execute(self, context):
+        wm = context.window_manager
+        animation_set = wm.seut.animations[wm.seut.animations_index]
+
+        item = animation_set.subparts.add()
+
+        return {'FINISHED'}
+
+
+class SEUT_OT_Animation_SubpartEmpty_Remove(Operator):
+    """Removes a slot from the Subpart Empty UL"""
+    bl_idname = "animation.remove_subpart_empty"
+    bl_label = "Remove Subpart Empty"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        wm = context.window_manager
+        animation_set = wm.seut.animations[wm.seut.animations_index]
+
+        animation_set.subparts.remove(animation_set.subparts_index)
+        animation_set.subparts_index = min(max(0, animation_set.subparts_index - 1), len(animation_set.subparts) - 1)
+
+        return {'FINISHED'}
+
+
+class SEUT_OT_Animation_Trigger_Add(Operator):
+    """Adds a slot to the Animation Trigger UL"""
+    bl_idname = "animation.add_trigger"
+    bl_label = "Add Animation Trigger"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        wm = context.window_manager
+        animation_set = wm.seut.animations[wm.seut.animations_index]
+
+        item = animation_set.triggers.add()
+        item.name = item.trigger_type
+
+        return {'FINISHED'}
+
+
+class SEUT_OT_Animation_Trigger_Remove(Operator):
+    """Removes a slot from the Animation Trigger UL"""
+    bl_idname = "animation.remove_trigger"
+    bl_label = "Remove Animation Trigger"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        wm = context.window_manager
+        animation_set = wm.seut.animations[wm.seut.animations_index]
+
+        animation_set.triggers.remove(animation_set.triggers_index)
+        animation_set.triggers_index = min(max(0, animation_set.triggers_index - 1), len(animation_set.triggers) - 1)
+
+        return {'FINISHED'}
+
+
+class SEUT_OT_Animation_Function_Add(Operator):
+    """Adds a slot to the Animation Function UL"""
+    bl_idname = "animation.add_function"
+    bl_label = "Add Animation Function"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        action = context.active_object.animation_data.action
+        active_fcurve = bpy.context.active_editable_fcurve
+        active_keyframe = next(
+            (k for k in active_fcurve.keyframe_points if k.select_control_point == True), None
+        )
+
+        seut_fcurve = get_or_create_prop(action.seut.fcurves, active_fcurve)
+        seut_kf = get_or_create_prop(seut_fcurve.keyframes, active_keyframe)
+
+        item = seut_kf.functions.add()
+        item.name = item.function_type
+
+        collection_property_cleanup(action.seut.fcurves, action.fcurves)
+        for sf in action.seut.fcurves:
+            for af in action.fcurves:
+                collection_property_cleanup(sf.keyframes, af.keyframe_points)
+
+        return {'FINISHED'}
+
+
+class SEUT_OT_Animation_Function_Remove(Operator):
+    """Removes a slot from the Animation Function UL"""
+    bl_idname = "animation.remove_function"
+    bl_label = "Remove Animation Function"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        action = context.active_object.animation_data.action
+        active_fcurve = bpy.context.active_editable_fcurve
+        active_keyframe = next(
+            (k for k in active_fcurve.keyframe_points if k.select_control_point == True), None
+        )
+
+        seut_fcurve = next(
+            (f for f in action.seut.fcurves if f.name == str(active_fcurve)), None
+        )
+        seut_kf = next(
+            (k for k in seut_fcurve.keyframes if k.name == str(active_keyframe)), None
+        )
+
+        seut_kf.functions.remove(seut_kf.functions_index)
+        seut_kf.functions_index = min(max(0, seut_kf.functions_index - 1), len(seut_kf.functions) - 1)
         
-        for c in scene.seut.material_groups_palette.colors:
-            found = False
-            for mg in scene.seut.material_groups:
-                if mg.value == int(round(c.color[0] * 255)) and c.color[1] == 0 and c.color[2] == 0:
-                    found = True
-            if not found:
-                scene.seut.material_groups_palette.colors.remove(c)
-
+        collection_property_cleanup(action.seut.fcurves, action.fcurves)
+        for sf in action.seut.fcurves:
+            for af in action.fcurves:
+                collection_property_cleanup(sf.keyframes, af.keyframe_points)
 
         return {'FINISHED'}

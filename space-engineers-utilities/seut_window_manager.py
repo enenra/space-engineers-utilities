@@ -13,9 +13,9 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
-from .seut_errors   import seut_report, get_abs_path
-from .seut_utils    import get_preferences
-
+from .seut_errors                   import seut_report, get_abs_path
+from .seut_utils                    import get_preferences
+from .animations.seut_animations    import SEUT_Animations
 
 def update_BBox(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
@@ -83,6 +83,24 @@ def update_texconv_input_file(self, context):
     if not self.texconv_input_file.endswith(self.texconv_input_filetype) and not self.texconv_input_file.endswith(self.texconv_input_filetype.upper()):
         self.texconv_input_file = ""
         seut_report(self, context, 'ERROR', False, 'E015', 'Input', self.texconv_input_filetype)
+
+
+def update_animations_index(self, context):
+    wm = context.window_manager
+    scene = context.scene
+    animation_set = wm.seut.animations[wm.seut.animations_index]
+    
+    for sp in animation_set.subparts:
+        if sp is None or sp.obj is None:
+            continue
+        if sp.obj.animation_data is None:
+            sp.obj.animation_data_create()
+        if sp.obj.animation_data.action is not sp.action:
+            sp.obj.animation_data.action = sp.action
+            
+    if scene.seut.linkSubpartInstances:
+        scene.seut.linkSubpartInstances = False
+        scene.seut.linkSubpartInstances = True
 
 
 class SEUT_RepositoryProperty(PropertyGroup):
@@ -292,4 +310,13 @@ class SEUT_WindowManager(PropertyGroup):
         name="Display Infos",
         description="Toggles whether infos are visible in the SEUT Notifications screen",
         default=True
+    )
+
+    # Animations
+    animations: CollectionProperty(
+        type = SEUT_Animations
+    )
+    animations_index: IntProperty(
+        default = 0,
+        update = update_animations_index
     )
