@@ -344,9 +344,17 @@ def init_logging():
 
 
 def anonymize_paths(message):
-    if "\\Users\\" in message:
+    
+    if "\\\\Users\\\\" in message:
+        loc = message.find("\\\\Users\\\\")
+        start = message[len("\\\\Users\\\\") + loc:]
+        end = start.find("\\\\")
+        message = message[:len("\\\\Users\\\\") + loc] + "SEUT-USER" + message[-len(start) + end:]
+
+    elif "\\Users\\" in message:
         loc = message.find("\\Users\\")
         start = message[len("\\Users\\") + loc:]
         end = start.find("\\")
         message = message[:len("\\Users\\") + loc] + "SEUT-USER" + message[-len(start) + end:]
+
     return message
