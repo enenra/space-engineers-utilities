@@ -19,8 +19,6 @@ class SEUT_OT_SEMREFLink(Operator):
 
 
     def execute(self, context):
-
-        wm = context.window_manager
         
         webbrowser.open("https://semref.atlassian.net/wiki/spaces/" + self.section + "/pages/" + self.page + self.code)
         

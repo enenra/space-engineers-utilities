@@ -7,7 +7,7 @@ from bpy.types      import Operator
 from .materials.seut_ot_texture_conversion  import convert_texture
 from .seut_collections                      import get_collections, create_seut_collection
 from .seut_errors                           import check_collection, check_collection_excluded, seut_report, get_abs_path
-from .seut_utils                            import to_radians, clear_selection, prep_context, seut_report
+from .seut_utils                            import to_radians, clear_selection, prep_context, seut_report, get_seut_blend_data
     
 
 def setup_icon_render(self, context):
@@ -200,7 +200,7 @@ class SEUT_OT_IconRenderPreview(Operator):
     def execute(self, context):
 
         scene = context.scene
-        wm = context.window_manager
+        data = get_seut_blend_data()
 
         if not os.path.isdir(get_abs_path(scene.render.filepath)):
             os.makedirs(get_abs_path(scene.render.filepath))
@@ -210,8 +210,8 @@ class SEUT_OT_IconRenderPreview(Operator):
         scene.render.use_compositing = True
         scene.render.use_sequencer = True
 
-        simple_nav = wm.seut.simpleNavigationToggle
-        wm.seut.simpleNavigationToggle = False
+        simple_nav = data.seut.simpleNavigationToggle
+        data.seut.simpleNavigationToggle = False
 
         collections = get_collections(scene)
 
@@ -275,7 +275,7 @@ class SEUT_OT_IconRenderPreview(Operator):
                             obj.hide_render = False
                             obj.hide_viewport = False
 
-        wm.seut.simpleNavigationToggle = simple_nav
+        data.seut.simpleNavigationToggle = simple_nav
 
         scene.render.filepath = path
 

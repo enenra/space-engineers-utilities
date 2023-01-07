@@ -9,7 +9,7 @@ from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
 
 from .utils.seut_repositories       import *
 from .seut_errors                   import seut_report, get_abs_path
-from .seut_utils                    import get_preferences, get_addon
+from .seut_utils                    import get_preferences, get_addon, get_seut_blend_data
 from .seut_bau                      import draw_bau_ui, get_config, set_config
 
 
@@ -67,7 +67,7 @@ def update_game_path(self, context):
 
 
 def update_asset_path(self, context):
-    wm = context.window_manager
+    data = get_seut_blend_data()
 
     if self.asset_path == "":
         return
@@ -114,13 +114,13 @@ def update_asset_path(self, context):
                     al.name = "SEUT"
                     break
 
-    if not 'seut-assets' in wm.seut.repos:
+    if not 'seut-assets' in data.seut.repos:
         update_register_repos()
 
-    repo_assets = wm.seut.repos['seut-assets']
+    repo_assets = data.seut.repos['seut-assets']
     repo_assets.cfg_path = path
     check_repo_update(repo_assets)
-    repo_mwmb = wm.seut.repos['MWMBuilder']
+    repo_mwmb = data.seut.repos['MWMBuilder']
     repo_mwmb.cfg_path = os.path.join(path, 'Tools', 'MWMBuilder')
     check_repo_update(repo_mwmb)
 
@@ -198,7 +198,7 @@ class SEUT_AddonPreferences(AddonPreferences):
 
     def draw(self, context):
         layout = self.layout
-        wm = context.window_manager
+        data = get_seut_blend_data()
         preferences = get_preferences()
 
         if bpy.app.version < (3, 0, 0):
@@ -226,14 +226,14 @@ class SEUT_AddonPreferences(AddonPreferences):
             row.alert = True
             row.label(text="An error occurred during draw of Blender Addon Updater UI. Make sure BAU is up to date.")
 
-        if not 'space-engineers-utilities' in wm.seut.repos:
+        if not 'space-engineers-utilities' in data.seut.repos:
             update_register_repos()
 
         if addon_utils.check('blender_addon_updater') != (True, True):
             row = layout.row()
             row.label(text="Update Status:")
 
-            repo = wm.seut.repos['space-engineers-utilities']
+            repo = data.seut.repos['space-engineers-utilities']
 
             if repo.needs_update:
                 row.alert = True
@@ -270,7 +270,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         box.prop(self, "asset_path", expand=True)
 
         if os.path.exists(preferences.asset_path):
-            repo = wm.seut.repos['seut-assets']
+            repo = data.seut.repos['seut-assets']
             box2 = box.box()
             row = box2.row(align=True)
 
@@ -317,7 +317,7 @@ class SEUT_AddonPreferences(AddonPreferences):
                     op = row.operator('wm.get_update', text="", icon='URL')
                     op.repo_name = repo.name
 
-            repo = wm.seut.repos['MWMBuilder']
+            repo = data.seut.repos['MWMBuilder']
             box2 = box.box()
             row = box2.row(align=True)
 

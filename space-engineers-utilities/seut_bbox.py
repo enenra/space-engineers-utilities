@@ -6,6 +6,7 @@ from bgl                import *
 from gpu_extras.batch   import batch_for_shader
 from bpy.types          import Operator
 
+from .seut_utils        import get_seut_blend_data
 
 # Most of the code used in this class is **heavily** based on Jayanam's "Blender 2.8 Python GPU : Draw Lines"-video:
 # https://www.youtube.com/watch?v=EgrgEoNFNsA
@@ -22,10 +23,10 @@ class SEUT_OT_BBox(Operator):
     def invoke(self, context, event):
 
         scene = context.scene
-        wm = context.window_manager
+        data = get_seut_blend_data()
 
         # If the toggle is off, don't do anything.
-        if wm.seut.bBoxToggle == 'off':
+        if data.seut.bBoxToggle == 'off':
             return {'FINISHED'}
 
         factor = 1
@@ -78,13 +79,13 @@ class SEUT_OT_BBox(Operator):
 
     def modal(self, context, event):
         scene = context.scene
-        wm = context.window_manager
+        data = get_seut_blend_data()
 
         if context.area:
             context.area.tag_redraw()
 
         # Escape condition for when the user turns off the bounding box.
-        if wm.seut.bBoxToggle == 'off':
+        if data.seut.bBoxToggle == 'off':
             self.unregister_handlers(context)
             return {'FINISHED'}
 
@@ -123,12 +124,12 @@ class SEUT_OT_BBox(Operator):
         self.batch = batch_for_shader(self.shader, 'LINES', {"pos": self.coords}, indices=self.indices)
 
     def draw_callback_3d(self, op, context):
-        wm = context.window_manager
+        data = get_seut_blend_data()
         
         try:
             glEnable(GL_BLEND)
             self.shader.bind()
-            self.shader.uniform_float("color", (wm.seut.bboxColor[0], wm.seut.bboxColor[1], wm.seut.bboxColor[2], wm.seut.bboxColor[3]))
+            self.shader.uniform_float("color", (data.seut.bboxColor[0], data.seut.bboxColor[1], data.seut.bboxColor[2], data.seut.bboxColor[3]))
             self.batch.draw(self.shader)
             glDisable(GL_BLEND)
         except:

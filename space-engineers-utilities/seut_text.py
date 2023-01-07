@@ -14,7 +14,7 @@ from bpy.props  import (EnumProperty,
                         )
 
 from .seut_errors                   import seut_report, get_abs_path
-from .seut_utils                    import get_preferences
+from .seut_utils                    import get_preferences, get_seut_blend_data
 from .animations.seut_animations    import SEUT_Animations
 
 def update_BBox(self, context):
@@ -26,7 +26,6 @@ def update_simpleNavigationToggle(self, context):
 
 
 def update_texconv_preset(self, context):
-    wm = context.window_manager
 
     if self.texconv_preset == 'icon':
         self.texconv_output_filetype = 'dds'
@@ -86,9 +85,9 @@ def update_texconv_input_file(self, context):
 
 
 def update_animations_index(self, context):
-    wm = context.window_manager
+    data = get_seut_blend_data()
     scene = context.scene
-    animation_set = wm.seut.animations[wm.seut.animations_index]
+    animation_set = data.seut.animations[data.seut.animations_index]
 
     for scn in bpy.data.scenes:
         scn.frame_current = 0
@@ -162,12 +161,12 @@ class SEUT_IssueProperty(PropertyGroup):
     )
 
 
-class SEUT_WindowManager(PropertyGroup):
+class SEUT_Text(PropertyGroup):
     """Holder for the various properties saved to the BLEND file"""
 
     version: IntProperty(
-        name="SEUT WM Version",
-        description="Used as a reference to patch the SEUT window manager properties to newer versions",
+        name="SEUT Text Data Holder Version",
+        description="Used as a reference to patch the SEUT blend data properties to newer versions",
         default=0 # current: 1
     )
 

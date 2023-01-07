@@ -20,9 +20,6 @@ class SEUT_OT_MatCreate(Operator):
 
 
     def execute(self, context):
-        
-        wm = context.window_manager
-        scene = context.scene
             
         new_material = create_material()
         new_material.name = "SEUT Material"

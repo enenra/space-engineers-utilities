@@ -11,8 +11,8 @@ from bpy.props      import (EnumProperty,
                             StringProperty,
                             BoolProperty)
 
-from ..seut_pt_toolbar   import check_display_panels
-
+from ..seut_pt_toolbar      import check_display_panels
+from ..seut_utils           import get_seut_blend_data
 
 def update_technique(self, context):
     if context.active_object is not None and context.active_object.active_material is not None:
@@ -406,37 +406,36 @@ class SEUT_PT_Panel_TextureConversion(Panel):
 
     def draw(self, context):
         layout = self.layout
-        wm = context.window_manager
-        scene = context.scene
+        data = get_seut_blend_data()
 
-        layout.prop(wm.seut, 'texconv_preset')
+        layout.prop(data.seut, 'texconv_preset')
 
         box = layout.box()
         box.label(text="Input", icon='IMPORT')
 
         row = box.row()
-        if wm.seut.texconv_input_type == 'file':
-            row.prop(wm.seut, 'texconv_input_type', expand=True)
-            box.prop(wm.seut, 'texconv_input_file', text="File", icon='FILE_IMAGE')
+        if data.seut.texconv_input_type == 'file':
+            row.prop(data.seut, 'texconv_input_type', expand=True)
+            box.prop(data.seut, 'texconv_input_file', text="File", icon='FILE_IMAGE')
         else:
-            row.prop(wm.seut, 'texconv_input_type', expand=True)
-            box.prop(wm.seut, 'texconv_input_dir', text="Directory", icon='FILE_FOLDER')
-        if wm.seut.texconv_preset == 'custom':
-            box.prop(wm.seut, 'texconv_input_filetype', text="Type")
+            row.prop(data.seut, 'texconv_input_type', expand=True)
+            box.prop(data.seut, 'texconv_input_dir', text="Directory", icon='FILE_FOLDER')
+        if data.seut.texconv_preset == 'custom':
+            box.prop(data.seut, 'texconv_input_filetype', text="Type")
 
         box = layout.box()
         box.label(text="Output", icon='EXPORT')
-        box.prop(wm.seut, 'texconv_output_dir', text="Directory", icon='FILE_FOLDER')
-        if wm.seut.texconv_preset == 'custom':
-            box.prop(wm.seut, 'texconv_output_filetype', text="Type")
+        box.prop(data.seut, 'texconv_output_dir', text="Directory", icon='FILE_FOLDER')
+        if data.seut.texconv_preset == 'custom':
+            box.prop(data.seut, 'texconv_output_filetype', text="Type")
 
             box = layout.box()
             box.label(text="Options", icon='SETTINGS')
-            box.prop(wm.seut, 'texconv_format')
+            box.prop(data.seut, 'texconv_format')
             row = box.row()
-            row.prop(wm.seut, 'texconv_pmalpha')
-            row.prop(wm.seut, 'texconv_sepalpha')
-            box.prop(wm.seut, 'texconv_pdd')
+            row.prop(data.seut, 'texconv_pmalpha')
+            row.prop(data.seut, 'texconv_sepalpha')
+            box.prop(data.seut, 'texconv_pdd')
         
         layout.operator('wm.convert_textures', icon='EXPORT')
 

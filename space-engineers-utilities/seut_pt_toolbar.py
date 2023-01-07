@@ -5,7 +5,7 @@ from bpy.types  import Panel
 
 from .utils.seut_patch_blend        import check_patch_needed
 from .seut_collections              import get_collections, seut_collections
-from .seut_utils                    import get_enum_items, wrap_text
+from .seut_utils                    import get_enum_items, wrap_text, get_seut_blend_data
 
 
 def check_display_panels(context) -> bool:
@@ -25,6 +25,7 @@ class SEUT_PT_Panel(Panel):
         layout = self.layout
         scene = context.scene
         wm = context.window_manager
+        data = get_seut_blend_data()
 
         if bpy.app.version < (3, 0, 0):
             row = layout.row()
@@ -40,7 +41,7 @@ class SEUT_PT_Panel(Panel):
         skip = False
         repo = None
         try:
-            for r in wm.seut.repos:
+            for r in data.seut.repos:
                 if r.needs_update:
                     if r.current_version == '0.0.0':
                         continue
@@ -132,12 +133,12 @@ class SEUT_PT_Panel(Panel):
                 col = split.column()
 
                 row = col.row()
-                if wm.seut.issue_alert:
+                if data.seut.issue_alert:
                     row.alert = True
                 row.operator('wm.issue_display', icon='INFO')
                 
                 col = split.column()
-                col.prop(wm.seut, 'simpleNavigationToggle', text="", icon='OUTLINER')
+                col.prop(data.seut, 'simpleNavigationToggle', text="", icon='OUTLINER')
 
 
 class SEUT_PT_Panel_Collections(Panel):
@@ -159,12 +160,6 @@ class SEUT_PT_Panel_Collections(Panel):
         layout = self.layout
         scene = context.scene
         active_col = context.view_layer.active_layer_collection.collection
-
-        # split = layout.split(factor=0.85)
-        # split.operator('scene.recreate_collections', icon='COLLECTION_NEW')
-        # link = split.operator('wm.semref_link', text="", icon='INFO')
-        # link.section = 'reference'
-        # link.page = 'outliner'
 
         show_button = True
         if active_col.seut.col_type != 'none':
@@ -233,12 +228,12 @@ class SEUT_PT_Panel_BoundingBox(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        wm = context.window_manager
+        data = get_seut_blend_data()
 
         # Toggle
-        layout.prop(wm.seut,'bBoxToggle', expand=True)
+        layout.prop(data.seut,'bBoxToggle', expand=True)
 
-        if wm.seut.bBoxToggle == 'on':
+        if data.seut.bBoxToggle == 'on':
             # Size
             box = layout.box()
             box.label(text="Size", icon='PIVOT_BOUNDBOX')
@@ -248,7 +243,7 @@ class SEUT_PT_Panel_BoundingBox(Panel):
             row.prop(scene.seut, "bBox_Z")
 
             row = box.row()
-            row.prop(wm.seut, 'bboxColor', text="")
+            row.prop(data.seut, 'bboxColor', text="")
 
 
 class SEUT_PT_Panel_Mirroring(Panel):
@@ -270,7 +265,6 @@ class SEUT_PT_Panel_Mirroring(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        wm = context.window_manager
 
         if scene.seut.mirroringToggle == 'on':
             split = layout.split(factor=0.85)
@@ -304,7 +298,6 @@ class SEUT_PT_Panel_Mountpoints(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        wm = context.window_manager
 
         if scene.seut.mountpointToggle == 'on':
             split = layout.split(factor=0.85)
@@ -352,7 +345,6 @@ class SEUT_PT_Panel_IconRender(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        wm = context.window_manager
         
         layout.prop(scene.seut, 'renderToggle', expand=True)
 
@@ -489,7 +481,7 @@ class SEUT_PT_Panel_Import(Panel):
     def draw(self, context):
 
         scene = context.scene
-        wm = context.window_manager
+        data = get_seut_blend_data()
         layout = self.layout
 
         # Import
@@ -504,9 +496,9 @@ class SEUT_PT_Panel_Import(Panel):
         box.label(text='Options', icon='SETTINGS')
 
         if addon_utils.check("better_fbx") == (True, True):
-            box.prop(wm.seut, 'better_fbx', icon='CHECKMARK')
+            box.prop(data.seut, 'better_fbx', icon='CHECKMARK')
 
-        box.prop(wm.seut, 'fix_scratched_materials', icon='MATERIAL')
+        box.prop(data.seut, 'fix_scratched_materials', icon='MATERIAL')
 
         # Repair
         box = layout.box()

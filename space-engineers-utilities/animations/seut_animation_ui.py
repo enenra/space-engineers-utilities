@@ -2,6 +2,8 @@ import bpy
 
 from bpy.types  import Panel, UIList
 
+from ..seut_utils       import get_seut_blend_data
+
 
 class SEUT_UL_Animations(UIList):
     """Creates the Animation Sets UI list"""
@@ -65,9 +67,8 @@ class SEUT_PT_Panel_Animation(Panel):
         return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
 
 
-    def draw(self, context):  # sourcery skip: extract-duplicate-method, extract-method
-        wm = context.window_manager
-        scene = context.scene
+    def draw(self, context):
+        data = get_seut_blend_data()
         layout = self.layout
 
         # Animation Sets
@@ -75,13 +76,13 @@ class SEUT_PT_Panel_Animation(Panel):
         box.label(text="Animation Sets", icon='SEQ_STRIP_META')
 
         row = box.row()
-        row.template_list("SEUT_UL_Animations", "", wm.seut, "animations", wm.seut, "animations_index", rows=3)
+        row.template_list("SEUT_UL_Animations", "", data.seut, "animations", data.seut, "animations_index", rows=3)
         col = row.column(align=True)
         col.operator("animation.add_animation", icon='ADD', text="")
         col.operator("animation.remove_animation", icon='REMOVE', text="")
 
-        if len(wm.seut.animations) > 0:
-            animation_set = wm.seut.animations[wm.seut.animations_index]
+        if len(data.seut.animations) > 0:
+            animation_set = data.seut.animations[data.seut.animations_index]
 
             if animation_set is not None:
                 box2 = box.box()
@@ -143,7 +144,6 @@ class SEUT_PT_Panel_Keyframes(Panel):
 
 
     def draw(self, context):
-        wm = context.window_manager
         fcurve = bpy.context.active_editable_fcurve
         keyframes = fcurve.keyframe_points
         layout = self.layout

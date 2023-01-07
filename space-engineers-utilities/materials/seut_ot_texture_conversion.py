@@ -6,7 +6,7 @@ from bpy.types  import Operator
 
 from ..utils.seut_tool_utils        import *
 from ..seut_errors                  import seut_report, get_abs_path
-from ..seut_utils                   import create_relative_path, get_preferences
+from ..seut_utils                   import create_relative_path, get_preferences, get_seut_blend_data
 
 
 presets = {
@@ -29,58 +29,59 @@ class SEUT_OT_ConvertTextures(Operator):
 
     @classmethod
     def poll(cls, context):
-        wm = context.window_manager
-        if wm.seut.texconv_input_type == 'file':
-            return wm.seut.texconv_input_file != ""
+        data = get_seut_blend_data()
+
+        if data.seut.texconv_input_type == 'file':
+            return data.seut.texconv_input_file != ""
         else:
-            return wm.seut.texconv_input_dir != ""
+            return data.seut.texconv_input_dir != ""
 
 
     def execute(self, context):
         
-        wm = context.window_manager
+        data = get_seut_blend_data()
 
-        if wm.seut.texconv_output_dir == "":
-            if wm.seut.texconv_input_type == 'file':
-                wm.seut.texconv_output_dir = os.path.dirname(wm.seut.texconv_input_file)
+        if data.seut.texconv_output_dir == "":
+            if data.seut.texconv_input_type == 'file':
+                data.seut.texconv_output_dir = os.path.dirname(data.seut.texconv_input_file)
             else:
-                wm.seut.texconv_output_dir = wm.seut.texconv_input_dir
+                data.seut.texconv_output_dir = data.seut.texconv_input_dir
         
         settings = []
 
-        if wm.seut.texconv_preset == 'custom':
+        if data.seut.texconv_preset == 'custom':
             settings.append('-ft')
-            settings.append(wm.seut.texconv_output_filetype.lower())
+            settings.append(data.seut.texconv_output_filetype.lower())
 
-            if wm.seut.texconv_format != 'NONE':
+            if data.seut.texconv_format != 'NONE':
                 settings.append('-f')
-                settings.append(wm.seut.texconv_format)
-                if wm.seut.texconv_format == 'BC7_UNORM_SRGB':
+                settings.append(data.seut.texconv_format)
+                if data.seut.texconv_format == 'BC7_UNORM_SRGB':
                     settings.append('-sRGB')
 
-            if wm.seut.texconv_pmalpha:
+            if data.seut.texconv_pmalpha:
                 settings.append('-pmalpha')
 
-            if wm.seut.texconv_sepalpha:
+            if data.seut.texconv_sepalpha:
                 settings.append('-sepalpha')
 
-            if wm.seut.texconv_pdd:
+            if data.seut.texconv_pdd:
                 settings.append('-if')
                 settings.append('POINT_DITHER_DIFFUSION')
         
-        output_path = get_abs_path(wm.seut.texconv_output_dir)
+        output_path = get_abs_path(data.seut.texconv_output_dir)
         if not os.path.exists(output_path):
             os.makedirs(output_path)
 
-        if wm.seut.texconv_input_type == 'file':
-            result = convert_texture(get_abs_path(wm.seut.texconv_input_file), output_path, wm.seut.texconv_preset, settings)
+        if data.seut.texconv_input_type == 'file':
+            result = convert_texture(get_abs_path(data.seut.texconv_input_file), output_path, data.seut.texconv_preset, settings)
             if result[0] == 0:
                 seut_report(self, context, 'INFO', True, 'I009', f"1/1", "")
             else:
                 seut_report(self, context, 'ERROR', True, 'E046', "texture conversion", result[1])
                 return {'CANCELLED'}
         else:
-            results = mass_convert_textures(self, context, [get_abs_path(wm.seut.texconv_input_dir)], output_path, wm.seut.texconv_preset, settings)
+            results = mass_convert_textures(self, context, [get_abs_path(data.seut.texconv_input_dir)], output_path, data.seut.texconv_preset, settings)
             converted = 0
             for r in results:
                 if r[0] == 0:
@@ -140,8 +141,6 @@ class SEUT_OT_MassConvertTextures(Operator):
 
 
 def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: str, settings: list = [], skip_list: list = [], log_to_file=False, can_report=False):
-
-    wm = context.window_manager
 
     if preset == 'custom':
         idx_ft = settings.index('-ft')

@@ -22,6 +22,7 @@ from .seut_ot_import_materials              import import_materials
 from ..empties.seut_empties                 import empty_types
 from ..materials.seut_ot_remap_materials    import remap_materials
 from ..seut_errors                          import seut_report
+from ..seut_utils                           import get_seut_blend_data
 
 
 class SEUT_OT_Import(Operator):
@@ -64,12 +65,12 @@ class SEUT_OT_Import(Operator):
 def import_fbx(self, context, filepath):
     """Imports FBX and adjusts them for use in SEUT"""
     
-    wm = context.window_manager
+    data = get_seut_blend_data()
 
     existing_objects = set(context.scene.objects)
 
     try:
-        if addon_utils.check("better_fbx") == (True, True) and wm.seut.better_fbx:
+        if addon_utils.check("better_fbx") == (True, True) and data.seut.better_fbx:
             result = bpy.ops.better_import.fbx(filepath=filepath)
         else:
             result = bpy.ops.import_scene.fbx(filepath=filepath)

@@ -4,7 +4,7 @@ import os
 from bpy.types              import Operator
 
 from ..seut_errors          import get_abs_path, seut_report
-from ..seut_utils           import get_preferences, prep_context
+from ..seut_utils           import get_preferences, prep_context, get_seut_blend_data
 
 
 class SEUT_OT_RemapMaterials(Operator):
@@ -27,7 +27,7 @@ def remap_materials(self, context, all_objects = False):
     preferences = get_preferences()
     current_scene = context.window.scene
     current_area = prep_context(context)
-    wm = context.window_manager
+    data = get_seut_blend_data()
 
     materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
     if not os.path.exists(materials_path):
@@ -93,7 +93,7 @@ def remap_materials(self, context, all_objects = False):
                 else:
                     new_material = old_material.name
                 
-                if wm.seut.fix_scratched_materials and new_material is not None and "Scratched_" in new_material and new_material.replace("Scratched", "") in bpy.data.materials:
+                if data.seut.fix_scratched_materials and new_material is not None and "Scratched_" in new_material and new_material.replace("Scratched", "") in bpy.data.materials:
                     new_material = new_material.replace("Scratched", "")
 
                 if new_material is not None:
