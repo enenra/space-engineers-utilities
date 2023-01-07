@@ -16,6 +16,7 @@ from bpy_extras.io_utils    import ImportHelper
 from ..seut_preferences import get_preferences
 from ..seut_collections import get_collections
 from ..seut_errors      import get_abs_path, seut_report
+from ..seut_utils       import get_seut_blend_data
 
 from .seut_animation_utils  import *
 from .seut_animation_io     import *
@@ -30,13 +31,14 @@ class SEUT_OT_Animation_Export(Operator):
 
     @classmethod
     def poll(cls, context):
-        wm = context.window_manager
+        data = get_seut_blend_data()
         scene = context.scene
+
         if scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers:
             if not os.path.exists(scene.seut.mod_path):
                 Operator.poll_message_set("Mod must first be defined.")
                 return False
-            elif len(wm.seut.animations) < 1:
+            elif len(data.seut.animations) < 1:
                 Operator.poll_message_set("There are no Animation Sets in this BLEND file.")
                 return False
             return True
@@ -63,14 +65,14 @@ class SEUT_OT_Animation_Add(Operator):
 
 
     def execute(self, context):
-        wm = context.window_manager
+        data = get_seut_blend_data()
     
-        item = wm.seut.animations.add()
+        item = data.seut.animations.add()
         item.name = "Animation Set"
 
-        if len(wm.seut.animations) > 1:
+        if len(data.seut.animations) > 1:
             idx = 2
-            while f"Animation Set {idx}" in wm.seut.animations:
+            while f"Animation Set {idx}" in data.seut.animations:
                 idx += 1
             item.name = f"Animation Set {idx}"
 
@@ -91,10 +93,10 @@ class SEUT_OT_Animation_Remove(Operator):
 
 
     def execute(self, context):
-        wm = context.window_manager
+        data = get_seut_blend_data()
 
-        wm.seut.animations.remove(wm.seut.animations_index)
-        wm.seut.animations_index = min(max(0, wm.seut.animations_index - 1), len(wm.seut.animations) - 1)
+        data.seut.animations.remove(data.seut.animations_index)
+        data.seut.animations_index = min(max(0, data.seut.animations_index - 1), len(data.seut.animations) - 1)
 
         return {'FINISHED'}
 
@@ -113,9 +115,9 @@ class SEUT_OT_Animation_SubpartEmpty_Add(Operator):
 
 
     def execute(self, context):
-        wm = context.window_manager
-        animation_set = wm.seut.animations[wm.seut.animations_index]
+        data = get_seut_blend_data()
 
+        animation_set = data.seut.animations[data.seut.animations_index]
         item = animation_set.subparts.add()
 
         return {'FINISHED'}
@@ -135,8 +137,8 @@ class SEUT_OT_Animation_SubpartEmpty_Remove(Operator):
 
 
     def execute(self, context):
-        wm = context.window_manager
-        animation_set = wm.seut.animations[wm.seut.animations_index]
+        data = get_seut_blend_data()
+        animation_set = data.seut.animations[data.seut.animations_index]
 
         animation_set.subparts.remove(animation_set.subparts_index)
         animation_set.subparts_index = min(max(0, animation_set.subparts_index - 1), len(animation_set.subparts) - 1)
@@ -158,8 +160,8 @@ class SEUT_OT_Animation_Trigger_Add(Operator):
 
 
     def execute(self, context):
-        wm = context.window_manager
-        animation_set = wm.seut.animations[wm.seut.animations_index]
+        data = get_seut_blend_data()
+        animation_set = data.seut.animations[data.seut.animations_index]
 
         item = animation_set.triggers.add()
         item.name = item.trigger_type
@@ -181,8 +183,8 @@ class SEUT_OT_Animation_Trigger_Remove(Operator):
 
 
     def execute(self, context):
-        wm = context.window_manager
-        animation_set = wm.seut.animations[wm.seut.animations_index]
+        data = get_seut_blend_data()
+        animation_set = data.seut.animations[data.seut.animations_index]
 
         animation_set.triggers.remove(animation_set.triggers_index)
         animation_set.triggers_index = min(max(0, animation_set.triggers_index - 1), len(animation_set.triggers) - 1)

@@ -9,7 +9,7 @@ from bpy.types              import Operator
 from bpy.props              import StringProperty, IntProperty
 
 from ..seut_errors      import log, seut_report, anonymize_paths
-from ..seut_utils       import wrap_text, get_preferences
+from ..seut_utils       import wrap_text, get_preferences, get_seut_blend_data
 
 
 class SEUT_OT_IssueDisplay(Operator):
@@ -24,19 +24,19 @@ class SEUT_OT_IssueDisplay(Operator):
 
     def execute(self, context):
 
-        wm = context.window_manager
+        data = get_seut_blend_data()
         
         SEUT_OT_IssueDisplay.issues_sorted.clear()
-        SEUT_OT_IssueDisplay.issues_sorted = sorted(wm.seut.issues, key=lambda issue: issue.timestamp, reverse=True)
+        SEUT_OT_IssueDisplay.issues_sorted = sorted(data.seut.issues, key=lambda issue: issue.timestamp, reverse=True)
         
-        wm.seut.issue_alert = False
+        data.seut.issue_alert = False
         
         return context.window_manager.invoke_popup(self, width=600)
 
 
     def draw(self, context):
 
-        wm = context.window_manager
+        data = get_seut_blend_data()
         layout = self.layout
 
         layout.label(text="SEUT Notifications", icon='INFO')
@@ -53,20 +53,20 @@ class SEUT_OT_IssueDisplay(Operator):
             split.operator('wm.export_log', icon='TEXT')
             split = row.split(factor=0.8)
             split.label(text="")
-            split.prop(wm.seut, 'display_errors', icon='CANCEL', text="")
-            split.prop(wm.seut, 'display_warnings', icon='ERROR', text="")
-            split.prop(wm.seut, 'display_infos', icon='INFO', text="")
+            split.prop(data.seut, 'display_errors', icon='CANCEL', text="")
+            split.prop(data.seut, 'display_warnings', icon='ERROR', text="")
+            split.prop(data.seut, 'display_infos', icon='INFO', text="")
             layout.separator(factor=1.0)
         
         for issue in SEUT_OT_IssueDisplay.issues_sorted:
 
             index = SEUT_OT_IssueDisplay.issues_sorted.index(issue)
 
-            if issue.issue_type == 'ERROR' and not wm.seut.display_errors:
+            if issue.issue_type == 'ERROR' and not data.seut.display_errors:
                 continue
-            if issue.issue_type == 'WARNING' and not wm.seut.display_warnings:
+            if issue.issue_type == 'WARNING' and not data.seut.display_warnings:
                 continue
-            if issue.issue_type == 'INFO' and not wm.seut.display_infos:
+            if issue.issue_type == 'INFO' and not data.seut.display_infos:
                 continue
 
             box = layout.box()
@@ -142,15 +142,15 @@ class SEUT_OT_DeleteIssue(Operator):
 
     def execute(self, context):
         
-        wm = context.window_manager
+        data = get_seut_blend_data()
 
-        for index in range(0, len(wm.seut.issues)):
-            if wm.seut.issues[index] == SEUT_OT_IssueDisplay.issues_sorted[self.idx]:
-                wm.seut.issues.remove(index)
+        for index in range(0, len(data.seut.issues)):
+            if data.seut.issues[index] == SEUT_OT_IssueDisplay.issues_sorted[self.idx]:
+                data.seut.issues.remove(index)
                 break
 
         SEUT_OT_IssueDisplay.issues_sorted.clear()
-        SEUT_OT_IssueDisplay.issues_sorted = sorted(wm.seut.issues, key=lambda issue: issue.timestamp, reverse=True)
+        SEUT_OT_IssueDisplay.issues_sorted = sorted(data.seut.issues, key=lambda issue: issue.timestamp, reverse=True)
         
         return {'FINISHED'}
 
@@ -164,8 +164,8 @@ class SEUT_OT_ClearIssues(Operator):
 
     def execute(self, context):
         
-        wm = context.window_manager
-        wm.seut.issues.clear()
+        data = get_seut_blend_data()
+        data.seut.issues.clear()
         SEUT_OT_IssueDisplay.issues_sorted.clear()
         
         return {'FINISHED'}
@@ -189,7 +189,7 @@ class SEUT_OT_ExportLog(Operator):
 
     def execute(self, context):
 
-        wm = context.window_manager
+        data = get_seut_blend_data()
         scene = context.scene
         preferences = get_preferences()
 
@@ -200,7 +200,7 @@ class SEUT_OT_ExportLog(Operator):
         
         path = f"{os.path.splitext(bpy.data.filepath)[0]}_{time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime())}.log"
         
-        repo = wm.seut.repos['space-engineers-utilities']
+        repo = data.seut.repos['space-engineers-utilities']
         seut_version = f"{repo.current_version}"
         if repo.dev_mode:
             seut_version = seut_version + f"-{repo.dev_tag}.{repo.dev_version}"
@@ -212,8 +212,8 @@ class SEUT_OT_ExportLog(Operator):
             f"SEUT:\t\t\t{seut_version}",
             f"----------------------------------------------------------------",
             f"Game Dir:\t\t{anonymize_paths(preferences.game_path)}",
-            f"Assets:\t\t\t{wm.seut.repos['seut-assets'].current_version}\t Path: {anonymize_paths(preferences.asset_path)}",
-            f"MWMB:\t\t\t{wm.seut.repos['MWMBuilder'].current_version}\t Path: {anonymize_paths(preferences.mwmb_path)}",
+            f"Assets:\t\t\t{data.seut.repos['seut-assets'].current_version}\t Path: {anonymize_paths(preferences.asset_path)}",
+            f"MWMB:\t\t\t{data.seut.repos['MWMBuilder'].current_version}\t Path: {anonymize_paths(preferences.mwmb_path)}",
             f"Havok Path:\t\t{anonymize_paths(preferences.havok_path)}",
             f"----------------------------------------------------------------",
             f"BLEND Path:\t\t{anonymize_paths(bpy.data.filepath)}",

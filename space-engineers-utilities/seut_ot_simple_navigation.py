@@ -4,6 +4,8 @@ from bpy.types import Operator
 
 from .seut_collections              import get_collections
 from .seut_errors                   import seut_report
+from .seut_utils                    import get_seut_blend_data
+
 
 class SEUT_OT_SimpleNavigation(Operator):
     """Makes navigation through SEUT collections simpler by hiding all non-active collections"""
@@ -15,13 +17,13 @@ class SEUT_OT_SimpleNavigation(Operator):
     def invoke(self, context, event):
 
         scene = context.scene
-        wm = context.window_manager
+        data = get_seut_blend_data()
         collections = get_collections(scene)
 
-        if not wm.seut.simpleNavigationToggle:
+        if not data.seut.simpleNavigationToggle:
             return {'FINISHED'}
 
-        if not wm.seut.simpleNavigationToggle:
+        if not data.seut.simpleNavigationToggle:
             for col in bpy.data.collections:
                 if col is not None and col.seut.scene is scene:
                     if col.seut.col_type == 'seut':
@@ -37,7 +39,7 @@ class SEUT_OT_SimpleNavigation(Operator):
 
         if not check:
             seut_report(self, context, 'ERROR', False, 'E010')
-            wm.seut.simpleNavigationToggle = False
+            data.seut.simpleNavigationToggle = False
             return {'CANCELLED'}
 
         context.window_manager.modal_handler_add(self)
@@ -48,11 +50,11 @@ class SEUT_OT_SimpleNavigation(Operator):
     def modal(self, context, event):
 
         scene = context.scene
-        wm = context.window_manager
+        data = get_seut_blend_data()
         collections = get_collections(scene)
         active_col = context.view_layer.active_layer_collection
 
-        if not wm.seut.simpleNavigationToggle:
+        if not data.seut.simpleNavigationToggle:
             return {'FINISHED'}
 
         if active_col.hide_viewport:

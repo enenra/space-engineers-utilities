@@ -13,7 +13,7 @@ import glob
 from bpy.types              import Operator
 from bpy.props              import StringProperty, BoolProperty
 
-from ..seut_utils           import get_preferences, get_addon
+from ..seut_utils           import get_preferences, get_addon, get_seut_blend_data
 
 
 rel_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+$")
@@ -39,8 +39,8 @@ class SEUT_OT_GetUpdate(Operator):
 
     def execute(self, context):
 
-        wm = context.window_manager
-        repo = wm.seut.repos[self.repo_name]
+        data = get_seut_blend_data()
+        repo = data.seut.repos[self.repo_name]
 
         if repo.latest_version == "":
             webbrowser.open(f"{repo.git_url}/releases/")
@@ -62,8 +62,8 @@ class SEUT_OT_CheckUpdate(Operator):
 
     def execute(self, context):
 
-        wm = context.window_manager
-        repo = wm.seut.repos[self.repo_name]
+        data = get_seut_blend_data()
+        repo = data.seut.repos[self.repo_name]
 
         check_repo_update(repo)
 
@@ -86,8 +86,8 @@ class SEUT_OT_DownloadUpdate(Operator):
 
     def execute(self, context):
 
-        wm = context.window_manager
-        repo = wm.seut.repos[self.repo_name]
+        data = get_seut_blend_data()
+        repo = data.seut.repos[self.repo_name]
 
         update_repo(repo, self.wipe)
 
@@ -96,15 +96,15 @@ class SEUT_OT_DownloadUpdate(Operator):
 
 def update_register_repos():
 
-    wm = bpy.context.window_manager
+    data = get_seut_blend_data()
     preferences = get_preferences()
     addon = get_addon()
 
     # SEUT
-    if 'space-engineers-utilities' in wm.seut.repos:
-        repo = wm.seut.repos['space-engineers-utilities']
+    if 'space-engineers-utilities' in data.seut.repos:
+        repo = data.seut.repos['space-engineers-utilities']
     else:
-        repo = wm.seut.repos.add()
+        repo = data.seut.repos.add()
         repo.name = 'space-engineers-utilities'
         repo.text_name = 'SEUT'
         repo.git_url = addon.bl_info['git_url']
@@ -118,10 +118,10 @@ def update_register_repos():
         repo.dev_mode = False
 
     # SEUT Assets
-    if 'seut-assets' in wm.seut.repos:
-        repo = wm.seut.repos['seut-assets']
+    if 'seut-assets' in data.seut.repos:
+        repo = data.seut.repos['seut-assets']
     else:
-        repo = wm.seut.repos.add()
+        repo = data.seut.repos.add()
         repo.name = 'seut-assets'
         repo.text_name = 'SEUT Assets'
         repo.git_url = "https://github.com/enenra/seut-assets"
@@ -130,10 +130,10 @@ def update_register_repos():
     update_repo_from_config(repo)
 
     # MWMB
-    if 'MWMBuilder' in wm.seut.repos:
-        repo = wm.seut.repos['MWMBuilder']
+    if 'MWMBuilder' in data.seut.repos:
+        repo = data.seut.repos['MWMBuilder']
     else:
-        repo = wm.seut.repos.add()
+        repo = data.seut.repos.add()
         repo.name = 'MWMBuilder'
         repo.text_name = 'MWM Builder'
         repo.git_url = "https://github.com/cstahlhut/MWMBuilder"
@@ -190,10 +190,10 @@ def update_repo_from_config(repo: object):
 
 
 def check_all_repo_updates():
-    wm = bpy.context.window_manager
-    check_repo_update(wm.seut.repos['space-engineers-utilities'])
-    check_repo_update(wm.seut.repos['seut-assets'])
-    check_repo_update(wm.seut.repos['MWMBuilder'])
+    data = get_seut_blend_data()
+    check_repo_update(data.seut.repos['space-engineers-utilities'])
+    check_repo_update(data.seut.repos['seut-assets'])
+    check_repo_update(data.seut.repos['MWMBuilder'])
 
 
 def check_repo_update(repo: object):

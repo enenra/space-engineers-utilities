@@ -266,9 +266,7 @@ class SEUT_OT_AddMountpointArea(Operator):
 
 
     def execute(self, context):
-
         scene = context.scene
-        wm = context.window_manager
 
         smat_mp = None
         for mat in bpy.data.materials:

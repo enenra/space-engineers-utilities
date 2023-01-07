@@ -3,12 +3,13 @@ import os
 
 from ..utils.seut_xml_utils import *
 from ..seut_errors          import seut_report
-from ..seut_utils           import get_abs_path, get_enum_items
+from ..seut_utils           import get_abs_path, get_enum_items, get_seut_blend_data
 
 
 def export_animation_xml(self, context: bpy.types.Context):
     """Exports all animation sets to xml"""
-    wm = context.window_manager
+
+    data = get_seut_blend_data()
     scene = context.scene
     path_data = os.path.join(get_abs_path(scene.seut.mod_path), "Data", "Animations")
 
@@ -18,11 +19,11 @@ def export_animation_xml(self, context: bpy.types.Context):
 
     # Error if bezier is used
 
-    if len(wm.seut.animations) == 0:
+    if len(data.seut.animations) == 0:
         return {'CANCELLED'}
 
     animations = ET.Element('Animations')
-    for animation_set in wm.seut.animations:
+    for animation_set in data.seut.animations:
         animation = add_subelement(animations, 'Animation')
         add_attrib(animation, 'id', animation_set.name)
 

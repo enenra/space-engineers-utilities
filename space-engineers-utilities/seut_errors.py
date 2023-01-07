@@ -271,8 +271,9 @@ def seut_report(self, context, report_type: str, can_report: bool, code: str, va
 def add_to_issues(context, issue_type: str, text: str, code: str, reference: str):
     """Adds an entry to the SEUT issues list"""
 
-    wm = context.window_manager
-    issues = wm.seut.issues
+    from .seut_utils import get_seut_blend_data
+    data = get_seut_blend_data()
+    issues = data.seut.issues
 
     while len(issues) > 49:
         oldest = None
@@ -294,7 +295,7 @@ def add_to_issues(context, issue_type: str, text: str, code: str, reference: str
     if reference is not None:
         issue.reference = reference
     if issue_type == 'ERROR':
-        wm.seut.issue_alert = True
+        data.seut.issue_alert = True
 
 
 def init_logging():

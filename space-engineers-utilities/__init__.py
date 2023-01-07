@@ -162,9 +162,9 @@ from .seut_icon_render                  import SEUT_OT_CopyRenderOptions
 from .seut_scene                        import SEUT_MountpointAreas
 from .seut_scene                        import SEUT_Scene
 from .seut_object                       import SEUT_Object
-from .seut_window_manager               import SEUT_RepositoryProperty
-from .seut_window_manager               import SEUT_IssueProperty
-from .seut_window_manager               import SEUT_WindowManager
+from .seut_text                         import SEUT_RepositoryProperty
+from .seut_text                         import SEUT_IssueProperty
+from .seut_text                         import SEUT_Text
 from .seut_utils                        import SEUT_OT_UpdateSubpartInstances
 from .seut_errors                       import init_logging
 
@@ -298,7 +298,7 @@ classes = (
     SEUT_Object,
     SEUT_RepositoryProperty,
     SEUT_IssueProperty,
-    SEUT_WindowManager,
+    SEUT_Text,
     SEUT_OT_UpdateSubpartInstances,
 )
 
@@ -316,7 +316,7 @@ def register():
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
     bpy.types.Collection.seut = PointerProperty(type=SEUT_Collection)
-    bpy.types.WindowManager.seut = PointerProperty(type=SEUT_WindowManager)
+    bpy.types.Text.seut = PointerProperty(type=SEUT_Text)
 
     bpy.app.handlers.load_post.append(load_handler)
 
@@ -341,7 +341,7 @@ def unregister():
     del bpy.types.Scene.seut
     del bpy.types.Object.seut
     del bpy.types.Collection.seut
-    del bpy.types.WindowManager.seut
+    del bpy.types.Text.seut
 
     bpy.app.handlers.load_post.remove(load_handler)
 

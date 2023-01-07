@@ -329,3 +329,14 @@ def check_vanilla_texture(path: str) -> bool:
         return True
     else:
         return False
+
+
+def get_seut_blend_data():
+    """"""
+
+    if '.seut-data' not in bpy.data.texts:
+        data = bpy.data.texts.new('.seut-data')
+    else:
+        data = bpy.data.texts['.seut-data']
+
+    return data

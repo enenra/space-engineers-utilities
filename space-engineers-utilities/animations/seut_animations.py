@@ -11,6 +11,8 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
+from ..seut_utils       import get_seut_blend_data
+
 
 def items_trigger_types(self, context):
 
@@ -37,8 +39,8 @@ def items_trigger_types(self, context):
 
 
 def poll_animation_objects_obj(self, object):
-    wm = bpy.context.window_manager
-    animation_set = wm.seut.animations[wm.seut.animations_index]
+    data = get_seut_blend_data()
+    animation_set = data.seut.animations[data.seut.animations_index]
     in_use = any(sp.obj == object for sp in animation_set.subparts)
 
     return object.type == 'EMPTY' and 'file' in object and not in_use and not object.seut.linked

@@ -14,8 +14,6 @@ class SEUT_OT_DiscordLink(Operator):
 
     def execute(self, context):
 
-        wm = context.window_manager
-
         webbrowser.open("https://discord.gg/QtyCsBr")
         
         return {'FINISHED'}
