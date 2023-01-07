@@ -45,7 +45,7 @@ errors = {
     'E032': "Object '{variable_1}' does not have valid UV-Maps. This will crash Space Engineers.",
     'E033': "Invalid character(s) detected. This will prevent a MWM-file from being generated. Please ensure that no special (non ASCII) characters are used in SubtypeIds, material names and object names.",
     'E034': "Collision object '{variable_1}' has unapplied modifiers. Collision model cannot be created.",
-    'E035': "There was an error during export caused by {variable_1}. Please refer to the logs in your export folder for details.",
+    'E035': "There was an error during export caused by {variable_1}. Please refer to the logs in your export folder (to generate, disable 'Delete Temp Files') for details.",
     'E036': "The following error occurred during import:\n{variable_1}",
     'E037': "Havok's 'hctFilterManager.dll' could not be found. Collision could not be exported.",
     'E038': "A KeyError occurred during export:\n{variable_1}",
