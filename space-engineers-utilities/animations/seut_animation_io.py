@@ -1,6 +1,10 @@
 import bpy
 import os
 
+from math import pi
+
+from .seut_animations       import items_trigger_types, items_function_types
+
 from ..utils.seut_xml_utils import *
 from ..seut_errors          import seut_report
 from ..seut_utils           import get_abs_path, get_enum_items, get_seut_blend_data
@@ -11,7 +15,7 @@ def export_animation_xml(self, context: bpy.types.Context):
 
     data = get_seut_blend_data()
     scene = context.scene
-    path_data = os.path.join(get_abs_path(scene.seut.mod_path), "Data", "Animations")
+    path_data = os.path.join(get_abs_path(scene.seut.mod_path), "Data", "Animation")
 
     # Check for animations to override by file name
 
@@ -19,56 +23,49 @@ def export_animation_xml(self, context: bpy.types.Context):
 
     # Error if bezier is used
 
-    if len(data.seut.animations) == 0:
-        return {'CANCELLED'}
-
     animations = ET.Element('Animations')
     for animation_set in data.seut.animations:
-        animation = add_subelement(animations, 'Animation')
+
+        # Don't export animation sets where no subpart has an action
+        if all(sp.action is None for sp in animation_set.subparts):
+            continue
+
+        animation = ET.SubElement(animations, 'Animation')
         add_attrib(animation, 'id', animation_set.name)
 
         # Triggers
         triggers = add_subelement(animation, 'Triggers')
         for tg in animation_set.triggers:
 
-            trigger_enum = tg.bl_rna.properties['trigger_type']
-            id = next(
-                (
-                    p.identifier
-                    for p in trigger_enum.enum_items
-                    if p.name == tg.trigger_type
-                ),
-                None,
-            )
-            if id in ['Working', 'Producing']:
-                trigger = add_subelement(triggers, 'State')
+            if tg.trigger_type in ['Working', 'Producing']:
+                trigger = ET.SubElement(triggers, 'State')
             else:
-                trigger = add_subelement(triggers, 'Event')
+                trigger = ET.SubElement(triggers, 'Event')
 
-            add_attrib(trigger, 'type', id)
+            add_attrib(trigger, 'type', tg.trigger_type)
 
-            if id in ['PressedOn', 'PressedOff', 'Pressed']:
-                add_attrib(trigger, 'empty', tg.Pressed_empty)
+            if tg.trigger_type in ['PressedOn', 'PressedOff', 'Pressed']:
+                add_attrib(trigger, 'empty', tg.Pressed_empty.name)
 
-            elif id in ['Arrive', 'Leave']:
-                add_attrib(trigger, 'distance', tg.distance)
+            elif tg.trigger_type in ['Arrive', 'Leave']:
+                add_attrib(trigger, 'distance', round(tg.distance,2))
 
-            elif id == 'Working':
-                add_attrib(trigger, 'bool', tg.Working_bool.lower())
-                add_attrib(trigger, 'loop', tg.Working_loop)
+            elif tg.trigger_type == 'Working':
+                add_attrib(trigger, 'bool', str(tg.Working_bool).lower())
+                add_attrib(trigger, 'loop', str(tg.Working_loop).lower())
 
-            elif id == 'Producing':
-                add_attrib(trigger, 'bool', tg.Producing_bool.lower())
-                add_attrib(trigger, 'loop', tg.Producing_loop)
+            elif tg.trigger_type == 'Producing':
+                add_attrib(trigger, 'bool', str(tg.Producing_bool).lower())
+                add_attrib(trigger, 'loop', str(tg.Producing_loop).lower())
 
         # Subparts
         subparts = add_subelement(animation, 'Subparts')
         for sp in animation_set.subparts:
-            subpart = add_subelement(subparts, 'Subpart')
+            subpart = ET.SubElement(subparts, 'Subpart')
             add_attrib(subpart, 'empty', sp.obj.name)
 
             # Keyframes
-            keyframes = add_subelement(subparts, 'Keyframes')
+            keyframes = add_subelement(subpart, 'Keyframes')
 
             if sp.action is None:
                 continue
@@ -82,76 +79,86 @@ def export_animation_xml(self, context: bpy.types.Context):
                     k_dict[k.co_ui[0]][k] = f
 
             for time, k_f_dict in k_dict.items():
-                keyframe = add_subelement(keyframes, 'Keyframe')
-                add_attrib(keyframe, 'time', time)
+                keyframe = ET.SubElement(keyframes, 'Keyframe')
+                add_attrib(keyframe, 'frame', int(round(time,0)))
 
+                anim_dict = {}
                 for kf, f in k_f_dict.items():
 
-                    # Write Animated Properties
-                    anim = add_subelement(keyframe, 'Anim')
+                    if f.data_path not in anim_dict and f.data_path != 'scale':
+                        anim_dict[f.data_path] = [0.0, 0.0, 0.0]
+                    elif f.data_path not in anim_dict:
+                        anim_dict[f.data_path] = [1.0, 1.0, 1.0]
 
-                    coords = [0.0, 0.0, 0.0]
-                    coords[f.array_index] = kf.co_ui[1]
-                    add_attrib(anim, f.data_path, f"[{coords[0]},{coords[1]},{coords[2]}]")
+                    if (f.data_path == 'scale' and kf.co_ui[1] != 1.0) or (f.data_path != 'scale' and kf.co_ui[1] != 0.0):
+                        anim_dict[f.data_path][f.array_index] = kf.co_ui[1]
+
+                for key, coords in anim_dict.items():
+                    # Write Animated Properties
+                    anim = ET.SubElement(keyframe, 'Anim')
+
+                    motion_type = key
+
+                    if motion_type == 'rotation_euler':
+                        motion_type = 'rotation'
+                        if coords[0] != 0: coords[0] = coords[0] * 180 / pi
+                        if coords[1] != 0: coords[1] = coords[1] * 180 / pi
+                        if coords[2] != 0: coords[2] = coords[2] * 180 / pi
+
+                    add_attrib(anim, motion_type, f"[{round(coords[0],2)},{round(coords[1],2)},{round(coords[2],2)}]")
+
+                    if kf.interpolation == 'BEZIER':
+                        kf.interpolation = 'LINEAR'
 
                     add_attrib(anim, 'lerp', kf.interpolation)
 
                     if kf.easing == 'AUTO' and kf.interpolation in ['SINE', 'QUAD', 'CUBIC', 'QUART', 'QUINT', 'EXPO', 'CIRC']:
-                        add_attrib(anim, 'easing', 'IN')
+                        add_attrib(anim, 'easing', 'EASE_IN')
                     if kf.easing == 'AUTO' and kf.interpolation in ['BACK', 'BOUNCE', 'ELASTIC']:
-                        add_attrib(anim, 'easing', 'OUT')
+                        add_attrib(anim, 'easing', 'EASE_OUT')
                     elif kf.easing != 'AUTO':
                         add_attrib(anim, 'easing', kf.easing)
 
-                    # Write Functions
+                # Write Functions
+                for kf in k_f_dict.keys():
                     seut_kf = next(
                         (k for k in sp.action.seut.keyframes if k.name == str(kf)), None
                     )
                     if seut_kf is not None:
                         for func in seut_kf.functions:
+                            
+                            function = ET.SubElement(keyframe, 'Function')
+                            add_attrib(function, 'type', func.function_type)
 
-                            # Get enum with IDs of function types
-                            func_enum = func.bl_rna.properties['function_type']
-                            id = next(
-                                (
-                                    p.identifier
-                                    for p in func_enum.enum_items
-                                    if p.name == func.function_type
-                                ),
-                                None,
-                            )
-                            function = add_subelement(keyframe, 'Function')
-                            add_attrib(function, 'type', id)
+                            if func.function_type == 'setVisible':
+                                add_attrib(function, 'bool', str(func.setVisible_bool).lower())
+                                add_attrib(function, 'empty', func.setVisible_empty.name)
 
-                            if id == 'setVisible':
-                                add_attrib(function, 'bool', func.setVisible_bool.lower())
-                                add_attrib(function, 'empty', func.setVisible_empty)
+                            elif func.function_type == 'setEmissiveColor':
+                                add_attrib(function, 'material', func.setEmissiveColor_material.name)
+                                add_attrib(function, 'rgb', f"[{round(func.setEmissiveColor_rgb[0],1)},{round(func.setEmissiveColor_rgb[1],1)},{round(func.setEmissiveColor_rgb[2],1)}]")
+                                add_attrib(function, 'brightness', round(func.setEmissiveColor_brightness,2))
 
-                            elif id == 'setEmissiveColor':
-                                add_attrib(function, 'material', func.setEmissiveColor_material)
-                                add_attrib(function, 'rgb', f"[{func.setEmissiveColor_rgb[0]},{func.setEmissiveColor_rgb[1]},{func.setEmissiveColor_rgb[2]}]")
-                                add_attrib(function, 'brightness', func.setEmissiveColor_brightness)
-
-                            elif id == 'playParticle':
-                                add_attrib(function, 'empty', func.playParticle_empty)
+                            elif func.function_type == 'playParticle':
+                                add_attrib(function, 'empty', func.playParticle_empty.name)
                                 add_attrib(function, 'subtypeid', func.playParticle_subtypeid)
 
-                            elif id == 'stopParticle':
-                                add_attrib(function, 'empty', func.stopParticle_empty)
+                            elif func.function_type == 'stopParticle':
+                                add_attrib(function, 'empty', func.stopParticle_empty.name)
                                 add_attrib(function, 'subtypeid', func.stopParticle_subtypeid)
 
-                            elif id == 'playSound':
+                            elif func.function_type == 'playSound':
                                 add_attrib(function, 'subtypeid', func.playSound_subtypeid)
 
-                            elif id == 'stopSound':
+                            elif func.function_type == 'stopSound':
                                 add_attrib(function, 'subtypeid', func.stopSound_subtypeid)
 
-                            elif id == 'setLightColor':
-                                add_attrib(function, 'empty', func.setLightColor_empty)
-                                add_attrib(function, 'rgb', f"[{func.setLightColor_rgb[0]},{func.setLightColor_rgb[1]},{func.setLightColor_rgb[2]}]")
+                            elif func.function_type == 'setLightColor':
+                                add_attrib(function, 'empty', func.setLightColor_empty.name)
+                                add_attrib(function, 'rgb', f"[{round(func.setLightColor_rgb[0],1)},{round(func.setLightColor_rgb[1],1)},{round(func.setLightColor_rgb[2],1)}]")
 
-                            elif id in ['lightOn', 'lightOff', 'toggleLight']:
-                                add_attrib(function, 'subtypeid', func.light_empty)
+                            elif func.function_type in ['lightOn', 'lightOff', 'toggleLight']:
+                                add_attrib(function, 'subtypeid', func.light_empty.name)
 
 
     temp_string = ET.tostring(animations, 'utf-8')

@@ -1,8 +1,9 @@
-Relevant Milestone: [SEUT 1.0.1]()
+Relevant Milestone: [SEUT 1.1.0]()
 
 # Changelog
 * Added: Ability to select existing `HKT`-file as a collision instead of creating your own. (Alpha 1)
 * Fixed: In some cases, `Distribution Rules` would not correctly be associated with new `Environment Items`. (Alpha 1)
+* Fixed: Numerous items not persisting across BLEND file loads. (Alpha 1)
 
 # Installation
 Refer to the [install guide](https://semref.atlassian.net/wiki/spaces/tutorials/pages/131411/SEUT+Installation+Guide).
