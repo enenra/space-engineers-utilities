@@ -198,7 +198,7 @@ class SEUT_AnimationFunctions(PropertyGroup):
     
     function_type: EnumProperty(
         name = "Type",
-        description = "",
+        description = "Functions allow the animation to cause ingame effects at the containing keyframe's point in time",
         items = items_function_types,
         default = 0,
         update = update_function_type

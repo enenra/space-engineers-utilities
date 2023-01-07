@@ -180,6 +180,36 @@ def export_animation_xml(self, context: bpy.types.Context):
     exported_xml = open(target_file, "w")
     exported_xml.write(xml_formatted)
 
+    update_main_info(filename, path_data)
+
     seut_report(self, context, 'INFO', False, 'I004', target_file)
 
     return {'FINISHED'}
+
+
+def update_main_info(filename, path):
+
+    info_path = os.path.join(path, "main.info")
+
+    if not os.path.exists(info_path):
+        main_file = open(info_path, 'w')
+        lines = []
+    else:
+        with open(info_path, 'r') as main_file:
+            lines = main_file.readlines()
+            main_file.close()
+
+    for l in lines:
+        if l is None or l == '':
+            continue
+
+        split = l.split(" ")
+        if split[0] == 'XMLAnimation' and split[1] == filename:
+            return
+
+    if len(lines) > 0:
+        lines[len(lines)-1] += '\n'
+    lines.append(f"XMLAnimation {filename}")
+
+    with open(info_path, 'w') as main_file:
+        main_file.write("".join(lines))
