@@ -34,7 +34,10 @@ class SEUT_OT_Animation_Export(Operator):
         data = get_seut_blend_data()
         scene = context.scene
 
-        if scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers:
+        if scene.seut.sceneType != 'mainScene':
+            Operator.poll_message_set("Animations can only be exported from main scenes.")
+            return False
+        elif 'SEUT' in scene.view_layers:
             if not os.path.exists(scene.seut.mod_path):
                 Operator.poll_message_set("Mod must first be defined.")
                 return False
