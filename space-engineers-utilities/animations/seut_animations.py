@@ -58,6 +58,19 @@ def poll_trigger_pressed_empty(self, object):
     return object.type == 'EMPTY' and 'highlight' in object and not object.seut.linked
 
 
+def update_animation_name(self, context):
+    if self.name == self.name_prev:
+        return
+    
+    data = get_seut_blend_data()
+    for anim in data.seut.animations:
+        if self != anim and anim.name == self.name:
+            self.name = self.name_prev
+            return
+    
+    self.name_prev = self.name
+
+
 def items_function_types(self, context):
 
     items = [
@@ -159,7 +172,10 @@ class SEUT_AnimationTriggers(PropertyGroup):
 class SEUT_Animations(PropertyGroup):
     """SEUT Animation prop holder"""
 
-    name: StringProperty()
+    name: StringProperty(
+        update = update_animation_name
+    )
+    name_prev: StringProperty()
     
     triggers: CollectionProperty(
         type = SEUT_AnimationTriggers

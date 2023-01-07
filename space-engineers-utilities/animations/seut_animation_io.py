@@ -17,11 +17,18 @@ def export_animation_xml(self, context: bpy.types.Context):
     scene = context.scene
     path_data = os.path.join(get_abs_path(scene.seut.mod_path), "Data", "Animation")
 
-    # Check for animations to override by file name
-
-    # Error if two animation sets are named the same
-
-    # Error if bezier is used
+    # Warning if bezier is used (unsupported)
+    bezier = False
+    for anim in data.seut.animations:
+        for sp in anim.subparts:
+            if sp.action is not None:
+                for f in sp.action.fcurves:
+                    for kf in f.keyframe_points:
+                        if kf.interpolation == 'BEZIER':
+                            bezier = True
+                            break
+    if bezier:
+        seut_report(self, context, 'WARNING', True, 'W015')
 
     animations = ET.Element('Animations')
     for animation_set in data.seut.animations:
@@ -126,7 +133,7 @@ def export_animation_xml(self, context: bpy.types.Context):
                     )
                     if seut_kf is not None:
                         for func in seut_kf.functions:
-                            
+
                             function = ET.SubElement(keyframe, 'Function')
                             add_attrib(function, 'type', func.function_type)
 
@@ -165,5 +172,14 @@ def export_animation_xml(self, context: bpy.types.Context):
     xml_string = xml.dom.minidom.parseString(temp_string)
     xml_formatted = xml_string.toprettyxml()
 
-    print(xml_formatted)
+    filename = scene.seut.subtypeId
+    target_file = os.path.join(path_data, f"{filename}.xml")
+    if not os.path.exists(os.path.join(path_data)):
+        os.makedirs(os.path.join(path_data))
+        
+    exported_xml = open(target_file, "w")
+    exported_xml.write(xml_formatted)
+
+    seut_report(self, context, 'INFO', False, 'I004', target_file)
+
     return {'FINISHED'}

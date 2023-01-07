@@ -78,6 +78,7 @@ warnings = {
     'W012': "Material '{variable_1}' is a DLC material. Keen requires any model using it to be DLC-locked.",
     'W013': "Object '{variable_1}' has no geometry.",
     'W014': "Material '{variable_1}' has no valid texture defined in the '{variable_2}'-slot.",
+    'W015': "'BEZIER'-interpolation on keyframes is not supported by the Animation Engine. All keyframes with this setting have been changed to 'LINEAR'.",
 }
 
 infos = {
