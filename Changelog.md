@@ -1,8 +1,8 @@
-Relevant Milestone: [SEUT 1.1.0]()
+Relevant Milestone: [SEUT 1.1.0](https://github.com/enenra/space-engineers-utilities/milestone/29)
 
 # Changelog
-* Added: Animation support. Create and export animations with Blender and SEUT to use with the [Animation Engine by Math0424](https://steamcommunity.com/sharedfiles/filedetails/?id=2880317963). (Alpha 1)
-* Added: Ability to select existing `HKT`-file as a collision instead of creating your own. (Alpha 1)
+* Added [#13](https://github.com/enenra/space-engineers-utilities/issues/13): Animation support. Create and export animations with Blender and SEUT to use with the [Animation Engine by Math0424](https://steamcommunity.com/sharedfiles/filedetails/?id=2880317963). (Alpha 1)
+* Added [#345](https://github.com/enenra/space-engineers-utilities/issues/345): Ability to select existing `HKT`-file as a collision instead of creating your own. (Alpha 1)
 * Fixed: In some cases, `Distribution Rules` would not correctly be associated with new `Environment Items`. (Alpha 1)
 * Fixed: Numerous items not persisting across BLEND file loads. (Alpha 1)
 
