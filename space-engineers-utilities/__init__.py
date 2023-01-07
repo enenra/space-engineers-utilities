@@ -15,7 +15,7 @@ bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie",
-    "version": (1, 0, 1),
+    "version": (1, 1, 0),
     "dev_version": 1,
     "dev_tag": "alpha",
     "blender": (3, 4, 0),
@@ -100,6 +100,28 @@ from .planets.seut_planets                      import (SEUT_PlanetPropertiesOre
                                                         SEUT_PlanetPropertiesItems,
                                                         SEUT_PlanetPropertiesMaterialGroups,
                                                         SEUT_PlanetPropertiesMaterials)
+
+from .animations.seut_animation_operators       import (SEUT_OT_Animation_Export,
+                                                        SEUT_OT_Animation_Add,
+                                                        SEUT_OT_Animation_Remove,
+                                                        SEUT_OT_Animation_SubpartEmpty_Add,
+                                                        SEUT_OT_Animation_SubpartEmpty_Remove,
+                                                        SEUT_OT_Animation_Trigger_Add,
+                                                        SEUT_OT_Animation_Trigger_Remove,
+                                                        SEUT_OT_Animation_Function_Add,
+                                                        SEUT_OT_Animation_Function_Remove)
+from .animations.seut_animation_ui              import (SEUT_PT_Panel_Animation,
+                                                        SEUT_PT_Panel_Keyframes,
+                                                        SEUT_UL_Animations,
+                                                        SEUT_UL_AnimationObjects,
+                                                        SEUT_UL_AnimationTriggers,
+                                                        SEUT_UL_AnimationFunctions)
+from .animations.seut_animations                import (SEUT_Animations,
+                                                        SEUT_Actions,
+                                                        SEUT_Keyframes,
+                                                        SEUT_AnimationTriggers,
+                                                        SEUT_AnimationObjects,
+                                                        SEUT_AnimationFunctions)
 
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
@@ -247,6 +269,29 @@ classes = (
     SEUT_PlanetPropertiesItems,
     SEUT_PlanetPropertiesEnvironmentItems,
     SEUT_PlanetPropertiesOreMappings,
+
+    SEUT_AnimationTriggers,
+    SEUT_AnimationObjects,
+    SEUT_AnimationFunctions,
+    SEUT_Animations,
+    SEUT_Keyframes,
+    SEUT_Actions,
+    SEUT_OT_Animation_Export,
+    SEUT_OT_Animation_Add,
+    SEUT_OT_Animation_Remove,
+    SEUT_OT_Animation_SubpartEmpty_Add,
+    SEUT_OT_Animation_SubpartEmpty_Remove,
+    SEUT_OT_Animation_Trigger_Add,
+    SEUT_OT_Animation_Trigger_Remove,
+    SEUT_OT_Animation_Function_Add,
+    SEUT_OT_Animation_Function_Remove,
+    SEUT_UL_Animations,
+    SEUT_UL_AnimationObjects,
+    SEUT_UL_AnimationTriggers,
+    SEUT_UL_AnimationFunctions,
+    SEUT_PT_Panel_Animation,
+    SEUT_PT_Panel_Keyframes,
+
     SEUT_MountpointAreas,
     SEUT_Scene,
     SEUT_Collection,
@@ -266,6 +311,7 @@ def register():
     bpy.types.VIEW3D_MT_add.append(menu_draw)
 
     bpy.types.AssetMetaData.seut = PointerProperty(type=SEUT_Asset)
+    bpy.types.Action.seut = PointerProperty(type=SEUT_Actions)
     bpy.types.Material.seut = PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
@@ -290,6 +336,7 @@ def unregister():
     bpy.types.VIEW3D_MT_add.remove(menu_draw)
 
     del bpy.types.AssetMetaData.seut
+    del bpy.types.Action.seut
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
     del bpy.types.Object.seut
