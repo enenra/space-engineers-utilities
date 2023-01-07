@@ -434,6 +434,8 @@ class SEUT_PT_Panel_Export(Panel):
         row = layout.row()
         row.scale_y = 1.1
         row.operator('scene.export', icon='EXPORT')
+
+        layout.operator('animation.export', icon='DECORATE_DRIVER')
         
         split = layout.split(factor=0.85, align=True)
         split.operator('scene.export_materials', icon='EXPORT')

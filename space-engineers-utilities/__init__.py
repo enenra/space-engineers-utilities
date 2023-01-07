@@ -15,7 +15,7 @@ bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie",
-    "version": (1, 0, 1),
+    "version": (1, 1, 0),
     "dev_version": 1,
     "dev_tag": "alpha",
     "blender": (3, 4, 0),
@@ -101,7 +101,8 @@ from .planets.seut_planets                      import (SEUT_PlanetPropertiesOre
                                                         SEUT_PlanetPropertiesMaterialGroups,
                                                         SEUT_PlanetPropertiesMaterials)
 
-from .animations.seut_animation_operators       import (SEUT_OT_Animation_Add,
+from .animations.seut_animation_operators       import (SEUT_OT_Animation_Export,
+                                                        SEUT_OT_Animation_Add,
                                                         SEUT_OT_Animation_Remove,
                                                         SEUT_OT_Animation_SubpartEmpty_Add,
                                                         SEUT_OT_Animation_SubpartEmpty_Remove,
@@ -275,6 +276,7 @@ classes = (
     SEUT_Animations,
     SEUT_Keyframes,
     SEUT_Actions,
+    SEUT_OT_Animation_Export,
     SEUT_OT_Animation_Add,
     SEUT_OT_Animation_Remove,
     SEUT_OT_Animation_SubpartEmpty_Add,

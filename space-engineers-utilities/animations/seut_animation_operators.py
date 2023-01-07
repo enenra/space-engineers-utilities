@@ -18,6 +18,35 @@ from ..seut_collections import get_collections
 from ..seut_errors      import get_abs_path, seut_report
 
 from .seut_animation_utils  import *
+from .seut_animation_io     import *
+
+
+class SEUT_OT_Animation_Export(Operator):
+    """Exports all Animation Sets to the Mod Folder"""
+    bl_idname = "animation.export"
+    bl_label = "Export Animation Sets"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        wm = context.window_manager
+        scene = context.scene
+        if scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers:
+            if not os.path.exists(scene.seut.mod_path):
+                Operator.poll_message_set("Mod must first be defined.")
+                return False
+            elif len(wm.seut.animations) < 1:
+                Operator.poll_message_set("There are no Animation Sets in this BLEND file.")
+                return False
+            return True
+
+
+    def execute(self, context):
+
+        result = export_animation_xml(self, context)
+
+        return result
 
 
 class SEUT_OT_Animation_Add(Operator):
