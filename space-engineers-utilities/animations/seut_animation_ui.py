@@ -1,6 +1,7 @@
 import bpy
 
 from bpy.types  import Panel, UIList
+from distutils.fancy_getopt import wrap_text
 
 from ..seut_utils       import get_seut_blend_data
 
@@ -152,7 +153,16 @@ class SEUT_PT_Panel_Keyframes(Panel):
         if bezier:
             row = layout.row()
             row.alert = True
-            row.label(text="One or more Keyframes use 'Bezier' interpolation, which is not supported.", icon='ERROR')
+            ui_scale = context.preferences.system.ui_scale
+            width = context.region.width
+            row.label(text="Incompatible Interpolation", icon='ERROR')
+            text = "One or more Keyframes use 'Bezier' interpolation, which is not supported by the Animation Engine and will be automatically changed to 'Linear' on export."
+            box = layout.box()
+            for l in wrap_text(text, int((width / ui_scale) / 6.75)):
+                row = box.row()
+                row.alert = True
+                row.scale_y = 0.75
+                row.label(text=l)
 
         count = 0
         for k in keyframes:
