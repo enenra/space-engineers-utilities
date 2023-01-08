@@ -91,6 +91,7 @@ def update_animations_index(self, context):
 
     for scn in bpy.data.scenes:
         scn.frame_current = 0
+        scn.render.fps = 60
         for vl in scn.view_layers:
             vl.update()
     

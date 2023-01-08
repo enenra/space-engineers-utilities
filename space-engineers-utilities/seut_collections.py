@@ -273,6 +273,7 @@ class SEUT_OT_RecreateCollections(Operator):
     def execute(self, context):
 
         scene = context.scene
+        scene.render.fps = 60
 
         if not 'SEUT' in scene.view_layers:
             scene.view_layers[0].name = 'SEUT'
