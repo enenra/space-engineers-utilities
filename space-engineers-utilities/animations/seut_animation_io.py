@@ -39,6 +39,7 @@ def export_animation_xml(self, context: bpy.types.Context):
 
         animation = ET.SubElement(animations, 'Animation')
         add_attrib(animation, 'id', animation_set.name)
+        add_attrib(animation, 'subtypeId', scene.seut.subtypeId)
 
         # Triggers
         triggers = add_subelement(animation, 'Triggers')
