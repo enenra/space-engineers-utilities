@@ -148,7 +148,9 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                     # This ensures that the action of the original empty is associated with the linked one.
                     if linked_object.animation_data is not None:
                         if linked_object.animation_data.action is not None and linked_object.animation_data.action.name[:-4] in bpy.data.actions:
+                            duplicate_action = linked_object.animation_data.action
                             linked_object.animation_data.action = bpy.data.actions[linked_object.animation_data.action.name[:-4]]
+                            bpy.data.actions.remove(duplicate_action)
 
                     link_subpart_scene(self, origin_scene, linked_object, target_collection)
         
