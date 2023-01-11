@@ -109,7 +109,9 @@ from .animations.seut_animation_operators       import (SEUT_OT_Animation_Export
                                                         SEUT_OT_Animation_Trigger_Add,
                                                         SEUT_OT_Animation_Trigger_Remove,
                                                         SEUT_OT_Animation_Function_Add,
-                                                        SEUT_OT_Animation_Function_Remove)
+                                                        SEUT_OT_Animation_Function_Remove,
+                                                        SEUT_OT_Animation_Action_Add,
+                                                        SEUT_OT_Animation_Action_Remove)
 from .animations.seut_animation_ui              import (SEUT_PT_Panel_Animation,
                                                         SEUT_PT_Panel_Keyframes,
                                                         SEUT_UL_Animations,
@@ -285,6 +287,8 @@ classes = (
     SEUT_OT_Animation_Trigger_Remove,
     SEUT_OT_Animation_Function_Add,
     SEUT_OT_Animation_Function_Remove,
+    SEUT_OT_Animation_Action_Add,
+    SEUT_OT_Animation_Action_Remove,
     SEUT_UL_Animations,
     SEUT_UL_AnimationObjects,
     SEUT_UL_AnimationTriggers,

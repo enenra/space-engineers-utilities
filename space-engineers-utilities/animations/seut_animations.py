@@ -47,7 +47,8 @@ def poll_animation_objects_obj(self, object):
 
 
 def update_animation_object_action(self, context):
-    self.action.use_fake_user = True
+    if self.action is not None:
+        self.action.use_fake_user = True
 
 
 def update_trigger_type(self, context):

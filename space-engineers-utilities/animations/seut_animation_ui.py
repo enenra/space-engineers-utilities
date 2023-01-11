@@ -98,7 +98,7 @@ class SEUT_PT_Panel_Animation(Panel):
 
                 if len(animation_set.subparts) > 0:
                     subpart_empty = animation_set.subparts[animation_set.subparts_index]
-                    box2.prop(subpart_empty, 'action')
+                    box2.template_ID(subpart_empty, "action", new="animation.add_action", unlink="animation.remove_action")
                     
                 box3 = box.box()
                 box3.label(text="Animation Triggers", icon='STYLUS_PRESSURE')

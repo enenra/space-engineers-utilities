@@ -254,3 +254,53 @@ class SEUT_OT_Animation_Function_Remove(Operator):
         collection_property_cleanup(action.seut.keyframes)
 
         return {'FINISHED'}
+
+
+class SEUT_OT_Animation_Action_Add(Operator):
+    """Adds an action to the subpart empty"""
+    bl_idname = "animation.add_action"
+    bl_label = "Add Action"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        data = get_seut_blend_data()
+        animation_set = data.seut.animations[data.seut.animations_index]
+        subpart_empty = animation_set.subparts[animation_set.subparts_index]
+
+        subpart_empty.obj.animation_data_create()
+        action = bpy.data.actions.new("Action")
+        subpart_empty.obj.animation_data.action = action
+        subpart_empty.action = action
+
+        return {'FINISHED'}
+
+
+class SEUT_OT_Animation_Action_Remove(Operator):
+    """Removes an action from the subpart empty"""
+    bl_idname = "animation.remove_action"
+    bl_label = "Remove Action"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        data = get_seut_blend_data()
+        animation_set = data.seut.animations[data.seut.animations_index]
+        subpart_empty = animation_set.subparts[animation_set.subparts_index]
+        
+        subpart_empty.obj.animation_data.action = None
+        subpart_empty.action = None
+
+        return {'FINISHED'}
