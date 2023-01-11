@@ -31,6 +31,7 @@ def export_animation_xml(self, context: bpy.types.Context):
         seut_report(self, context, 'WARNING', True, 'W015')
 
     animations = ET.Element('Animations')
+    add_attrib(animations, 'ver', 1)
     for animation_set in data.seut.animations:
 
         # Don't export animation sets where no subpart has an action
