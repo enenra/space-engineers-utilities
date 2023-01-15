@@ -250,11 +250,4 @@ def get_conversion_args(preset: str, path_in: str, path_out: str, settings=[]) -
             args.insert(pos, i)
             pos += 1
 
-    # Some SE NG files are not in sRGBi, which affects their display in Blender
-    idx_ft = args.index('-ft')
-    if '_ng.' in path_in and args[idx_ft + 1] == 'TIF' and '-srgbi' not in args:
-        args.insert(idx_ft + 2, '-f')
-        args.insert(idx_ft + 3, 'R8G8B8A8_UNORM')
-        args.insert(idx_ft + 4, '-srgbi')
-
     return list(args)
