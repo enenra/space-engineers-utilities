@@ -210,8 +210,8 @@ class SEUT_OT_IconRenderPreview(Operator):
         scene.render.use_compositing = True
         scene.render.use_sequencer = True
 
-        simple_nav = data.seut.simpleNavigationToggle
-        data.seut.simpleNavigationToggle = False
+        simple_nav = data.seut.simple_navigation
+        data.seut.simple_navigation = False
 
         collections = get_collections(scene)
 
@@ -275,7 +275,7 @@ class SEUT_OT_IconRenderPreview(Operator):
                             obj.hide_render = False
                             obj.hide_viewport = False
 
-        data.seut.simpleNavigationToggle = simple_nav
+        data.seut.simple_navigation = simple_nav
 
         scene.render.filepath = path
 

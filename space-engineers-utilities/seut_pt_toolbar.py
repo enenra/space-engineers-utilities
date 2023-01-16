@@ -138,7 +138,7 @@ class SEUT_PT_Panel(Panel):
                 row.operator('wm.issue_display', icon='INFO')
                 
                 col = split.column()
-                col.prop(data.seut, 'simpleNavigationToggle', text="", icon='OUTLINER')
+                col.prop(data.seut, 'simple_navigation', text="", icon='OUTLINER')
 
 
 class SEUT_PT_Panel_Collections(Panel):
@@ -231,9 +231,9 @@ class SEUT_PT_Panel_BoundingBox(Panel):
         data = get_seut_blend_data()
 
         # Toggle
-        layout.prop(data.seut,'bBoxToggle', expand=True)
+        layout.prop(data.seut,'bBox', expand=True)
 
-        if data.seut.bBoxToggle == 'on':
+        if data.seut.bBox == 'on':
             # Size
             box = layout.box()
             box.label(text="Size", icon='PIVOT_BOUNDBOX')
@@ -243,7 +243,7 @@ class SEUT_PT_Panel_BoundingBox(Panel):
             row.prop(scene.seut, "bBox_Z")
 
             row = box.row()
-            row.prop(data.seut, 'bboxColor', text="")
+            row.prop(data.seut, 'bBox_color', text="")
 
 
 class SEUT_PT_Panel_Mirroring(Panel):

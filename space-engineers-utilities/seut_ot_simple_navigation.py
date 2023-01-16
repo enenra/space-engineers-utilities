@@ -20,10 +20,10 @@ class SEUT_OT_SimpleNavigation(Operator):
         data = get_seut_blend_data()
         collections = get_collections(scene)
 
-        if not data.seut.simpleNavigationToggle:
+        if not data.seut.simple_navigation:
             return {'FINISHED'}
 
-        if not data.seut.simpleNavigationToggle:
+        if not data.seut.simple_navigation:
             for col in bpy.data.collections:
                 if col is not None and col.seut.scene is scene:
                     if col.seut.col_type == 'seut':
@@ -39,7 +39,7 @@ class SEUT_OT_SimpleNavigation(Operator):
 
         if not check:
             seut_report(self, context, 'ERROR', False, 'E010')
-            data.seut.simpleNavigationToggle = False
+            data.seut.simple_navigation = False
             return {'CANCELLED'}
 
         context.window_manager.modal_handler_add(self)
@@ -54,7 +54,7 @@ class SEUT_OT_SimpleNavigation(Operator):
         collections = get_collections(scene)
         active_col = context.view_layer.active_layer_collection
 
-        if not data.seut.simpleNavigationToggle:
+        if not data.seut.simple_navigation:
             return {'FINISHED'}
 
         if active_col.hide_viewport:

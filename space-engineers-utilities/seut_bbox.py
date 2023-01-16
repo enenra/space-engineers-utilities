@@ -26,7 +26,7 @@ class SEUT_OT_BBox(Operator):
         data = get_seut_blend_data()
 
         # If the toggle is off, don't do anything.
-        if data.seut.bBoxToggle == 'off':
+        if data.seut.bBox == 'off':
             return {'FINISHED'}
 
         factor = 1
@@ -85,7 +85,7 @@ class SEUT_OT_BBox(Operator):
             context.area.tag_redraw()
 
         # Escape condition for when the user turns off the bounding box.
-        if data.seut.bBoxToggle == 'off':
+        if data.seut.bBox == 'off':
             self.unregister_handlers(context)
             return {'FINISHED'}
 
@@ -129,7 +129,7 @@ class SEUT_OT_BBox(Operator):
         try:
             glEnable(GL_BLEND)
             self.shader.bind()
-            self.shader.uniform_float("color", (data.seut.bboxColor[0], data.seut.bboxColor[1], data.seut.bboxColor[2], data.seut.bboxColor[3]))
+            self.shader.uniform_float("color", (data.seut.bBox_color[0], data.seut.bBox_color[1], data.seut.bBox_color[2], data.seut.bBox_color[3]))
             self.batch.draw(self.shader)
             glDisable(GL_BLEND)
         except:

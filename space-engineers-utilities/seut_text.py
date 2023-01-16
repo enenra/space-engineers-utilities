@@ -25,7 +25,7 @@ def update_BBox(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
 
-def update_simpleNavigationToggle(self, context):
+def update_simple_navigation(self, context):
     bpy.ops.wm.simple_navigation('INVOKE_DEFAULT')
 
 
@@ -144,11 +144,11 @@ class SEUT_Text(PropertyGroup):
         default=0 # current: 1
     )
 
-    simpleNavigationToggle: BoolProperty(
+    simple_navigation: BoolProperty(
         name="Simple Navigation",
         description="Automatically sets all non-active collections to hidden",
         default=False,
-        update=update_simpleNavigationToggle
+        update=update_simple_navigation
     )
 
     better_fbx: BoolProperty(
@@ -157,7 +157,7 @@ class SEUT_Text(PropertyGroup):
         default = False
     )
 
-    bBoxToggle: EnumProperty(
+    bBox: EnumProperty(
         name='Bounding Box',
         items=(
             ('on', 'On', ''),
@@ -166,7 +166,7 @@ class SEUT_Text(PropertyGroup):
         default='off',
         update=update_BBox
     )
-    bboxColor: FloatVectorProperty(
+    bBox_color: FloatVectorProperty(
         name="Color",
         description="The color of the Bounding Box",
         subtype='COLOR_GAMMA',
