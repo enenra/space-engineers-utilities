@@ -261,12 +261,17 @@ class SEUT_AddonPreferences(AddonPreferences):
         layout.prop(self, "game_path", expand=True)
 
         box = layout.box()
-        split = box.split(factor=0.60)
+        split = box.split(factor=0.55)
         split.label(text="Assets", icon='ASSET_MANAGER')
+        if self.dev_mode:
+            split = split.split(factor=0.15, align=True)
+            row = split.row(align=True)
+            row.prop(data.seut, 'setup_conversion_filetype', text="")
+        split = split.split(factor=0.90, align=True)
         row = split.row(align=True)
         row.operator('wm.mass_convert_textures', icon='FILE_REFRESH')
         if sys.platform == "win32":
-            row.operator('wm.console_toggle', text="", icon='CONSOLE')
+            split.operator('wm.console_toggle', text="", icon='CONSOLE')
         box.prop(self, "asset_path", expand=True)
 
         if os.path.exists(preferences.asset_path):

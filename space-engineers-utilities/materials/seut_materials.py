@@ -420,8 +420,6 @@ class SEUT_PT_Panel_TextureConversion(Panel):
         else:
             row.prop(data.seut, 'texconv_input_type', expand=True)
             box.prop(data.seut, 'texconv_input_dir', text="Directory", icon='FILE_FOLDER')
-        if data.seut.texconv_preset == 'custom':
-            box.prop(data.seut, 'texconv_input_filetype', text="Type")
 
         box = layout.box()
         box.label(text="Output", icon='EXPORT')

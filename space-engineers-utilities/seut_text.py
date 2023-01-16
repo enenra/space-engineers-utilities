@@ -17,6 +17,10 @@ from .seut_errors                   import seut_report, get_abs_path
 from .seut_utils                    import get_preferences, get_seut_blend_data
 from .animations.seut_animations    import SEUT_Animations
 
+
+supported_image_types = ['DDS', 'TIF', 'PNG', 'TGA']
+
+
 def update_BBox(self, context):
     bpy.ops.object.bbox('INVOKE_DEFAULT')
 
@@ -27,61 +31,30 @@ def update_simpleNavigationToggle(self, context):
 
 def update_texconv_preset(self, context):
 
-    if self.texconv_preset == 'icon':
-        self.texconv_output_filetype = 'dds'
-        self.texconv_input_filetype = 'png'
-        self.texconv_format = 'BC7_UNORM_SRGB'
-        self.texconv_pmalpha = True
-        self.texconv_sepalpha = False
-        self.texconv_pdd = False
+    if self.texconv_preset != 'custom':
+        presets = {
+            'icon': {'o': 'dds', 'f': 'BC7_UNORM_SRGB', 'pmalpha': True, 'sepalpha': False, 'pdd': False},
+            'cm': {'o': 'dds', 'f': 'BC7_UNORM_SRGB', 'pmalpha': False, 'sepalpha': True, 'pdd': False},
+            'add': {'o': 'dds', 'f': 'BC7_UNORM_SRGB', 'pmalpha': False, 'sepalpha': True, 'pdd': True},
+            'ng': {'o': 'dds', 'f': 'BC7_UNORM', 'pmalpha': False, 'sepalpha': True, 'pdd': False},
+            'alphamask': {'o': 'dds', 'f': 'BC7_UNORM', 'pmalpha': False, 'sepalpha': False, 'pdd': True},
+            'tif': {'o': 'tif', 'f': 'NONE', 'pmalpha': False, 'sepalpha': False, 'pdd': False},
+            'tga': {'o': 'tga', 'f': 'NONE', 'pmalpha': False, 'sepalpha': False, 'pdd': False}
+        }
 
-    elif self.texconv_preset == 'cm':
-        self.texconv_output_filetype = 'dds'
-        self.texconv_input_filetype = 'tif'
-        self.texconv_format = 'BC7_UNORM_SRGB'
-        self.texconv_pmalpha = False
-        self.texconv_sepalpha = True
-        self.texconv_pdd = False
-
-    elif self.texconv_preset == 'add':
-        self.texconv_output_filetype = 'dds'
-        self.texconv_input_filetype = 'tif'
-        self.texconv_format = 'BC7_UNORM_SRGB'
-        self.texconv_pmalpha = False
-        self.texconv_sepalpha = True
-        self.texconv_pdd = True
-
-    elif self.texconv_preset == 'ng':
-        self.texconv_output_filetype = 'dds'
-        self.texconv_input_filetype = 'tif'
-        self.texconv_format = 'BC7_UNORM'
-        self.texconv_pmalpha = False
-        self.texconv_sepalpha = True
-        self.texconv_pdd = False
-
-    elif self.texconv_preset == 'alphamask':
-        self.texconv_output_filetype = 'dds'
-        self.texconv_input_filetype = 'tif'
-        self.texconv_format == 'BC7_UNORM'
-        self.texconv_pmalpha == False
-        self.texconv_sepalpha == False
-        self.texconv_pdd == True
-
-    elif self.texconv_preset == 'tif':
-        self.texconv_output_filetype = 'tif'
-        self.texconv_input_filetype = 'dds'
-        self.texconv_format == 'NONE'
-        self.texconv_pmalpha == False
-        self.texconv_sepalpha == False
-        self.texconv_pdd == False
+        self.texconv_output_filetype = presets[self.texconv_preset]['o']
+        self.texconv_format = presets[self.texconv_preset]['f']
+        self.texconv_pmalpha = presets[self.texconv_preset]['pmalpha']
+        self.texconv_sepalpha = presets[self.texconv_preset]['sepalpha']
+        self.texconv_pdd = presets[self.texconv_preset]['pdd']
 
 
 def update_texconv_input_file(self, context):
     if self.texconv_input_file == "":
         return
-    if not self.texconv_input_file.endswith(self.texconv_input_filetype) and not self.texconv_input_file.endswith(self.texconv_input_filetype.upper()):
+    if os.path.splitext(self.texconv_input_file)[1].upper() not in supported_image_types:
         self.texconv_input_file = ""
-        seut_report(self, context, 'ERROR', False, 'E015', 'Input', self.texconv_input_filetype)
+        seut_report(self, context, 'ERROR', False, 'E015', 'Input', "DDS', 'TIF', 'PNG' or 'TGA")
 
 
 def update_animations_index(self, context):
@@ -210,6 +183,16 @@ class SEUT_Text(PropertyGroup):
     )
 
     # Texture Conversion
+    setup_conversion_filetype: EnumProperty(
+        name="Output Type",
+        description="The filetype to convert the game's 'DDS'-Textures to for Blender to read.",
+        items=(
+            ('tif', 'TIF', ''),
+            ('tga', 'TGA', ''),
+            ('png', 'PNG', '')
+            ),
+        default='tif',
+    )
     texconv_preset: EnumProperty(
         name="Preset",
         items=(
@@ -219,6 +202,7 @@ class SEUT_Text(PropertyGroup):
             ('ng', 'Normal Gloss', ''),
             ('alphamask', 'Alphamask', ''),
             ('tif', 'TIF', ''),
+            ('tga', 'TGA', ''),
             ('custom', 'Custom', '')
             ),
         default='custom',
@@ -241,15 +225,6 @@ class SEUT_Text(PropertyGroup):
         subtype="FILE_PATH",
         update=update_texconv_input_file,
     )
-    texconv_input_filetype: EnumProperty(
-        name="Input Type",
-        items=(
-            ('dds', 'DDS', ''),
-            ('png', 'PNG', ''),
-            ('tif', 'TIF', '')
-            ),
-        default='tif',
-    )
     texconv_output_dir: StringProperty(
         name="Output Folder",
         subtype="DIR_PATH",
@@ -258,7 +233,9 @@ class SEUT_Text(PropertyGroup):
         name="Output Type",
         items=(
             ('dds', 'DDS', ''),
-            ('tif', 'TIF', '')
+            ('tif', 'TIF', ''),
+            ('tga', 'TGA', ''),
+            ('png', 'PNG', '')
             ),
         default='dds',
     )

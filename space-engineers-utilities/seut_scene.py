@@ -692,7 +692,6 @@ class SEUT_Scene(PropertyGroup):
         name='Format',
         items=(
             ('png', 'PNG', 'Render output will be in PNG format'),
-            ('tif', 'TIF', 'Render output will be in TIF format'),
             ('dds', 'DDS', 'Render output will be in DDS format')
             ),
         default='dds'

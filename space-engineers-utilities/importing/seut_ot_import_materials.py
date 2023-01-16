@@ -6,6 +6,7 @@ from bpy.props import StringProperty
 from bpy.types import Operator
 
 from ..materials.seut_ot_create_material    import create_material
+from ..seut_text                            import supported_image_types
 from ..seut_errors                          import seut_report, get_abs_path
 from ..seut_utils                           import get_preferences
 
@@ -189,15 +190,22 @@ def load_image(self, context, path: str, materials_path: str):
 
     seut_path = os.path.dirname(materials_path)
     name = os.path.splitext(os.path.basename(path))
-    
-    img_path = os.path.splitext(os.path.join(seut_path, path))[0] + ".tif"
+
+    img_path = os.path.splitext(os.path.join(seut_path, path))[0]
+    for o in supported_image_types:
+        if os.path.exists(f"{img_path}.{o}") or os.path.exists(f"{img_path}.{o.lower()}"):
+            img_path += f".{o.lower()}"
+            break
+        
+    if not os.path.exists(img_path):
+        seut_report(self, context, 'WARNING', True, 'W011', img_path)
+        return
 
     if name[0] in bpy.data.images:
         return bpy.data.images[name]
 
-    else:
-        try:
-            return bpy.data.images.load(img_path)
-        except:
-            seut_report(self, context, 'WARNING', True, 'W011', img_path)
-            return
+    try:
+        return bpy.data.images.load(img_path)
+    except:
+        seut_report(self, context, 'WARNING', True, 'W011', img_path)
+        return

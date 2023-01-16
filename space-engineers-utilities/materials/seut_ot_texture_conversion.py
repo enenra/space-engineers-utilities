@@ -5,6 +5,7 @@ import time
 from bpy.types  import Operator
 
 from ..utils.seut_tool_utils        import *
+from ..seut_text                    import supported_image_types
 from ..seut_errors                  import seut_report, get_abs_path
 from ..seut_utils                   import create_relative_path, get_preferences, get_seut_blend_data
 
@@ -16,6 +17,8 @@ presets = {
     "ng": [None, None, '-ft', 'DDS', '-f', 'BC7_UNORM', '-sepalpha', '-y', '-o', None],
     "alphamask": [None, None, '-ft', 'DDS', '-f', 'BC7_UNORM', '-if', 'POINT_DITHER_DIFFUSION', '-y', '-o', None],
     "tif": [None, None, '-ft', 'TIF', '-y', '-o', None],
+    "tga": [None, None, '-ft', 'TGA', '-y', '-o', None],
+    "png": [None, None, '-ft', 'PNG', '-y', '-o', None],
     "custom": [None, None, '-y', '-o', None]
 }
 
@@ -110,6 +113,7 @@ class SEUT_OT_MassConvertTextures(Operator):
 
     def execute(self, context):
 
+        data = get_seut_blend_data()
         preferences = get_preferences()
         target_dir = os.path.join(preferences.asset_path, 'Textures')
 
@@ -135,7 +139,7 @@ class SEUT_OT_MassConvertTextures(Operator):
         for d in range(0, len(dirs_to_convert)):
             dirs_to_convert[d] = os.path.join(preferences.game_path, 'Content', 'Textures', dirs_to_convert[d])
 
-        result = mass_convert_textures(self, context, dirs_to_convert, target_dir, 'tif', skip_list=skip_list, log_to_file=True, can_report=True)
+        result = mass_convert_textures(self, context, dirs_to_convert, target_dir, data.seut.setup_conversion_filetype.lower(), skip_list=skip_list, log_to_file=True, can_report=True)
 
         return result
 
@@ -158,7 +162,7 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
             if os.path.isfile(os.path.join(tex_dir, file)):
                 source = os.path.join(tex_dir, file)
 
-                if not os.path.splitext(source)[1].upper()[1:] in ['DDS', 'TIF', 'PNG']:
+                if os.path.splitext(source)[1].upper()[1:] not in supported_image_types:
                     continue
                 
                 if skip_list != []:
