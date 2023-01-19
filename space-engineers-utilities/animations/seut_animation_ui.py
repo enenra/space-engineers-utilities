@@ -3,8 +3,8 @@ import bpy
 from bpy.types  import Panel, UIList
 from distutils.fancy_getopt import wrap_text
 
-from ..seut_utils       import get_seut_blend_data
-
+from ..utils.seut_patch_blend       import check_patch_needed
+from ..seut_utils                   import get_seut_blend_data
 
 class SEUT_UL_Animations(UIList):
     """Creates the Animation Sets UI list"""
@@ -66,7 +66,7 @@ class SEUT_PT_Panel_Animation(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers and not check_patch_needed()
 
 
     def draw(self, context):
