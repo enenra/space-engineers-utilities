@@ -347,6 +347,7 @@ def unregister():
     del bpy.types.Collection.seut
     del bpy.types.Text.seut
 
+    update_register_repos()
     bpy.app.handlers.load_post.remove(load_handler)
 
     unload_icons()
