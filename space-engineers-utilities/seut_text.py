@@ -18,7 +18,7 @@ from .seut_utils                    import get_preferences, get_seut_blend_data
 from .animations.seut_animations    import SEUT_Animations
 
 
-supported_image_types = ['DDS', 'TIF', 'PNG', 'TGA']
+supported_image_types = ['DDS', 'TIF', 'TIFF', 'PNG', 'TGA']
 
 
 def update_BBox(self, context):
