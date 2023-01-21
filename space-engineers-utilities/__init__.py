@@ -322,6 +322,7 @@ def register():
     bpy.types.Collection.seut = PointerProperty(type=SEUT_Collection)
     bpy.types.Text.seut = PointerProperty(type=SEUT_Text)
 
+    update_register_repos()
     bpy.app.handlers.load_post.append(load_handler)
 
     from .seut_bau import bau_register
@@ -347,7 +348,6 @@ def unregister():
     del bpy.types.Collection.seut
     del bpy.types.Text.seut
 
-    update_register_repos()
     bpy.app.handlers.load_post.remove(load_handler)
 
     unload_icons()
