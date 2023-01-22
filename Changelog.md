@@ -5,6 +5,7 @@ Relevant Milestone: [SEUT 1.1.0](https://github.com/enenra/space-engineers-utili
 * Added [#345](https://github.com/enenra/space-engineers-utilities/issues/345): Ability to select existing `HKT`-file as a collision instead of creating your own. (Alpha 1)
 * Improved: Clarified error message for `E035`. (Alpha 2)
 * Changed [#354](https://github.com/enenra/space-engineers-utilities/issues/354): SEUT now treats `TIF`, `TGA` and `PNG` equally as source files but conversion still defaults to `TIF`. (Alpha 2)
+* Fixed: If Planet Editor was set to `No SBC`, export would fail. (Alpha 2)
 * Fixed: In some cases, the Planet Editor did not recognize a Mod Path as valid and prevented export. (Alpha 2)
 * Fixed: The username not getting correctly overwritten in the log in some cases. (Alpha 2)
 * Fixed: Log output formatting for paths in header missing tabs. (Alpha 2)

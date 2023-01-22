@@ -541,7 +541,7 @@ class SEUT_OT_Planet_ExportAll(Operator):
             result_sbc = export_planet_sbc(self, context)
         result_maps = export_planet_maps(scene)
 
-        if result_sbc == {'FINISHED'} and result_maps == {'FINISHED'}:
+        if scene.seut.export_sbc_type in ['update', 'new'] and result_sbc == {'FINISHED'} and result_maps == {'FINISHED'} or scene.seut.export_sbc_type == 'none' and result_maps == {'FINISHED'}:
             result = {'FINISHED'}
         else:
             result = {'CANCELLED'}
