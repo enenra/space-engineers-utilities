@@ -527,7 +527,7 @@ class SEUT_OT_Planet_ExportAll(Operator):
     def poll(cls, context):
         scene = context.scene
         if scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers:
-            if not os.path.exists(scene.seut.mod_path):
+            if not os.path.exists(get_abs_path(scene.seut.mod_path)):
                 Operator.poll_message_set("Mod must first be defined.")
                 return False
 
