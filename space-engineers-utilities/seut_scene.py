@@ -825,9 +825,9 @@ class SEUT_Scene(PropertyGroup):
         name='Bake Type',
         description="Which map type to bake from the current BAKE SOURCE",
         items=(
-            ('height', 'Height Map', ''),
-            ('biome', 'Biome Map', ''),
-            ('spots', 'Ore Spots', '')
+            ('height', 'Height Map', '', 'BOIDS', 0),
+            ('biome', 'Biome Map', '', 'WORLD_DATA', 0),
+            ('spots', 'Ore Spots', '', 'OUTLINER_OB_POINTCLOUD', 0)
             ),
         default='height'
     )
