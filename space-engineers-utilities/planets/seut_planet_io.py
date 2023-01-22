@@ -135,20 +135,21 @@ def export_planet_sbc(self, context: bpy.types.Context):
         for ei in scene.seut.environment_items:
             def_Item = ET.SubElement(def_EnvironmentItems, 'Item')
 
+            def_Biomes = ET.SubElement(def_Item, 'Biomes')
             if len(ei.biomes) > 0:
-                def_Biomes = ET.SubElement(def_Item, 'Biomes')
                 for biome in ei.biomes:
                     def_Biome = ET.SubElement(def_Biomes, 'Biome')
                     def_Biome.text = str(biome.value)
 
+            def_Materials = ET.SubElement(def_Item, 'Materials')
             if len(ei.materials) > 0:
                 def_Materials = ET.SubElement(def_Item, 'Materials')
                 for mat in ei.materials:
                     def_Material = ET.SubElement(def_Materials, 'Material')
                     def_Material.text = mat.name
 
+            def_SubItems = ET.SubElement(def_Item, 'Items')
             if len(ei.items) > 0:
-                def_SubItems = ET.SubElement(def_Item, 'Items')
                 for i in ei.items:
                     def_SubItem = ET.SubElement(def_SubItems, 'Item')
                     add_attrib(def_SubItem, 'TypeId', i.type_id)
