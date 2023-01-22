@@ -240,19 +240,22 @@ def export_planet_maps(scene: bpy.types.Scene):
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
                 scene.render.image_settings.color_depth = '16'
                 scene.render.image_settings.color_mode = 'BW'
-                img.save_render(filepath, scene=scene)
+                scene.render.image_settings.compression = 0
+                img.save(filepath=filepath, quality=100)
 
             elif img.name == side + '_mat' and scene.seut.export_map_biome:
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
                 scene.render.image_settings.color_depth = '8'
                 scene.render.image_settings.color_mode = 'RGB'
-                img.save_render(filepath, scene=scene)
+                scene.render.image_settings.compression = 0
+                img.save(filepath=filepath, quality=100)
 
             elif img.name == side + '_add' and scene.seut.export_map_spots:
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
                 scene.render.image_settings.color_depth = '8'
                 scene.render.image_settings.color_mode = 'RGB'
-                img.save_render(filepath, scene=scene)
+                scene.render.image_settings.compression = 0
+                img.save(filepath=filepath, quality=100)
 
     return {'FINISHED'}
 
@@ -270,6 +273,7 @@ def bake_planet_map(context: bpy.types.Context):
     engine = scene.render.engine
     scene.render.engine = 'CYCLES'
     scene.render.bake.use_selected_to_active = True
+    scene.cycles.use_denoising = False
 
     def create_image(name: str, resolution: int) -> bpy.types.Image:
         if name in bpy.data.images:
@@ -286,6 +290,8 @@ def bake_planet_map(context: bpy.types.Context):
             tiled=False
         )
 
+        img.colorspace_settings.name = 'sRGB'
+
         return img
     
     mats = []
@@ -297,14 +303,20 @@ def bake_planet_map(context: bpy.types.Context):
         suffix = ""
         scene.render.bake.image_settings.color_depth = '16'
         scene.render.bake.image_settings.color_mode = 'BW'
+        scene.render.bake.image_settings.compression = 0
+        scene.cycles.samples = 4096
     elif bake_type == 'biome':
         suffix = "_mat"
         scene.render.bake.image_settings.color_depth = '8'
         scene.render.bake.image_settings.color_mode = 'RGB'
+        scene.render.bake.image_settings.compression = 0
+        scene.cycles.samples = 1
     else:
+        suffix = "_add"
         scene.render.bake.image_settings.color_depth = '8'
         scene.render.bake.image_settings.color_mode = 'RGB'
-        suffix = "_add"
+        scene.render.bake.image_settings.compression = 0
+        scene.cycles.samples = 1
 
     for mat in mats:
         node = mat.node_tree.nodes['IMAGE']
@@ -320,7 +332,7 @@ def bake_planet_map(context: bpy.types.Context):
     bake_target.hide_set(False)
     context.window.view_layer.objects.active = bake_target
 
-    bpy.ops.object.bake(type='COMBINED')
+    bpy.ops.object.bake(type='EMIT')
 
     scene.render.engine = engine
 
