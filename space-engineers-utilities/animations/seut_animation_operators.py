@@ -38,7 +38,7 @@ class SEUT_OT_Animation_Export(Operator):
             Operator.poll_message_set("Animations can only be exported from main scenes.")
             return False
         elif 'SEUT' in scene.view_layers:
-            if not os.path.exists(scene.seut.mod_path):
+            if not os.path.exists(get_abs_path(scene.seut.mod_path)):
                 Operator.poll_message_set("Mod must first be defined.")
                 return False
             elif len(data.seut.animations) < 1:
