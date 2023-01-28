@@ -161,6 +161,46 @@ class SEUT_PT_Panel_Planet(Panel):
         col.prop(scene.seut, "hill_params_min", text="Minimum")
         col.prop(scene.seut, "hill_params_max", text="Maximum")
 
+        # Voxel Defaults
+        box = layout.box()
+        box.label(text="Voxel Defaults", icon='FORCE_TEXTURE')
+        box.prop(scene.seut, "default_surface_material", text="Surface")
+        box.prop(scene.seut, "default_surface_material_max")
+        box.prop(scene.seut, "default_subsurface_material", text="Subsurface")
+        
+        col = box.column(align=True)
+
+        row = col.row(align=True)
+        row.label(text="Max Depth")
+        row.label(text="Min Depth")
+
+        row = col.row(align=True)
+        row.prop(scene.seut, "materials_maxdepth_min", text="Min")
+        row.prop(scene.seut, "materials_mindepth_min", text="Max")
+
+        row = col.row(align=True)
+        row.prop(scene.seut, "materials_maxdepth_max", text="Min")
+        row.prop(scene.seut, "materials_mindepth_max", text="Max")
+
+        box.prop(scene.seut, "min_surface_layer_depth")
+
+        # Atmosphere Settings
+        box = layout.box()
+        box.label(text="Atmosphere Settings", icon='PROP_OFF')
+
+        col = box.column(align=True)
+        col.prop(scene.seut, "max_oxygen")
+        col.prop(scene.seut, "surface_gravity")
+        
+        col = box.column(align=True)
+        col.prop(scene.seut, "has_atmosphere", icon='PROP_CON')
+        if scene.seut.has_atmosphere:
+            col.prop(scene.seut, "atm_oxygen_density")
+            col.prop(scene.seut, "atm_breathable", icon='FORCE_WIND')
+            col.prop(scene.seut, "atm_density")
+            col.prop(scene.seut, "atm_limit_altitude")
+            col.prop(scene.seut, "atm_max_wind_speed")
+
 
 class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
     """Creates the Planet Complex Materials menu"""

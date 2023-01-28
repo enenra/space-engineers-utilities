@@ -787,6 +787,98 @@ class SEUT_Scene(PropertyGroup):
         max=1
     )
 
+    default_surface_material: StringProperty(
+        name="Default Surface Material",
+        description=""
+    )
+    default_surface_material_max: IntProperty(
+        name="Max Depth",
+        description="",
+        min=0,
+        default=10
+    )
+    default_subsurface_material: StringProperty(
+        name="Default Subsurface Material",
+        description=""
+    )
+    materials_maxdepth_min: IntProperty(
+        name="Minimum",
+        description="",
+        min=0,
+        default=4000
+    )
+    materials_maxdepth_max: IntProperty(
+        name="Maximum",
+        description="",
+        min=0,
+        default=4000
+    )
+    materials_mindepth_min: IntProperty(
+        name="Minimum",
+        description="",
+        min=0,
+        default=20
+    )
+    materials_mindepth_max: IntProperty(
+        name="Maximum",
+        description="",
+        min=0,
+        default=20
+    )
+    min_surface_layer_depth: IntProperty(
+        name="Minimum Surface Layer Depth",
+        description="",
+        min=0,
+        default=1
+    )
+    
+    max_oxygen: FloatProperty(
+        name="Maximum Oxygen",
+        description="",
+        min=0,
+        default=1.0
+    )
+    surface_gravity: FloatProperty(
+        name="Surface Gravity",
+        description="",
+        min=0,
+        default=1.0
+    )
+    has_atmosphere: BoolProperty(
+        name="Has Atmosphere",
+        description="",
+        default=True
+    )
+    atm_breathable: BoolProperty(
+        name="Breathable",
+        description="",
+        default=True
+    )
+    atm_oxygen_density: FloatProperty(
+        name="Oxygen Density",
+        description="",
+        min=0,
+        default=1.0
+    )
+    atm_density: FloatProperty(
+        name="Density",
+        description="",
+        min=0,
+        default=1.0
+    )
+    atm_limit_altitude: FloatProperty(
+        name="Limit Altitude",
+        description="",
+        min=0,
+        default=1.0
+    )
+    atm_max_wind_speed: FloatProperty(
+        name="Maximum Wind Speed",
+        description="",
+        min=0,
+        default=80.0
+    )
+
     material_groups: CollectionProperty(
         type=SEUT_PlanetPropertiesMaterialGroups
     )

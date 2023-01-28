@@ -3,7 +3,7 @@ import os
 
 from ..utils.seut_xml_utils import *
 from ..seut_errors          import seut_report
-from ..seut_utils           import get_abs_path
+from ..seut_utils           import get_abs_path, create_relative_path
 from .seut_planet_utils     import *
 
 def export_planet_sbc(self, context: bpy.types.Context):
@@ -42,8 +42,81 @@ def export_planet_sbc(self, context: bpy.types.Context):
         def_Id = add_subelement(def_definition, 'Id')
         add_subelement(def_Id, 'TypeId', 'PlanetGeneratorDefinition')
         add_subelement(def_Id, 'SubtypeId', scene.seut.subtypeId)
-        
     
+        def_planetMaps = add_subelement(def_definition, 'PlanetMaps')
+        add_attrib(def_planetMaps, 'Material', 'true')
+        add_attrib(def_planetMaps, 'Ores', 'true')
+        add_attrib(def_planetMaps, 'Biome', 'true')
+        add_attrib(def_planetMaps, 'Occlusion', 'true')
+
+        # Mesher
+        def_mesherPostProcessing = add_subelement(def_definition, 'MesherPostprocessing')
+        add_attrib(def_mesherPostProcessing, 'xsi:type', 'MyObjectBuilder_VoxelMesherComponentDefinition')
+
+        def_postprocessingSteps = add_subelement(def_mesherPostProcessing, 'PostprocessingSteps')
+
+        def_step = add_subelement(def_postprocessingSteps, 'Step')
+        add_attrib(def_step, 'xsi:type', 'MyObjectBuilder_VoxelPostprocessingDecimate')
+        add_attrib(def_step, 'ForPhysics', 'true')
+        
+        def_lodSettings = add_subelement(def_step, 'LodSettings')
+
+        def_settings = ET.SubElement(def_lodSettings, 'Settings')
+        add_attrib(def_settings, 'FromLod', 0)
+
+        add_subelement(def_settings, 'FeatureAngle', 15)
+        add_subelement(def_settings, 'EdgeThreshold', 0.04)
+        add_subelement(def_settings, 'PlaneThreshold', 0.02)
+
+        def_settings = ET.SubElement(def_lodSettings, 'Settings')
+        add_attrib(def_settings, 'FromLod', 1)
+
+        add_subelement(def_settings, 'FeatureAngle', 15)
+        add_subelement(def_settings, 'EdgeThreshold', 0.04)
+        add_subelement(def_settings, 'PlaneThreshold', 0.04)
+
+        def_settings = ET.SubElement(def_lodSettings, 'Settings')
+        add_attrib(def_settings, 'FromLod', 2)
+
+        add_subelement(def_settings, 'FeatureAngle', 15)
+        add_subelement(def_settings, 'EdgeThreshold', 0.06)
+        add_subelement(def_settings, 'PlaneThreshold', 0.06)
+
+    
+    # Hill Params
+    def_HillParams = 'HillParams'
+    if not update_sbc:
+        def_HillParams = add_subelement(def_definition, 'HillParams')
+
+    lines_entry = update_add_attrib(def_HillParams, 'Min', round(scene.seut.hill_params_min, 2), update_sbc, lines_entry)
+    lines_entry = update_add_attrib(def_HillParams, 'Max', round(scene.seut.hill_params_max, 2), update_sbc, lines_entry)
+
+    # Voxel Defaults
+    def_defaultSurfaceMaterial = 'DefaultSurfaceMaterial'
+    if not update_sbc:
+        def_defaultSurfaceMaterial = add_subelement(def_definition, 'DefaultSurfaceMaterial')
+    lines_entry = update_add_attrib(def_defaultSurfaceMaterial, 'Material', scene.seut.default_surface_material, update_sbc, lines_entry)
+    lines_entry = update_add_attrib(def_defaultSurfaceMaterial, 'MaxDepth', scene.seut.default_surface_material_max, update_sbc, lines_entry)
+   
+    def_defaultSubSurfaceMaterial = 'DefaultSubSurfaceMaterial'
+    if not update_sbc:
+        def_defaultSubSurfaceMaterial = add_subelement(def_definition, 'DefaultSubSurfaceMaterial')
+    lines_entry = update_add_attrib(def_defaultSubSurfaceMaterial, 'Material', scene.seut.default_subsurface_material, update_sbc, lines_entry)
+
+    def_materialsMaxDepth = 'MaterialsMaxDepth'
+    if not update_sbc:
+        def_materialsMaxDepth = add_subelement(def_definition, 'MaterialsMaxDepth')
+    lines_entry = update_add_attrib(def_materialsMaxDepth, 'Min', scene.seut.materials_maxdepth_min, update_sbc, lines_entry)
+    lines_entry = update_add_attrib(def_materialsMaxDepth, 'Max', scene.seut.materials_maxdepth_max, update_sbc, lines_entry)
+
+    def_materialsMinDepth = 'MaterialsMinDepth'
+    if not update_sbc:
+        def_materialsMinDepth = add_subelement(def_definition, 'MaterialsMinDepth')
+    lines_entry = update_add_attrib(def_materialsMinDepth, 'Min', scene.seut.materials_mindepth_min, update_sbc, lines_entry)
+    lines_entry = update_add_attrib(def_materialsMinDepth, 'Max', scene.seut.materials_mindepth_max, update_sbc, lines_entry)
+
+    lines_entry = update_add_subelement(def_definition, 'MinimumSurfaceLayerDepth', scene.seut.min_surface_layer_depth, update_sbc, lines_entry)
+        
     # Surface Detail
     def_SurfaceDetail = 'SurfaceDetail'
     if not update_sbc:
@@ -53,7 +126,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
         sd_path = ""
     else:
         sd_path = get_abs_path(scene.seut.sd_texture)
-    lines_entry = update_add_subelement(def_SurfaceDetail, 'Texture', os.path.splitext(sd_path)[0], update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_SurfaceDetail, 'Texture', create_relative_path(os.path.splitext(sd_path)[0], 'Data'), update_sbc, lines_entry)
 
     lines_entry = update_add_subelement(def_SurfaceDetail, 'Size', scene.seut.sd_size, update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_SurfaceDetail, 'Scale', scene.seut.sd_scale, update_sbc, lines_entry)
@@ -174,15 +247,22 @@ def export_planet_sbc(self, context: bpy.types.Context):
 
         if update_sbc:
             lines_entry = convert_back_xml(def_EnvironmentItems, 'EnvironmentItems', lines_entry, 'PlanetGeneratorDefinition')
-
-    # Hill Params
-    def_HillParams = 'HillParams'
-    if not update_sbc:
-        def_HillParams = add_subelement(def_definition, 'HillParams')
-
-    lines_entry = update_add_attrib(def_HillParams, 'Min', round(scene.seut.hill_params_min, 2), update_sbc, lines_entry)
-    lines_entry = update_add_attrib(def_HillParams, 'Max', round(scene.seut.hill_params_max, 2), update_sbc, lines_entry)
     
+    # Atmosphere Settings
+    lines_entry = update_add_subelement(def_definition, 'MaximumOxygen', round(scene.seut.max_oxygen, 2), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'SurfaceGravity', round(scene.seut.surface_gravity, 2), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'HasAtmosphere', str(scene.seut.has_atmosphere).lower(), update_sbc, lines_entry)
+
+    def_Atmosphere = 'Atmosphere'
+    if not update_sbc:
+        def_Atmosphere = add_subelement(def_definition, 'Atmosphere')
+        
+    lines_entry = update_add_subelement(def_Atmosphere, 'Breathable', str(scene.seut.atm_breathable).lower(), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_Atmosphere, 'OxygenDensity', round(scene.seut.atm_oxygen_density, 2), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_Atmosphere, 'Density', round(scene.seut.atm_density, 2), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_Atmosphere, 'LimitAltitude', round(scene.seut.atm_limit_altitude, 2), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_Atmosphere, 'MaxWindSpeed', round(scene.seut.atm_max_wind_speed, 2), update_sbc, lines_entry)
+
     # Write to file, place in export folder
     if not update_sbc:
         temp_string = ET.tostring(definitions, 'utf-8')
