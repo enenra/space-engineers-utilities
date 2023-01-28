@@ -4,28 +4,34 @@ import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
 
-def get_relevant_sbc(path: str, sbc_type: str, container_name: str, subtype_id: str) -> list:
+def get_relevant_sbc(path_in: str, sbc_type: str, container_name: str, subtype_id: str) -> list:
     """Returns the relevant element of an existing entry, if found."""
 
     last_sbc = []
-    for path, subdirs, files in os.walk(path):
+    for path, subdirs, files in os.walk(path_in):
         for name in files:
+            if path == path_in:
+                continue
             if not name.endswith(".sbc"):
                 continue
             with open(os.path.join(path, name)) as f:
                 lines = f.read()
-                if '<' + sbc_type + '>' in lines:
-                    entries_start = lines.find('<' + sbc_type + '>') + len('<' + sbc_type + '>')
-                    entries_end = lines.find('</' + sbc_type + '>')
+                if f'<{sbc_type}>' in lines:
+                    entries_start = lines.find(f'<{sbc_type}>') + len(f'<{sbc_type}>')
+                    entries_end = lines.find(f'</{sbc_type}>')
                     entries = lines[entries_start:entries_end]
                     last_sbc =  [os.path.join(path, name), lines]
 
-                    if '<SubtypeId>' + subtype_id + '</SubtypeId>' in entries:
-                        start = entries.find('<SubtypeId>' + subtype_id + '</SubtypeId>')
-                        start = entries[:start].rfind('<' + container_name)
-                        end = start + entries[start:].find('</' + container_name + '>') + len('</' + container_name + '>')
+                    if f'<SubtypeId>{subtype_id}</SubtypeId>' in entries:
+                        start = entries.find(f'<SubtypeId>{subtype_id}</SubtypeId>')
+                        start = entries[:start].rfind(f'<{container_name}')
+                        end = (
+                            start
+                            + entries[start:].find(f'</{container_name}>')
+                            + len(f'</{container_name}>')
+                        )
                         return [os.path.join(path, name), lines, entries_start + start, entries_end + end]
-                        
+
     if last_sbc != []:
         return [last_sbc[0], last_sbc[1], None, None]
     else:
