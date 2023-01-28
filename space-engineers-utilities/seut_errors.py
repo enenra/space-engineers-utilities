@@ -79,6 +79,8 @@ warnings = {
     'W013': "Object '{variable_1}' has no geometry.",
     'W014': "Material '{variable_1}' has no valid texture defined in the '{variable_2}'-slot.",
     'W015': "'BEZIER'-interpolation on keyframes is not supported by the Animation Engine. All keyframes with this setting have been changed to 'LINEAR'.",
+    'W016': "Could not find element '{variable_1}' in SBC. Skipping.",
+    'W017': "Could not find attribute '{variable_1}' in element '{variable_2}'. Skipping.",
 }
 
 infos = {

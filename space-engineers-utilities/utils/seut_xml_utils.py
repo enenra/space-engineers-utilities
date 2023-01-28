@@ -1,7 +1,10 @@
+import bpy
 import os
 
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
+
+from ..seut_errors  import seut_report
 
 
 def get_relevant_sbc(path_in: str, sbc_type: str, container_name: str, subtype_id: str) -> list:
@@ -141,8 +144,15 @@ def add_attrib(element, name: str, value):
 def update_attrib(lines, element, name: str, value):
     """Adds an attribute to an element."""
 
-    entry = get_subelement(lines, element)        
+    entry = get_subelement(lines, element)
+    if entry == -1:
+        seut_report(None, bpy.context, 'WARNING', False, 'W016', element)
+        return lines
+
     attrib = get_attrib(entry, name)
+    if attrib == -1:
+        seut_report(None, bpy.context, 'WARNING', False, 'W017', name, element)
+        return lines
 
     entry_updated = entry.replace(name + "=\"" + attrib + "\"", name + "=\"" + str(value) + "\"")
 
