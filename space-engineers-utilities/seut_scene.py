@@ -13,7 +13,7 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
-from .planets.seut_planets          import SEUT_PlanetPropertiesEnvironmentItems, SEUT_PlanetPropertiesMaterialGroups, SEUT_PlanetPropertiesOreMappings
+from .planets.seut_planets          import SEUT_PlanetPropertiesEnvironmentItems, SEUT_PlanetPropertiesMaterialGroups, SEUT_PlanetPropertiesOreMappings, poll_voxelmaterials
 from .seut_mirroring                import clean_mirroring, setup_mirroring
 from .seut_mountpoints              import clean_mountpoints, setup_mountpoints
 from .seut_icon_render              import clean_icon_render, setup_icon_render
@@ -787,94 +787,85 @@ class SEUT_Scene(PropertyGroup):
         max=1
     )
 
-    default_surface_material: StringProperty(
+    default_surface_temperature: EnumProperty(
+        name="Default Surface Temperature",
+        description="The default surface temperature of the planet, changing with height",
+        items=(
+            ('ExtremeFreeze', 'Extreme Freeze', ""),
+            ('Freeze', 'Freeze', ""),
+            ('Cozy', 'Cozy', ""),
+            ('Hot', 'Hot', ""),
+            ('ExtremeHot', 'Extreme Hot', "")
+            ),
+        default='Cozy'
+    )
+    default_surface_material: PointerProperty(
         name="Default Surface Material",
-        description=""
+        description="The default surface voxelmaterial that is placed in all places not covered by a Complex Material rule",
+        type=bpy.types.Material,
+        poll=poll_voxelmaterials
     )
     default_surface_material_max: IntProperty(
         name="Max Depth",
-        description="",
+        description="The max depth to which this voxelmaterial is placed",
         min=0,
         default=10
     )
-    default_subsurface_material: StringProperty(
+    default_subsurface_material: PointerProperty(
         name="Default Subsurface Material",
-        description=""
-    )
-    materials_maxdepth_min: IntProperty(
-        name="Minimum",
-        description="",
-        min=0,
-        default=4000
-    )
-    materials_maxdepth_max: IntProperty(
-        name="Maximum",
-        description="",
-        min=0,
-        default=4000
-    )
-    materials_mindepth_min: IntProperty(
-        name="Minimum",
-        description="",
-        min=0,
-        default=20
-    )
-    materials_mindepth_max: IntProperty(
-        name="Maximum",
-        description="",
-        min=0,
-        default=20
+        description="The default subsurface voxelmaterial that is placed in all places not covered by a Complex Material rule",
+        type=bpy.types.Material,
+        poll=poll_voxelmaterials
     )
     min_surface_layer_depth: IntProperty(
         name="Minimum Surface Layer Depth",
-        description="",
+        description="The minimum depth in meters of the surface layer",
         min=0,
         default=1
     )
     
-    max_oxygen: FloatProperty(
-        name="Maximum Oxygen",
-        description="",
+    surface_gravity: FloatProperty(
+        name="Surface Gravity",
+        description="The gravity on height zero on the planet, falling off with distance",
         min=0,
         default=1.0
     )
-    surface_gravity: FloatProperty(
-        name="Surface Gravity",
-        description="",
-        min=0,
-        default=1.0
+    gravity_falloff_power: FloatProperty(
+        name="Gravity Falloff Power",
+        description="The power to which the gravity falls off after exiting the height defined by Hill Parameter Maximum. The smaller the value, the lower the falloff",
+        default=7.0
     )
     has_atmosphere: BoolProperty(
         name="Has Atmosphere",
-        description="",
+        description="Whether the planet has an atmosphere or not. False overrides the Oxygen Density property",
         default=True
     )
     atm_breathable: BoolProperty(
         name="Breathable",
-        description="",
+        description="Whether the atmosphere is breathable or not. False overrides any Oxygen Density property and prevents oxygen from being gathered by vents",
         default=True
     )
     atm_oxygen_density: FloatProperty(
         name="Oxygen Density",
-        description="",
+        description="The ratio of oxygen within air (air being defined as the Air Density property)",
         min=0,
         default=1.0
     )
     atm_density: FloatProperty(
-        name="Density",
-        description="",
+        name="Air Density",
+        description="The density of air at height zero, falling off with height. This value directly corresponds to thruster MinPlanetaryInfluence and MaxPlanetaryInfluence settings",
         min=0,
         default=1.0
     )
     atm_limit_altitude: FloatProperty(
         name="Limit Altitude",
-        description="",
+        description="Defines how high the atmosphere reaches, relative to the Hill Parameter Maximum property",
         min=0,
         default=1.0
     )
     atm_max_wind_speed: FloatProperty(
         name="Maximum Wind Speed",
-        description="",
+        description="The maximum wind speed on a planet. This value can be multiplied by weather effects",
         min=0,
         default=80.0
     )

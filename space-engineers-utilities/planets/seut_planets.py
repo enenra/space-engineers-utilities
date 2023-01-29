@@ -66,15 +66,27 @@ def update_ore_mappings_value(self, context):
     color.color[1] = 0
     color.color[2] = round(self.value / 255, 3)
 
+    
+def poll_voxelmaterials(self, object):
+    if object.asset_data is None:
+        return False
+    if 'voxel' not in object.asset_data.tags:
+        return False
+    if 'far1' in object.asset_data.tags or 'far2' in object.asset_data.tags:
+        return False
+
+    return True
 
 class SEUT_PlanetPropertiesDistributionRulesLayers(PropertyGroup):
     """Layer definitions of Material Group placement rules"""
     
     name: StringProperty()
 
-    material: StringProperty(
+    material: PointerProperty(
         name="Material",
-        description="The Voxel Material the layer consists of"
+        description="The Voxel Material the layer consists of",
+        type=bpy.types.Material,
+        poll=poll_voxelmaterials
     )
     depth: FloatProperty(
         name="Depth",
@@ -89,7 +101,7 @@ class SEUT_PlanetPropertiesDistributionRules(PropertyGroup):
     
     name: StringProperty(
         name="Name",
-        description="The name of the material group"
+        description="The name of the distribution rule"
     )
     layers: CollectionProperty(
         type=SEUT_PlanetPropertiesDistributionRulesLayers
@@ -145,7 +157,8 @@ class SEUT_PlanetPropertiesMaterialGroups(PropertyGroup):
     """Material Groups of Complex Materials"""
 
     name: StringProperty(
-        name="Name"
+        name="Name",
+        description="The name of the Complex Materials group"
     )
     value: IntProperty(
         name="Value",
@@ -181,9 +194,13 @@ class SEUT_PlanetPropertiesBiomes(PropertyGroup):
 class SEUT_PlanetPropertiesMaterials(PropertyGroup):
     """Materials of Environment Items"""
 
-    name: StringProperty(
+    name: StringProperty()
+
+    material: PointerProperty(
         name="Voxel Material",
-        description="The SubtypeId of the Voxel Material"
+        description="The SubtypeId of the Voxel Material",
+        type=bpy.types.Material,
+        poll=poll_voxelmaterials
     )
 
 
@@ -262,9 +279,11 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
         max=255,
         update=update_ore_mappings_value
     )
-    ore_type: StringProperty(
+    ore_type: PointerProperty(
         name="Ore Type",
-        description="The SubtypeId of the voxel material to place"
+        description="The SubtypeId of the voxel material to place",
+        type=bpy.types.Material,
+        poll=poll_voxelmaterials
     )
     start: IntProperty(
         name="Start",

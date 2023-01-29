@@ -8,7 +8,11 @@ class SEUT_UL_PlanetDistributionRulesLayers(UIList):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
-        layout.label(text=f"{item.material}", icon='LAYER_ACTIVE')
+        split = layout.split(factor=0.65)
+        row = split.row()
+        row.label(text="", icon='ANCHOR_TOP')
+        row.prop(item, 'material', text="")
+        split.prop(item, 'depth', text="")
 
     def invoke(self, context, event):
         pass
@@ -19,7 +23,9 @@ class SEUT_UL_PlanetDistributionRules(UIList):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
-        layout.label(text=f"{item.name}", icon='SYSTEM')
+        row = layout.row()
+        row.label(text="", icon='SYSTEM')
+        row.prop(item, 'name', text="", emboss=False)
 
     def invoke(self, context, event):
         pass
@@ -32,7 +38,8 @@ class SEUT_UL_PlanetMaterialGroups(UIList):
 
         split = layout.split(factor=0.85)
         row = split.row()
-        row.label(text=item.name, icon='MATERIAL_DATA')
+        row.label(text="", icon='MATERIAL_DATA')
+        row.prop(item, 'name', text="", emboss=False)
 
         colors = context.scene.seut.material_groups_palette.colors
         for c in colors:
@@ -51,7 +58,8 @@ class SEUT_UL_PlanetBiomes(UIList):
 
         split = layout.split(factor=0.85)
         row = split.row()
-        row.label(text=str(item.value), icon='WORLD_DATA')
+        row.label(text="", icon='WORLD_DATA')
+        row.prop(item, 'value', text="")
         
         colors = context.scene.seut.biomes_palette.colors
         for c in colors:
@@ -68,7 +76,9 @@ class SEUT_UL_PlanetMaterials(UIList):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
-        layout.label(text=item.name, icon='MATERIAL')
+        row = layout.row()
+        row.label(text="", icon='MATERIAL')
+        row.prop(item, 'material', text="")
 
     def invoke(self, context, event):
         pass
@@ -95,7 +105,9 @@ class SEUT_UL_PlanetEnvironmentItems(UIList):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
-        layout.label(text=f"{item.name}", icon='SCENE_DATA')
+        row = layout.row()
+        row.label(text="", icon='SCENE_DATA')
+        row.prop(item, 'name', text="", emboss=False)
 
     def invoke(self, context, event):
         pass
@@ -108,7 +120,8 @@ class SEUT_UL_PlanetOreMappings(UIList):
 
         split = layout.split(factor=0.85)
         row = split.row()
-        row.label(text=item.ore_type, icon='TEXTURE_DATA')
+        row.label(text="", icon='TEXTURE_DATA')
+        row.prop(item, 'ore_type', text="")
 
         colors = context.scene.seut.ore_mappings_palette.colors
         for c in colors:
@@ -167,30 +180,18 @@ class SEUT_PT_Panel_Planet(Panel):
         box.prop(scene.seut, "default_surface_material", text="Surface")
         box.prop(scene.seut, "default_surface_material_max")
         box.prop(scene.seut, "default_subsurface_material", text="Subsurface")
-        
-        col = box.column(align=True)
-
-        row = col.row(align=True)
-        row.label(text="Max Depth")
-        row.label(text="Min Depth")
-
-        row = col.row(align=True)
-        row.prop(scene.seut, "materials_maxdepth_min", text="Min")
-        row.prop(scene.seut, "materials_mindepth_min", text="Max")
-
-        row = col.row(align=True)
-        row.prop(scene.seut, "materials_maxdepth_max", text="Min")
-        row.prop(scene.seut, "materials_mindepth_max", text="Max")
 
         box.prop(scene.seut, "min_surface_layer_depth")
 
         # Atmosphere Settings
         box = layout.box()
         box.label(text="Atmosphere Settings", icon='PROP_OFF')
+        
+        box.prop(scene.seut, "default_surface_temperature", text="Temperature")
 
         col = box.column(align=True)
-        col.prop(scene.seut, "max_oxygen")
         col.prop(scene.seut, "surface_gravity")
+        col.prop(scene.seut, "gravity_falloff_power")
         
         col = box.column(align=True)
         col.prop(scene.seut, "has_atmosphere", icon='PROP_CON')
@@ -234,7 +235,6 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
         if len(scene.seut.material_groups) > 0:
             try:
                 material_group = scene.seut.material_groups[scene.seut.material_groups_index]
-                box.prop(material_group, 'name')
                 box.prop(material_group, 'value')
                 box.separator()
 
@@ -254,7 +254,6 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
                     if len(material_group.rules) > 0:
                         try:
                             rule = material_group.rules[material_group.rules_index]
-                            box2.prop(rule, 'name')
 
                             split = box2.split(factor=0.20)
                             split.label(text="Height:")
@@ -278,7 +277,7 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
 
                             if rule is not None:
                                 box3 = box2.box()
-                                box3.label(text="Layers", icon='LAYER_ACTIVE')
+                                box3.label(text="Voxel Layers", icon='ANCHOR_TOP')
                                 row = box3.row()
                                 row.template_list("SEUT_UL_PlanetDistributionRulesLayers", "", rule, "layers", rule, "layers_index", rows=3)
 
@@ -287,15 +286,6 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
                                 op.rule_type = 'material_group'
                                 op = col.operator("planet.remove_distribution_rule_layer", icon='REMOVE', text="")
                                 op.rule_type = 'material_group'
-
-                                # Layers
-                                if len(rule.layers) > 0:
-                                    try:
-                                        layer = rule.layers[rule.layers_index]
-                                        box3.prop(layer, 'material')
-                                        box3.prop(layer, 'depth')
-                                    except IndexError:
-                                        pass
                         
                         except IndexError:
                             pass
@@ -337,7 +327,6 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
         if len(scene.seut.environment_items) > 0:
             try:
                 environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
-                box.prop(environment_item, 'name')
 
                 if environment_item is not None:
                     box2 = box.box()
@@ -349,30 +338,14 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                     col.operator("planet.add_biome", icon='ADD', text="")
                     col.operator("planet.remove_biome", icon='REMOVE', text="")
 
-                    # Biomes
-                    if len(environment_item.biomes) > 0:
-                        try:
-                            biome = environment_item.biomes[environment_item.biomes_index]
-                            box2.prop(biome, 'value')
-                        except IndexError:
-                            pass
-
                     box2 = box.box()
-                    box2.label(text="Materials", icon='MATERIAL')
+                    box2.label(text="Voxels", icon='MATERIAL')
                     row = box2.row()
                     row.template_list("SEUT_UL_PlanetMaterials", "", environment_item, "materials", environment_item, "materials_index", rows=3)
 
                     col = row.column(align=True)
                     col.operator("planet.add_material", icon='ADD', text="")
                     col.operator("planet.remove_material", icon='REMOVE', text="")
-
-                    # Materials
-                    if len(environment_item.materials) > 0:
-                        try:
-                            material = environment_item.materials[environment_item.materials_index]
-                            box2.prop(material, 'name')
-                        except IndexError:
-                            pass
 
                     box2 = box.box()
                     box2.label(text="Items", icon='RNA')
@@ -461,9 +434,9 @@ class SEUT_PT_Panel_PlanetOreMappings(Panel):
             try:
                 ore_mapping = scene.seut.ore_mappings[scene.seut.ore_mappings_index]
                 box.prop(ore_mapping, 'value')
-                box.prop(ore_mapping, 'ore_type')
-                box.prop(ore_mapping, 'start')
-                box.prop(ore_mapping, 'depth')
+                col = box.column(align=True)
+                col.prop(ore_mapping, 'start')
+                col.prop(ore_mapping, 'depth')
                 box.prop(ore_mapping, 'target_color')
             
             except IndexError:
@@ -473,7 +446,7 @@ class SEUT_PT_Panel_PlanetOreMappings(Panel):
 class SEUT_PT_Panel_PlanetExport(Panel):
     """Creates the planet export panel for SEUT"""
     bl_idname = "SEUT_PT_Panel_PlanetExport"
-    bl_label = "Export"
+    bl_label = "Export & Bake"
     bl_category = "SEUT"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"

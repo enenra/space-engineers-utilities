@@ -95,25 +95,23 @@ def export_planet_sbc(self, context: bpy.types.Context):
     def_defaultSurfaceMaterial = 'DefaultSurfaceMaterial'
     if not update_sbc:
         def_defaultSurfaceMaterial = add_subelement(def_definition, 'DefaultSurfaceMaterial')
-    lines_entry = update_add_attrib(def_defaultSurfaceMaterial, 'Material', scene.seut.default_surface_material, update_sbc, lines_entry)
+    if scene.seut.default_surface_material is not None:
+        material = scene.seut.default_surface_material.name
+    else:
+        material = 'DebugMaterial'
+    lines_entry = update_add_attrib(def_defaultSurfaceMaterial, 'Material', material, update_sbc, lines_entry)
     lines_entry = update_add_attrib(def_defaultSurfaceMaterial, 'MaxDepth', scene.seut.default_surface_material_max, update_sbc, lines_entry)
    
     def_defaultSubSurfaceMaterial = 'DefaultSubSurfaceMaterial'
     if not update_sbc:
         def_defaultSubSurfaceMaterial = add_subelement(def_definition, 'DefaultSubSurfaceMaterial')
-    lines_entry = update_add_attrib(def_defaultSubSurfaceMaterial, 'Material', scene.seut.default_subsurface_material, update_sbc, lines_entry)
+    if scene.seut.default_subsurface_material is not None:
+        material = scene.seut.default_subsurface_material.name
+    else:
+        material = 'DebugMaterial'
+    lines_entry = update_add_attrib(def_defaultSubSurfaceMaterial, 'Material', material, update_sbc, lines_entry)
 
-    def_materialsMaxDepth = 'MaterialsMaxDepth'
-    if not update_sbc:
-        def_materialsMaxDepth = add_subelement(def_definition, 'MaterialsMaxDepth')
-    lines_entry = update_add_attrib(def_materialsMaxDepth, 'Min', scene.seut.materials_maxdepth_min, update_sbc, lines_entry)
-    lines_entry = update_add_attrib(def_materialsMaxDepth, 'Max', scene.seut.materials_maxdepth_max, update_sbc, lines_entry)
-
-    def_materialsMinDepth = 'MaterialsMinDepth'
-    if not update_sbc:
-        def_materialsMinDepth = add_subelement(def_definition, 'MaterialsMinDepth')
-    lines_entry = update_add_attrib(def_materialsMinDepth, 'Min', scene.seut.materials_mindepth_min, update_sbc, lines_entry)
-    lines_entry = update_add_attrib(def_materialsMinDepth, 'Max', scene.seut.materials_mindepth_max, update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'DefaultSurfaceTemperature', scene.seut.default_surface_temperature, update_sbc, lines_entry)
 
     lines_entry = update_add_subelement(def_definition, 'MinimumSurfaceLayerDepth', scene.seut.min_surface_layer_depth, update_sbc, lines_entry)
         
@@ -150,7 +148,11 @@ def export_planet_sbc(self, context: bpy.types.Context):
         for om in scene.seut.ore_mappings:
             def_Ore = ET.SubElement(def_OreMappings, 'Ore')
             add_attrib(def_Ore, 'Value', om.value)
-            add_attrib(def_Ore, 'Type', om.ore_type)
+            if om.ore_type is not None:
+                material = om.ore_type.name
+            else:
+                material = 'DebugMaterial'
+            add_attrib(def_Ore, 'Type', material)
             add_attrib(def_Ore, 'Start', om.start)
             add_attrib(def_Ore, 'Depth', om.depth)
             add_attrib(def_Ore, 'TargetColor', '#%02x%02x%02x' % (int(om.target_color[0] * 255), int(om.target_color[1] * 255), int(om.target_color[2] * 255)))
@@ -180,7 +182,11 @@ def export_planet_sbc(self, context: bpy.types.Context):
 
                         for l in r.layers:
                             def_Layer = ET.SubElement(def_Layers, 'Layer')
-                            add_attrib(def_Layer, 'Material', l.material)
+                            if l.material is not None:
+                                material = l.material.name
+                            else:
+                                material = 'DebugMaterial'
+                            add_attrib(def_Layer, 'Material', material)
                             add_attrib(def_Layer, 'Depth', l.depth)
                     
                     def_Height = add_subelement(def_Rule, 'Height')
@@ -219,7 +225,11 @@ def export_planet_sbc(self, context: bpy.types.Context):
                 def_Materials = ET.SubElement(def_Item, 'Materials')
                 for mat in ei.materials:
                     def_Material = ET.SubElement(def_Materials, 'Material')
-                    def_Material.text = mat.name
+                    if mat.material is not None:
+                        material = mat.material.name
+                    else:
+                        material = 'DebugMaterial'
+                    def_Material.text = material
 
             def_SubItems = ET.SubElement(def_Item, 'Items')
             if len(ei.items) > 0:
@@ -249,8 +259,8 @@ def export_planet_sbc(self, context: bpy.types.Context):
             lines_entry = convert_back_xml(def_EnvironmentItems, 'EnvironmentItems', lines_entry, 'PlanetGeneratorDefinition')
     
     # Atmosphere Settings
-    lines_entry = update_add_subelement(def_definition, 'MaximumOxygen', round(scene.seut.max_oxygen, 2), update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'SurfaceGravity', round(scene.seut.surface_gravity, 2), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'GravityFalloffPower', round(scene.seut.gravity_falloff_power, 2), update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'HasAtmosphere', str(scene.seut.has_atmosphere).lower(), update_sbc, lines_entry)
 
     def_Atmosphere = 'Atmosphere'
