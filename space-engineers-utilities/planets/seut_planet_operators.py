@@ -138,12 +138,15 @@ class SEUT_OT_Planet_MaterialGroup_Remove(Operator):
         scene = context.scene
 
         scene.seut.material_groups.remove(scene.seut.material_groups_index)
-        
+        scene.seut.material_groups_index = min(max(0, scene.seut.material_groups_index - 1), len(scene.seut.material_groups) - 1)
+
         for c in scene.seut.material_groups_palette.colors:
-            found = False
-            for mg in scene.seut.material_groups:
-                if mg.value == int(round(c.color[0] * 255)) and c.color[1] == 0 and c.color[2] == 0:
-                    found = True
+            found = any(
+                mg.value == int(round(c.color[0] * 255))
+                and c.color[1] == 0
+                and c.color[2] == 0
+                for mg in scene.seut.material_groups
+            )
             if not found:
                 scene.seut.material_groups_palette.colors.remove(c)
 
@@ -210,6 +213,7 @@ class SEUT_OT_Planet_DistributionRule_Remove(Operator):
             rule_type = scene.seut.environment_items[scene.seut.environment_items_index]
 
         rule_type.rules.remove(rule_type.rules_index)
+        rule_type.rules_index = min(max(0, rule_type.rules_index - 1), len(rule_type.rules) - 1)
 
         return {'FINISHED'}
 
@@ -243,7 +247,7 @@ class SEUT_OT_Planet_DistributionRuleLayer_Add(Operator):
         rule = rule_type.rules[rule_type.rules_index]
 
         item = rule.layers.add()
-        item.material = "LayerMaterial"
+        item.name = "LayerMaterial"
 
         return {'FINISHED'}
 
@@ -277,6 +281,7 @@ class SEUT_OT_Planet_DistributionRuleLayer_Remove(Operator):
         rule = rule_type.rules[rule_type.rules_index]
 
         rule.layers.remove(rule.layers_index)
+        rule.layers_index = min(max(0, rule.layers_index - 1), len(rule.layers) - 1)
 
         return {'FINISHED'}
 
@@ -323,6 +328,7 @@ class SEUT_OT_Planet_EnvironmentItem_Remove(Operator):
         scene = context.scene
 
         scene.seut.environment_items.remove(scene.seut.environment_items_index)
+        scene.seut.environment_items_index = min(max(0, scene.seut.environment_items_index - 1), len(scene.seut.environment_items) - 1)
 
         return {'FINISHED'}
 
@@ -365,6 +371,7 @@ class SEUT_OT_Planet_Biome_Remove(Operator):
         environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
 
         environment_item.biomes.remove(environment_item.biomes_index)
+        environment_item.biomes_index = min(max(0, environment_item.biomes_index - 1), len(environment_item.biomes) - 1)
         
         for c in scene.seut.biomes_palette.colors:
             found = False
@@ -419,6 +426,7 @@ class SEUT_OT_Planet_Material_Remove(Operator):
         environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
 
         environment_item.materials.remove(environment_item.materials_index)
+        environment_item.materials_index = min(max(0, environment_item.materials_index - 1), len(environment_item.materials) - 1)
 
         return {'FINISHED'}
 
@@ -463,6 +471,7 @@ class SEUT_OT_Planet_Item_Remove(Operator):
         environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
 
         environment_item.items.remove(environment_item.items_index)
+        environment_item.items_index = min(max(0, environment_item.items_index - 1), len(environment_item.items) - 1)
 
         return {'FINISHED'}
 
@@ -504,12 +513,15 @@ class SEUT_OT_Planet_OreMappings_Remove(Operator):
         scene = context.scene
 
         scene.seut.ore_mappings.remove(scene.seut.ore_mappings_index)
-        
+        scene.seut.ore_mappings_index = min(max(0, scene.seut.ore_mappings_index - 1), len(scene.seut.ore_mappings) - 1)
+
         for c in scene.seut.ore_mappings_palette.colors:
-            found = False
-            for om in scene.seut.ore_mappings:
-                if om.value == int(round(c.color[2] * 255)) and c.color[0] == 0 and c.color[1] == 0:
-                    found = True
+            found = any(
+                om.value == int(round(c.color[2] * 255))
+                and c.color[0] == 0
+                and c.color[1] == 0
+                for om in scene.seut.ore_mappings
+            )
             if not found:
                 scene.seut.ore_mappings_palette.colors.remove(c)
 
@@ -568,9 +580,7 @@ class SEUT_OT_Planet_Bake(Operator):
 
     def execute(self, context):
 
-        result = bake_planet_map(context)
-
-        return result
+        return bake_planet_map(context)
 
 
 last_dir = ""
@@ -683,9 +693,7 @@ class SEUT_OT_Planet_ImportSBC(Operator, ImportHelper):
 
     def execute(self, context):
 
-        result = import_planet_sbc(self, context)
-
-        return result
+        return import_planet_sbc(self, context)
 
 
     def draw(self, context):
@@ -695,7 +703,7 @@ class SEUT_OT_Planet_ImportSBC(Operator, ImportHelper):
         row = box.row()
         row.label(text="Options", icon='SETTINGS')
 
-        if not  self.filepath in valid_files:
+        if self.filepath not in valid_files:
             row = box.row()
             row.alert = True
             row.label(text="No Planet Definition SBC selected.")

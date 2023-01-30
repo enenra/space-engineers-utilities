@@ -233,65 +233,57 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
 
         # Material Groups
         if len(scene.seut.material_groups) > 0:
-            try:
-                material_group = scene.seut.material_groups[scene.seut.material_groups_index]
-                box.prop(material_group, 'value')
-                box.separator()
+            material_group = scene.seut.material_groups[scene.seut.material_groups_index]
+            box.prop(material_group, 'value')
+            box.separator()
 
-                if material_group is not None:
-                    box2 = box.box()
-                    box2.label(text="Distribution Rules", icon='SYSTEM')
-                    row = box2.row()
-                    row.template_list("SEUT_UL_PlanetDistributionRules", "", material_group, "rules", material_group, "rules_index", rows=3)
+            if material_group is not None:
+                box2 = box.box()
+                box2.label(text="Distribution Rules", icon='SYSTEM')
+                row = box2.row()
+                row.template_list("SEUT_UL_PlanetDistributionRules", "", material_group, "rules", material_group, "rules_index", rows=3)
 
-                    col = row.column(align=True)
-                    op = col.operator("planet.add_distribution_rule", icon='ADD', text="")
-                    op.rule_type = 'material_group'
-                    op = col.operator("planet.remove_distribution_rule", icon='REMOVE', text="")
-                    op.rule_type = 'material_group'
+                col = row.column(align=True)
+                op = col.operator("planet.add_distribution_rule", icon='ADD', text="")
+                op.rule_type = 'material_group'
+                op = col.operator("planet.remove_distribution_rule", icon='REMOVE', text="")
+                op.rule_type = 'material_group'
 
-                    # Distribution Rules
-                    if len(material_group.rules) > 0:
-                        try:
-                            rule = material_group.rules[material_group.rules_index]
+                # Distribution Rules
+                if len(material_group.rules) > 0:
+                    rule = material_group.rules[material_group.rules_index]
 
-                            split = box2.split(factor=0.20)
-                            split.label(text="Height:")
-                            row = split.row(align=True)
-                            row.prop(rule, 'height_min', text="Min")
-                            row.prop(rule, 'height_max', text="Max")
+                    split = box2.split(factor=0.20)
+                    split.label(text="Height:")
+                    row = split.row(align=True)
+                    row.prop(rule, 'height_min', text="Min")
+                    row.prop(rule, 'height_max', text="Max")
 
-                            split = box2.split(factor=0.20)
-                            split.label(text="Latitude:")
-                            row = split.row(align=True)
-                            row.prop(rule, 'latitude_min', text="Min")
-                            row.prop(rule, 'latitude_max', text="Max")
+                    split = box2.split(factor=0.20)
+                    split.label(text="Latitude:")
+                    row = split.row(align=True)
+                    row.prop(rule, 'latitude_min', text="Min")
+                    row.prop(rule, 'latitude_max', text="Max")
 
-                            split = box2.split(factor=0.20)
-                            split.label(text="Slope:")
-                            row = split.row(align=True)
-                            row.prop(rule, 'slope_min', text="Min")
-                            row.prop(rule, 'slope_max', text="Max")
+                    split = box2.split(factor=0.20)
+                    split.label(text="Slope:")
+                    row = split.row(align=True)
+                    row.prop(rule, 'slope_min', text="Min")
+                    row.prop(rule, 'slope_max', text="Max")
 
-                            box2.separator()
+                    box2.separator()
 
-                            if rule is not None:
-                                box3 = box2.box()
-                                box3.label(text="Voxel Layers", icon='ANCHOR_TOP')
-                                row = box3.row()
-                                row.template_list("SEUT_UL_PlanetDistributionRulesLayers", "", rule, "layers", rule, "layers_index", rows=3)
+                    if rule is not None:
+                        box3 = box2.box()
+                        box3.label(text="Voxel Layers", icon='ANCHOR_TOP')
+                        row = box3.row()
+                        row.template_list("SEUT_UL_PlanetDistributionRulesLayers", "", rule, "layers", rule, "layers_index", rows=3)
 
-                                col = row.column(align=True)
-                                op = col.operator("planet.add_distribution_rule_layer", icon='ADD', text="")
-                                op.rule_type = 'material_group'
-                                op = col.operator("planet.remove_distribution_rule_layer", icon='REMOVE', text="")
-                                op.rule_type = 'material_group'
-                        
-                        except IndexError:
-                            pass
-
-            except IndexError:
-                pass
+                        col = row.column(align=True)
+                        op = col.operator("planet.add_distribution_rule_layer", icon='ADD', text="")
+                        op.rule_type = 'material_group'
+                        op = col.operator("planet.remove_distribution_rule_layer", icon='REMOVE', text="")
+                        op.rule_type = 'material_group'
 
 
 class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
@@ -325,80 +317,69 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
 
         # Environment Items
         if len(scene.seut.environment_items) > 0:
-            try:
-                environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
+            environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
 
-                if environment_item is not None:
-                    box2 = box.box()
-                    box2.label(text="Biomes", icon='WORLD_DATA')
-                    row = box2.row()
-                    row.template_list("SEUT_UL_PlanetBiomes", "", environment_item, "biomes", environment_item, "biomes_index", rows=3)
+            if environment_item is not None:
+                box2 = box.box()
+                box2.label(text="Biomes", icon='WORLD_DATA')
+                row = box2.row()
+                row.template_list("SEUT_UL_PlanetBiomes", "", environment_item, "biomes", environment_item, "biomes_index", rows=3)
 
-                    col = row.column(align=True)
-                    col.operator("planet.add_biome", icon='ADD', text="")
-                    col.operator("planet.remove_biome", icon='REMOVE', text="")
+                col = row.column(align=True)
+                col.operator("planet.add_biome", icon='ADD', text="")
+                col.operator("planet.remove_biome", icon='REMOVE', text="")
 
-                    box2 = box.box()
-                    box2.label(text="Voxels", icon='MATERIAL')
-                    row = box2.row()
-                    row.template_list("SEUT_UL_PlanetMaterials", "", environment_item, "materials", environment_item, "materials_index", rows=3)
+                box2 = box.box()
+                box2.label(text="Voxels", icon='MATERIAL')
+                row = box2.row()
+                row.template_list("SEUT_UL_PlanetMaterials", "", environment_item, "materials", environment_item, "materials_index", rows=3)
 
-                    col = row.column(align=True)
-                    col.operator("planet.add_material", icon='ADD', text="")
-                    col.operator("planet.remove_material", icon='REMOVE', text="")
+                col = row.column(align=True)
+                col.operator("planet.add_material", icon='ADD', text="")
+                col.operator("planet.remove_material", icon='REMOVE', text="")
 
-                    box2 = box.box()
-                    box2.label(text="Items", icon='RNA')
-                    row = box2.row()
-                    row.template_list("SEUT_UL_PlanetItems", "", environment_item, "items", environment_item, "items_index", rows=3)
+                box2 = box.box()
+                box2.label(text="Items", icon='RNA')
+                row = box2.row()
+                row.template_list("SEUT_UL_PlanetItems", "", environment_item, "items", environment_item, "items_index", rows=3)
 
-                    col = row.column(align=True)
-                    col.operator("planet.add_item", icon='ADD', text="")
-                    col.operator("planet.remove_item", icon='REMOVE', text="")
+                col = row.column(align=True)
+                col.operator("planet.add_item", icon='ADD', text="")
+                col.operator("planet.remove_item", icon='REMOVE', text="")
 
-                    # Items
-                    if len(environment_item.items) > 0:
-                        try:
-                            item = environment_item.items[environment_item.items_index]
-                            box2.prop(item, 'type_id')
-                            box2.prop(item, 'subtype_id')
-                            box2.prop(item, 'group_id')
-                            box2.prop(item, 'modifier_id')
-                            box2.prop(item, 'density')
-                        except IndexError:
-                            pass
-                    
-                    # Distribution Rules
-                    box2 = box.box()
-                    box2.label(text="Distribution Rule", icon='SYSTEM')
-                    
-                    if len(environment_item.rules) > 0:
-                        try:
-                            rule = environment_item.rules[environment_item.rules_index]
+                # Items
+                if len(environment_item.items) > 0:
+                    item = environment_item.items[environment_item.items_index]
+                    box2.prop(item, 'type_id')
+                    box2.prop(item, 'subtype_id')
+                    box2.prop(item, 'group_id')
+                    box2.prop(item, 'modifier_id')
+                    box2.prop(item, 'density')
+                
+                # Distribution Rules
+                box2 = box.box()
+                box2.label(text="Distribution Rule", icon='SYSTEM')
+                
+                if len(environment_item.rules) > 0:
+                    rule = environment_item.rules[environment_item.rules_index]
 
-                            split = box2.split(factor=0.20)
-                            split.label(text="Height:")
-                            row = split.row(align=True)
-                            row.prop(rule, 'height_min', text="Min")
-                            row.prop(rule, 'height_max', text="Max")
+                    split = box2.split(factor=0.20)
+                    split.label(text="Height:")
+                    row = split.row(align=True)
+                    row.prop(rule, 'height_min', text="Min")
+                    row.prop(rule, 'height_max', text="Max")
 
-                            split = box2.split(factor=0.20)
-                            split.label(text="Latitude:")
-                            row = split.row(align=True)
-                            row.prop(rule, 'latitude_min', text="Min")
-                            row.prop(rule, 'latitude_max', text="Max")
+                    split = box2.split(factor=0.20)
+                    split.label(text="Latitude:")
+                    row = split.row(align=True)
+                    row.prop(rule, 'latitude_min', text="Min")
+                    row.prop(rule, 'latitude_max', text="Max")
 
-                            split = box2.split(factor=0.20)
-                            split.label(text="Slope:")
-                            row = split.row(align=True)
-                            row.prop(rule, 'slope_min', text="Min")
-                            row.prop(rule, 'slope_max', text="Max")
-
-                        except IndexError:
-                            pass
-
-            except IndexError:
-                pass
+                    split = box2.split(factor=0.20)
+                    split.label(text="Slope:")
+                    row = split.row(align=True)
+                    row.prop(rule, 'slope_min', text="Min")
+                    row.prop(rule, 'slope_max', text="Max")
 
 
 class SEUT_PT_Panel_PlanetOreMappings(Panel):
@@ -431,16 +412,12 @@ class SEUT_PT_Panel_PlanetOreMappings(Panel):
 
         # Ore Mappings
         if len(scene.seut.ore_mappings) > 0:
-            try:
-                ore_mapping = scene.seut.ore_mappings[scene.seut.ore_mappings_index]
-                box.prop(ore_mapping, 'value')
-                col = box.column(align=True)
-                col.prop(ore_mapping, 'start')
-                col.prop(ore_mapping, 'depth')
-                box.prop(ore_mapping, 'target_color')
-            
-            except IndexError:
-                pass
+            ore_mapping = scene.seut.ore_mappings[scene.seut.ore_mappings_index]
+            box.prop(ore_mapping, 'value')
+            col = box.column(align=True)
+            col.prop(ore_mapping, 'start')
+            col.prop(ore_mapping, 'depth')
+            box.prop(ore_mapping, 'target_color')
 
 
 class SEUT_PT_Panel_PlanetExport(Panel):
