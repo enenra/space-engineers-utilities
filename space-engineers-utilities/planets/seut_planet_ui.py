@@ -10,8 +10,12 @@ class SEUT_UL_PlanetDistributionRulesLayers(UIList):
 
         split = layout.split(factor=0.65)
         row = split.row()
-        row.label(text="", icon='ANCHOR_TOP')
-        row.prop(item, 'material', text="")
+        if item.material is not None:
+            row.label(text="", icon='ANCHOR_TOP')
+            row.prop(item, 'material', text="", icon_value=layout.icon(item.material))
+        else:
+            row.label(text="", icon='ANCHOR_TOP')
+            row.prop(item, 'material', text="")
         split.prop(item, 'depth', text="")
 
     def invoke(self, context, event):
@@ -77,8 +81,12 @@ class SEUT_UL_PlanetMaterials(UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
         row = layout.row()
-        row.label(text="", icon='MATERIAL')
-        row.prop(item, 'material', text="")
+        if item.material is not None:
+            row.label(text="", icon='MATERIAL')
+            row.prop(item, 'material', text="", icon_value=layout.icon(item.material))
+        else:
+            row.label(text="", icon='MATERIAL')
+            row.prop(item, 'material', text="")
 
     def invoke(self, context, event):
         pass
@@ -120,8 +128,12 @@ class SEUT_UL_PlanetOreMappings(UIList):
 
         split = layout.split(factor=0.85)
         row = split.row()
-        row.label(text="", icon='TEXTURE_DATA')
-        row.prop(item, 'ore_type', text="")
+        if item.ore_type is not None:
+            row.label(text="", icon='TEXTURE_DATA')
+            row.prop(item, 'ore_type', text="", icon_value=layout.icon(item.ore_type))
+        else:
+            row.label(text="", icon='TEXTURE_DATA')
+            row.prop(item, 'ore_type', text="")
 
         colors = context.scene.seut.ore_mappings_palette.colors
         for c in colors:
@@ -177,9 +189,18 @@ class SEUT_PT_Panel_Planet(Panel):
         # Voxel Defaults
         box = layout.box()
         box.label(text="Voxel Defaults", icon='FORCE_TEXTURE')
-        box.prop(scene.seut, "default_surface_material", text="Surface")
+
+        if scene.seut.default_surface_material is not None:
+            box.prop(scene.seut, "default_surface_material", text="Surface", icon_value=layout.icon(scene.seut.default_surface_material))
+        else:
+            box.prop(scene.seut, "default_surface_material", text="Surface")
+
         box.prop(scene.seut, "default_surface_material_max")
-        box.prop(scene.seut, "default_subsurface_material", text="Subsurface")
+
+        if scene.seut.default_subsurface_material is not None:
+            box.prop(scene.seut, "default_subsurface_material", text="Subsurface", icon_value=layout.icon(scene.seut.default_subsurface_material))
+        else:
+            box.prop(scene.seut, "default_subsurface_material", text="Subsurface")
 
         box.prop(scene.seut, "min_surface_layer_depth")
 
