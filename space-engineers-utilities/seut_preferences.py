@@ -42,6 +42,7 @@ class SEUT_OT_SetDevPaths(Operator):
             load_addon_prefs()
 
         update_register_repos()
+        load_configs()
 
         return {'FINISHED'}
 
@@ -226,31 +227,35 @@ class SEUT_AddonPreferences(AddonPreferences):
             row.alert = True
             row.label(text="An error occurred during draw of Blender Addon Updater UI. Make sure BAU is up to date.")
 
-        if not 'space-engineers-utilities' in data.seut.repos:
-            update_register_repos()
+        if 'space-engineers-utilities' not in data.seut.repos:
+            try:
+                update_register_repos()
+            except Exception:
+                pass
+                
+        if 'space-engineers-utilities' in data.seut.repos:
+            if addon_utils.check('blender_addon_updater') != (True, True):
+                row = layout.row()
+                row.label(text="Update Status:")
 
-        if addon_utils.check('blender_addon_updater') != (True, True):
-            row = layout.row()
-            row.label(text="Update Status:")
+                repo = data.seut.repos['space-engineers-utilities']
 
-            repo = data.seut.repos['space-engineers-utilities']
+                if repo.needs_update:
+                    row.alert = True
+                    row.label(text=repo.update_message, icon='ERROR')
+                    op = row.operator('wm.get_update', icon='IMPORT')
+                    op.repo_name = 'space-engineers-utilities'
+                else:
+                    row.label(text=repo.update_message, icon='CHECKMARK')
+                    op = row.operator('wm.get_update', text="Releases", icon='IMPORT')
+                    op.repo_name = 'space-engineers-utilities'
 
-            if repo.needs_update:
-                row.alert = True
-                row.label(text=repo.update_message, icon='ERROR')
-                op = row.operator('wm.get_update', icon='IMPORT')
-                op.repo_name = 'space-engineers-utilities'
-            else:
-                row.label(text=repo.update_message, icon='CHECKMARK')
-                op = row.operator('wm.get_update', text="Releases", icon='IMPORT')
-                op.repo_name = 'space-engineers-utilities'
-
-            box = layout.box()
-            box.label(text="Install the Blender Addon Updater to easily update SEUT:", icon='FILE_REFRESH')
-            row = box.row()
-            row.scale_y = 2.0
-            op = row.operator('wm.url_open', text="Blender Addon Updater", icon='URL')
-            op.url = "https://github.com/enenra/blender_addon_updater/releases/"
+                box = layout.box()
+                box.label(text="Install the Blender Addon Updater to easily update SEUT:", icon='FILE_REFRESH')
+                row = box.row()
+                row.scale_y = 2.0
+                op = row.operator('wm.url_open', text="Blender Addon Updater", icon='URL')
+                op.url = "https://github.com/enenra/blender_addon_updater/releases/"
 
         if self.dev_mode:
             row = layout.row()

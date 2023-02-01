@@ -321,8 +321,7 @@ def register():
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
     bpy.types.Collection.seut = PointerProperty(type=SEUT_Collection)
     bpy.types.Text.seut = PointerProperty(type=SEUT_Text)
-
-    update_register_repos()
+    
     bpy.app.handlers.load_post.append(load_handler)
 
     from .seut_bau import bau_register
