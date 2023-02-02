@@ -213,6 +213,10 @@ def update_subtypeId(self, context):
     if scene.seut.subtypeId == "":
         scene.seut.subtypeId = scene.name
         scene.seut.subtypeBefore = scene.name
+    
+    if "\\" in scene.seut.subtypeId or "/" in scene.seut.subtypeId:
+        scene.seut.subtypeId = scene.seut.subtypeBefore
+        return
 
     # If the subtypeId already exists for a scene in the file, prevent it from being set
     for scn in bpy.data.scenes:
