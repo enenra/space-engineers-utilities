@@ -79,6 +79,8 @@ def import_fbx(self, context, filepath):
             create_relative_path(filepath, 'Characters') != False and 
             create_relative_path(filepath, 'Animations') != False
             ):
+            
+            scene.seut.sceneType = 'character_animation'
 
             result = bpy.ops.import_scene.fbx(
                 filepath=filepath,
@@ -101,6 +103,8 @@ def import_fbx(self, context, filepath):
             create_relative_path(filepath, 'Animations') == False
             ):
             
+            scene.seut.sceneType = 'character'
+
             result = bpy.ops.import_scene.fbx(
                 filepath=filepath,
                 global_scale=1.0,
@@ -148,10 +152,11 @@ def import_fbx(self, context, filepath):
                 ),
                 'CUBE',
             )
-            # Empties are imported at 2x the size they should be, this fixes that issue
-            obj.scale.x *= 0.5
-            obj.scale.y *= 0.5
-            obj.scale.z *= 0.5
+            if scene.seut.sceneType not in ['character']:
+                # Empties are imported at 2x the size they should be, this fixes that issue
+                obj.scale.x *= 0.5
+                obj.scale.y *= 0.5
+                obj.scale.z *= 0.5
 
             if 'file' in obj and obj['file'] in bpy.data.scenes:
                 obj.seut.linkedScene = bpy.data.scenes[obj['file']]
