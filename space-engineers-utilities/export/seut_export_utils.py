@@ -745,7 +745,7 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         kwargs['global_scale'] = 1.00
         kwargs['axis_forward'] = '-Z'
         kwargs['object_types'] = {'MESH', 'EMPTY', 'ARMATURE'} # STOLLIE: Is None in Blender source.
-        kwargs['add_leaf_bones'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.     
+        kwargs['add_leaf_bones'] = False # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.     
         kwargs['apply_unit_scale'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.    
 
     if scene.seut.sceneType == 'character_animation':
