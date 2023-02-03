@@ -145,6 +145,8 @@ def patch_collections_v0995():
             if col.seut.col_type == 'seut':
                 col.color_tag = 'COLOR_02'
             else:
+                if col.seut.col_type not in seut_collections[scn.seut.sceneType]:
+                    continue
                 col.color_tag = seut_collections[scn.seut.sceneType][col.seut.col_type]['color']
 
     # This must happen after because the collection names might still be in flux beforehand
