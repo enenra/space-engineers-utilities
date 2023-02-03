@@ -446,7 +446,8 @@ class SEUT_PT_Panel_Export(Panel):
     
         box.prop(scene.seut, "export_deleteLooseFiles", icon='TEMP')
         row = box.row()
-        row.prop(scene.seut, "export_sbc_type", expand=True)
+        if scene.seut.sceneType not in ['character', 'character_animation']:
+            row.prop(scene.seut, "export_sbc_type", expand=True)
 
         if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_anmiation':
             box2 = box.box()
