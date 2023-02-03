@@ -8,6 +8,7 @@ Relevant Milestone: [SEUT 1.1.0](https://github.com/enenra/space-engineers-utili
 * Improved: Clarified error message for `E035`. (Alpha 2)
 * Improved: Added many more PlanetGeneratorDefinition `SBC` elements to the interface. (Alpha 2)
 * Changed [#354](https://github.com/enenra/space-engineers-utilities/issues/354): SEUT now treats `TIF`, `TGA` and `PNG` equally as source files but conversion still defaults to `TIF`. (Alpha 2)
+* Fixed: Bone positions being wrong on character / animation import. (Alpha 2)
 * Fixed: Numerous fixes to Planet Editor `SBC` output. (Alpha 2)
 * Fixed: Planet Editor Biome Map output was highly inaccurate.(Alpha 2)
 * Fixed: If Planet Editor was set to `No SBC`, export would fail. (Alpha 2)

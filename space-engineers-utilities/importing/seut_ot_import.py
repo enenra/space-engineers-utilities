@@ -74,7 +74,12 @@ def import_fbx(self, context, filepath):
         if addon_utils.check("better_fbx") == (True, True) and data.seut.better_fbx:
             result = bpy.ops.better_import.fbx(filepath=filepath)
 
-        elif scene.seut.sceneType == ['character_animation'] or (scene.seut.sceneType != ['character'] and create_relative_path(filepath, 'Characters') != False and create_relative_path(filepath, 'Animations') != False):
+        elif scene.seut.sceneType == ['character_animation'] or (
+            scene.seut.sceneType != ['character'] and 
+            create_relative_path(filepath, 'Characters') != False and 
+            create_relative_path(filepath, 'Animations') != False
+            ):
+
             result = bpy.ops.import_scene.fbx(
                 filepath=filepath,
                 global_scale=1.0,
@@ -90,7 +95,12 @@ def import_fbx(self, context, filepath):
                 secondary_bone_axis='Y'
                 )
 
-        elif scene.seut.sceneType == ['character'] or (scene.seut.sceneType != ['character_animation'] and create_relative_path(filepath, 'Characters') != False):
+        elif scene.seut.sceneType == ['character'] or (
+            scene.seut.sceneType != ['character_animation'] and 
+            create_relative_path(filepath, 'Characters') != False and 
+            create_relative_path(filepath, 'Animations') == False
+            ):
+            
             result = bpy.ops.import_scene.fbx(
                 filepath=filepath,
                 global_scale=1.0,
