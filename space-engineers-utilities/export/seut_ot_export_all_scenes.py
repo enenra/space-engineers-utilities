@@ -28,12 +28,12 @@ class SEUT_OT_ExportAllScenes(Operator):
 
         # Check for availability of FBX Importer
         result = check_toolpath(self, context, os.path.join(get_tool_dir(), 'FBXImporter.exe'), "Custom FBX Importer", "FBXImporter.exe")
-        if not result == {'CONTINUE'}:
+        if result != {'CONTINUE'}:
             return result
 
         # Check for availability of MWM Builder
         result = check_toolpath(self, context, preferences.mwmb_path, "MWM Builder", "MwmBuilder.exe")
-        if not result == {'CONTINUE'}:
+        if result != {'CONTINUE'}:
             return result
 
         # Check materials path
@@ -46,7 +46,7 @@ class SEUT_OT_ExportAllScenes(Operator):
 
         # Checks export path and whether SubtypeId exists
         result = check_export(self, context)
-        if not result == {'CONTINUE'}:
+        if result != {'CONTINUE'}:
             return result
 
         current_area = prep_context(context)
@@ -56,29 +56,29 @@ class SEUT_OT_ExportAllScenes(Operator):
         failed_counter = 0
 
         for scn in bpy.data.scenes:
-            
-            if not 'SEUT' in scn.view_layers:
+
+            if 'SEUT' not in scn.view_layers:
                 continue
 
-            if scn.seut.sceneType == 'mainScene' or scn.seut.sceneType == 'subpart' or scn.seut.sceneType == 'character' or scn.seut.sceneType == 'character_animation':
-                
+            if scn.seut.sceneType in ['mainScene','subpart','character','character_animation',]:
+
                 scene_counter += 1
                 context.window.scene = scn
 
                 try:
                     result = export(self, context)
 
-                    if not result == {'FINISHED'}:
+                    if result != {'FINISHED'}:
                         failed_counter += 1
                         seut_report(self, context, 'ERROR', True, 'E016', scn.name)
 
                 except RuntimeError:
                     failed_counter += 1
                     seut_report(self, context, 'ERROR', True, 'E016', scn.name)
-        
+
         context.window.scene = original_scene
         context.area.type = current_area
-        
+
         seut_report(self, context, 'INFO', True, 'I008', scene_counter - failed_counter, scene_counter)
 
         return {'FINISHED'}

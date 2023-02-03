@@ -107,7 +107,7 @@ def export(self, context):
     path = str(scene.seut.export_exportPath)
     
     # Exports large grid and character-type scenes
-    if scene.seut.export_largeGrid or scene.seut.sceneType == 'character_animation' or scene.seut.sceneType == 'character':
+    if scene.seut.export_largeGrid or scene.seut.sceneType in ['character','character_animation']:
         scene.seut.gridScale = 'large'
         scene.seut.subtypeId = correct_for_export_type(scene, scene.seut.subtypeId)
 
