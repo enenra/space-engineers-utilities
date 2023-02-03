@@ -501,7 +501,7 @@ def export_collection(self, context, collection):
     result_xml = export_xml(self, context, collection)
     result_fbx = export_fbx(self, context, collection)
 
-    print(collection)
+    # This is insane, yes, but it seems to be the only viable solution to mitigate empty drift on export.
     if context.scene.seut.sceneType == 'character':
 
         current_scn = context.scene
@@ -521,7 +521,7 @@ def export_collection(self, context, collection):
                 break
 
         filepath = f"{os.path.join(get_abs_path(temp_scn.seut.export_exportPath), get_col_filename(collection)) + '.fbx'}"
-        print(filepath)
+
         bpy.context.view_layer.active_layer_collection = temp_scn.view_layers['SEUT'].layer_collection.children[collections['seut'][0].name].children[corr_col.name]
         import_fbx(self, context, filepath)
         remap_materials(self, bpy.context)
@@ -542,8 +542,6 @@ def export_collection(self, context, collection):
                 obj.name = obj.name[:-4]
 
         bpy.data.scenes.remove(temp_scn)
-        
-        return result_xml, result_fbx
 
     print(f"------------------------------ Finished exporting Collection '{collection.name}'.\n")
 
