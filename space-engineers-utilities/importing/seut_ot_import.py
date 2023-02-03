@@ -22,7 +22,7 @@ from .seut_ot_import_materials              import import_materials
 from ..empties.seut_empties                 import empty_types
 from ..materials.seut_ot_remap_materials    import remap_materials
 from ..seut_errors                          import seut_report
-from ..seut_utils                           import get_seut_blend_data
+from ..seut_utils                           import create_relative_path, get_seut_blend_data
 
 
 class SEUT_OT_Import(Operator):
@@ -65,43 +65,79 @@ class SEUT_OT_Import(Operator):
 def import_fbx(self, context, filepath):
     """Imports FBX and adjusts them for use in SEUT"""
     
+    scene = context.scene
     data = get_seut_blend_data()
 
-    existing_objects = set(context.scene.objects)
+    existing_objects = set(scene.objects)
 
     try:
         if addon_utils.check("better_fbx") == (True, True) and data.seut.better_fbx:
             result = bpy.ops.better_import.fbx(filepath=filepath)
+
+        elif scene.seut.sceneType == ['character_animation'] or (scene.seut.sceneType != ['character'] and create_relative_path(filepath, 'Characters') != False and create_relative_path(filepath, 'Animations') != False):
+            result = bpy.ops.import_scene.fbx(
+                filepath=filepath,
+                global_scale=1.0,
+                decal_offset=0.0,
+                bake_space_transform=False,
+                use_prepost_rot=True,
+                use_manual_orientation=False,
+                use_anim=True,
+                ignore_leaf_bones=False,
+                force_connect_children=False,
+                automatic_bone_orientation=False,
+                primary_bone_axis='X',
+                secondary_bone_axis='Y'
+                )
+
+        elif scene.seut.sceneType == ['character'] or (scene.seut.sceneType != ['character_animation'] and create_relative_path(filepath, 'Characters') != False):
+            result = bpy.ops.import_scene.fbx(
+                filepath=filepath,
+                global_scale=1.0,
+                decal_offset=0.0,
+                bake_space_transform=False,
+                use_prepost_rot=True,
+                use_manual_orientation=False,
+                use_anim=False,
+                ignore_leaf_bones=False,
+                force_connect_children=False,
+                automatic_bone_orientation=False,
+                primary_bone_axis='X',
+                secondary_bone_axis='Y'
+                )
+
         else:
             result = bpy.ops.import_scene.fbx(filepath=filepath)
+
     except RuntimeError as error:
         seut_report(self, context, 'ERROR', True, 'E036', str(error))
         return {'CANCELLED'}
-        
-    new_objects = set(context.scene.objects)
+
+    new_objects = set(scene.objects)
     imported_objects = new_objects.copy()
-    
+
     for new in new_objects:
         for existing in existing_objects:
             if new == existing:
                 imported_objects.remove(new)
 
     # Sanity check to catch import failure
-    if imported_objects == None:
+    if imported_objects is None:
         seut_report(self, context, 'ERROR', True, 'E001')
         return {'CANCELLED'}
 
     for obj in imported_objects:
-        
-        if obj.type == 'EMPTY':
-            
-            # Changes empty display type to correct one
-            obj.empty_display_type = 'CUBE'
-            for key in empty_types.keys():
-                if obj.name[:len(key)] == key:
-                    obj.empty_display_type = empty_types[key]
-                    break
 
+        if obj.type == 'EMPTY':
+
+            obj.empty_display_type = next(
+                (
+                    empty_types[key]
+                    for key in empty_types.keys()
+                    if obj.name[: len(key)] == key
+                ),
+                'CUBE',
+            )
             # Empties are imported at 2x the size they should be, this fixes that issue
             obj.scale.x *= 0.5
             obj.scale.y *= 0.5
@@ -121,8 +157,8 @@ def import_fbx(self, context, filepath):
                         if entry in bpy.data.objects:
                             new = obj.seut.highlight_objects.add()
                             new.obj = bpy.data.objects[entry]
-    
-    xml_path = os.path.splitext(filepath)[0] + '.xml'
+
+    xml_path = f'{os.path.splitext(filepath)[0]}.xml'
     if os.path.exists(xml_path):
         import_materials(self, context, xml_path)
 
