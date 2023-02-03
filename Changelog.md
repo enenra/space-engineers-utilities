@@ -8,6 +8,7 @@ Relevant Milestone: [SEUT 1.1.0](https://github.com/enenra/space-engineers-utili
 * Improved: Clarified error message for `E035`. (Alpha 2)
 * Improved: Added many more PlanetGeneratorDefinition `SBC` elements to the interface. (Alpha 2)
 * Changed [#354](https://github.com/enenra/space-engineers-utilities/issues/354): SEUT now treats `TIF`, `TGA` and `PNG` equally as source files but conversion still defaults to `TIF`. (Alpha 2)
+* Fixed: Empty drift on character export. (Alpha 2)
 * Fixed: Empties being rescaled on character import. (Alpha 2)
 * Fixed: Rare issue when patching `BLEND`-files. (Alpha 2)
 * Fixed: Bone positions being wrong on character / animation import. (Alpha 2)

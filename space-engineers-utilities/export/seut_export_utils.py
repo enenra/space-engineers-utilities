@@ -11,6 +11,8 @@ from os.path                                import join
 from mathutils                              import Matrix	
 from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
+from ..importing.seut_ot_import             import import_fbx
+from ..materials.seut_ot_remap_materials    import remap_materials
 from ..utils.seut_tool_utils                import get_tool_dir
 from ..seut_collections                     import get_collections, get_rev_ref_cols
 from ..seut_utils                           import *
@@ -238,7 +240,7 @@ def format_xml(self, context, tree) -> str:
     return xml_string.toprettyxml()
 
 
-def export_fbx(self, context, collection) -> str:
+def export_fbx(self, context, collection, path_override = None) -> str:
     """Exports the FBX file for a defined collection"""
 
     scene = context.scene
@@ -324,7 +326,10 @@ def export_fbx(self, context, collection) -> str:
             prepare_mat_for_export(self, context, mat)
 
     # Export the collection to FBX
-    path = os.path.join(path, f"{get_col_filename(collection)}.fbx")
+    if path_override is None:
+        path = os.path.join(path, f"{get_col_filename(collection)}.fbx")
+    else:
+        path = path_override
     try:
         export_to_fbxfile(settings, scene, path, collection.objects, ishavokfbxfile=False)
 
@@ -492,10 +497,55 @@ def revert_mat_after_export(self, context, material):
 def export_collection(self, context, collection):
     """Exports the collection to XML and FBX"""
 
-    print("\n------------------------------ Exporting Collection '" + collection.name + "'.")
+    print(f"\n------------------------------ Exporting Collection '{collection.name}'.")
     result_xml = export_xml(self, context, collection)
     result_fbx = export_fbx(self, context, collection)
-    print("------------------------------ Finished exporting Collection '" + collection.name + "'.\n")
+
+    print(collection)
+    if context.scene.seut.sceneType == 'character':
+
+        current_scn = context.scene
+        bpy.ops.scene.new(type='FULL_COPY')
+        temp_scn = bpy.context.scene
+
+        context.window.scene = temp_scn
+        temp_scn.seut.subtypeId = current_scn.name + "_tmp"
+        collections = get_collections(temp_scn)
+
+        for obj in temp_scn.objects:
+            bpy.data.objects.remove(obj)
+
+        for col in collections[collection.seut.col_type]:
+            if col.seut.type_index == collection.seut.type_index:
+                corr_col = col
+                break
+
+        filepath = f"{os.path.join(get_abs_path(temp_scn.seut.export_exportPath), get_col_filename(collection)) + '.fbx'}"
+        print(filepath)
+        bpy.context.view_layer.active_layer_collection = temp_scn.view_layers['SEUT'].layer_collection.children[collections['seut'][0].name].children[corr_col.name]
+        import_fbx(self, context, filepath)
+        remap_materials(self, bpy.context)
+
+        result_fbx = export_fbx(self, context, corr_col, filepath)
+        
+        context.window.scene = current_scn
+
+        for col in bpy.data.collections:
+            if col.seut.scene == temp_scn:
+                bpy.data.collections.remove(col)
+
+        for obj in bpy.data.objects:
+            if obj.users < 1:
+                bpy.data.objects.remove(obj)
+
+            elif re.search("\.[0-9]{3}", obj.name[-4:]) != None and obj.name[:-4] not in bpy.data.objects:
+                obj.name = obj.name[:-4]
+
+        bpy.data.scenes.remove(temp_scn)
+        
+        return result_xml, result_fbx
+
+    print(f"------------------------------ Finished exporting Collection '{collection.name}'.\n")
 
     return result_xml, result_fbx
 
