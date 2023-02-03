@@ -189,7 +189,7 @@ def load_image(self, context, path: str, materials_path: str):
     """Returns image by first checking if it already is in Blender, if not, loading it from the given path."""
 
     seut_path = os.path.dirname(materials_path)
-    name = os.path.splitext(os.path.basename(path))
+    name = os.path.splitext(os.path.basename(path))[0]
 
     img_path = os.path.splitext(os.path.join(seut_path, path))[0]
     for o in supported_image_types:
@@ -201,7 +201,7 @@ def load_image(self, context, path: str, materials_path: str):
         seut_report(self, context, 'WARNING', True, 'W011', img_path)
         return
 
-    if name[0] in bpy.data.images:
+    if name in bpy.data.images:
         return bpy.data.images[name]
 
     try:
