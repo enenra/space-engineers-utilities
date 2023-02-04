@@ -213,7 +213,7 @@ def update_subtypeId(self, context):
     if scene.seut.subtypeId == "":
         scene.seut.subtypeId = scene.name
         scene.seut.subtypeBefore = scene.name
-    
+
     if "\\" in scene.seut.subtypeId or "/" in scene.seut.subtypeId:
         scene.seut.subtypeId = scene.seut.subtypeBefore
         return
@@ -222,7 +222,7 @@ def update_subtypeId(self, context):
     for scn in bpy.data.scenes:
         if scn is not scene and scn.seut.subtypeId == scene.seut.subtypeId:
             if scene.seut.subtypeBefore == scene.seut.subtypeId:
-                scene.seut.subtypeId = scene.seut.subtypeId + " (" + scene.name + ")"
+                scene.seut.subtypeId = f"{scene.seut.subtypeId} ({scene.name})"
             else:
                 scene.seut.subtypeId = scene.seut.subtypeBefore
                 seut_report(self, context, 'ERROR', False, 'E018')
@@ -231,7 +231,7 @@ def update_subtypeId(self, context):
     if scene.seut.subtypeId != scene.seut.subtypeBefore and scene.seut.subtypeBefore != "":
         rename_collections(scene)
         scene.seut.subtypeBefore = scene.seut.subtypeId
-        
+
     scene.name = scene.seut.subtypeId
 
 

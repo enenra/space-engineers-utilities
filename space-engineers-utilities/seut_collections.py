@@ -404,21 +404,21 @@ def rename_collections(scene: object):
         if vl_col.name.startswith("SEUT "):
             vl_col.collection.seut.scene = scene
             for vl_col in scene.view_layers['SEUT'].layer_collection.children[0].children:
-                if not vl_col.collection.seut.scene is scene:
+                if vl_col.collection.seut.scene is not scene:
                     vl_col.collection.seut.scene = scene
             break
 
     for col in bpy.data.collections:
         if col is None:
             continue
-        if not col.seut.scene is scene:
+        if col.seut.scene is not scene:
             continue
         if col.seut.col_type == 'none':
             continue
-        if not col.seut.col_type in seut_collections[scene.seut.sceneType] and not col.seut.col_type == 'seut':
+        if col.seut.col_type not in seut_collections[scene.seut.sceneType] and col.seut.col_type != 'seut':
             col.color_tag = 'COLOR_07'
             continue
-        
+
         if col.seut.col_type == 'seut':
             name = f"SEUT ({scene.seut.subtypeId})"
             color = 'COLOR_02'
@@ -436,23 +436,22 @@ def rename_collections(scene: object):
         if col.seut.ref_col is not None:
             ref_col = col.seut.ref_col
 
-            if not ref_col.seut.col_type in seut_collections[scene.seut.sceneType]:
+            if ref_col.seut.col_type not in seut_collections[scene.seut.sceneType]:
                 continue
 
             ref_col_type = ref_col.seut.col_type
             ref_col_name = seut_collections[scene.seut.sceneType][ref_col_type]['name']
             if ref_col_type != 'main':
                 ref_col_type_index = ref_col.seut.type_index
-                
-            if col.seut.col_type == 'lod':
-                if col.seut.ref_col.seut.col_type != 'main':
-                    name = f"{ref_col_name}{ref_col.seut.type_index}_{seut_collections[scene.seut.sceneType]['lod']['name']}{type_index} ({scene.seut.subtypeId})"
-                    color = 'COLOR_06'
+
+            if col.seut.col_type == 'lod' and col.seut.ref_col.seut.col_type != 'main':
+                name = f"{ref_col_name}{ref_col.seut.type_index}_{seut_collections[scene.seut.sceneType]['lod']['name']}{type_index} ({scene.seut.subtypeId})"
+                color = 'COLOR_06'
         else:
             ref_col_name = "None"
             if col.seut.col_type == 'lod':
                 name = f"{seut_collections[scene.seut.sceneType]['lod']['name']} ({scene.seut.subtypeId})"
-        
+
         col.name = name.format(subtpye_id=scene.seut.subtypeId, ref_col_name=ref_col_name, ref_col_type_index=ref_col_type_index, type_index=type_index)
         col.color_tag = color
 
