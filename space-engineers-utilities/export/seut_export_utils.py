@@ -526,6 +526,10 @@ def export_collection(self, context, collection):
         import_fbx(self, context, filepath)
         remap_materials(self, bpy.context)
 
+        for obj in collections['seut'][0].objects:
+            corr_col.objects.link(obj)
+            collections['seut'][0].objects.unlink(obj)
+
         result_fbx = export_fbx(self, context, corr_col, filepath)
         
         context.window.scene = current_scn
