@@ -403,7 +403,7 @@ def rename_collections(scene: object):
     for vl_col in scene.view_layers['SEUT'].layer_collection.children:
         if vl_col.name.startswith("SEUT "):
             vl_col.collection.seut.scene = scene
-            for vl_col in scene.view_layers['SEUT'].layer_collection.children[0].children:
+            for vl_col in scene.view_layers['SEUT'].layer_collection.children[vl_col.name].children:
                 if vl_col.collection.seut.scene is not scene:
                     vl_col.collection.seut.scene = scene
             break
