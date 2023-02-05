@@ -187,7 +187,7 @@ def export_main(self, context):
 
     # Checks whether collection exists, is excluded or is empty
     result = check_collection(self, context, scene, collections['main'][0], False)
-    if not result == {'CONTINUE'}:
+    if result != {'CONTINUE'}:
         return result
 
     # This prevents issues ingame. Might have to be revisited for animations.
@@ -197,29 +197,32 @@ def export_main(self, context):
     unparented_objects = 0
     for obj in collections['main'][0].objects:
 
+        if check_weights(context, obj) is False:
+            return {'CANCELLED'}
+
         if obj is not None and obj.type == 'ARMATURE':
             found_armatures = True
-        
+
         if obj.parent is None and obj.type != 'LIGHT' and obj.type != 'CAMERA':
             unparented_objects += 1
-        
+
         # Check for missing UVMs (this might not be 100% reliable)
         if check_uvms(self, context, obj) != {'CONTINUE'}:
             return {'CANCELLED'}
-    
+
     # Check for armatures being present in collection
-    if not found_armatures and (scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'):
+    if not found_armatures and scene.seut.sceneType in ['character','character_animation',]:
         seut_report(self, context, 'WARNING', True, 'W008', scene.name, scene.seut.sceneType)
-    if found_armatures and not (scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation'):
+    if found_armatures and scene.seut.sceneType not in ['character','character_animation',]:
         seut_report(self, context, 'WARNING', True, 'W009', scene.name, scene.seut.sceneType)
-    
+
     # Check for unparented objects
     if unparented_objects > 1:
         seut_report(self, context, 'ERROR', True, 'E031', collections['main'][0].name)
         return {'CANCELLED'}
 
     export_collection(self, context, collections['main'][0])
-    
+
     return {'FINISHED'}
 
 
@@ -339,6 +342,8 @@ def check_export_col_dict(self, context, cols: dict):
 
             for obj in col.objects:
                 if check_uvms(self, context, obj) != {'CONTINUE'}:
+                    return {'CANCELLED'}
+                if check_weights(context, obj) is False:
                     return {'CANCELLED'}
             
             export_collection(self, context, col)

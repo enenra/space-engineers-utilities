@@ -61,6 +61,7 @@ errors = {
     'E048': "There can only be one Planet Editor scene per BLEND file.",
     'E049': "One or more of the required files could not be located within the Assets Directory.",
     'E050': "There was an error during export: Missing Visual C++ Redistributable for Visual Studio.",
+    'E051': "The object '{variable_1}' has invalid weight painting: {variable_2}",
 }
 
 warnings = {
@@ -220,6 +221,28 @@ def check_uvms(self, context, obj):
             seut_report(self, context, 'WARNING', True, 'W002', obj.name)
     
     return {'CONTINUE'}
+
+
+def check_weights(context, obj):
+    """Checks an object's vertices for missing weight painting. Returns True if all good, False if issue, None if invalid object."""
+
+    if obj.type != 'MESH':
+        return None
+    
+    if obj is None or obj.data is None or obj.data.vertices is None or len(obj.data.vertices) <= 0:
+        return None
+
+    for v in obj.data.vertices:
+        if len(v.groups) == 0:
+            seut_report(None, context, 'ERROR', True, 'E051', obj.name, "Vertex is not grouped in vertex group.")
+            return False
+
+        for g in v.groups:
+            if g.weight < 0:
+                seut_report(None, context, 'ERROR', True, 'E051', obj.name, "Vertex is not weight-painted.")
+                return False
+    
+    return True
 
 
 def get_abs_path(path: str) -> str:
