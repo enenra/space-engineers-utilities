@@ -249,7 +249,7 @@ def export_fbx(self, context, collection, path_override = None) -> str:
     settings = ExportSettings(scene, depsgraph)
 
     path = get_abs_path(scene.seut.export_exportPath)
-    
+
     # Export exports the active layer_collection so the collection's layer_collection needs to be set as the active one
     try:
         bpy.context.scene.collection.children.link(collection)
@@ -257,20 +257,31 @@ def export_fbx(self, context, collection, path_override = None) -> str:
         pass
     layer_collection = bpy.context.view_layer.layer_collection.children[collection.name]
     bpy.context.view_layer.active_layer_collection = layer_collection
-    
+
+    # Error prevention with weight painting in character scenes
+    if scene.seut.sceneType == 'character':
+        for obj in collection.objects:
+            if obj.type != 'MESH':
+                continue
+            if obj is None or obj.data is None or obj.data.vertices is None or len(obj.data.vertices) <= 0:
+                continue
+            for v in obj.data.vertices:
+                for g in v.groups:
+                    g.weight = min(g.weight, 1)
+
     # Prepare empties for export
     for empty in collection.objects:
         if empty is not None and empty.type == 'EMPTY':
 
             # This not being 1.0 can cause some issues ingame.
             empty.empty_display_size = 1.0
-            
+
             # Remove numbers
             # To ensure they work ingame (where duplicate names are no issue) this will remove the ".001" etc. from the name (and cause another empty to get this numbering)
             if re.search("\.[0-9]{3}", empty.name[-4:]) != None and not empty.seut.linked:
                 if empty.name[:-4] in bpy.data.objects:
                     temp_obj = bpy.data.objects[empty.name[:-4]]
-                    temp_obj.name = empty.name + " TEMP"
+                    temp_obj.name = f"{empty.name} TEMP"
                     empty.name = empty.name[:-4]
                     temp_obj.name = temp_obj.name[:-len(" TEMP")]
                 else:
@@ -286,7 +297,7 @@ def export_fbx(self, context, collection, path_override = None) -> str:
             rescale = False
             if 'highlight' in empty:
                 rescale = True
-                
+
                 if len(empty.seut.highlight_objects) > 0:
 
                     highlights = ""
@@ -301,7 +312,7 @@ def export_fbx(self, context, collection, path_override = None) -> str:
                                 highlights = highlights + ';' + entry.obj.name
 
                     empty['highlight'] = highlights
-            
+
             elif 'file' in empty and empty.seut.linkedScene is not None:
                 linked_scene = empty.seut.linkedScene
                 if linked_scene.seut.export_largeGrid != scene.seut.export_largeGrid or linked_scene.seut.export_smallGrid != scene.seut.export_smallGrid:
@@ -312,7 +323,7 @@ def export_fbx(self, context, collection, path_override = None) -> str:
                 reference = correct_for_export_type(scene, reference)
                 empty['file'] = reference
                 unlink_subpart_scene(empty)
-            
+
             # Blender FBX export halves empty size on export, this works around it
             if rescale:
                 empty.scale.x *= 2
@@ -343,15 +354,15 @@ def export_fbx(self, context, collection, path_override = None) -> str:
     for mat in bpy.data.materials:
         if mat is not None and mat.node_tree is not None:
             revert_mat_after_export(self, context, mat)
-    
+
     # Relink all subparts to empties
     for empty in collection.objects:
         if empty is not None and empty.type == 'EMPTY':
-            
+
             if scene.seut.linkSubpartInstances:
                 if 'file' in empty and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:                    
                     reference = get_subpart_reference(empty, collections)
-                        
+
                     link_subpart_scene(self, scene, empty, empty.users_collection[0])
                     empty['file'] = reference
 
