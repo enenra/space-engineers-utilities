@@ -120,10 +120,12 @@ class SEUT_OT_MassConvertTextures(Operator):
         dirs_to_convert = [
             "Models\\Cubes",
             "Models\\Cubes\\armor",
+            "Models\\Cubes\\Damaged",
             "Models\\Cubes\\lods",
             "Models\\Physical_item",
             "Models\\Debris",
             "Models\\Characters\\Astronaut",
+            "Models\\Characters\\Plushie",
             "Models\\Environment\\Bushes",
             "Models\\Environment\\Grass",
             "Models\\Environment\\Trees",
