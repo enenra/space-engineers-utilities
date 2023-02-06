@@ -36,6 +36,9 @@ def update_sceneType(self, context):
                     self.sceneType = self.previous_scene_type
                 seut_report(self, context, 'ERROR', False, 'E048')
 
+    elif self.sceneType == 'character':
+        scene.tool_settings.use_auto_normalize = True
+
     for key, cols in collections.items():
         if cols is None:
             continue
