@@ -62,6 +62,7 @@ errors = {
     'E049': "One or more of the required files could not be located within the Assets Directory.",
     'E050': "There was an error during export: Missing Visual C++ Redistributable for Visual Studio.",
     'E051': "The object '{variable_1}' has invalid weight painting: {variable_2}",
+    'E052': "One or multiple bones have a scale of '1.0' - this is usually caused by having applied all on the armature, which breaks it completely.",
 }
 
 warnings = {

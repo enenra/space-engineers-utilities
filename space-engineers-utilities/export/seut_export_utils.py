@@ -527,11 +527,14 @@ def export_collection(self, context, collection):
             for b in bpy.data.armatures[obj.name].bones:
                 if b.name not in vanilla_bones:
                     non_vanilla_bones = True
-                    break
+                
 
-            if non_vanilla_bones:
-                seut_report(self, context, 'WARNING', False, 'W018')
-                break
+                if b.scale == (1.0, 1.0, 1.0):
+                    seut_report(self, context, 'ERROR', False, 'E052')
+                    return {'CANCELLED'}
+
+        if non_vanilla_bones:
+            seut_report(self, context, 'WARNING', False, 'W018')
 
         current_scn = context.scene
         bpy.ops.scene.new(type='FULL_COPY')
