@@ -8,7 +8,7 @@ from ..seut_utils           import get_preferences, prep_context, get_seut_blend
 
 
 class SEUT_OT_RemapMaterials(Operator):
-    """Remap materials of objects in all scenes to linked library materials"""
+    """Remap materials of objects in the current scene to asset library materials wherever possible"""
     bl_idname = "object.remapmaterials"
     bl_label = "Remap Materials"
     bl_options = {'REGISTER', 'UNDO'}
