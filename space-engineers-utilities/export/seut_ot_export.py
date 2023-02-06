@@ -343,8 +343,9 @@ def check_export_col_dict(self, context, cols: dict):
             for obj in col.objects:
                 if check_uvms(self, context, obj) != {'CONTINUE'}:
                     return {'CANCELLED'}
-                if check_weights(context, obj) is False:
-                    return {'CANCELLED'}
+                if scene.seut.sceneType == 'character':
+                    if check_weights(context, obj) is False:
+                        return {'CANCELLED'}
             
             export_collection(self, context, col)
 
