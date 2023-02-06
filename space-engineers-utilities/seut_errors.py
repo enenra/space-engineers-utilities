@@ -82,6 +82,7 @@ warnings = {
     'W015': "'BEZIER'-interpolation on keyframes is not supported by the Animation Engine. All keyframes with this setting have been changed to 'LINEAR'.",
     'W016': "Could not find element '{variable_1}' in SBC. Skipping.",
     'W017': "Could not find attribute '{variable_1}' in element '{variable_2}'. Skipping.",
+    'W018': "Nonstandard bones detected. You may need to alter the Animation Controller for them to work as intended.",
 }
 
 infos = {
