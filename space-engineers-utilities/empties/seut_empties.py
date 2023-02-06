@@ -172,6 +172,8 @@ class SEUT_PT_EmptyLink(Panel):
             row = layout.row()
             if empty.name.find('dummy_character') != -1:
                 row.label(text="Animation Scene:", icon = 'ARMATURE_DATA')
+            elif any([x in empty.name for x in ['dummy_electric_motor', 'dummy_TopBlock']]):
+                row.label(text="Subgrid Scene:", icon = 'EMPTY_DATA')
             else:
                 row.label(text="Subpart Scene:", icon = 'EMPTY_DATA')
 

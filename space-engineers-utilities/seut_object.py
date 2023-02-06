@@ -66,7 +66,14 @@ def update_mask_preset(self, context):
 
 # These prevent the selected scene from being the current scene and the selected object being the current object
 def poll_linkedScene(self, object):
-    return object != bpy.context.scene and object.seut.sceneType in ['subpart', 'character_animation']
+    for obj in bpy.context.scene.objects:
+        if obj.seut == self:
+            break
+    return object != bpy.context.scene and (
+        object.seut.sceneType in ['subpart', 'character_animation']
+        or any(x in obj.name for x in ['dummy_electric_motor', 'dummy_TopBlock'])
+        and object.seut.sceneType == 'mainScene'
+    )
 
 
 class SEUT_Object(PropertyGroup):

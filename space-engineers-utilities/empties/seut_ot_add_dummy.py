@@ -77,6 +77,8 @@ class SEUT_OT_AddDummy(Operator):
         # Special case to allow for instancing of character in pose
         if self.detector_type == 'dummy_character':
             bpy.data.objects[empty.name]['file'] = ""
+        elif self.detector_type in ['dummy_electric_motor', 'dummy_TopBlock']:
+            bpy.data.objects[empty.name]['file'] = ""
 
         parent_collection = get_parent_collection(context, empty)
         if parent_collection != collections['main'][0]:
