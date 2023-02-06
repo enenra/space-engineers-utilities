@@ -157,6 +157,12 @@ class SEUT_Text(PropertyGroup):
         default = False
     )
 
+    convert_textures: BoolProperty(
+        name = "Convert Textures",
+        description = "Whether SEUT should convert textures to DDS and place them in the mod directory as needed",
+        default = True
+    )
+
     bBox: EnumProperty(
         name='Bounding Box',
         items=(

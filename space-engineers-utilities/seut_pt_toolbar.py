@@ -418,6 +418,7 @@ class SEUT_PT_Panel_Export(Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+        data = get_seut_blend_data()
 
         # Export
         row = layout.row()
@@ -445,6 +446,7 @@ class SEUT_PT_Panel_Export(Panel):
         col.operator('scene.copy_export_options', text="", icon='PASTEDOWN')
     
         box.prop(scene.seut, "export_deleteLooseFiles", icon='TEMP')
+        box.prop(data.seut, "convert_textures", icon='NODE_TEXTURE')
         row = box.row()
         if scene.seut.sceneType not in ['character', 'character_animation']:
             row.prop(scene.seut, "export_sbc_type", expand=True)

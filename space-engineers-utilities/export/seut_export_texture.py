@@ -4,12 +4,13 @@ import os
 
 from ..materials.seut_ot_texture_conversion     import convert_texture
 from ..seut_errors                              import *
-from ..seut_utils                               import check_vanilla_texture, create_relative_path
+from ..seut_utils                               import check_vanilla_texture, create_relative_path, get_seut_blend_data
 
 
 def export_material_textures(self, context, material):
     """Checks if source file is newer than converted file, if so, exports to DDS."""
 
+    data = get_seut_blend_data()
     scene = context.scene
     nodes = material.node_tree.nodes
     textures = {}
@@ -31,6 +32,9 @@ def export_material_textures(self, context, material):
 
     if len(textures) <= 0:
         return {'CANCELLED'}
+    
+    if not data.seut.convert_textures:
+        return {'FINISHED'}
 
     for preset, source in textures.items():
 
