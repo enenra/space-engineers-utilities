@@ -524,14 +524,13 @@ def export_collection(self, context, collection):
             if obj.type != 'ARMATURE':
                 continue
 
-            for b in bpy.data.armatures[obj.name].bones:
+            for b in bpy.data.armatures[obj.data.name].bones:
                 if b.name not in vanilla_bones:
                     non_vanilla_bones = True
-                
 
-                if b.scale == (1.0, 1.0, 1.0):
-                    seut_report(self, context, 'ERROR', False, 'E052')
-                    return {'CANCELLED'}
+            if obj.scale == (1.0, 1.0, 1.0):
+                seut_report(self, context, 'ERROR', False, 'E052')
+                return {'CANCELLED'}
 
         if non_vanilla_bones:
             seut_report(self, context, 'WARNING', False, 'W018')
