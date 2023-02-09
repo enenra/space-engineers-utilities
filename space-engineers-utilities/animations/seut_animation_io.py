@@ -1,5 +1,6 @@
 import bpy
 import os
+import math
 
 from math import pi
 
@@ -100,7 +101,16 @@ def export_animation_xml(self, context: bpy.types.Context):
                         anim_dict[f.data_path] = [1.0, 1.0, 1.0]
 
                     if (f.data_path == 'scale' and kf.co_ui[1] != 1.0) or (f.data_path != 'scale' and kf.co_ui[1] != 0.0):
-                        anim_dict[f.data_path][f.array_index] = kf.co_ui[1]
+
+                        # This triggers in case the rotation is in quaternions and transforms it to euler, then overwrites x, y and z
+                        if f.array_index not in anim_dict[f.data_path]:
+                            euler_rot = quaternion_to_euler(anim_dict[f.data_path][0], anim_dict[f.data_path][1], anim_dict[f.data_path][2], kf.co_ui[1])
+                            anim_dict[f.data_path][0] = euler_rot[0]
+                            anim_dict[f.data_path][1] = euler_rot[1]
+                            anim_dict[f.data_path][2] = euler_rot[2]
+
+                        else:
+                            anim_dict[f.data_path][f.array_index] = kf.co_ui[1]
 
                 for key, coords in anim_dict.items():
                     # Write Animated Properties
@@ -108,7 +118,7 @@ def export_animation_xml(self, context: bpy.types.Context):
 
                     motion_type = key
 
-                    if motion_type == 'rotation_euler':
+                    if motion_type == 'rotation_euler' or motion_type == 'rotation_quaternion':
                         motion_type = 'rotation'
                         if coords[0] != 0: coords[0] = coords[0] * 180 / pi
                         if coords[1] != 0: coords[1] = coords[1] * 180 / pi
@@ -187,6 +197,24 @@ def export_animation_xml(self, context: bpy.types.Context):
     seut_report(self, context, 'INFO', False, 'I004', target_file)
 
     return {'FINISHED'}
+
+
+def quaternion_to_euler(x, y, z, w):
+
+    t0 = +2.0 * (w * x + y * z)
+    t1 = +1.0 - 2.0 * (x * x + y * y)
+    roll_x = math.atan2(t0, t1)
+    
+    t2 = +2.0 * (w * y - z * x)
+    t2 = +1.0 if t2 > +1.0 else t2
+    t2 = -1.0 if t2 < -1.0 else t2
+    pitch_y = math.asin(t2)
+    
+    t3 = +2.0 * (w * z + x * y)
+    t4 = +1.0 - 2.0 * (y * y + z * z)
+    yaw_z = math.atan2(t3, t4)
+    
+    return roll_x, pitch_y, yaw_z
 
 
 def update_main_info(filename, path):
