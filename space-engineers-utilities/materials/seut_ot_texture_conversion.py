@@ -136,7 +136,7 @@ class SEUT_OT_MassConvertTextures(Operator):
             "Particles"
         ]
 
-        skip_list = ['_de.', '_ns.']
+        skip_list = ['_de.', '_ns.', '_me.']
 
         for d in range(0, len(dirs_to_convert)):
             dirs_to_convert[d] = os.path.join(preferences.game_path, 'Content', 'Textures', dirs_to_convert[d])
