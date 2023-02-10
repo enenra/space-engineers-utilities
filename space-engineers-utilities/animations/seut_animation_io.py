@@ -118,7 +118,7 @@ def export_animation_xml(self, context: bpy.types.Context):
 
                     motion_type = key
 
-                    if motion_type == 'rotation_euler' or motion_type == 'rotation_quaternion':
+                    if motion_type in ['rotation_euler','rotation_quaternion',]:
                         motion_type = 'rotation'
                         if coords[0] != 0: coords[0] = coords[0] * 180 / pi
                         if coords[1] != 0: coords[1] = coords[1] * 180 / pi
@@ -188,7 +188,7 @@ def export_animation_xml(self, context: bpy.types.Context):
     target_file = os.path.join(path_data, f"{filename}.xml")
     if not os.path.exists(os.path.join(path_data)):
         os.makedirs(os.path.join(path_data))
-        
+
     exported_xml = open(target_file, "w")
     exported_xml.write(xml_formatted)
 
