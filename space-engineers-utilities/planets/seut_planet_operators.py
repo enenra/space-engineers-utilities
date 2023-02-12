@@ -301,9 +301,9 @@ class SEUT_OT_Planet_EnvironmentItem_Add(Operator):
 
     def execute(self, context):
         scene = context.scene
-        
+
         item = scene.seut.environment_items.add()
-        item.name = "EnvironmentItem"
+        item.name = f"EnvironmentItem {len(scene.seut.environment_items)}"
 
         rule = item.rules.add()
         rule.name = "Rule"

@@ -12,6 +12,34 @@ from bpy.props  import (EnumProperty,
                         )
 
 
+def update_distribution_rules_name(self, context):
+    scene = context.scene
+
+    if self.name == self.name_prev:
+        return
+    
+    for r in scene.seut.material_groups[scene.seut.material_groups_index].rules:
+        if self != r and r.name == self.name:
+            self.name = self.name_prev
+            return
+    
+    self.name_prev = self.name
+
+
+def update_material_groups_name(self, context):
+    scene = context.scene
+
+    if self.name == self.name_prev:
+        return
+    
+    for mg in scene.seut.material_groups:
+        if self != mg and mg.name == self.name:
+            self.name = self.name_prev
+            return
+    
+    self.name_prev = self.name
+
+
 def update_material_groups_value(self, context):
     scene = context.scene
     palette = scene.seut.material_groups_palette
@@ -28,6 +56,20 @@ def update_material_groups_value(self, context):
     color.color[0] = round(self.value / 255, 3)
     color.color[1] = 0
     color.color[2] = 0
+
+
+def update_environment_items_name(self, context):
+    scene = context.scene
+
+    if self.name == self.name_prev:
+        return
+    
+    for ei in scene.seut.environment_items:
+        if self != ei and ei.name == self.name:
+            self.name = self.name_prev
+            return
+    
+    self.name_prev = self.name
 
 
 def update_biomes_value(self, context):
@@ -101,8 +143,10 @@ class SEUT_PlanetPropertiesDistributionRules(PropertyGroup):
     
     name: StringProperty(
         name="Name",
-        description="The name of the distribution rule"
+        description="The name of the distribution rule",
+        update=update_distribution_rules_name
     )
+    name_prev: StringProperty()
     layers: CollectionProperty(
         type=SEUT_PlanetPropertiesDistributionRulesLayers
     )
@@ -158,8 +202,10 @@ class SEUT_PlanetPropertiesMaterialGroups(PropertyGroup):
 
     name: StringProperty(
         name="Name",
-        description="The name of the Complex Materials group"
+        description="The name of the Complex Materials group",
+        update=update_material_groups_name
     )
+    name_prev: StringProperty()
     value: IntProperty(
         name="Value",
         description="The luminosity value of the color in the Red channel onto which this material group should be placed",
@@ -208,7 +254,7 @@ class SEUT_PlanetPropertiesItems(PropertyGroup):
     """Items defined for Environment Item entries"""
 
     name: StringProperty()
-
+    
     type_id: StringProperty(
         name="TypeId",
         description="The TypeId of the environment object"
@@ -238,8 +284,10 @@ class SEUT_PlanetPropertiesEnvironmentItems(PropertyGroup):
     
     name: StringProperty(
         name="Name",
-        description="The name of this environment items entry"
+        description="The name of this environment items entry",
+        update=update_environment_items_name
     )
+    name_prev: StringProperty()
     biomes: CollectionProperty(
         type=SEUT_PlanetPropertiesBiomes
     )
