@@ -465,8 +465,9 @@ def import_planet_sbc(self, context):
                             planet_root = definition
                             break
                 break
-    
+
     for elem in planet_root:
+        
         if elem.tag == 'OreMappings' and self.import_ore_mappings:
             for ore in elem:
                 ore_mapping = add_ore_mapping(context)
@@ -486,7 +487,7 @@ def import_planet_sbc(self, context):
 
                 for r in mg:
                     rule = material_group.rules.add()
-                    rule.name = "Rule " + str(len(material_group.rules))
+                    rule.name = f"Rule {len(material_group.rules)}"
 
                     for i in r:
                         if i.tag == 'Height':
@@ -495,26 +496,27 @@ def import_planet_sbc(self, context):
                         elif i.tag == 'Latitude':
                             rule.latitude_min = float(i.attrib['Min'])
                             rule.latitude_max = float(i.attrib['Max'])
-                        elif i.tag == 'Slope':
-                            rule.slope_min = float(i.attrib['Min'])
-                            rule.slope_max = float(i.attrib['Max'])
                         elif i.tag == 'Layers':
                             for l in i:
                                 layer = rule.layers.add()
                                 layer.material = l.attrib['Material']
                                 layer.depth = int(l.attrib['Depth'])
 
+                        elif i.tag == 'Slope':
+                            rule.slope_min = float(i.attrib['Min'])
+                            rule.slope_max = float(i.attrib['Max'])
+
         if elem.tag == 'EnvironmentItems' and self.import_environment_items:
             for i in elem:
                 item = scene.seut.environment_items.add()
-                item.name = "EnvironmentItem " + str(len(scene.seut.environment_items))
+                item.name = f"EnvironmentItem {len(scene.seut.environment_items)}"
 
                 for e in i:
                     if e.tag == 'Biomes':
                         for b in e:
                             biome = add_biome(context, item)
                             biome.value = int(b.text)
-                    
+
                     elif e.tag == 'Materials':
                         for m in e:
                             material = item.materials.add()
