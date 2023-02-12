@@ -808,19 +808,19 @@ class SEUT_Scene(PropertyGroup):
     )
     default_surface_material: PointerProperty(
         name="Default Surface Material",
-        description="The default surface voxelmaterial that is placed in all places not covered by a Complex Material rule",
+        description="The default surface voxel material that is placed in all places not covered by a Complex Material rule",
         type=bpy.types.Material,
         poll=poll_voxelmaterials
     )
     default_surface_material_max: IntProperty(
         name="Max Depth",
-        description="The max depth to which this voxelmaterial is placed",
+        description="The max depth to which this voxel material is placed",
         min=0,
         default=10
     )
     default_subsurface_material: PointerProperty(
         name="Default Subsurface Material",
-        description="The default subsurface voxelmaterial that is placed in all places not covered by a Complex Material rule",
+        description="The default subsurface voxel material that is placed in all places not covered by a Complex Material rule",
         type=bpy.types.Material,
         poll=poll_voxelmaterials
     )
