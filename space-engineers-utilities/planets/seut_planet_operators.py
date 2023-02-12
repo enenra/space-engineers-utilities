@@ -562,7 +562,7 @@ class SEUT_OT_Planet_ExportAll(Operator):
 
 
 class SEUT_OT_Planet_Bake(Operator):
-    """Bakes planet maps and places them in the Mod Folder"""
+    """Bakes the selected map type"""
     bl_idname = "planet.bake"
     bl_label = "Bake"
     bl_options = {'REGISTER', 'UNDO'}

@@ -254,7 +254,7 @@ class SEUT_PlanetPropertiesItems(PropertyGroup):
     """Items defined for Environment Item entries"""
 
     name: StringProperty()
-    
+
     type_id: StringProperty(
         name="TypeId",
         description="The TypeId of the environment object"
@@ -273,7 +273,7 @@ class SEUT_PlanetPropertiesItems(PropertyGroup):
     )
     density: FloatProperty(
         name="Density",
-        description="The density at which this environment item should be placed",
+        description="The density in which this environment item should be placed",
         min=0.01,
         max=1.00
     )
