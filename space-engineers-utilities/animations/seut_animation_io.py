@@ -100,10 +100,10 @@ def export_animation_xml(self, context: bpy.types.Context):
                     elif f.data_path not in anim_dict:
                         anim_dict[f.data_path] = [1.0, 1.0, 1.0]
 
-                    if (f.data_path == 'scale' and kf.co_ui[1] != 1.0) or (f.data_path != 'scale' and kf.co_ui[1] != 0.0):
+                    if (f.data_path == 'scale' and kf.co_ui[1] != 1.0) or (f.data_path != 'scale' and kf.co_ui[1] not in [0.0, -0.0]):
 
                         # This triggers in case the rotation is in quaternions and transforms it to euler, then overwrites x, y and z
-                        if f.array_index not in anim_dict[f.data_path]:
+                        if f.data_path == 'rotation_quaternion' and f.array_index not in anim_dict[f.data_path]:
                             euler_rot = quaternion_to_euler(anim_dict[f.data_path][0], anim_dict[f.data_path][1], anim_dict[f.data_path][2], kf.co_ui[1])
                             anim_dict[f.data_path][0] = euler_rot[0]
                             anim_dict[f.data_path][1] = euler_rot[1]
@@ -118,13 +118,25 @@ def export_animation_xml(self, context: bpy.types.Context):
 
                     motion_type = key
 
-                    if motion_type in ['rotation_euler','rotation_quaternion',]:
+                    if motion_type in ['rotation_euler','rotation_quaternion']:
                         motion_type = 'rotation'
                         if coords[0] != 0: coords[0] = coords[0] * 180 / pi
                         if coords[1] != 0: coords[1] = coords[1] * 180 / pi
                         if coords[2] != 0: coords[2] = coords[2] * 180 / pi
+                    
+                    round_to = 2
+                    x = round(coords[0],round_to)
+                    y = round(coords[1],round_to)
+                    z = round(coords[2],round_to)
+                    
+                    if x == -0.0:
+                        x = abs(x)
+                    if y == -0.0:
+                        y = abs(y)
+                    if z == -0.0:
+                        z = abs(z)
 
-                    add_attrib(anim, motion_type, f"[{round(coords[0],2)},{round(coords[1],2)},{round(coords[2],2)}]")
+                    add_attrib(anim, motion_type, f"[{x},{y},{z}]")
 
                     if kf.interpolation == 'BEZIER':
                         kf.interpolation = 'LINEAR'
