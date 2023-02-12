@@ -197,7 +197,7 @@ def export_main(self, context):
     unparented_objects = 0
     for obj in collections['main'][0].objects:
 
-        if check_weights(context, obj) is False:
+        if scene.seut.sceneType == 'chraracter' and check_weights(context, obj) is False:
             return {'CANCELLED'}
 
         if obj is not None and obj.type == 'ARMATURE':
@@ -343,9 +343,8 @@ def check_export_col_dict(self, context, cols: dict):
             for obj in col.objects:
                 if check_uvms(self, context, obj) != {'CONTINUE'}:
                     return {'CANCELLED'}
-                if scene.seut.sceneType == 'character':
-                    if check_weights(context, obj) is False:
-                        return {'CANCELLED'}
+                if scene.seut.sceneType == 'character' and check_weights(context, obj) is False:
+                    return {'CANCELLED'}
             
             export_collection(self, context, col)
 
