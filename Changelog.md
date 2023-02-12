@@ -10,6 +10,7 @@ Relevant Milestone: [SEUT 1.1.0](https://github.com/enenra/space-engineers-utili
 * Improved: Added many more PlanetGeneratorDefinition `SBC` elements to the interface. (Alpha 2)
 * Changed [#354](https://github.com/enenra/space-engineers-utilities/issues/354): SEUT now treats `TIF`, `TGA` and `PNG` equally as source files but conversion still defaults to `TIF`. (Alpha 2)
 * Fixed [#152](https://github.com/enenra/space-engineers-utilities/issues/152): Various issues with character import. (Alpha 2)
+* Fixed: Planet Editor did not output `GroupId` nor `ModifierId` for Environment Items. (Alpha 2)
 * Fixed: `Texture Conversion` in some cases converted unneeded files. (Alpha 2)
 * Fixed: Inaccurate description for `Remap Materials`-operator. (Alpha 2)
 * Fixed: Empty drift on character export. (Alpha 2)
