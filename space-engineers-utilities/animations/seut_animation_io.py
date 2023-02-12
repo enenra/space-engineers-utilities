@@ -124,10 +124,10 @@ def export_animation_xml(self, context: bpy.types.Context):
                         if coords[1] != 0: coords[1] = coords[1] * 180 / pi
                         if coords[2] != 0: coords[2] = coords[2] * 180 / pi
                     
-                    round_to = 2
-                    x = round(coords[0],round_to)
-                    y = round(coords[1],round_to)
-                    z = round(coords[2],round_to)
+                    precision = 2
+                    x = round(coords[0], precision)
+                    y = round(coords[1], precision)
+                    z = round(coords[2], precision)
                     
                     if x == -0.0:
                         x = abs(x)
