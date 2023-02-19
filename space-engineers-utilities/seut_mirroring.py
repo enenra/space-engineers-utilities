@@ -4,10 +4,9 @@ from math           import pi
 from bpy.types      import Operator
 from collections    import OrderedDict
 
-from .materials.seut_materials      import create_internal_material
 from .seut_collections              import get_collections, create_seut_collection
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, prep_context, to_radians, clear_selection, lock_object
+from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, prep_context, to_radians, clear_selection, lock_object, link_material
 
 
 mirroring_presets = OrderedDict([
@@ -83,11 +82,11 @@ def setup_mirroring(self, context):
             smat_z = mat
     
     if smat_x is None:
-        smat_x = create_internal_material(context, 'MIRROR_X')
+        smat_x = link_material('.SMAT_Mirror_X', 'SEUT.blend')
     if smat_y is None:
-        smat_y = create_internal_material(context, 'MIRROR_Y')
+        smat_y = link_material('.SMAT_Mirror_Y', 'SEUT.blend')
     if smat_z is None:
-        smat_z = create_internal_material(context, 'MIRROR_Z')
+        smat_z = link_material('.SMAT_Mirror_Z', 'SEUT.blend')
 
     collection = create_seut_collection(scene, 'mirroring')
     

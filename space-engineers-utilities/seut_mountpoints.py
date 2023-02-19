@@ -4,10 +4,9 @@ from math           import pi
 from bpy.types      import Operator
 from bpy.props      import EnumProperty
 
-from .materials.seut_materials      import create_internal_material
 from .seut_collections              import get_collections, create_seut_collection
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import prep_context, to_radians, clear_selection, lock_object
+from .seut_utils                    import link_material, prep_context, to_radians, clear_selection, lock_object
 
 
 valid_masks = ['0:0', '0:1', '0:2', '1:2', '3:3']
@@ -32,7 +31,7 @@ def setup_mountpoints(self, context):
             break
     
     if smat_mp is None:
-        smat_mp = create_internal_material(context, 'MOUNTPOINT')
+        smat_mp = link_material('.SMAT_Mountpoint', 'SEUT.blend')
 
     collection = create_seut_collection(scene, 'mountpoints')
 
@@ -274,7 +273,7 @@ class SEUT_OT_AddMountpointArea(Operator):
                 smat_mp = mat
         
         if smat_mp is None:
-            smat_mp = create_internal_material(context, 'MOUNTPOINT')
+            smat_mp = link_material('.SMAT_Mountpoint', 'SEUT.blend')
 
         # The 3D cursor is used as the origin. If it's not on center, everything is misaligned ingame.
         cursor_location = scene.cursor.location.copy()

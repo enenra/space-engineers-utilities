@@ -342,3 +342,24 @@ def get_seut_blend_data():
         data = bpy.data.texts['.seut-data']
 
     return data
+
+
+def link_material(name: str, source: str, link: bool = True) -> bpy.types.Material:
+    """Links a material from a specified source blend file in the Materials folder to the current file"""
+
+    if name in bpy.data.materials:
+        return bpy.data.materials[name]
+
+    preferences = get_preferences()
+    materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
+
+    with bpy.data.libraries.load(os.path.join(materials_path, source), link=link) as (data_from, data_to):
+        if name in data_from.materials:
+            data_to.materials = [data_from.materials[data_from.materials.index(name)]]
+
+    material = bpy.data.materials[name]
+    
+    if not link:
+        material.asset_clear()
+
+    return material

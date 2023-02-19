@@ -438,53 +438,6 @@ class SEUT_PT_Panel_TextureConversion(Panel):
         layout.operator('wm.convert_textures', icon='EXPORT')
 
 
-def create_internal_material(context, mat_type: str):
-    """Creates a preset internal SEUT material"""
-
-    material = bpy.data.materials.new(name="SEUT_TEMP")
-    material.use_nodes = True
-    material.blend_method = 'BLEND'
-    material.use_fake_user = True
-    nodes = material.node_tree.nodes
-    
-    node_bsdf = None
-    node_output = None
-
-    for node in nodes:
-        if node.type == 'BSDF_PRINCIPLED':
-            node_bsdf = node
-        elif node.type == 'OUTPUT_MATERIAL':
-            node_output = node
-
-    if node_bsdf is None:
-        node_bsdf = nodes.new(type='ShaderNodeBsdfPrincipled')
-    if node_output is None:
-        node_output = nodes.new(type='ShaderNodeOutputMaterial')
-        material.node_tree.links.new(node_bsdf.outputs[0], node_output.inputs[0])
-
-    if mat_type == 'MOUNTPOINT':
-        node_bsdf.inputs[0].default_value = (0.03899, 1.0, 0.348069, 1)
-        node_bsdf.inputs['Alpha'].default_value = 0.75
-        material.name = "SMAT_Mountpoint"
-
-    elif mat_type == 'MIRROR_X':
-        node_bsdf.inputs[0].default_value = (0.715694, 0.0368895, 0.0802198, 1)
-        node_bsdf.inputs['Alpha'].default_value = 0.75
-        material.name = "SMAT_Mirror_X"
-        
-    elif mat_type == 'MIRROR_Y':
-        node_bsdf.inputs[0].default_value = (0.23074, 0.533276, 0.00477695, 1)
-        node_bsdf.inputs['Alpha'].default_value = 0.75
-        material.name = "SMAT_Mirror_Y"
-        
-    elif mat_type == 'MIRROR_Z':
-        node_bsdf.inputs[0].default_value = (0.0395462, 0.300544, 0.64448, 1)
-        node_bsdf.inputs['Alpha'].default_value = 0.75     
-        material.name = "SMAT_Mirror_Z"
-
-    return material
-
-
 def get_seut_texture_path(texture_type: str, material) -> str:
     """Returns the path to a material's texture of a specified type. Valid is CM, NG, ADD, AM."""
 
