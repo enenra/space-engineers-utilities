@@ -275,7 +275,7 @@ class SEUT_OT_RecreateCollections(Operator):
         scene = context.scene
         scene.render.fps = 60
 
-        if not 'SEUT' in scene.view_layers:
+        if 'SEUT' not in scene.view_layers:
             scene.view_layers[0].name = 'SEUT'
             scene.seut.version = 4
             scene.eevee.use_bloom = True
@@ -283,7 +283,7 @@ class SEUT_OT_RecreateCollections(Operator):
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
             scene.seut.subtypeBefore = scene.name
-        
+
         for scn in bpy.data.scenes:
             if scene.seut.subtypeId == scn.seut.subtypeId:
                 scene.seut.subtypeId = scene.name
@@ -292,7 +292,7 @@ class SEUT_OT_RecreateCollections(Operator):
 
         create_collections(scene, context)
 
-        tag = ' (' + scene.seut.subtypeId + ')'
+        tag = f' ({scene.seut.subtypeId})'
         context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children['Main' + tag]
 
         return {'FINISHED'}
@@ -324,33 +324,33 @@ class SEUT_OT_CreateCollection(Operator):
 
         scene = context.scene
         collections = get_collections(scene)
-        
+
         if self.col_type == 'none':
             return {'CANCELLED'}
 
         index = None
         ref_col = None
 
-        if not self.col_type in seut_collections[scene.seut.sceneType]:
+        if self.col_type not in seut_collections[scene.seut.sceneType]:
             return {'FINISHED'}
-            
+
         if self.col_type == 'hkt':
             ref_col = context.view_layer.active_layer_collection.collection
 
-            if ref_col.seut.col_type == 'none' or ref_col.seut.col_type in ['hkt', 'lod']:
+            if ref_col.seut.col_type in ['none', 'hkt', 'lod']:
                 return {'FINISHED'}
-            
+
             if get_rev_ref_cols(collections, ref_col, 'hkt') != []:
                 return {'FINISHED'}
-        
+
         elif self.col_type == 'lod':
             ref_col = context.view_layer.active_layer_collection.collection
 
-            if ref_col.seut.col_type == 'none' or ref_col.seut.col_type in ['hkt', 'lod']:
+            if ref_col.seut.col_type in ['none', 'hkt', 'lod']:
                 return {'FINISHED'}
 
             index = get_first_free_index(get_cols_by_type(scene, self.col_type, ref_col))
-        
+
         else:
             index = get_first_free_index(get_cols_by_type(scene, self.col_type))
 
