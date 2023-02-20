@@ -52,7 +52,7 @@ def update_texconv_preset(self, context):
 def update_texconv_input_file(self, context):
     if self.texconv_input_file == "":
         return
-    if os.path.splitext(self.texconv_input_file)[1].upper() not in supported_image_types:
+    if os.path.splitext(self.texconv_input_file)[1].upper()[1:] not in supported_image_types:
         self.texconv_input_file = ""
         seut_report(self, context, 'ERROR', False, 'E015', 'Input', "DDS', 'TIF', 'PNG' or 'TGA")
 
