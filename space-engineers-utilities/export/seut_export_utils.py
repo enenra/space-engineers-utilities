@@ -26,30 +26,29 @@ def export_xml(self, context, collection) -> str:
     """Exports the XML definition for a collection"""
 
     scene = context.scene
-    preferences = get_preferences()
     collections = get_collections(scene)
 
     # Create XML tree and add initial parameters.
     model = ET.Element('Model')
     model.set('Name', scene.seut.subtypeId)
 
-    if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
+    if scene.seut.sceneType not in ['character', 'character_animation']:
         add_subelement(model, 'RescaleFactor', '1.0')
         add_subelement(model, 'Centered', 'false')
         add_subelement(model, 'RescaleToLengthInMeters', 'false')
-            
-    elif scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
+
+    else:
         add_subelement(model, 'RescaleFactor', '0.01')
 
-    if scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
+    if scene.seut.sceneType in ['character', 'character_animation']:
         add_subelement(model, 'RotationY', '180')
-    
+
     path = get_abs_path(scene.seut.export_exportPath)
 
     # Write local materials as material entries into XML, write library materials as matrefs into XML
     for mat in bpy.data.materials:
 
-        if mat == None:
+        if mat is None:
             continue
         if mat.node_tree is None:
             continue
@@ -58,10 +57,15 @@ def export_xml(self, context, collection) -> str:
         # This is a legacy check to filter out the old material presets.
         if mat.name[:5] == 'SMAT_':
             continue
-            
-        if mat.asset_data is not None:
-            if mat.asset_data.seut.is_dlc:
-                seut_report(self, context, 'WARNING', False, 'W012', mat.name)
+
+        for link in mat.node_tree.links:
+            if link.to_node.name == 'SEUT_NODE_GROUP' and link.to_socket.name in ['CM Color', 'CM Alpha', 'ADD Color', 'ADD Alpha', 'NG Color', 'NG Alpha', 'AM Color']:
+                if link.from_node.label not in ['CM', 'ADD', 'NG', 'ALPHAMASK']:
+                    seut_report(self, context, 'ERROR', False, 'E053', mat.name)
+                    return {'CANCELLED'}
+
+        if mat.asset_data is not None and mat.asset_data.seut.is_dlc:
+            seut_report(self, context, 'WARNING', False, 'W012', mat.name)
 
         is_unique = False
         # Case 1: linked + asset -> no entry (unless not vanilla)
@@ -77,10 +81,10 @@ def export_xml(self, context, collection) -> str:
         # Case 4: local -> entry
         elif mat.library is None and mat.asset_data is None:
             is_unique = True
-            
+
         if is_unique:
             create_mat_entry(self, context, model, mat)
-            
+
             # Only convert the textures if the material contains a non-vanilla one (determined by path being in SEUT Textures folder)
             nodes = mat.node_tree.nodes
             for img_type in ['CM', 'ADD', 'NG', 'ALPHAMASK']:
@@ -102,7 +106,7 @@ def export_xml(self, context, collection) -> str:
             for col in cols:
                 if len(col.objects) > 0:
                     create_lod_entry(model, col.seut.lod_distance, path, get_col_filename(col))
-        
+
     # Create file with subtypename + collection name and write string to it
     xml_formatted = format_xml(self, context, model)
 
