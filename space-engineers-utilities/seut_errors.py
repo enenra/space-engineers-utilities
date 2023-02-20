@@ -61,7 +61,7 @@ errors = {
     'E048': "There can only be one Planet Editor scene per BLEND file.",
     'E049': "One or more of the required files could not be located within the Assets Directory.",
     'E050': "There was an error during export: Missing Visual C++ Redistributable for Visual Studio.",
-    'E051': "The object '{variable_1}' has invalid weight painting: {variable_2}.",
+    'E051': "The object '{variable_1}' has invalid weight painting: {variable_2}",
     'E052': "The armature has a scale of '1.0' - this is usually caused by having applied all on the armature, which breaks it completely.",
     'E053': "Material '{variable_1}' contains invalid node tree. Custom node trees are not supported by Space Engineers - all changes to a material must be made by altering its texture files.",
 }
