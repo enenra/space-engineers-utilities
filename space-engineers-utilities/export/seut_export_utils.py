@@ -57,11 +57,22 @@ def export_xml(self, context, collection) -> str:
         # This is a legacy check to filter out the old material presets.
         if mat.name[:5] == 'SMAT_':
             continue
-
+        
         for link in mat.node_tree.links:
-            if link.to_node.name == 'SEUT_NODE_GROUP' and link.to_socket.name in ['CM Color', 'CM Alpha', 'ADD Color', 'ADD Alpha', 'NG Color', 'NG Alpha', 'AM Color']:
-                if link.from_node.label not in ['CM', 'ADD', 'NG', 'ALPHAMASK']:
+
+            # Check for invalid node tree
+            if link.to_node.name == 'SEUT_NODE_GROUP':
+                if link.to_socket.name in ['CM Color', 'CM Alpha', 'ADD Color', 'ADD Alpha', 'NG Color', 'NG Alpha', 'AM Color'] and link.from_node.label not in ['CM', 'ADD', 'NG', 'ALPHAMASK']:
                     seut_report(self, context, 'ERROR', False, 'E053', mat.name)
+                    return {'CANCELLED'}
+
+                # Check if technique supports nodes
+                elif link.to_socket.name == 'AM Color' and mat.seut.technique in ['MESH', 'DECAL', 'DECAL_NOPREMULT', 'GLASS', 'SHIELD', 'HOLO']:
+                    seut_report(self, context, 'ERROR', False, 'E054', mat.name, 'ALPHAMASK', mat.seut.technique)
+                    return {'CANCELLED'}
+
+                elif link.to_socket.name in ['ADD Color', 'ADD Alpha'] and mat.seut.technique in ['GLASS', 'SHIELD', 'HOLO']:
+                    seut_report(self, context, 'ERROR', False, 'E054', mat.name, 'ADD', mat.seut.technique)
                     return {'CANCELLED'}
 
         if mat.asset_data is not None and mat.asset_data.seut.is_dlc:
