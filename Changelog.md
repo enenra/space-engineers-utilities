@@ -4,6 +4,8 @@ Relevant Milestone: [SEUT 1.1.0](https://github.com/enenra/space-engineers-utili
 * Added [#13](https://github.com/enenra/space-engineers-utilities/issues/13): Animation support. Create and export animations with Blender and SEUT to use with the [Animation Engine by Math0424](https://steamcommunity.com/sharedfiles/filedetails/?id=2880317963). (Alpha 1)
 * Added [#345](https://github.com/enenra/space-engineers-utilities/issues/345): Ability to select existing `HKT`-file as a collision instead of creating your own. (Alpha 1)
 * Added [[#359](https://github.com/enenra/space-engineers-utilities/issues/359)]: Error checking and handling for character modding. (Alpha 2)
+* Improved: Moved internal materials to `SEUT.blend` in assets folder. (Alpha 2)
+* Improved: Error detection in custom materials. (Alpha 2)
 * Improved: Better input validation for SubtypeId. (Alpha 2)
 * Improved: Many changes to streamline the Planet Editor Interface. (Alpha 2)
 * Improved: Clarified error message for `E035`. (Alpha 2)
