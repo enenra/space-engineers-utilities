@@ -785,12 +785,12 @@ class SEUT_Scene(PropertyGroup):
         name="Hills Parameter Minimum",
         min=-1,
         description="The minimum offset by which the terrain is displaced according to the height map",
-        max=0
+        max=-0.01
     )
     hill_params_max: FloatProperty(
         name="Hills Parameter Maximum",
         description="The maximum offset by which the terrain is displaced according to the height map",
-        min=0,
+        min=0.01,
         max=1
     )
 
