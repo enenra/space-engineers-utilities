@@ -72,7 +72,7 @@ def import_fbx(self, context, filepath):
 
     try:
         if addon_utils.check("better_fbx") == (True, True) and data.seut.better_fbx:
-            result = bpy.ops.better_import.fbx(filepath=filepath)
+            bpy.ops.better_import.fbx(filepath=filepath)
 
         elif scene.seut.sceneType == ['character_animation'] or (
             scene.seut.sceneType != ['character'] and 
@@ -82,7 +82,7 @@ def import_fbx(self, context, filepath):
             
             scene.seut.sceneType = 'character_animation'
 
-            result = bpy.ops.import_scene.fbx(
+            bpy.ops.import_scene.fbx(
                 filepath=filepath,
                 global_scale=1.0,
                 decal_offset=0.0,
@@ -105,7 +105,7 @@ def import_fbx(self, context, filepath):
             
             scene.seut.sceneType = 'character'
 
-            result = bpy.ops.import_scene.fbx(
+            bpy.ops.import_scene.fbx(
                 filepath=filepath,
                 global_scale=1.0,
                 decal_offset=0.0,
@@ -121,7 +121,12 @@ def import_fbx(self, context, filepath):
                 )
 
         else:
-            result = bpy.ops.import_scene.fbx(filepath=filepath)
+            bpy.ops.import_scene.fbx(
+                filepath=filepath,
+                use_manual_orientation=True,
+                axis_forward='Z',
+                axis_up='Y'
+                )
 
     except RuntimeError as error:
         seut_report(self, context, 'ERROR', True, 'E036', str(error))
