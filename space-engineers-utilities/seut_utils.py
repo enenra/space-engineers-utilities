@@ -79,10 +79,8 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
             existing_objects = set(subpart_col.objects)
             
             # Create instance of object
-            try:
+            if context.window.view_layer.objects.active is not None:
                 context.window.view_layer.objects.active.select_set(state=False, view_layer=context.window.view_layer)
-            except AttributeError:
-                pass
             context.window.view_layer.objects.active = obj
             obj.select_set(state=True, view_layer=context.window.view_layer)
             bpy.ops.object.duplicate(linked=False)
@@ -122,7 +120,8 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                             parent_collections[col_type][0].objects.link(linked_object)
                     else:
                         target_collection.objects.link(linked_object)
-                except RuntimeError:
+                except RuntimeError as e:
+                    print(f"Exception: RuntimeError '{e}'")
                     pass
                 # apply modifiers and position/rotation/scale on objects that aren't empties
                 if linked_object.type != 'EMPTY':
@@ -133,7 +132,8 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                             name = mod.name
                             try:
                                 bpy.ops.object.modifier_apply(modifier = name)
-                            except:
+                            except Exception as e:
+                                print(f"Exception: '{e}'")
                                 pass
                         
                     bpy.ops.object.transform_apply(location = True, scale = True, rotation = True)
