@@ -101,7 +101,7 @@ class SEUT_Materials(PropertyGroup):
             ('GLASS', 'GLASS', 'Transparent material - requires additional values to be set in TransparentMaterials.sbc'),
             ('ALPHA_MASKED', 'ALPHA_MASKED', 'Has an alphamask texture'),
             ('ALPHA_MASKED_SINGLE_SIDED', 'ALPHA_MASKED_SINGLE_SIDED', 'Alpha mask texture, but only for a single side. Used in LOD materials'),
-            ('SHIELD', 'SHIELD', 'Animated material used on SafeZone shield - currently limited to default one.\nWarning: Causes Space Engineers to crash with some block types'),
+            ('SHIELD', 'SHIELD', 'Animated material used on SafeZone shield.\nWarning: Causes Space Engineers to crash with some block types'),
             ('HOLO', 'HOLO', 'Transparent LCD screen texture'),
             ('FOLIAGE', 'FOLIAGE', 'Used for half-transparent textures like leaves - shadows observe transparency in texture'),
             ('CLOUD_LAYER', 'CLOUD_LAYER', 'Used for cloud layers of planets')
