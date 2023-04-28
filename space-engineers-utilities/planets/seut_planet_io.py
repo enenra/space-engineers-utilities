@@ -236,11 +236,11 @@ def export_planet_sbc(self, context: bpy.types.Context):
                 for i in ei.items:
                     def_SubItem = ET.SubElement(def_SubItems, 'Item')
                     add_attrib(def_SubItem, 'TypeId', i.type_id)
-                    if i.subtype_id is not "":
+                    if i.subtype_id != "":
                         add_attrib(def_SubItem, 'SubtypeId', i.subtype_id)
-                    if i.group_id is not "":
+                    if i.group_id != "":
                         add_attrib(def_SubItem, 'GroupId', i.group_id)
-                    if i.modifier_id is not "":
+                    if i.modifier_id != "":
                         add_attrib(def_SubItem, 'ModifierId', i.modifier_id)
                     add_attrib(def_SubItem, 'Density', round(i.density, 3))
 
