@@ -509,7 +509,9 @@ class SEUT_PT_Panel_Import(Panel):
         box.label(text="Repair", icon='TOOL_SETTINGS')
         box.operator('object.remapmaterials', icon='MATERIAL')
         box.operator('wm.convert_structure', icon='OUTLINER')
+        box.operator('object.fix_pre', icon='EMPTY_AXIS')
         box.operator('object.fix_positioning', icon='EMPTY_AXIS')
+        box.operator('object.fix_post', icon='EMPTY_AXIS')
 
         if scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
             # Bones
