@@ -313,6 +313,8 @@ class SEUT_PT_Panel_Materials(Panel):
             link.section = 'reference'
             link.page = '6095000/SEUT+Shader+Editor'
 
+            row = box.row(align=True)
+            row.prop(context.view_layer, '["paint_color"]', text='Paint Color')
             box.prop(material.seut, 'technique', icon='IMGDISPLAY')
             box.prop(material.seut, 'facing')
             

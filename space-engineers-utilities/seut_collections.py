@@ -280,6 +280,18 @@ class SEUT_OT_RecreateCollections(Operator):
             scene.seut.version = 4
             scene.eevee.use_bloom = True
 
+            vl = scene.view_layers["SEUT"]
+
+            vl["paint_color"] = (1.0, 1.0, 1.0)
+            vl.id_properties_ensure()
+            prop_manager = vl.id_properties_ui("paint_color")
+            prop_manager.update(
+                default= (1.0, 1.0, 1.0),
+                min=0.0,
+                max=1.0,
+                subtype='COLOR'
+            )
+
         if scene.seut.subtypeId == "":
             scene.seut.subtypeId = scene.name
             scene.seut.subtypeBefore = scene.name

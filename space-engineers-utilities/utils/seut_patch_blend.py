@@ -28,11 +28,13 @@ def check_patch_needed() -> bool:
     for scn in bpy.data.scenes:
         if 'SEUT' in scn.view_layers and scn.seut.version < 4:
             return True
+        if "SEUT" in scn.view_layers and "paint_color" not in scn.view_layers["SEUT"]:
+            return True
 
     for col in bpy.data.collections:
         if col.seut.version < 3 and col.seut.col_type != 'none':
             return True
-    
+
     return False
 
 
@@ -47,6 +49,9 @@ def apply_patches():
     patch_scenes()
     patch_collections_v0996()
     patch_linked_objs()
+
+    # SEUT 1.1.0
+    patch_paint_color()
 
 
 def patch_view_layers():
@@ -254,3 +259,19 @@ def patch_linked_objs():
         for obj in empty.children:
             if '(L)' in obj.name and not obj.seut.linked:
                 obj.seut.linked = True
+
+
+def patch_paint_color():
+    """Adds the paint_color custom property to all view_layers that miss it."""
+
+    for scn in bpy.data.scenes:
+        vl = scn.view_layers["SEUT"]
+        vl["paint_color"] = (1.0, 1.0, 1.0)
+        vl.id_properties_ensure()
+        prop_manager = vl.id_properties_ui("paint_color")
+        prop_manager.update(
+            default= (1.0, 1.0, 1.0),
+            min=0.0,
+            max=1.0,
+            subtype='COLOR'
+        )
