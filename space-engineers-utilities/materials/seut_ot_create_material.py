@@ -37,9 +37,12 @@ class SEUT_OT_MatCreate(Operator):
 
 def create_material(material=None):
     """Links SEUT Material"""
+    from ..seut_utils import link_material
 
     if material is None:
-        from ..seut_utils import link_material
         return link_material('SEUT Material', 'SEUT.blend', False)
-    else:
-        return material
+
+    temp = link_material('SEUT Material', 'SEUT.blend', False)
+    material.user_remap(temp)
+    temp.name = material.name
+    return temp
