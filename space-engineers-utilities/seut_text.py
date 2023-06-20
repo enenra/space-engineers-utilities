@@ -163,6 +163,12 @@ class SEUT_Text(PropertyGroup):
         default = True
     )
 
+    remap_all: BoolProperty(
+        name = "Remap All Scenes",
+        description = "Whether to run remap materials on all objects in all scenes or only the current scene",
+        default = False
+    )
+
     bBox: EnumProperty(
         name='Bounding Box',
         items=(

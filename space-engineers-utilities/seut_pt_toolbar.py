@@ -507,7 +507,9 @@ class SEUT_PT_Panel_Import(Panel):
         # Repair
         box = layout.box()
         box.label(text="Repair", icon='TOOL_SETTINGS')
-        box.operator('object.remapmaterials', icon='MATERIAL')
+        row = box.row(align=True)
+        row.operator('object.remapmaterials', icon='MATERIAL')
+        row.prop(data.seut, 'remap_all', text="", icon='SCENE_DATA')
         box.operator('wm.convert_structure', icon='OUTLINER')
         box.operator('object.fix_positioning', icon='EMPTY_AXIS')
 
