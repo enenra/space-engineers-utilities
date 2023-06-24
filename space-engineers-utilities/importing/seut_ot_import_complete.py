@@ -96,7 +96,7 @@ class SEUT_OT_ImportComplete(Operator):
                     col = create_seut_collection(scene, col_type, type_index, ref_col)
 
             elif col_type == 'main':
-                if 'main' in collections:
+                if 'main' in collections and collections['main'] is not None:
                     col = collections['main'][0]
                 else:
                     col = create_seut_collection(scene, 'main', None, None)

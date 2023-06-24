@@ -522,7 +522,7 @@ def create_seut_collection(scene, col_type: str, type_index=None, ref_col=None):
     ref_col_name = ""
     ref_col_type_index = ""
     
-    if 'seut' not in collections or col_type not in collections:
+    if 'seut' not in collections or collections['seut'] is None or col_type not in collections:
         collections = create_collections(scene)
 
     if scene.seut.sceneType == 'mainScene':
