@@ -63,7 +63,7 @@ class SEUT_OT_AddDummy(Operator):
         empty = bpy.context.view_layer.objects.active
 
         for key in empty_types.keys():
-            if self.detector_type == key:
+            if key in self.detector_type:
                 display_type = empty_types[key]
                 break
 
