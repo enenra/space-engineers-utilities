@@ -148,9 +148,12 @@ class SEUT_PT_EmptyLink(Panel):
 
         entry = None
         for empty_type in ['dummies', 'highlight_empties', 'preset_subparts']:
-            hits = [marker for marker in empties[empty_type] if(marker in empty.name or marker[:-1] in empty.name)]
+            hits = [marker for marker in empties[empty_type] if(marker == empty.name or marker in empty.name or marker[:-1] in empty.name)]
             if len(hits) > 0:
-                entry = hits[0]
+                if empty.name in hits:
+                    entry = empty.name
+                else:
+                    entry = hits[0]
                 break
         
         if entry is not None:
