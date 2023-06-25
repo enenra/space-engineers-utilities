@@ -925,10 +925,9 @@ class SEUT_Scene(PropertyGroup):
         name='Bake Resolution',
         description="What resolution to bake the selected map type to. Higher resolutions result in higher bake times.\nNote: 128x128 maps are only suitable to do quick tests with",
         items=(
-            ('128', '128x128', ''),
-            ('2048', '2048x2048', ''),
-            ('8192', '8192x8192', ''),
-            ('32768', '32768x32768', '')
+            ('128', '128x128', 'For testing purposes only'),
+            ('2048', '2048x2048', 'This is the only viable resolution for normal-sized planets'),
+            ('8192', '8192x8192', 'Viable only on oversized planets without additional performance issues')
             ),
         default='2048'
     )
