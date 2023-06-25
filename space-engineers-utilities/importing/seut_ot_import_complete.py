@@ -65,15 +65,26 @@ class SEUT_OT_ImportComplete(Operator):
             if f is None:
                 continue
 
-            if os.path.isdir(f) or (os.path.splitext(f)[1] != ".fbx" and os.path.splitext(f)[1] != ".FBX"):
+            if os.path.isdir(f) or (os.path.splitext(f)[1].lower() not in [".fbx", ".hkt"]):
                 continue
                 
             if basename == os.path.splitext(f)[0] or f"{basename}Construction" in f or f"{basename}_Construction" in f or f"{basename}_BS" in f or f"{basename}_LOD" in f:
                 pass
             else:
                 continue
-
-            fbx_type = determine_fbx_type(f)
+            
+            if os.path.splitext(f)[1].lower() == ".hkt":
+                if os.path.splitext(f)[0] == basename:
+                    fbx_type = {
+                        'col_type': 'hkt',
+                        'type_index': 0,
+                        'ref_col_type': 'main',
+                        'ref_col_type_index': 0
+                        }
+                else:
+                    continue
+            else:
+                fbx_type = determine_fbx_type(f)
 
             if fbx_type is None:
                 continue
@@ -95,6 +106,12 @@ class SEUT_OT_ImportComplete(Operator):
                 else:
                     col = create_seut_collection(scene, col_type, type_index, ref_col)
 
+            elif col_type == 'hkt':
+                if 'main' in collections and collections['hkt'] is not None:
+                    col = collections['hkt'][0]
+                else:
+                    col = create_seut_collection(scene, 'hkt', None, ref_col)
+
             elif col_type == 'main':
                 if 'main' in collections and collections['main'] is not None:
                     col = collections['main'][0]
@@ -103,7 +120,12 @@ class SEUT_OT_ImportComplete(Operator):
                         
             col_counter += 1
             context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children[col.name]
-            result = import_fbx(self, context, os.path.join(directory, f))
+
+            if col_type == 'hkt':
+                collections['hkt'][0].seut.hkt_file = os.path.abspath(f)
+                result = {'FINISHED'}
+            else:
+                result = import_fbx(self, context, os.path.join(directory, f))
 
             if not result == {'FINISHED'}:
                 failed_counter += 1
