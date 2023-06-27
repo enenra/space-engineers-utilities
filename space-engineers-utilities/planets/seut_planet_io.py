@@ -472,7 +472,9 @@ def import_planet_sbc(self, context):
             for ore in elem:
                 ore_mapping = add_ore_mapping(context)
                 ore_mapping.value = int(ore.attrib['Value'])
-                ore_mapping.ore_type = ore.attrib['Type']
+                # TODO: Pull from material libraries
+                if ore.attrib['Type'] in bpy.data.materials:
+                    ore_mapping.ore_type = bpy.data.materials[ore.attrib['Type']]
                 ore_mapping.start = int(ore.attrib['Start'])
                 ore_mapping.depth = int(ore.attrib['Depth'])
                 hex = ore.attrib['TargetColor'][1:]
@@ -499,7 +501,9 @@ def import_planet_sbc(self, context):
                         elif i.tag == 'Layers':
                             for l in i:
                                 layer = rule.layers.add()
-                                layer.material = l.attrib['Material']
+                                # TODO: Pull from material libraries
+                                if l.attrib['Material'] in bpy.data.materials:
+                                    layer.material = bpy.data.materials[l.attrib['Material']]
                                 layer.depth = int(l.attrib['Depth'])
 
                         elif i.tag == 'Slope':
@@ -520,7 +524,9 @@ def import_planet_sbc(self, context):
                     elif e.tag == 'Materials':
                         for m in e:
                             material = item.materials.add()
-                            material.name = m.text
+                            # TODO: Pull from material libraries
+                            if m.text in bpy.data.materials:
+                                material.name = bpy.data.materials[m.text]
 
                     elif e.tag == 'Items':
                         for itm in e:
