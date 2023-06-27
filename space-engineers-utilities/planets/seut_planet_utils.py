@@ -10,7 +10,7 @@ def add_material_group(context):
         scene.seut.material_groups_palette = palette
     
     item = scene.seut.material_groups.add()
-    item.name = "MaterialGroup"
+    item.name = "MaterialGroup " + str(len(scene.seut.material_groups))
     item.value = 0
 
     return item
