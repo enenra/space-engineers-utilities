@@ -18,10 +18,12 @@ def update_distribution_rules_name(self, context):
     if self.name == self.name_prev:
         return
     
-    for r in scene.seut.material_groups[scene.seut.material_groups_index].rules:
-        if self != r and r.name == self.name:
-            self.name = self.name_prev
-            return
+    # In case the rule belongs to an environment item and no material groups exist
+    if scene.seut.material_groups_index > 0:
+        for r in scene.seut.material_groups[scene.seut.material_groups_index].rules:
+            if self != r and r.name == self.name:
+                self.name = self.name_prev
+                return
     
     self.name_prev = self.name
 
