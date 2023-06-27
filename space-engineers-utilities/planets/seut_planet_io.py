@@ -340,15 +340,17 @@ def export_planet_maps(scene: bpy.types.Scene):
 
             elif img.name == side + '_mat' and scene.seut.export_map_biome:
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
-                img.depth = '8'
-                img.colorspace_settings.name = 'sRGB'
-                img.save(filepath=filepath, quality=100)
+                scene.render.image_settings.color_depth = '8'
+                scene.render.image_settings.color_mode = 'sRGB'
+                scene.render.image_settings.compression = 0
+                img.save(filepath=filepath, scene=scene, quality=100)
 
             elif img.name == side + '_add' and scene.seut.export_map_spots:
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
-                img.depth = '8'
-                img.colorspace_settings.name = 'sRGB'
-                img.save(filepath=filepath, quality=100)
+                scene.render.image_settings.color_depth = '8'
+                scene.render.image_settings.color_mode = 'sRGB'
+                scene.render.image_settings.compression = 0
+                img.save(filepath=filepath, scene=scene, quality=100)
 
     return {'FINISHED'}
 
