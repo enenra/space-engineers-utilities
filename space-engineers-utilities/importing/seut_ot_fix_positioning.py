@@ -5,12 +5,10 @@ from bpy.types      import Operator
 from ..seut_errors  import seut_report
 
 
-
 class SEUT_OT_FixPositioningPre(Operator):
-    # used as tooltip by blender:
-    """Applies rotation and scale transforms to ALL non-empty objects connected to the selected object."""
-    bl_idname = "object.fix_pre"
-    bl_label = "Apply Scale&Rotation"
+    """Applies rotation and scale transforms to all non-empty objects connected to the selected object"""
+    bl_idname = "object.apply_scale_rotation"
+    bl_label = "Apply Scale & Rotation"
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
@@ -19,7 +17,6 @@ class SEUT_OT_FixPositioningPre(Operator):
 
 
     def execute(self, context):
-        obj = context.window.view_layer.objects.active
         
         def select_recursive(parent):
             if parent.type != 'EMPTY':
@@ -41,12 +38,10 @@ class SEUT_OT_FixPositioningPre(Operator):
         return {'FINISHED'}
 
 
-
 class SEUT_OT_FixPositioning(Operator):
-    # used as tooltip by blender:
-    """Attempts to fix positioning on the selected object's direct children - see guide for proper usage!"""
+    """Attempts to fix positioning on the selected object's direct children"""
     bl_idname = "object.fix_positioning"
-    bl_label = "Attempt fix positioning"
+    bl_label = "Fix Positioning"
     bl_options = {'REGISTER', 'UNDO'}
 
 
@@ -70,18 +65,15 @@ class SEUT_OT_FixPositioning(Operator):
             child.location -= obj.location
             child.select_set(True) # for user to see what was affected
         
-        seut_report(self, context, 'INFO', True, 'I013')
-        
         return {'FINISHED'}
 
 
-
 class SEUT_OT_FixPositioningPost(Operator):
-    # used as tooltip by blender:
-    """After done fixing everything, use this to apply location transforms on ALL non-empty objects connected to the selected object. Not required but makes the 3D view clean of scatterd lines and dots from object pivots."""
-    bl_idname = "object.fix_post"
-    bl_label = "Apply location"
+    """After using the other options, use this to apply location on all non-empty objects connected to the selected object"""
+    bl_idname = "object.apply_location"
+    bl_label = "Apply Location"
     bl_options = {'REGISTER', 'UNDO'}
+
 
     @classmethod
     def poll(cls, context):
@@ -89,7 +81,6 @@ class SEUT_OT_FixPositioningPost(Operator):
 
 
     def execute(self, context):
-        obj = context.window.view_layer.objects.active
         
         def select_recursive(parent):
             if parent.type != 'EMPTY':
