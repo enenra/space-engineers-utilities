@@ -11,29 +11,22 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
-from ..seut_utils       import get_seut_blend_data
-
+from ..seut_preferences     import animation_engine
+from ..seut_utils           import get_seut_blend_data
+from .seut_animation_utils  import update_vars
 
 def items_trigger_types(self, context):
+    
+    items = []
+    counter = 0
+    for key, entry in animation_engine['triggers'].items():
+        if entry['type'] == 'event':
+            icon = 'STYLUS_PRESSURE'
+        else:
+            icon = 'RECOVER_LAST'
 
-    items = [
-        ('Create', 'Event: Create', "Triggers when block is placed", 'STYLUS_PRESSURE', 0),
-        ('Build', 'Event: Build', "Triggers when block switches from last build stage to main model", 'STYLUS_PRESSURE', 1),
-        ('Open', 'Event: Open', "Triggers when a door is opened", 'STYLUS_PRESSURE', 2),
-        ('Close', 'Event: Close', "Triggers when a door is closed", 'STYLUS_PRESSURE', 3),
-        ('Enter', 'Event: Enter', "Triggers when the player enters a cockpit or seat", 'STYLUS_PRESSURE', 4),
-        ('Exit', 'Event: Exit', "Triggers when the player exits a cockpit or seat", 'STYLUS_PRESSURE', 5),
-        ('Lock', 'Event: Lock', "Triggers when a landing gear locks to a surface", 'STYLUS_PRESSURE', 6),
-        ('Unlock', 'Event: Unlock', "Triggers when a landing gear unlocks", 'STYLUS_PRESSURE', 7),
-        ('ReadyLock', 'Event: ReadyLock', "Triggers when a landing gear is ready to lock", 'STYLUS_PRESSURE', 8),
-        ('PressedOn', 'Event: PressedOn', "Triggers when a button is set to the 'on' state", 'STYLUS_PRESSURE', 9),
-        ('PressedOff', 'Event: PressedOff', "Triggers when a button is set to the 'off' state", 'STYLUS_PRESSURE', 10),
-        ('Pressed', 'Event: Pressed', "Triggers when a button is interacted with", 'STYLUS_PRESSURE', 11),
-        ('Arrive', 'Event: Arrive', "Triggers when a player approaches the block to below a given distance", 'STYLUS_PRESSURE', 12),
-        ('Leave', 'Event: Leave', "Triggers when a player leaves a given distance from the block", 'STYLUS_PRESSURE', 13),
-        ('Working', 'State: Working', "Triggers while the block is in working order (fully built and not disabled by damage)", 'RECOVER_LAST', 14),
-        ('Producing', 'State: Producing', "Triggers while the block is producing", 'RECOVER_LAST', 15)
-    ]
+        items.append((key, entry['name'], entry['description'], icon, counter))
+        counter += 1
 
     return items
 
@@ -53,6 +46,7 @@ def update_animation_object_action(self, context):
 
 def update_trigger_type(self, context):
     self.name = self.trigger_type
+    update_vars(self, 'triggers', animation_engine)
 
 
 def poll_trigger_pressed_empty(self, object):
@@ -73,28 +67,17 @@ def update_animation_name(self, context):
 
 
 def items_function_types(self, context):
-
-    items = [
-        ('reset', 'Reset', "Resets the subpart location to its default position"),
-        ('resetPos', 'Reset Position', "Resets the subpart to its reset position"),
-        ('setResetPos', 'Set Reset Position', "Sets the current location as the new reset position"),
-        ('setVisible', 'Set Visible', "Defines the visibility of a subpart"),
-        ('setEmissiveColor', 'Set Emissive Color', "Sets the color and brightness of an emissive material"),
-        ('setLightColor', 'Set Light Color', "Sets the color of a light empty"),
-        ('lightOn', 'Turn Light On', "Turns a specified light empty on"),
-        ('lightOff', 'Turn Light Off', "Turns a specified light empty off"),
-        ('toggleLight', 'Toggle Light', "Toggles a specified light empty"),
-        ('playParticle', 'Play Particle', "Plays a specified particle on a specified particle emitter empty"),
-        ('stopParticle', 'Stop Particle', "Stops a specified particle from playing on a specified particle emitter empty"),
-        ('playSound', 'Play Sound', "Plays a specified sound"),
-        ('stopSound', 'Stop Sound', "Stops playing a specified sound")
-    ]
+    
+    items = []
+    for key, entry in animation_engine['functions'].items():
+        items.append((key, entry['name'], entry['description']))
 
     return items
 
 
 def update_function_type(self, context):
     self.name = self.function_type
+    update_vars(self, 'functions', animation_engine)
 
 
 def poll_setVisible_empty(self, object):
@@ -130,11 +113,15 @@ class SEUT_AnimationTriggers(PropertyGroup):
     
     trigger_type: EnumProperty(
         name = "Type",
-        description = "Triggers determind when an animation will play ingame",
+        description = "Triggers determine when an animation will play ingame",
         items = items_trigger_types,
         default = 0,
         update = update_trigger_type
     )
+    vars: StringProperty(
+        default = "[]"
+    )
+
     Pressed_empty: PointerProperty(
         name = "Highlight Empty",
         description = "The Highlight Empty that should be monitored",
@@ -203,6 +190,9 @@ class SEUT_AnimationFunctions(PropertyGroup):
         items = items_function_types,
         default = 0,
         update = update_function_type
+    )
+    vars: StringProperty(
+        default = "[]"
     )
     
     setVisible_bool: BoolProperty(

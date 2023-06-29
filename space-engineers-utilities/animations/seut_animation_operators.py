@@ -1,5 +1,6 @@
 import bpy
 import os
+import json
 
 from bpy.types              import Operator
 from bpy.props              import (EnumProperty,
@@ -13,8 +14,7 @@ from bpy.props              import (EnumProperty,
                                     )
 from bpy_extras.io_utils    import ImportHelper
 
-from ..seut_preferences import get_preferences
-from ..seut_collections import get_collections
+from ..seut_preferences import animation_engine
 from ..seut_errors      import get_abs_path, seut_report
 from ..seut_utils       import get_seut_blend_data
 
@@ -167,6 +167,7 @@ class SEUT_OT_Animation_Trigger_Add(Operator):
         animation_set = data.seut.animations[data.seut.animations_index]
 
         item = animation_set.triggers.add()
+        update_vars(item, 'triggers', animation_engine)
         item.name = item.trigger_type
 
         return {'FINISHED'}
@@ -188,6 +189,11 @@ class SEUT_OT_Animation_Trigger_Remove(Operator):
     def execute(self, context):
         data = get_seut_blend_data()
         animation_set = data.seut.animations[data.seut.animations_index]
+
+        trigger = animation_set.triggers[animation_set.triggers_index]
+        vars_list = json.loads(trigger.vars)
+        for var in vars_list:
+            del data[var]
 
         animation_set.triggers.remove(animation_set.triggers_index)
         animation_set.triggers_index = min(max(0, animation_set.triggers_index - 1), len(animation_set.triggers) - 1)
@@ -218,6 +224,7 @@ class SEUT_OT_Animation_Function_Add(Operator):
         seut_kf = get_or_create_prop(action.seut.keyframes, active_keyframe)
 
         item = seut_kf.functions.add()
+        update_vars(self, 'functions', animation_engine)
         item.name = item.function_type
 
         collection_property_cleanup(action.seut.keyframes)
@@ -239,6 +246,8 @@ class SEUT_OT_Animation_Function_Remove(Operator):
 
 
     def execute(self, context):
+        data = get_seut_blend_data()
+
         action = context.active_object.animation_data.action
         active_fcurve = bpy.context.active_editable_fcurve
         active_keyframe = next(
@@ -247,6 +256,11 @@ class SEUT_OT_Animation_Function_Remove(Operator):
         seut_kf = next(
             (k for k in action.seut.keyframes if k.name == str(active_keyframe)), None
         )
+
+        function = seut_kf.functions[seut_kf.functions_index]
+        vars_list = json.loads(function.vars)
+        for var in vars_list:
+            del data[var]
 
         seut_kf.functions.remove(seut_kf.functions_index)
         seut_kf.functions_index = min(max(0, seut_kf.functions_index - 1), len(seut_kf.functions) - 1)
