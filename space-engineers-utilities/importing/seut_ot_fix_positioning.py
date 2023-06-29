@@ -13,26 +13,25 @@ class SEUT_OT_FixPositioningPre(Operator):
 
     @classmethod
     def poll(cls, context):
-        return len(context.selected_objects) == 1
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT'
 
 
     def execute(self, context):
-        
-        def select_recursive(parent):
-            if parent.type != 'EMPTY':
-                parent.select_set(True)
                 
-            for child in parent.children:
-                select_recursive(child)
-                
-        obj = context.window.view_layer.objects.active
-        obj.select_set(True)
+        selected_objects = list(context.selected_objects)
+        for obj in context.selected_objects:
+            obj.select_set(False)
+
+        for obj in selected_objects:
+            obj = context.window.view_layer.objects.active
+            obj.select_set(True)
         
-        # find top-most parent
-        while obj.parent != None:
-            obj = obj.parent
-            
-        select_recursive(obj)
+            # find top-most parent
+            while obj.parent != None:
+                obj = obj.parent
+                
+            select_recursive(obj)
+
         bpy.ops.object.transform_apply(location=False, rotation=True, scale=True, properties=False, isolate_users=False)
         
         return {'FINISHED'}
@@ -47,23 +46,34 @@ class SEUT_OT_FixPositioning(Operator):
 
     @classmethod
     def poll(cls, context):
-        return len(context.selected_objects) == 1
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT'
 
 
     def execute(self, context):
-        obj = context.window.view_layer.objects.active
+                
+        selected_objects = set(context.selected_objects)
+        for obj in context.selected_objects:
+            obj.select_set(False)
         
-        # select child way - can be more confusing because floating parts might have an intermediary parent
-        #if obj.parent == None:
-        #    return {'CANCELLED'} # TODO: tell user they need to select one of the broken parts
-        #obj = obj.parent
-        
-        obj.select_set(True)
-        bpy.ops.object.transform_apply(location=False, rotation=True, scale=True, properties=False, isolate_users=False)
-        
-        for child in obj.children:
-            child.location -= obj.location
-            child.select_set(True) # for user to see what was affected
+        affected = []
+
+        for obj in selected_objects:
+            obj = context.window.view_layer.objects.active
+            obj.select_set(True)
+
+            bpy.ops.object.transform_apply(location=False, rotation=True, scale=True, properties=False, isolate_users=False)
+            
+            for child in obj.children:
+                child.location -= obj.location
+                affected.append(child)
+            
+            
+        for obj in context.selected_objects:
+            obj.select_set(False)
+
+        # To show which objects were affected
+        for obj in affected:
+            obj.select_set(True)
         
         return {'FINISHED'}
 
@@ -77,26 +87,33 @@ class SEUT_OT_FixPositioningPost(Operator):
 
     @classmethod
     def poll(cls, context):
-        return len(context.selected_objects) == 1
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT'
 
 
     def execute(self, context):
-        
-        def select_recursive(parent):
-            if parent.type != 'EMPTY':
-                parent.select_set(True)
                 
-            for child in parent.children:
-                select_recursive(child)
-                
-        obj = context.window.view_layer.objects.active
-        obj.select_set(True)
+        selected_objects = set(context.selected_objects)
+        for obj in context.selected_objects:
+            obj.select_set(False)
+
+        for obj in selected_objects:
+            obj = context.window.view_layer.objects.active
+            obj.select_set(True)
         
-        # find top-most parent
-        while obj.parent != None:
-            obj = obj.parent
-            
-        select_recursive(obj)
+            # find top-most parent
+            while obj.parent != None:
+                obj = obj.parent
+                
+            select_recursive(obj)
+
         bpy.ops.object.transform_apply(location=True, rotation=False, scale=False, properties=False, isolate_users=False)
         
         return {'FINISHED'}
+    
+
+def select_recursive(parent):
+    if parent.type != 'EMPTY':
+        parent.select_set(True)
+        
+    for child in parent.children:
+        select_recursive(child)
