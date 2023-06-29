@@ -68,7 +68,7 @@ class SEUT_OT_ImportComplete(Operator):
             if os.path.isdir(f) or (os.path.splitext(f)[1].lower() not in [".fbx", ".hkt"]):
                 continue
                 
-            if basename == os.path.splitext(f)[0] or f"{basename}Construction" in f or f"{basename}_Construction" in f or f"{basename}_BS" in f or f"{basename}_LOD" in f:
+            if basename == os.path.splitext(f)[0] or f.startswith(f"{basename}Construction") or f.startswith(f"{basename}_Construction") or f.startswith(f"{basename}_BS") or f.startswith(f"{basename}_LOD"):
                 pass
             else:
                 continue
