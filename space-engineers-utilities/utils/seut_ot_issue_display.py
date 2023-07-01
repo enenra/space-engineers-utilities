@@ -10,6 +10,7 @@ from bpy.props              import StringProperty, IntProperty
 
 from ..seut_errors      import log, seut_report, anonymize_paths
 from ..seut_utils       import wrap_text, get_preferences, get_seut_blend_data
+from .seut_repositories import update_register_repos
 
 
 class SEUT_OT_IssueDisplay(Operator):
@@ -192,6 +193,7 @@ class SEUT_OT_ExportLog(Operator):
         data = get_seut_blend_data()
         scene = context.scene
         preferences = get_preferences()
+        update_register_repos()
 
         try:
             traceback.print_tb(tb=sys.last_traceback)
