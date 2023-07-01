@@ -1,10 +1,12 @@
 import bpy
+import json
 
 from bpy.types  import Panel, UIList
 from distutils.fancy_getopt import wrap_text
 
 from ..utils.seut_patch_blend       import check_patch_needed
 from ..seut_utils                   import get_seut_blend_data
+from ..seut_preferences             import animation_engine
 
 class SEUT_UL_Animations(UIList):
     """Creates the Animation Sets UI list"""
@@ -114,21 +116,15 @@ class SEUT_PT_Panel_Animation(Panel):
 
                     if trigger is not None:
 
-                        if trigger.trigger_type in ['PressedOn', 'PressedOff', 'Pressed']:
-                            box3.prop(trigger, "Pressed_empty", icon='EMPTY_DATA')
-
-                        elif trigger.trigger_type in ['Arrive', 'Leave']:
-                            box3.prop(trigger, "distance")
+                        vars_list = json.loads(trigger.vars)
+                        if vars_list != []:
+                            box_vars = box3.box()
+                            box_vars.label(text="Variables", icon='PRESET')
                             
-                        elif trigger.trigger_type == 'Working':
-                            row = box3.row(align=True)
-                            row.prop(trigger, "Working_bool", icon='QUESTION')
-                            row.prop(trigger, "Working_loop", icon='RECOVER_LAST')
-                            
-                        elif trigger.trigger_type == 'Producing':
-                            row = box3.row(align=True)
-                            row.prop(trigger, "Producing_bool", icon='QUESTION')
-                            row.prop(trigger, "Producing_loop", icon='RECOVER_LAST')
+                            for var in vars_list:
+                                key = var[var.rfind("_")+1:]
+                                name = animation_engine['triggers'][trigger.name]['vars'][key]['name']
+                                box_vars.prop(data, f'["{var}"]', text=name)
 
 
 class SEUT_PT_Panel_Keyframes(Panel):
@@ -146,6 +142,7 @@ class SEUT_PT_Panel_Keyframes(Panel):
 
 
     def draw(self, context):
+        data = get_seut_blend_data()
         fcurve = bpy.context.active_editable_fcurve
         keyframes = fcurve.keyframe_points
         layout = self.layout
@@ -199,33 +196,13 @@ class SEUT_PT_Panel_Keyframes(Panel):
 
                 kf_function = seut_kf.functions[seut_kf.functions_index]
                 if kf_function is not None:
-                    
-                    if kf_function.function_type == 'setVisible':
-                        box.prop(kf_function, 'setVisible_bool', icon='HIDE_OFF')
-                        box.prop(kf_function, 'setVisible_empty')
 
-                    elif kf_function.function_type == 'setEmissiveColor':
-                        box.prop(kf_function, 'setEmissiveColor_material')
-                        box.prop(kf_function, 'setEmissiveColor_rgb', text="")
-                        box.prop(kf_function, 'setEmissiveColor_brightness')
+                    vars_list = json.loads(kf_function.vars)
+                    if vars_list != []:
+                        box_vars = box.box()
+                        box_vars.label(text="Variables", icon='PRESET')
 
-                    elif kf_function.function_type == 'playParticle':
-                        box.prop(kf_function, 'playParticle_empty')
-                        box.prop(kf_function, 'playParticle_subtypeid')
-
-                    elif kf_function.function_type == 'stopParticle':
-                        box.prop(kf_function, 'stopParticle_empty')
-                        box.prop(kf_function, 'stopParticle_subtypeid')
-
-                    elif kf_function.function_type == 'playSound':
-                        box.prop(kf_function, 'playSound_subtypeid')
-
-                    elif kf_function.function_type == 'stopSound':
-                        box.prop(kf_function, 'stopSound_subtypeid')
-
-                    elif kf_function.function_type == 'setLightColor':
-                        box.prop(kf_function, 'setLightColor_empty')
-                        box.prop(kf_function, 'setLightColor_rgb', text="")
-
-                    elif kf_function.function_type in ['lightOn', 'lightOff', 'toggleLight']:
-                        box.prop(kf_function, 'light_empty')
+                        for var in vars_list:
+                            key = var[var.rfind("_")+1:]
+                            name = animation_engine['functions'][kf_function.name]['vars'][key]['name']
+                            box_vars.prop(data, f'["{var}"]', text=name)

@@ -517,25 +517,6 @@ def load_animation_json():
 
     if not 'triggers' in data or not 'functions' in data:
         return
-    
-    def load_vars(entry, holder, animation_engine):
-    
-        def add_if_exists(read_dict, input_dict, prop):
-            if prop in read_dict:
-                input_dict[prop] = read_dict[prop]
-
-        if 'vars' in entry:
-            animation_engine[holder][key]['vars'] = {}
-            for k, v in entry['vars'].items():
-                animation_engine[holder][key]['vars'][k] = {
-                    'name': v['name'],
-                    'description': v['description'],
-                    'type': v['type'],
-                }
-                add_if_exists(v, entry['vars'][k], 'default')
-                add_if_exists(v, entry['vars'][k], 'min')
-                add_if_exists(v, entry['vars'][k], 'max')
-                add_if_exists(v, entry['vars'][k], 'subtype')
 
     for key, entry in data['triggers'].items():
         animation_engine['triggers'][key] = {
@@ -543,13 +524,31 @@ def load_animation_json():
             'description': entry['description'],
             'type': entry['type']
         }
-        load_vars(entry, 'triggers', animation_engine)
+        load_vars(entry, 'triggers', key, animation_engine)
 
     for key, entry in data['functions'].items():
         animation_engine['functions'][key] = {
             'name': entry['name'],
             'description': entry['description']
         }
-        load_vars(entry, 'functions', animation_engine)
+        load_vars(entry, 'functions', key, animation_engine)
+    
+    
+def load_vars(entry, holder, key, animation_engine):
 
-    print(animation_engine)
+    def add_if_exists(read_dict, input_dict, prop):
+        if prop in read_dict:
+            input_dict[prop] = read_dict[prop]
+
+    if 'vars' in entry:
+        animation_engine[holder][key]['vars'] = {}
+        for k, v in entry['vars'].items():
+            animation_engine[holder][key]['vars'][k] = {
+                'name': v['name'],
+                'description': v['description'],
+                'type': v['type'],
+            }
+            add_if_exists(v, animation_engine[holder][key]['vars'][k], 'default')
+            add_if_exists(v, animation_engine[holder][key]['vars'][k], 'min')
+            add_if_exists(v, animation_engine[holder][key]['vars'][k], 'max')
+            add_if_exists(v, animation_engine[holder][key]['vars'][k], 'subtype')

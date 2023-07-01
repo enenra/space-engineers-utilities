@@ -224,7 +224,7 @@ class SEUT_OT_Animation_Function_Add(Operator):
         seut_kf = get_or_create_prop(action.seut.keyframes, active_keyframe)
 
         item = seut_kf.functions.add()
-        update_vars(self, 'functions', animation_engine)
+        update_vars(item, 'functions', animation_engine)
         item.name = item.function_type
 
         collection_property_cleanup(action.seut.keyframes)

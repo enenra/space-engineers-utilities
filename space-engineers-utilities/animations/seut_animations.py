@@ -16,7 +16,6 @@ from ..seut_utils           import get_seut_blend_data
 from .seut_animation_utils  import update_vars
 
 def items_trigger_types(self, context):
-    
     items = []
     counter = 0
     for key, entry in animation_engine['triggers'].items():
@@ -67,7 +66,6 @@ def update_animation_name(self, context):
 
 
 def items_function_types(self, context):
-    
     items = []
     for key, entry in animation_engine['functions'].items():
         items.append((key, entry['name'], entry['description']))

@@ -63,11 +63,11 @@ def update_vars(item, holder, animation_engine):
             id_prop.update(description = v['description'])
 
             if 'min' in v:
-                id_prop.update(min = v['min'])
+                id_prop.update(min = float(v['min']))
             if 'max' in v:
-                id_prop.update(max = v['max'])
+                id_prop.update(max = float(v['max']))
             if 'default' in v:
-                id_prop.update(default = v['default'])
+                id_prop.update(default = bool(v['default']))
             if 'subtype' in v:
                 id_prop.update(subtype = v['subtype'])
 
