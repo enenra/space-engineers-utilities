@@ -28,7 +28,7 @@ def check_patch_needed() -> bool:
     for scn in bpy.data.scenes:
         if 'SEUT' in scn.view_layers and scn.seut.version < 4:
             return True
-        if "SEUT" in scn.view_layers and "paint_color" not in scn.view_layers["SEUT"]:
+        if "SEUT" in scn.view_layers and ("Paint Color" not in scn.view_layers["SEUT"] or "UV Grid Overlay" not in scn.view_layers["SEUT"]):
             return True
 
     for col in bpy.data.collections:
@@ -266,12 +266,18 @@ def patch_paint_color():
 
     for scn in bpy.data.scenes:
         vl = scn.view_layers["SEUT"]
-        vl["paint_color"] = (1.0, 1.0, 1.0)
-        vl.id_properties_ensure()
-        prop_manager = vl.id_properties_ui("paint_color")
+        vl["Paint Color"] = (1.0, 1.0, 1.0)
+        prop_manager = vl.id_properties_ui("Paint Color")
         prop_manager.update(
+            description="This color is applied to all materials that support it",
             default= (1.0, 1.0, 1.0),
             min=0.0,
             max=1.0,
             subtype='COLOR'
+        )
+
+        vl['UV Grid Overlay'] = False
+        prop_manager = vl.id_properties_ui("UV Grid Overlay")
+        prop_manager.update(
+            description="Whether to overlay the UV Grid over all materials"
         )
