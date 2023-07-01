@@ -120,40 +120,6 @@ class SEUT_AnimationTriggers(PropertyGroup):
         default = "[]"
     )
 
-    Pressed_empty: PointerProperty(
-        name = "Highlight Empty",
-        description = "The Highlight Empty that should be monitored",
-        type = bpy.types.Object,
-        poll = poll_trigger_pressed_empty
-    )
-    distance: FloatProperty(
-        name = "Distance",
-        description = "Distance of player from block",
-        min = 0,
-        max = 20000,
-        unit = 'LENGTH'
-    )
-    Working_bool: BoolProperty(
-        name = "Bool",
-        description = "Whether the animation should trigger with the State in effect or not in effect",
-        default = True
-    )
-    Working_loop: BoolProperty(
-        name = "Loop",
-        description = "Whether the animation should loop as long as the State trigger is in effect / not in effect",
-        default = True
-    )
-    Producing_bool: BoolProperty(
-        name = "Bool",
-        description = "Whether the animation should trigger with the State in effect or not in effect",
-        default = True
-    )
-    Producing_loop: BoolProperty(
-        name = "Loop",
-        description = "Whether the animation should loop as long as the State trigger is in effect / not in effect",
-        default = True
-    )
-
 
 class SEUT_Animations(PropertyGroup):
     """SEUT Animation prop holder"""
@@ -191,92 +157,6 @@ class SEUT_AnimationFunctions(PropertyGroup):
     )
     vars: StringProperty(
         default = "[]"
-    )
-    
-    setVisible_bool: BoolProperty(
-        name = "Visible",
-        description = "Whether to hide or show the specified subpart"
-    )
-    setVisible_empty: PointerProperty( 
-        name = "Subpart Empty",
-        description = "The subpart empty (and subpart) whose visibility is determined",
-        type = bpy.types.Object,
-        poll = poll_setVisible_empty
-    )
-    
-    setEmissiveColor_material: PointerProperty(
-        name = "Emissive Material",
-        description = "The emissive material to alter",
-        type = bpy.types.Material
-    )
-    setEmissiveColor_rgb: bpy.props.FloatVectorProperty(
-        name="Color",
-        description="The color the emissive material is set to",
-        subtype='COLOR',
-        default=(1.0, 1.0, 1.0),
-        size=3,
-        min=0,
-        max=1.0
-    )
-    setEmissiveColor_brightness: FloatProperty(
-        name = "Brightness",
-        description = "The brightness of the emissive material glow",
-        min = 0,
-        max = 100
-    )
-
-    playParticle_empty: PointerProperty( 
-        name = "Emitter Empty",
-        description = "The particle emitter empty that a particle is played on",
-        type = bpy.types.Object,
-        poll = poll_playParticle_empty
-    )
-    playParticle_subtypeid: StringProperty(
-        name = "Particle SubtypeId",
-        description = "The SubtypeId of the particle to play"
-    )
-
-    stopParticle_empty: PointerProperty( 
-        name = "Emitter Empty",
-        description = "The particle emitter empty that a particle is stopped on",
-        type = bpy.types.Object,
-        poll = poll_playParticle_empty
-    )
-    stopParticle_subtypeid: StringProperty(
-        name = "Particle SubtypeId",
-        description = "The SubtypeId of the particle to stop"
-    )
-
-    playSound_subtypeid: StringProperty(
-        name = "Sound SubtypeId",
-        description = "The SubtypeId of the sound to play"
-    )
-    stopSound_subtypeid: StringProperty(
-        name = "Sound SubtypeId",
-        description = "The SubtypeId of the sound to stop"
-    )
-    
-    setLightColor_empty: PointerProperty( 
-        name = "Light Empty",
-        description = "The light empty whose color is set",
-        type = bpy.types.Object,
-        poll = poll_playParticle_empty
-    )
-    setLightColor_rgb: bpy.props.FloatVectorProperty(
-        name="Color",
-        description="The color the light is set to",
-        subtype='COLOR',
-        default=(1.0, 1.0, 1.0),
-        size=3,
-        min=0,
-        max=1.0
-    )
-    
-    light_empty: PointerProperty( 
-        name = "Light Empty",
-        description = "The light empty to affect",
-        type = bpy.types.Object,
-        poll = poll_playParticle_empty
     )
 
 

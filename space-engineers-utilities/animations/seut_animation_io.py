@@ -1,6 +1,7 @@
 import bpy
 import os
 import math
+import json
 
 from math import pi
 
@@ -9,6 +10,7 @@ from .seut_animations       import items_trigger_types, items_function_types
 from ..utils.seut_xml_utils import *
 from ..seut_errors          import seut_report
 from ..seut_utils           import get_abs_path, get_enum_items, get_seut_blend_data
+from ..seut_preferences     import animation_engine
 
 
 def export_animation_xml(self, context: bpy.types.Context):
@@ -48,26 +50,28 @@ def export_animation_xml(self, context: bpy.types.Context):
         triggers = add_subelement(animation, 'Triggers')
         for tg in animation_set.triggers:
 
-            if tg.trigger_type in ['Working', 'Producing']:
+            tg_dict = animation_engine['triggers'][tg.trigger_type]
+
+            if tg_dict['type'] == 'state':
                 trigger = ET.SubElement(triggers, 'State')
             else:
                 trigger = ET.SubElement(triggers, 'Event')
 
             add_attrib(trigger, 'type', tg.trigger_type)
 
-            if tg.trigger_type in ['PressedOn', 'PressedOff', 'Pressed']:
-                add_attrib(trigger, 'empty', tg.Pressed_empty.name)
+            vars_list = json.loads(tg.vars)
+            if vars_list != []:
+                for var in vars_list:
+                    key = var[var.rfind("_")+1:]
 
-            elif tg.trigger_type in ['Arrive', 'Leave']:
-                add_attrib(trigger, 'distance', round(tg.distance,2))
-
-            elif tg.trigger_type == 'Working':
-                add_attrib(trigger, 'bool', str(tg.Working_bool).lower())
-                add_attrib(trigger, 'loop', str(tg.Working_loop).lower())
-
-            elif tg.trigger_type == 'Producing':
-                add_attrib(trigger, 'bool', str(tg.Producing_bool).lower())
-                add_attrib(trigger, 'loop', str(tg.Producing_loop).lower())
+                    if tg_dict['vars'][key]['type'] == 'color':
+                        add_attrib(trigger, key, f"[{round(data[var][0],1)},{round(data[var][1],1)},{round(data[var][2],1)}]")
+                    elif tg_dict['vars'][key]['type'] == 'float':
+                        add_attrib(trigger, key, round(data[var],2))
+                    elif tg_dict['vars'][key]['type'] == 'bool':
+                        add_attrib(trigger, key, str(data[var]).lower())
+                    else:
+                        add_attrib(trigger, key, data[var])
 
         # Subparts
         subparts = add_subelement(animation, 'Subparts')
@@ -162,36 +166,20 @@ def export_animation_xml(self, context: bpy.types.Context):
                             function = ET.SubElement(keyframe, 'Function')
                             add_attrib(function, 'type', func.function_type)
 
-                            if func.function_type == 'setVisible':
-                                add_attrib(function, 'bool', str(func.setVisible_bool).lower())
-                                add_attrib(function, 'empty', func.setVisible_empty.name)
+                            func_dict = animation_engine['functions'][func.function_type]
+                            vars_list = json.loads(func.vars)
+                            if vars_list != []:
+                                for var in vars_list:
+                                    key = var[var.rfind("_")+1:]
 
-                            elif func.function_type == 'setEmissiveColor':
-                                add_attrib(function, 'material', func.setEmissiveColor_material.name)
-                                add_attrib(function, 'rgb', f"[{round(func.setEmissiveColor_rgb[0],1)},{round(func.setEmissiveColor_rgb[1],1)},{round(func.setEmissiveColor_rgb[2],1)}]")
-                                add_attrib(function, 'brightness', round(func.setEmissiveColor_brightness,2))
-
-                            elif func.function_type == 'playParticle':
-                                add_attrib(function, 'empty', func.playParticle_empty.name)
-                                add_attrib(function, 'subtypeid', func.playParticle_subtypeid)
-
-                            elif func.function_type == 'stopParticle':
-                                add_attrib(function, 'empty', func.stopParticle_empty.name)
-                                add_attrib(function, 'subtypeid', func.stopParticle_subtypeid)
-
-                            elif func.function_type == 'playSound':
-                                add_attrib(function, 'subtypeid', func.playSound_subtypeid)
-
-                            elif func.function_type == 'stopSound':
-                                add_attrib(function, 'subtypeid', func.stopSound_subtypeid)
-
-                            elif func.function_type == 'setLightColor':
-                                add_attrib(function, 'empty', func.setLightColor_empty.name)
-                                add_attrib(function, 'rgb', f"[{round(func.setLightColor_rgb[0],1)},{round(func.setLightColor_rgb[1],1)},{round(func.setLightColor_rgb[2],1)}]")
-
-                            elif func.function_type in ['lightOn', 'lightOff', 'toggleLight']:
-                                add_attrib(function, 'subtypeid', func.light_empty.name)
-
+                                    if func_dict['vars'][key]['type'] == 'color':
+                                        add_attrib(function, key, f"[{round(data[var][0],1)},{round(data[var][1],1)},{round(data[var][2],1)}]")
+                                    elif func_dict['vars'][key]['type'] == 'float':
+                                        add_attrib(function, key, round(data[var],2))
+                                    elif func_dict['vars'][key]['type'] == 'bool':
+                                        add_attrib(function, key, str(data[var]).lower())
+                                    else:
+                                        add_attrib(function, key, data[var])
 
     temp_string = ET.tostring(animations, 'utf-8')
     xml_string = xml.dom.minidom.parseString(temp_string)
