@@ -115,6 +115,9 @@ class SEUT_PT_Panel(Panel):
                         row.prop(scene.seut,'linkSubpartInstances', text='', icon='UNLINKED', invert_checkbox=True)
                     else:
                         box.prop(scene.seut,'linkSubpartInstances', icon='LINKED')
+
+                row = box.row(align=True)
+                row.prop(context.view_layer, '["paint_color"]', text='Paint Color')
                 
                 box = layout.box()
                 if scene.seut.sceneType == 'mainScene':
