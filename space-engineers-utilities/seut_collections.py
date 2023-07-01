@@ -282,11 +282,11 @@ class SEUT_OT_RecreateCollections(Operator):
 
             vl = scene.view_layers["SEUT"]
 
-            vl["Paint Color"] = (1.0, 1.0, 1.0)
+            vl["Paint Color"] = (0.25, 0.25, 0.25)
             prop_manager = vl.id_properties_ui("Paint Color")
             prop_manager.update(
                 description="This color is applied to all materials that support it",
-                default= (1.0, 1.0, 1.0),
+                default= (0.25, 0.25, 0.25),
                 min=0.0,
                 max=1.0,
                 subtype='COLOR'
