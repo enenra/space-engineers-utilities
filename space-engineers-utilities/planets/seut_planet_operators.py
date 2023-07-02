@@ -32,7 +32,7 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
         scene = context.scene
 
         if scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers:
-            if scene.seut.bake_target is not None and scene.seut.bake_source is not None:
+            if scene.seut.planet is not None:
                 Operator.poll_message_set("All objects are present.")
                 return False
         return True
@@ -78,22 +78,15 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
 
             return next(iter(imported_objects))
 
-        if scene.seut.bake_target is None:
-            appended_obj = append_object(context, file_path, 'BAKE TARGET')
+        if scene.seut.planet is None:
+            appended_obj = append_object(context, file_path, 'Planet')
             if appended_obj == -1:
                 seut_report(self, context, 'ERROR', True, 'E049')
                 return {'CANCELLED'}
             else:
-                scene.seut.bake_target = appended_obj
-        if scene.seut.bake_source is None:
-            appended_obj = append_object(context, file_path, 'BAKE SOURCE')
-            if appended_obj == -1:
-                seut_report(self, context, 'ERROR', True, 'E049')
-                return {'CANCELLED'}
-            else:
-                scene.seut.bake_source = appended_obj
+                scene.seut.planet = appended_obj
         
-        mats = ['front', 'back', 'right', 'left', 'up', 'down', 'SURFACE']
+        mats = ['front', 'back', 'right', 'left', 'up', 'down']
         for mat in bpy.data.materials:
             if mat.name in mats:
                 mat.use_fake_user = True
@@ -572,7 +565,7 @@ class SEUT_OT_Planet_Bake(Operator):
     def poll(cls, context):
         scene = context.scene
         if scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers:
-            if scene.seut.bake_target is None or scene.seut.bake_source is None:
+            if scene.seut.planet is None:
                 Operator.poll_message_set("Bake source or bake target are missing.")
                 return False
             return True

@@ -905,15 +905,12 @@ class SEUT_Scene(PropertyGroup):
         type=bpy.types.Palette
     )
 
-    bake_target: PointerProperty(
-        type=bpy.types.Object
-    )
-    bake_source: PointerProperty(
+    planet: PointerProperty(
         type=bpy.types.Object
     )
     bake_type: EnumProperty(
         name='Bake Type',
-        description="Which map type to bake from the current BAKE SOURCE",
+        description="Which map type to bake from the current planet material",
         items=(
             ('height', 'Height Map', '', 'BOIDS', 0),
             ('biome', 'Biome Map', '', 'WORLD_DATA', 1),

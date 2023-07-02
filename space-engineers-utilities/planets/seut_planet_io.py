@@ -341,33 +341,32 @@ def export_planet_maps(scene: bpy.types.Scene):
             elif img.name == side + '_mat' and scene.seut.export_map_biome:
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
                 scene.render.image_settings.color_depth = '8'
-                scene.render.image_settings.color_mode = 'sRGB'
+                scene.render.image_settings.color_mode = 'RGB'
                 scene.render.image_settings.compression = 0
-                img.save(filepath=filepath, scene=scene, quality=100)
+                img.save(filepath=filepath, quality=100)
 
             elif img.name == side + '_add' and scene.seut.export_map_spots:
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
                 scene.render.image_settings.color_depth = '8'
-                scene.render.image_settings.color_mode = 'sRGB'
+                scene.render.image_settings.color_mode = 'RGB'
                 scene.render.image_settings.compression = 0
-                img.save(filepath=filepath, scene=scene, quality=100)
+                img.save(filepath=filepath, quality=100)
 
     return {'FINISHED'}
 
 
 def bake_planet_map(context: bpy.types.Context):
-    """Bakes the bake source to the bake target"""
+    """Bakes the planet's material"""
 
     scene = context.scene
 
     bake_type = scene.seut.bake_type
     bake_resolution = int(scene.seut.bake_resolution)
-    bake_target = scene.seut.bake_target
-    bake_source = scene.seut.bake_source
+    planet = scene.seut.planet
 
     engine = scene.render.engine
     scene.render.engine = 'CYCLES'
-    scene.render.bake.use_selected_to_active = True
+    scene.render.bake.use_selected_to_active = False
     scene.cycles.use_denoising = False
 
     def create_image(name: str, resolution: int) -> bpy.types.Image:
@@ -388,7 +387,7 @@ def bake_planet_map(context: bpy.types.Context):
         return img
     
     mats = []
-    for slot in bake_target.material_slots:
+    for slot in planet.material_slots:
         mats.append(slot.material)
 
     # TODO: SURFACE material changes go in here
@@ -414,16 +413,17 @@ def bake_planet_map(context: bpy.types.Context):
     for mat in mats:
         node = mat.node_tree.nodes['IMAGE']
         node.image = create_image(mat.name + suffix, bake_resolution)
+        for n in mat.node_tree.nodes:
+            n.select = False
         node.select = True
+        mat.node_tree.nodes.active = node
+        
 
-    bake_source.hide_viewport = False
-    bake_source.select_set(True)
-    bake_source.hide_set(False)
+    planet.hide_viewport = False
+    planet.select_set(True)
+    planet.hide_set(False)
 
-    bake_target.hide_viewport = False
-    bake_target.select_set(True)
-    bake_target.hide_set(False)
-    context.window.view_layer.objects.active = bake_target
+    context.window.view_layer.objects.active = planet
 
     bpy.ops.object.bake(type='EMIT')
 
