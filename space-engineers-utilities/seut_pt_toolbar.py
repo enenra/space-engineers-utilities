@@ -116,9 +116,10 @@ class SEUT_PT_Panel(Panel):
                     else:
                         box.prop(scene.seut,'linkSubpartInstances', icon='LINKED')
 
-                row = box.row(align=True)
-                row.prop(context.view_layer, '["Paint Color"]', text='Paint Color')
-                row.prop(context.view_layer, '["UV Grid Overlay"]', text="", icon='UV')
+                if scene.seut.sceneType in ['mainScene', 'subpart', 'character']:
+                    row = box.row(align=True)
+                    row.prop(context.view_layer, '["Paint Color"]', text='Paint Color')
+                    row.prop(context.view_layer, '["UV Grid Overlay"]', text="", icon='UV')
                 
                 box = layout.box()
                 if scene.seut.sceneType == 'mainScene':
