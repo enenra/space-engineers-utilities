@@ -6,6 +6,7 @@ from bpy.types  import Panel
 from .utils.seut_patch_blend        import check_patch_needed
 from .seut_collections              import get_collections, seut_collections
 from .seut_utils                    import get_enum_items, wrap_text, get_seut_blend_data
+from .seut_preferences              import get_preferences
 
 
 def check_display_panels(context) -> bool:
@@ -433,7 +434,7 @@ class SEUT_PT_Panel_Export(Panel):
         row.scale_y = 1.1
         row.operator('scene.export', icon='EXPORT')
 
-        if scene.seut.sceneType in ['mainScene', 'subpart']:
+        if scene.seut.sceneType in ['mainScene', 'subpart'] and get_preferences().dev_mode:
             layout.operator('animation.export', icon='DECORATE_DRIVER')
         
         split = layout.split(factor=0.85, align=True)
