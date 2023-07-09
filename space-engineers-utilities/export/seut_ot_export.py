@@ -122,7 +122,7 @@ def export(self, context):
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\small\\", "\large\\")
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\small", "\large")
         
-        export_all(self, context)
+        result = export_all(self, context)
 
         # Resetting the variables
         scene.seut.subtypeId = subtype_id
@@ -146,7 +146,7 @@ def export(self, context):
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\large\\", "\small\\")
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\large", "\small")
         
-        export_all(self, context)
+        result = export_all(self, context)
 
         # Resetting the variables
         scene.seut.subtypeId = subtype_id
@@ -159,7 +159,7 @@ def export(self, context):
     context.area.type = current_area
     context.view_layer.active_layer_collection = active_col
 
-    return {'FINISHED'}
+    return result
 
 
 def export_all(self, context):
@@ -167,16 +167,21 @@ def export_all(self, context):
 
     scene = context.scene
 
-    export_bs(self, context)
-    export_lod(self, context)
-    result_main = export_main(self, context)
-    export_hkt(self, context)
+    results = []
+
+    results.append(export_bs(self, context))
+    results.append(export_lod(self, context))
+    results.append(export_main(self, context))
+    results.append(export_hkt(self, context))
 
     if scene.seut.export_sbc_type in ['update', 'new'] and scene.seut.sceneType == 'mainScene':
-        export_sbc(self, context)
+        results.append(export_sbc(self, context))
     
-    if result_main == {'FINISHED'}:
+    if {'CANCELLED'} not in results:
         export_mwm(self, context)
+        return {'FINISHED'}
+    else:
+        return {'CANCELLED'}
 
 
 def export_main(self, context):
@@ -221,7 +226,9 @@ def export_main(self, context):
         seut_report(self, context, 'ERROR', True, 'E031', collections['main'][0].name)
         return {'CANCELLED'}
 
-    export_collection(self, context, collections['main'][0])
+    results = export_collection(self, context, collections['main'][0])            
+    if {'CANCELLED'} in results:
+        return {'CANCELLED'}
 
     return {'FINISHED'}
 
@@ -291,9 +298,9 @@ def export_bs(self, context):
 
     scene = context.scene
     bs_cols = get_cols_by_type(scene, 'bs')
-    check_export_col_dict(self, context, bs_cols)
+    result = check_export_col_dict(self, context, bs_cols)
     
-    return {'FINISHED'}
+    return result
 
 
 def export_lod(self, context):
@@ -304,14 +311,19 @@ def export_lod(self, context):
 
     # Normal LODs
     lod_cols = get_cols_by_type(scene, 'lod', collections['main'][0])
-    check_export_col_dict(self, context, lod_cols)
+    result_normal = check_export_col_dict(self, context, lod_cols)
 
     # BS LODs
     if 'bs' in collections:
         if collections['bs'] is not None:
             for ref_col in collections['bs']:
                 lod_cols = get_cols_by_type(scene, 'lod', ref_col)
-                check_export_col_dict(self, context, lod_cols)
+                result_bslod = check_export_col_dict(self, context, lod_cols)
+                if result_bslod == {'CANCELLED'}:
+                    return {'CANCELLED'}
+
+    if result_normal == {'CANCELLED'}:
+        return {'CANCELLED'}
 
     return {'FINISHED'}
 
@@ -346,7 +358,9 @@ def check_export_col_dict(self, context, cols: dict):
                 if scene.seut.sceneType == 'character' and check_weights(context, obj) is False:
                     return {'CANCELLED'}
             
-            export_collection(self, context, col)
+            results = export_collection(self, context, col)
+            if {'CANCELLED'} in results:
+                return {'CANCELLED'}
 
 
 def export_mwm(self, context):
