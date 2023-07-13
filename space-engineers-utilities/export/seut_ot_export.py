@@ -49,7 +49,7 @@ def export(self, context):
     bl_info = get_addon().bl_info
     version = str(bl_info['version']).replace("(","").replace(")","").replace(", ",".")
     if bl_info['dev_version'] > 0:
-        version = version + "-" + str(bl_info['dev_tag']) + "." + str(bl_info['dev_version'])
+        version = f"{version}-{str(bl_info['dev_tag'])}.{str(bl_info['dev_version'])}"
 
     print("\n============================================================ Exporting Scene '" + scene.name + "' with SEUT " + version + ".")
 
