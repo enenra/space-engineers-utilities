@@ -68,12 +68,10 @@ def export_xml(self, context, collection) -> str:
 
                 # Check if technique supports nodes
                 elif link.to_socket.name == 'AM Color' and mat.seut.technique in ['MESH', 'DECAL', 'DECAL_NOPREMULT', 'GLASS', 'SHIELD', 'HOLO']:
-                    seut_report(self, context, 'ERROR', False, 'E054', mat.name, 'ALPHAMASK', mat.seut.technique)
-                    return {'CANCELLED'}
+                    seut_report(self, context, 'WARNING', False, 'W019', mat.name, 'ALPHAMASK', mat.seut.technique)
 
                 elif link.to_socket.name in ['ADD Color', 'ADD Alpha'] and mat.seut.technique in ['GLASS', 'SHIELD', 'HOLO']:
-                    seut_report(self, context, 'ERROR', False, 'E054', mat.name, 'ADD', mat.seut.technique)
-                    return {'CANCELLED'}
+                    seut_report(self, context, 'WARNING', False, 'W019', mat.name, 'ADD', mat.seut.technique)
 
         if mat.asset_data is not None and mat.asset_data.seut.is_dlc:
             seut_report(self, context, 'WARNING', False, 'W012', mat.name)

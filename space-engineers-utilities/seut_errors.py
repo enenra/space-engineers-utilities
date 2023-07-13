@@ -64,7 +64,6 @@ errors = {
     'E051': "The object '{variable_1}' has invalid weight painting: {variable_2}",
     'E052': "The armature has a scale of '1.0' - this is usually caused by having applied all on the armature, which breaks it completely.",
     'E053': "Material '{variable_1}' contains invalid node tree. Custom node trees are not supported by Space Engineers - all changes to a material must be made by altering its texture files.",
-    'E054': "Material '{variable_1}' has a linked '{variable_2}'-texture but the material technique '{variable_3}' does not support it.",
 }
 
 warnings = {
@@ -86,6 +85,7 @@ warnings = {
     'W016': "Could not find element '{variable_1}' in SBC. Skipping.",
     'W017': "Could not find attribute '{variable_1}' in element '{variable_2}'. Skipping.",
     'W018': "Nonstandard bones detected. You may need to alter the Animation Controller for them to work as intended.",
+    'W019': "Material '{variable_1}' has a linked '{variable_2}'-texture but the material technique '{variable_3}' does not support it.",
 }
 
 infos = {
