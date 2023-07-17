@@ -67,6 +67,9 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
     # Switch to subpart_scene to get collections
     context.window.scene = subpart_scene
     current_area = prep_context(context)
+    
+    for obj in bpy.context.selected_objects:
+        obj.select_set(False)
 
     subpart_objects = set(subpart_col.objects)
 
