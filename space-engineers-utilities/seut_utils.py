@@ -142,7 +142,6 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                     bpy.ops.object.transform_apply(location = True, scale = True, rotation = True)
                     context.window.view_layer.objects.active = old_active
                 
-                linked_object.hide_select = True
                 lock_object(linked_object)
                 subpart_col.objects.unlink(linked_object)
                 linked_object.parent = empty
