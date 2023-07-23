@@ -33,18 +33,6 @@ class SEUT_UL_AnimationObjects(UIList):
         pass
 
 
-class SEUT_UL_AnimationTriggers(UIList):
-    """Creates the Animation Trigger UI list"""
-
-    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
-        row = layout.row()
-        row.label(text="", icon='DOT')
-        row.prop(item, "trigger_type", text="")
-
-    def invoke(self, context, event):
-        pass
-
-
 class SEUT_UL_AnimationFunctions(UIList):
     """Creates the Animation Function UI list"""
 
@@ -103,30 +91,6 @@ class SEUT_PT_Panel_Animation(Panel):
                 if len(animation_set.subparts) > 0:
                     subpart_empty = animation_set.subparts[animation_set.subparts_index]
                     box2.template_ID(subpart_empty, "action", new="animation.add_action", unlink="animation.remove_action")
-                    
-                box3 = box.box()
-                box3.label(text="Animation Triggers", icon='STYLUS_PRESSURE')
-                
-                row = box3.row()
-                row.template_list("SEUT_UL_AnimationTriggers", "", animation_set, "triggers", animation_set, "triggers_index", rows=3)
-                col = row.column(align=True)
-                col.operator("animation.add_trigger", icon='ADD', text="")
-                col.operator("animation.remove_trigger", icon='REMOVE', text="")
-
-                if len(animation_set.triggers) > 0:
-                    trigger = animation_set.triggers[animation_set.triggers_index]
-
-                    if trigger is not None:
-
-                        vars_list = json.loads(trigger.vars)
-                        if vars_list != []:
-                            box_vars = box3.box()
-                            box_vars.label(text="Variables", icon='PRESET')
-                            
-                            for var in vars_list:
-                                key = var[var.rfind("_")+1:]
-                                name = animation_engine['triggers'][trigger.name]['vars'][key]['name']
-                                box_vars.prop(data, f'["{var}"]', text=name)
 
 
 class SEUT_PT_Panel_Keyframes(Panel):

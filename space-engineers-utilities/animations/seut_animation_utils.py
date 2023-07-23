@@ -39,10 +39,7 @@ def update_vars(item, holder, animation_engine):
             del data[var]
     item.vars = "[]"
 
-    if holder == 'triggers':
-        prop = item.trigger_type
-    elif holder == 'functions':
-        prop = item.function_type
+    prop = item.function_type
 
     if 'vars' in animation_engine[holder][prop]:
         vars = animation_engine[holder][prop]['vars']

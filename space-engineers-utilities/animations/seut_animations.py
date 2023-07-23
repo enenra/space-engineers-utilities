@@ -15,20 +15,6 @@ from ..seut_preferences     import animation_engine
 from ..seut_utils           import get_seut_blend_data
 from .seut_animation_utils  import update_vars
 
-def items_trigger_types(self, context):
-    items = []
-    counter = 0
-    for key, entry in animation_engine['triggers'].items():
-        if entry['type'] == 'event':
-            icon = 'STYLUS_PRESSURE'
-        else:
-            icon = 'RECOVER_LAST'
-
-        items.append((key, entry['name'], entry['description'], icon, counter))
-        counter += 1
-
-    return items
-
 
 def poll_animation_objects_obj(self, object):
     data = get_seut_blend_data()
@@ -41,15 +27,6 @@ def poll_animation_objects_obj(self, object):
 def update_animation_object_action(self, context):
     if self.action is not None:
         self.action.use_fake_user = True
-
-
-def update_trigger_type(self, context):
-    self.name = self.trigger_type
-    update_vars(self, 'triggers', animation_engine)
-
-
-def poll_trigger_pressed_empty(self, object):
-    return object.type == 'EMPTY' and 'highlight' in object and not object.seut.linked
 
 
 def update_animation_name(self, context):
@@ -104,23 +81,6 @@ class SEUT_AnimationObjects(PropertyGroup):
     )
 
 
-class SEUT_AnimationTriggers(PropertyGroup):
-    """SEUT Animation Trigger prop holder"""
-
-    name: StringProperty()
-    
-    trigger_type: EnumProperty(
-        name = "Type",
-        description = "Triggers determine when an animation will play ingame",
-        items = items_trigger_types,
-        default = 0,
-        update = update_trigger_type
-    )
-    vars: StringProperty(
-        default = "[]"
-    )
-
-
 class SEUT_Animations(PropertyGroup):
     """SEUT Animation prop holder"""
 
@@ -129,12 +89,6 @@ class SEUT_Animations(PropertyGroup):
     )
     name_prev: StringProperty()
     
-    triggers: CollectionProperty(
-        type = SEUT_AnimationTriggers
-    )
-    triggers_index: IntProperty(
-        default = 0
-    )
     subparts: CollectionProperty(
         type = SEUT_AnimationObjects
     )

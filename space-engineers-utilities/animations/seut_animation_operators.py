@@ -149,58 +149,6 @@ class SEUT_OT_Animation_SubpartEmpty_Remove(Operator):
         return {'FINISHED'}
 
 
-class SEUT_OT_Animation_Trigger_Add(Operator):
-    """Adds a slot to the Animation Trigger UL"""
-    bl_idname = "animation.add_trigger"
-    bl_label = "Add Animation Trigger"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        data = get_seut_blend_data()
-        animation_set = data.seut.animations[data.seut.animations_index]
-
-        item = animation_set.triggers.add()
-        update_vars(item, 'triggers', animation_engine)
-        item.name = item.trigger_type
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Animation_Trigger_Remove(Operator):
-    """Removes a slot from the Animation Trigger UL"""
-    bl_idname = "animation.remove_trigger"
-    bl_label = "Remove Animation Trigger"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        data = get_seut_blend_data()
-        animation_set = data.seut.animations[data.seut.animations_index]
-
-        trigger = animation_set.triggers[animation_set.triggers_index]
-        vars_list = json.loads(trigger.vars)
-        for var in vars_list:
-            del data[var]
-
-        animation_set.triggers.remove(animation_set.triggers_index)
-        animation_set.triggers_index = min(max(0, animation_set.triggers_index - 1), len(animation_set.triggers) - 1)
-
-        return {'FINISHED'}
-
-
 class SEUT_OT_Animation_Function_Add(Operator):
     """Associates the selected Keyframe with a function"""
     bl_idname = "animation.add_function"

@@ -501,12 +501,11 @@ def load_empty_json(empty_type):
 
 
 def load_animation_json():
-    """Loads the config file for animation triggers and functions"""
+    """Loads the config file for animation functions"""
 
     preferences = get_preferences()
     path = os.path.join(preferences.asset_path, "Config", "animation_engine.cfg")
     global animation_engine
-    animation_engine['triggers'] = {}
     animation_engine['functions'] = {}
 
     if not os.path.exists(path):
@@ -515,16 +514,8 @@ def load_animation_json():
     with open(path) as cfg_file:
         data = json.load(cfg_file)
 
-    if not 'triggers' in data or not 'functions' in data:
+    if 'functions' not in data:
         return
-
-    for key, entry in data['triggers'].items():
-        animation_engine['triggers'][key] = {
-            'name': entry['name'],
-            'description': entry['description'],
-            'type': entry['type']
-        }
-        load_vars(entry, 'triggers', key, animation_engine)
 
     for key, entry in data['functions'].items():
         animation_engine['functions'][key] = {

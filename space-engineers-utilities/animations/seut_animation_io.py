@@ -5,7 +5,7 @@ import json
 
 from math import pi
 
-from .seut_animations       import items_trigger_types, items_function_types
+from .seut_animations       import items_function_types
 
 from ..utils.seut_xml_utils import *
 from ..seut_errors          import seut_report
@@ -45,33 +45,6 @@ def export_animation_xml(self, context: bpy.types.Context):
         add_attrib(animation, 'id', animation_set.name)
         add_attrib(animation, 'type', 'static')
         add_attrib(animation, 'subtypeId', scene.seut.subtypeId)
-
-        # Triggers
-        triggers = add_subelement(animation, 'Triggers')
-        for tg in animation_set.triggers:
-
-            tg_dict = animation_engine['triggers'][tg.trigger_type]
-
-            if tg_dict['type'] == 'state':
-                trigger = ET.SubElement(triggers, 'State')
-            else:
-                trigger = ET.SubElement(triggers, 'Event')
-
-            add_attrib(trigger, 'type', tg.trigger_type)
-
-            vars_list = json.loads(tg.vars)
-            if vars_list != []:
-                for var in vars_list:
-                    key = var[var.rfind("_")+1:]
-
-                    if tg_dict['vars'][key]['type'] == 'color':
-                        add_attrib(trigger, key, f"[{round(data[var][0],1)},{round(data[var][1],1)},{round(data[var][2],1)}]")
-                    elif tg_dict['vars'][key]['type'] == 'float':
-                        add_attrib(trigger, key, round(data[var],2))
-                    elif tg_dict['vars'][key]['type'] == 'bool':
-                        add_attrib(trigger, key, str(data[var]).lower())
-                    else:
-                        add_attrib(trigger, key, data[var])
 
         # Subparts
         subparts = add_subelement(animation, 'Subparts')
