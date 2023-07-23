@@ -218,6 +218,7 @@ def prep_context(context):
     try:
         current_area = context.area.type
         context.area.type = 'VIEW_3D'
+        bpy.ops.object.mode_set(mode='OBJECT')
     except AttributeError:
         context.area.type = 'VIEW_3D'
         current_area = context.area.type

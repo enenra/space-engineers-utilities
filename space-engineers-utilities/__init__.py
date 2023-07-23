@@ -127,6 +127,15 @@ from .animations.seut_animations                import (SEUT_Animations,
                                                         SEUT_AnimationObjects,
                                                         SEUT_AnimationFunctions)
 
+from .quicktools.seut_quicktools_ui             import SEUT_PT_Panel_QuickTools
+from .quicktools.seut_quicktools_operators      import (SEUT_OT_QuickTools_BS_ApplyConstruction,
+                                                        SEUT_OT_QuickTools_BS_CutAndSolidify,
+                                                        SEUT_OT_QuickTools_GEN_OriginToSelected,
+                                                        SEUT_OT_QuickTools_GEN_MirrorAndApply,
+                                                        SEUT_OT_QuickTools_MAIN_AddBevels,
+                                                        SEUT_OT_QuickTools_LOD_RemoveBevels,
+                                                        SEUT_OT_QuickTools_HKT_ApplyTransforms)
+
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToBlenderFormat
 from .utils.seut_ot_convertBoneNames            import SEUT_OT_ConvertBonesToSEFormat
 from .utils.seut_repositories                   import SEUT_OT_GetUpdate
@@ -177,6 +186,7 @@ classes = (
     SEUT_AddonPreferences,
     SEUT_OT_SetDevPaths,
     SEUT_PT_Panel,
+    SEUT_PT_Panel_QuickTools,
     SEUT_PT_Panel_Collections,
     SEUT_PT_Panel_BoundingBox,
     SEUT_PT_Panel_Mirroring,
@@ -299,6 +309,14 @@ classes = (
     SEUT_UL_AnimationFunctions,
     SEUT_PT_Panel_Animation,
     SEUT_PT_Panel_Keyframes,
+
+    SEUT_OT_QuickTools_BS_ApplyConstruction,
+    SEUT_OT_QuickTools_BS_CutAndSolidify,
+    SEUT_OT_QuickTools_GEN_OriginToSelected,
+    SEUT_OT_QuickTools_GEN_MirrorAndApply,
+    SEUT_OT_QuickTools_MAIN_AddBevels,
+    SEUT_OT_QuickTools_LOD_RemoveBevels,
+    SEUT_OT_QuickTools_HKT_ApplyTransforms,
 
     SEUT_MountpointAreas,
     SEUT_Scene,

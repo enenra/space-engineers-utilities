@@ -14,7 +14,7 @@ from bpy.props  import (EnumProperty,
                         )
 
 from .seut_errors                   import seut_report, get_abs_path
-from .seut_utils                    import get_preferences, get_seut_blend_data
+from .seut_utils                    import get_preferences, get_seut_blend_data, to_radians
 from .animations.seut_animations    import SEUT_Animations
 
 
@@ -79,6 +79,39 @@ def update_animations_index(self, context):
     if scene.seut.linkSubpartInstances:
         scene.seut.linkSubpartInstances = False
         scene.seut.linkSubpartInstances = True
+
+        
+def update_qt_lod_view(self, context):
+    scene = context.scene
+
+    if self.qt_lod_view:
+        active_obj = context.view_layer.objects.active
+        col = context.view_layer.active_layer_collection.collection
+
+        bpy.ops.object.add(type='EMPTY', location=(0.0, 0.0, 0.0), rotation=(to_radians(-20), 0.0, to_radians(45)))
+        empty = bpy.context.view_layer.objects.active
+        empty.name = 'LOD_VIEW_ANGLE'
+        empty.empty_display_type = 'SPHERE'
+
+        bpy.ops.object.camera_add(location=(0.0, -col.seut.lod_distance, 0.0), rotation=(to_radians(90), 0.0, 0.0))
+        camera = bpy.context.view_layer.objects.active
+        scene.camera = camera
+        camera.parent = empty
+        camera.name = 'LOD_VIEW'
+        camera.data.name = 'LOD_VIEW'
+        camera.data.angle = 1.22173
+
+        area = next(area for area in bpy.context.screen.areas if area.type == 'VIEW_3D')
+        area.spaces[0].region_3d.view_perspective = 'CAMERA'
+        context.view_layer.objects.active = active_obj
+    
+    else:
+        if 'LOD_VIEW' in bpy.data.objects:
+            camera = bpy.data.objects['LOD_VIEW']
+            bpy.data.objects.remove(camera)
+        if 'LOD_VIEW_ANGLE' in bpy.data.objects:
+            empty = bpy.data.objects['LOD_VIEW_ANGLE']
+            bpy.data.objects.remove(empty)
 
 
 class SEUT_RepositoryProperty(PropertyGroup):
@@ -313,4 +346,12 @@ class SEUT_Text(PropertyGroup):
     animations_index: IntProperty(
         default = 0,
         update = update_animations_index
+    )
+
+    # QuickTools
+    qt_lod_view: BoolProperty(
+        name="LOD Distance View",
+        description="Visualizes the distance set for the active LOD collection",
+        default=False,
+        update=update_qt_lod_view
     )
