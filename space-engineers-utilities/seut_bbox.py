@@ -15,12 +15,13 @@ class SEUT_OT_BBox(Operator):
     bl_label = "Bounding Box"
     bl_options = {'REGISTER', 'UNDO'}
 
+
     def __init__(self):
         self.draw_handle = None
         self.draw_event = None
 
-    def invoke(self, context, event):
 
+    def invoke(self, context, event):
         scene = context.scene
         data = get_seut_blend_data()
 
@@ -64,17 +65,16 @@ class SEUT_OT_BBox(Operator):
         self.draw_handle = bpy.types.SpaceView3D.draw_handler_add(
             self.draw_callback_3d, args, "WINDOW", "POST_VIEW"
         )
-
         self.draw_event = context.window_manager.event_timer_add(1, window=context.window)
 
+
     def unregister_handlers(self, context):
-
         context.window_manager.event_timer_remove(self.draw_event)
-
         bpy.types.SpaceView3D.draw_handler_remove(self.draw_handle, "WINDOW")
 
         self.draw_handle = None
         self.draw_event = None
+
 
     def modal(self, context, event):
         scene = context.scene
@@ -113,21 +113,26 @@ class SEUT_OT_BBox(Operator):
         
         return {'PASS_THROUGH'}
 
+
     def finish(self):
-        self.unregister_handlers(context)
+        self.unregister_handlers(bpy.context)
         return {'FINISHED'}
 
-    def create_batch(self):
 
+    def create_batch(self):
         self.shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
         self.batch = batch_for_shader(self.shader, 'LINES', {"pos": self.coords}, indices=self.indices)
+
 
     def draw_callback_3d(self, op, context):
         data = get_seut_blend_data()
         
-        blend_state = gpu.state.blend_get()
-        gpu.state.blend_set('ALPHA')
-        self.shader.bind()
-        self.shader.uniform_float("color", (data.seut.bBox_color[0], data.seut.bBox_color[1], data.seut.bBox_color[2], data.seut.bBox_color[3]))
-        self.batch.draw(self.shader)
-        gpu.state.blend_set(blend_state)
+        try:
+            blend_state = gpu.state.blend_get()
+            gpu.state.blend_set('ALPHA')
+            self.shader.bind()
+            self.shader.uniform_float("color", (data.seut.bBox_color[0], data.seut.bBox_color[1], data.seut.bBox_color[2], data.seut.bBox_color[3]))
+            self.batch.draw(self.shader)
+            gpu.state.blend_set(blend_state)
+        except:
+            pass

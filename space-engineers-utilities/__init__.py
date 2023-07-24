@@ -174,7 +174,7 @@ from .seut_object                       import SEUT_Object
 from .seut_text                         import SEUT_RepositoryProperty
 from .seut_text                         import SEUT_IssueProperty
 from .seut_text                         import SEUT_Text
-from .seut_utils                        import SEUT_OT_UpdateSubpartInstances
+from .seut_utils                        import SEUT_OT_UpdateSubpartInstances, get_seut_blend_data
 from .seut_errors                       import init_logging
 
 
@@ -390,6 +390,11 @@ def load_handler(dummy):
         load_addon_prefs()
         load_configs()
         init_logging()
+
+        data = get_seut_blend_data()
+        if data.seut.bBox == 'on':
+            data.seut.bBox = 'on'
+
     except Exception as e:
         print(e)
         pass
