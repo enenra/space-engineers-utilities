@@ -2,7 +2,6 @@ import bpy
 import gpu
 import math
 
-from bgl                import *
 from gpu_extras.batch   import batch_for_shader
 from bpy.types          import Operator
 
@@ -126,11 +125,9 @@ class SEUT_OT_BBox(Operator):
     def draw_callback_3d(self, op, context):
         data = get_seut_blend_data()
         
-        try:
-            glEnable(GL_BLEND)
-            self.shader.bind()
-            self.shader.uniform_float("color", (data.seut.bBox_color[0], data.seut.bBox_color[1], data.seut.bBox_color[2], data.seut.bBox_color[3]))
-            self.batch.draw(self.shader)
-            glDisable(GL_BLEND)
-        except:
-            return
+        blend_state = gpu.state.blend_get()
+        gpu.state.blend_set('ALPHA')
+        self.shader.bind()
+        self.shader.uniform_float("color", (data.seut.bBox_color[0], data.seut.bBox_color[1], data.seut.bBox_color[2], data.seut.bBox_color[3]))
+        self.batch.draw(self.shader)
+        gpu.state.blend_set(blend_state)
