@@ -295,7 +295,10 @@ class SEUT_OT_CopyRenderOptions(Operator):
 
         scene = context.scene
 
-        if not os.path.isdir(get_abs_path(scene.render.filepath)):
+        if os.path.isfile(get_abs_path(scene.render.filepath)):
+            os.path.dirname(get_abs_path(scene.render.filepath))
+
+        if not os.path.exists(get_abs_path(scene.render.filepath)):
             os.makedirs(get_abs_path(scene.render.filepath))
         
         for scn in bpy.data.scenes:
