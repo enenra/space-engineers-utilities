@@ -122,7 +122,7 @@ class SEUT_OT_ImportComplete(Operator):
             context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children['SEUT' + tag].children[col.name]
 
             if col_type == 'hkt':
-                collections['hkt'][0].seut.hkt_file = os.path.abspath(f)
+                collections['hkt'][0].seut.hkt_file = os.path.join(directory, f)
                 result = {'FINISHED'}
             else:
                 result = import_fbx(self, context, os.path.join(directory, f))
