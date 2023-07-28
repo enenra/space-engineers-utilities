@@ -265,6 +265,9 @@ def patch_paint_color():
     """Adds the paint_color custom property to all view_layers that miss it."""
 
     for scn in bpy.data.scenes:
+        if not 'SEUT' in scn.view_layers:
+            continue
+        
         vl = scn.view_layers["SEUT"]
         vl["Paint Color"] = (0.25, 0.25, 0.25)
         prop_manager = vl.id_properties_ui("Paint Color")
