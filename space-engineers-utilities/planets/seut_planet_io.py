@@ -411,7 +411,15 @@ def bake_planet_map(context: bpy.types.Context):
         scene.cycles.samples = 1
 
     for mat in mats:
-        node = mat.node_tree.nodes['IMAGE']
+        if mat is None:
+            continue
+
+        if 'IMAGE' not in mat.node_tree.nodes:
+            node = mat.node_tree.nodes.new(type='ShaderNodeTexImage')
+            node.name = 'IMAGE'
+        else:
+            node = mat.node_tree.nodes['IMAGE']
+            
         node.image = create_image(mat.name + suffix, bake_resolution)
         for n in mat.node_tree.nodes:
             n.select = False
