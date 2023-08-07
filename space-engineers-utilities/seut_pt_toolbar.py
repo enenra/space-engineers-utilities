@@ -434,7 +434,7 @@ class SEUT_PT_Panel_Export(Panel):
         row.scale_y = 1.1
         row.operator('scene.export', icon='EXPORT')
 
-        if scene.seut.sceneType in ['mainScene', 'subpart'] and get_preferences().dev_mode:
+        if scene.seut.sceneType in ['mainScene', 'subpart']:
             layout.operator('animation.export', icon='DECORATE_DRIVER')
         
         split = layout.split(factor=0.85, align=True)
