@@ -197,6 +197,16 @@ class SEUT_AddonPreferences(AddonPreferences):
         description="This tool converts the individual 'loose files' that the export yields into MWM files the game can read",
         subtype='FILE_PATH'
     )
+    quick_tools: BoolProperty(
+        name="Quick Tools",
+        description="Enable or disable the SEUT Quick Tools menu panel being displayed",
+        default= True,
+    )
+    animation: BoolProperty(
+        name="Animations Panel",
+        description="Enable or disable the SEUT Animations menu panel being displayed.\nNote that animations are not working yet",
+        default= False,
+    )
 
     def draw(self, context):
         layout = self.layout
@@ -378,6 +388,12 @@ class SEUT_AddonPreferences(AddonPreferences):
         box = layout.box()
         box.label(text="External Tools", icon='TOOL_SETTINGS')
         box.prop(self, "havok_path", text="Havok Filter Manager", expand=True)
+
+        box = layout.box()
+        box.label(text="SEUT Panels", icon="META_PLANE")
+        row = box.row()
+        row.prop(self, "quick_tools")
+        row.prop(self, "animation")
 
 
 def load_icons():

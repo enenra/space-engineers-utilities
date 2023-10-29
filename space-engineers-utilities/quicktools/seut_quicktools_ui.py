@@ -6,7 +6,7 @@ from distutils.fancy_getopt import wrap_text
 
 from ..utils.seut_patch_blend       import check_patch_needed
 from ..seut_collections             import get_collections
-from ..seut_utils                   import get_seut_blend_data
+from ..seut_utils                   import get_seut_blend_data, get_preferences
 
 
 class SEUT_PT_Panel_QuickTools(Panel):
@@ -22,7 +22,7 @@ class SEUT_PT_Panel_QuickTools(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return 'SEUT' in scene.view_layers and not check_patch_needed() and context.area.type == 'VIEW_3D'
+        return 'SEUT' in scene.view_layers and not check_patch_needed() and context.area.type == 'VIEW_3D' and get_preferences().quick_tools
 
 
     def draw(self, context):

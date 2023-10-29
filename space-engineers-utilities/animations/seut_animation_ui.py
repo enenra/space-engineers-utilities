@@ -5,7 +5,7 @@ from bpy.types  import Panel, UIList
 from distutils.fancy_getopt import wrap_text
 
 from ..utils.seut_patch_blend       import check_patch_needed
-from ..seut_utils                   import get_seut_blend_data
+from ..seut_utils                   import get_seut_blend_data, get_preferences
 from ..seut_preferences             import animation_engine
 
 
@@ -58,7 +58,7 @@ class SEUT_PT_Panel_Animation(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers and not check_patch_needed()
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers and not check_patch_needed() and get_preferences().animation
 
 
     def draw(self, context):
@@ -104,7 +104,7 @@ class SEUT_PT_Panel_Keyframes(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers and bpy.context.active_editable_fcurve is not None
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers and bpy.context.active_editable_fcurve is not None and get_preferences().animation
 
 
     def draw(self, context):
