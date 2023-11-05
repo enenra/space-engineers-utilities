@@ -251,7 +251,11 @@ def check_weights(context, obj):
 
 def get_abs_path(path: str) -> str:
     """Returns the absolute path"""
-    return os.path.abspath(bpy.path.abspath(path))
+
+    if bpy.path.abspath(path) == "":
+        return ""
+    else:
+        return os.path.abspath(bpy.path.abspath(path))
                         
 
 def show_popup_report(context, title, text: str):
