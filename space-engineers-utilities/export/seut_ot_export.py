@@ -393,6 +393,9 @@ def export_mwm(self, context):
     # If there are empty collision collections for BS collections, do not duplicate main's HKT for them.
     if 'hkt' in collections and not collections['hkt'] is None and collections['hkt'] != []:
         for col in collections['hkt']:
+            if col.seut.ref_col is None:
+                seut_report(self, context, 'INFO', False, 'I022', col.name)
+                continue
             if col.seut.ref_col.seut.col_type == 'bs' and len(col.objects) == 0:
                 bses.remove(f"{scene.seut.subtypeId}_BS{col.seut.ref_col.seut.type_index}.fbx")
 
