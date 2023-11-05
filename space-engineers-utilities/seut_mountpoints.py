@@ -6,7 +6,7 @@ from bpy.props      import EnumProperty
 
 from .seut_collections              import get_collections, create_seut_collection
 from .seut_errors                   import check_collection, check_collection_excluded, seut_report
-from .seut_utils                    import link_material, prep_context, to_radians, clear_selection, lock_object
+from .seut_utils                    import *
 
 
 valid_masks = ['0:0', '0:1', '0:2', '1:2', '3:3']
@@ -18,6 +18,12 @@ def setup_mountpoints(self, context):
     scene = context.scene
     collections = get_collections(scene)
     current_area = prep_context(context)
+    preferences = get_preferences()
+
+    if preferences.asset_path == "":
+        seut_report(self, context, 'ERROR', True, 'E012', "Asset Directory", get_abs_path(preferences.asset_path))
+        scene.seut.mirroringToggle = 'off'
+        return
 
     result = check_collection(self, context, scene, collections['seut'][0], False)
     if not result == {'CONTINUE'}:
