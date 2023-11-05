@@ -47,7 +47,7 @@ def draw_bau_ui(self, context, element=None):
             row.scale_y = 2.0
             split = row.split(align=True)
 
-            if not bau_entry.dev_mode and bau_entry.rel_ver_needs_update:
+            if bau_entry.rel_ver_needs_update:
                 split.alert = True
                 op = split.operator('wm.bau_update_addon', text="Update available: " + bau_entry.latest_rel_ver_name, icon='IMPORT')
                 op.name = __package__
