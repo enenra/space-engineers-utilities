@@ -87,6 +87,7 @@ warnings = {
     'W017': "Could not find attribute '{variable_1}' in element '{variable_2}'. Skipping.",
     'W018': "Nonstandard bones detected. You may need to alter the Animation Controller for them to work as intended.",
     'W019': "Material '{variable_1}' has a linked '{variable_2}'-texture but the material technique '{variable_3}' does not support it.",
+    'W020': "Scene '{variable_1}' is set to a different grid size than its export size and contains a subpart empty '{variable_2}'. Subpart empties do not support export to a different grid size.",
 }
 
 infos = {

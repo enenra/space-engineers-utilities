@@ -18,6 +18,10 @@ from ..seut_errors                  import *
 from ..seut_utils                   import prep_context, get_preferences, create_relative_path, get_addon
 from ..utils.seut_tool_utils        import get_tool_dir
 
+
+orig_grid_scale = ""
+
+
 class SEUT_OT_Export(Operator):
     """Exports all collections in the current scene and compiles them to MWM.\nScene needs to be in Object mode for export to be available"""
     bl_idname = "scene.export"
@@ -102,6 +106,8 @@ def export(self, context):
         scene.timeline_markers.new('F_00', frame=0)
         
     grid_scale = str(scene.seut.gridScale)
+    global orig_grid_scale
+    orig_grid_scale = grid_scale
     subtype_id = str(scene.seut.subtypeId)
     rescale_factor = int(scene.seut.export_rescaleFactor)
     path = str(scene.seut.export_exportPath)
@@ -214,6 +220,10 @@ def export_main(self, context):
         # Check for missing UVMs (this might not be 100% reliable)
         if check_uvms(self, context, obj) != {'CONTINUE'}:
             return {'CANCELLED'}
+        
+        if obj.type == 'EMPTY' and 'file' in obj and not obj.seut.linked:
+            if orig_grid_scale == 'large' and scene.seut.export_smallGrid or orig_grid_scale == 'small' and scene.seut.export_largeGrid:
+                seut_report(self, context, 'WARNING', True, 'W020', scene.name, obj.name)
 
     # Check for armatures being present in collection
     if not found_armatures and scene.seut.sceneType in ['character','character_animation',]:
