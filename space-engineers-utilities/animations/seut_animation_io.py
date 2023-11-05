@@ -160,7 +160,7 @@ def export_animation_xml(self, context: bpy.types.Context):
     xml_string = xml.dom.minidom.parseString(temp_string)
     xml_formatted = xml_string.toprettyxml()
 
-    filename = scene.seut.subtypeId
+    filename = os.path.splitext(os.path.basename(bpy.data.filepath))[0]
     target_file = os.path.join(path_data, f"{filename}.xml")
     if not os.path.exists(os.path.join(path_data)):
         os.makedirs(os.path.join(path_data))
