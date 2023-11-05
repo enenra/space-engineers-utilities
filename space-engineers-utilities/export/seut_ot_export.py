@@ -268,6 +268,11 @@ def export_hkt(self, context):
                         cancelled = True
                         break
 
+                    if obj.rigid_body.collision_shape == 'COMPOUND':
+                        seut_report(self, context, 'ERROR', True, 'E054', obj.name, col.name)
+                        cancelled = True
+                        break
+
                     # TODO: Investigate this again, and only apply rigidbody if there isn't one already
                     context.view_layer.objects.active = obj
                     # bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) # This runs on all objects instead of just the active one for some reason. Breaks when there's instanced subparts.
