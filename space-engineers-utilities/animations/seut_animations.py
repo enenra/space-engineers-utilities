@@ -11,9 +11,8 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
-from ..seut_preferences     import animation_engine
+
 from ..seut_utils           import get_seut_blend_data
-from .seut_animation_utils  import update_vars
 
 
 def poll_animation_objects_obj(self, object):
@@ -40,19 +39,6 @@ def update_animation_name(self, context):
             return
     
     self.name_prev = self.name
-
-
-def items_function_types(self, context):
-    items = []
-    for key, entry in animation_engine['functions'].items():
-        items.append((key, entry['name'], entry['description']))
-
-    return items
-
-
-def update_function_type(self, context):
-    self.name = self.function_type
-    update_vars(self, 'functions', animation_engine)
 
 
 def poll_setVisible_empty(self, object):
@@ -93,46 +79,5 @@ class SEUT_Animations(PropertyGroup):
         type = SEUT_AnimationObjects
     )
     subparts_index: IntProperty(
-        default = 0
-    )
-
-
-class SEUT_AnimationFunctions(PropertyGroup):
-    """SEUT Animation Function prop holder"""
-
-    name: StringProperty()
-    
-    function_type: EnumProperty(
-        name = "Type",
-        description = "Functions allow the animation to cause ingame effects at the containing keyframe's point in time",
-        items = items_function_types,
-        default = 0,
-        update = update_function_type
-    )
-    vars: StringProperty(
-        default = "[]"
-    )
-
-
-class SEUT_Keyframes(PropertyGroup):
-    """Holder for the various Keyframe properties"""
-
-    name: StringProperty()
-
-    functions: CollectionProperty(
-        type = SEUT_AnimationFunctions
-    )
-    functions_index: IntProperty(
-        default = 0
-    )
-
-
-class SEUT_Actions(PropertyGroup):
-    """Holder for the various Action properties"""
-
-    keyframes: CollectionProperty(
-        type = SEUT_Keyframes
-    )
-    keyframes_index: IntProperty(
         default = 0
     )

@@ -6,7 +6,6 @@ from distutils.fancy_getopt import wrap_text
 
 from ..utils.seut_patch_blend       import check_patch_needed
 from ..seut_utils                   import get_seut_blend_data, get_preferences
-from ..seut_preferences             import animation_engine
 
 
 
@@ -28,18 +27,6 @@ class SEUT_UL_AnimationObjects(UIList):
         row = layout.row()
         row.label(text="", icon='DOT')
         row.prop(item, "obj", text="")
-
-    def invoke(self, context, event):
-        pass
-
-
-class SEUT_UL_AnimationFunctions(UIList):
-    """Creates the Animation Function UI list"""
-
-    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
-        row = layout.row()
-        row.label(text="", icon='DOT')
-        row.prop(item, "function_type", text="")
 
     def invoke(self, context, event):
         pass
@@ -104,71 +91,22 @@ class SEUT_PT_Panel_Keyframes(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers and bpy.context.active_editable_fcurve is not None and get_preferences().animation
+        bezier = any(k.interpolation == 'BEZIER' for k in bpy.context.active_editable_fcurve.keyframe_points)
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers and bpy.context.active_editable_fcurve is not None and bezier and get_preferences().animation
 
 
     def draw(self, context):
-        data = get_seut_blend_data()
-        fcurve = bpy.context.active_editable_fcurve
-        keyframes = fcurve.keyframe_points
         layout = self.layout
 
-        bezier = any(k.interpolation == 'BEZIER' for k in keyframes)
-        if bezier:
-            row = layout.row()
+        row = layout.row()
+        row.alert = True
+        ui_scale = context.preferences.system.ui_scale
+        width = context.region.width
+        row.label(text="Incompatible Interpolation", icon='ERROR')
+        text = "One or more Keyframes use 'Bezier' interpolation, which is not supported by the Animation Engine and will be automatically changed to 'Linear' on export."
+        box = layout.box()
+        for l in wrap_text(text, int((width / ui_scale) / 6.75)):
+            row = box.row()
             row.alert = True
-            ui_scale = context.preferences.system.ui_scale
-            width = context.region.width
-            row.label(text="Incompatible Interpolation", icon='ERROR')
-            text = "One or more Keyframes use 'Bezier' interpolation, which is not supported by the Animation Engine and will be automatically changed to 'Linear' on export."
-            box = layout.box()
-            for l in wrap_text(text, int((width / ui_scale) / 6.75)):
-                row = box.row()
-                row.alert = True
-                row.scale_y = 0.75
-                row.label(text=l)
-
-        count = 0
-        for k in keyframes:
-            if k.select_control_point == True:
-                count += 1
-                keyframe = k
-
-        if count <= 1:
-            action = context.active_object.animation_data.action
-            active_keyframe = next(
-                (k for k in fcurve.keyframe_points if k.select_control_point == True), None
-            )
-
-            seut_kf = next(
-                (k for k in action.seut.keyframes if k.name == str(active_keyframe)), None
-            )
-            if seut_kf is None:
-                layout.operator("animation.add_function", icon='ADD')
-                return
-
-            if len(seut_kf.functions) <= 0:
-                layout.operator("animation.add_function", icon='ADD')
-
-            else:
-                box = layout.box()
-                box.label(text="Functions", icon='CONSOLE')
-
-                row = box.row()
-                row.template_list("SEUT_UL_AnimationFunctions", "", seut_kf, "functions", seut_kf, "functions_index", rows=3)
-                col = row.column(align=True)
-                col.operator("animation.add_function", icon='ADD', text="")
-                col.operator("animation.remove_function", icon='REMOVE', text="")
-
-                kf_function = seut_kf.functions[seut_kf.functions_index]
-                if kf_function is not None:
-
-                    vars_list = json.loads(kf_function.vars)
-                    if vars_list != []:
-                        box_vars = box.box()
-                        box_vars.label(text="Variables", icon='PRESET')
-
-                        for var in vars_list:
-                            key = var[var.rfind("_")+1:]
-                            name = animation_engine['functions'][kf_function.name]['vars'][key]['name']
-                            box_vars.prop(data, f'["{var}"]', text=name)
+            row.scale_y = 0.75
+            row.label(text=l)

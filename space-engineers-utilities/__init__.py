@@ -108,20 +108,14 @@ from .animations.seut_animation_operators       import (SEUT_OT_Animation_Export
                                                         SEUT_OT_Animation_Remove,
                                                         SEUT_OT_Animation_SubpartEmpty_Add,
                                                         SEUT_OT_Animation_SubpartEmpty_Remove,
-                                                        SEUT_OT_Animation_Function_Add,
-                                                        SEUT_OT_Animation_Function_Remove,
                                                         SEUT_OT_Animation_Action_Add,
                                                         SEUT_OT_Animation_Action_Remove)
 from .animations.seut_animation_ui              import (SEUT_PT_Panel_Animation,
                                                         SEUT_PT_Panel_Keyframes,
                                                         SEUT_UL_Animations,
-                                                        SEUT_UL_AnimationObjects,
-                                                        SEUT_UL_AnimationFunctions)
+                                                        SEUT_UL_AnimationObjects)
 from .animations.seut_animations                import (SEUT_Animations,
-                                                        SEUT_Actions,
-                                                        SEUT_Keyframes,
-                                                        SEUT_AnimationObjects,
-                                                        SEUT_AnimationFunctions)
+                                                        SEUT_AnimationObjects)
 
 from .quicktools.seut_quicktools_ui             import SEUT_PT_Panel_QuickTools
 from .quicktools.seut_quicktools_operators      import (SEUT_OT_QuickTools_BS_ApplyConstruction,
@@ -283,22 +277,16 @@ classes = (
     SEUT_PlanetPropertiesOreMappings,
 
     SEUT_AnimationObjects,
-    SEUT_AnimationFunctions,
     SEUT_Animations,
-    SEUT_Keyframes,
-    SEUT_Actions,
     SEUT_OT_Animation_Export,
     SEUT_OT_Animation_Add,
     SEUT_OT_Animation_Remove,
     SEUT_OT_Animation_SubpartEmpty_Add,
     SEUT_OT_Animation_SubpartEmpty_Remove,
-    SEUT_OT_Animation_Function_Add,
-    SEUT_OT_Animation_Function_Remove,
     SEUT_OT_Animation_Action_Add,
     SEUT_OT_Animation_Action_Remove,
     SEUT_UL_Animations,
     SEUT_UL_AnimationObjects,
-    SEUT_UL_AnimationFunctions,
     SEUT_PT_Panel_Animation,
     SEUT_PT_Panel_Keyframes,
 
@@ -329,7 +317,6 @@ def register():
     bpy.types.VIEW3D_MT_add.append(menu_draw)
 
     bpy.types.AssetMetaData.seut = PointerProperty(type=SEUT_Asset)
-    bpy.types.Action.seut = PointerProperty(type=SEUT_Actions)
     bpy.types.Material.seut = PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
@@ -354,7 +341,6 @@ def unregister():
     bpy.types.VIEW3D_MT_add.remove(menu_draw)
 
     del bpy.types.AssetMetaData.seut
-    del bpy.types.Action.seut
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
     del bpy.types.Object.seut

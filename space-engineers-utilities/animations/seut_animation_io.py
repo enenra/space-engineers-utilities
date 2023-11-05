@@ -1,16 +1,12 @@
 import bpy
 import os
 import math
-import json
 
 from math import pi
 
-from .seut_animations       import items_function_types
-
 from ..utils.seut_xml_utils import *
 from ..seut_errors          import seut_report
-from ..seut_utils           import get_abs_path, get_enum_items, get_seut_blend_data
-from ..seut_preferences     import animation_engine
+from ..seut_utils           import get_abs_path, get_seut_blend_data
 
 
 def export_animation_xml(self, context: bpy.types.Context):
@@ -129,32 +125,6 @@ def export_animation_xml(self, context: bpy.types.Context):
                         add_attrib(anim, 'easing', 'EASE_OUT')
                     elif kf.easing != 'AUTO':
                         add_attrib(anim, 'easing', kf.easing)
-
-                # Write Functions
-                for kf in k_f_dict.keys():
-                    seut_kf = next(
-                        (k for k in sp.action.seut.keyframes if k.name == str(kf)), None
-                    )
-                    if seut_kf is not None:
-                        for func in seut_kf.functions:
-
-                            function = ET.SubElement(keyframe, 'Function')
-                            add_attrib(function, 'type', func.function_type)
-
-                            func_dict = animation_engine['functions'][func.function_type]
-                            vars_list = json.loads(func.vars)
-                            if vars_list != []:
-                                for var in vars_list:
-                                    key = var[var.rfind("_")+1:]
-
-                                    if func_dict['vars'][key]['type'] == 'color':
-                                        add_attrib(function, key, f"[{round(data[var][0],1)},{round(data[var][1],1)},{round(data[var][2],1)}]")
-                                    elif func_dict['vars'][key]['type'] == 'float':
-                                        add_attrib(function, key, round(data[var],2))
-                                    elif func_dict['vars'][key]['type'] == 'bool':
-                                        add_attrib(function, key, str(data[var]).lower())
-                                    else:
-                                        add_attrib(function, key, data[var])
 
     temp_string = ET.tostring(animations, 'utf-8')
     xml_string = xml.dom.minidom.parseString(temp_string)

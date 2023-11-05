@@ -15,7 +15,6 @@ from .seut_bau                      import draw_bau_ui, get_config, set_config
 
 preview_collections = {}
 empties = {}
-animation_engine = {}
 
 
 class SEUT_OT_SetDevPaths(Operator):
@@ -483,7 +482,6 @@ def load_configs():
     load_empty_json('dummies')
     load_empty_json('highlight_empties')
     load_empty_json('preset_subparts')
-    load_animation_json()
 
 
 def load_empty_json(empty_type):
@@ -514,48 +512,3 @@ def load_empty_json(empty_type):
             'description': entry['description'],
             'index': entry['index']
         }
-
-
-def load_animation_json():
-    """Loads the config file for animation functions"""
-
-    preferences = get_preferences()
-    path = os.path.join(preferences.asset_path, "Config", "animation_engine.cfg")
-    global animation_engine
-    animation_engine['functions'] = {}
-
-    if not os.path.exists(path):
-        return
-
-    with open(path) as cfg_file:
-        data = json.load(cfg_file)
-
-    if 'functions' not in data:
-        return
-
-    for key, entry in data['functions'].items():
-        animation_engine['functions'][key] = {
-            'name': entry['name'],
-            'description': entry['description']
-        }
-        load_vars(entry, 'functions', key, animation_engine)
-    
-    
-def load_vars(entry, holder, key, animation_engine):
-
-    def add_if_exists(read_dict, input_dict, prop):
-        if prop in read_dict:
-            input_dict[prop] = read_dict[prop]
-
-    if 'vars' in entry:
-        animation_engine[holder][key]['vars'] = {}
-        for k, v in entry['vars'].items():
-            animation_engine[holder][key]['vars'][k] = {
-                'name': v['name'],
-                'description': v['description'],
-                'type': v['type'],
-            }
-            add_if_exists(v, animation_engine[holder][key]['vars'][k], 'default')
-            add_if_exists(v, animation_engine[holder][key]['vars'][k], 'min')
-            add_if_exists(v, animation_engine[holder][key]['vars'][k], 'max')
-            add_if_exists(v, animation_engine[holder][key]['vars'][k], 'subtype')

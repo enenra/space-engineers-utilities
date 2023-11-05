@@ -1,24 +1,12 @@
 import bpy
 import os
-import json
 
 from bpy.types              import Operator
-from bpy.props              import (EnumProperty,
-                                    FloatProperty,
-                                    FloatVectorProperty,
-                                    IntProperty,
-                                    StringProperty,
-                                    BoolProperty,
-                                    PointerProperty,
-                                    CollectionProperty
-                                    )
 from bpy_extras.io_utils    import ImportHelper
 
-from ..seut_preferences import animation_engine
-from ..seut_errors      import get_abs_path, seut_report
+from ..seut_errors      import get_abs_path
 from ..seut_utils       import get_seut_blend_data
 
-from .seut_animation_utils  import *
 from .seut_animation_io     import *
 
 
@@ -145,75 +133,6 @@ class SEUT_OT_Animation_SubpartEmpty_Remove(Operator):
 
         animation_set.subparts.remove(animation_set.subparts_index)
         animation_set.subparts_index = min(max(0, animation_set.subparts_index - 1), len(animation_set.subparts) - 1)
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Animation_Function_Add(Operator):
-    """Associates the selected Keyframe with a function"""
-    bl_idname = "animation.add_function"
-    bl_label = "Add Animation Function"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        action = context.active_object.animation_data.action
-        active_fcurve = bpy.context.active_editable_fcurve
-        active_keyframe = next(
-            (k for k in active_fcurve.keyframe_points if k.select_control_point == True), None
-        )
-
-        seut_kf = get_or_create_prop(action.seut.keyframes, active_keyframe)
-
-        item = seut_kf.functions.add()
-        update_vars(item, 'functions', animation_engine)
-        item.name = item.function_type
-
-        collection_property_cleanup(action.seut.keyframes)
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Animation_Function_Remove(Operator):
-    """Removes a function from the selected Keyframe"""
-    bl_idname = "animation.remove_function"
-    bl_label = "Remove Animation Function"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        data = get_seut_blend_data()
-
-        action = context.active_object.animation_data.action
-        active_fcurve = bpy.context.active_editable_fcurve
-        active_keyframe = next(
-            (k for k in active_fcurve.keyframe_points if k.select_control_point == True), None
-        )
-        seut_kf = next(
-            (k for k in action.seut.keyframes if k.name == str(active_keyframe)), None
-        )
-
-        function = seut_kf.functions[seut_kf.functions_index]
-        vars_list = json.loads(function.vars)
-        for var in vars_list:
-            del data[var]
-
-        seut_kf.functions.remove(seut_kf.functions_index)
-        seut_kf.functions_index = min(max(0, seut_kf.functions_index - 1), len(seut_kf.functions) - 1)
-        
-        collection_property_cleanup(action.seut.keyframes)
 
         return {'FINISHED'}
 
