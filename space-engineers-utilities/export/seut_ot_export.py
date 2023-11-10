@@ -278,7 +278,7 @@ def export_hkt(self, context):
                         cancelled = True
                         break
 
-                    if obj.rigid_body.collision_shape == 'COMPOUND':
+                    if obj.rigid_body is not None and obj.rigid_body.collision_shape == 'COMPOUND':
                         seut_report(self, context, 'ERROR', True, 'E054', obj.name, col.name)
                         cancelled = True
                         break
