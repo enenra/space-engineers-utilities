@@ -22,15 +22,7 @@ def setup_icon_render(self, context):
         scene.seut.mirroringToggle = 'off'
         return
 
-    if not bpy.data.is_saved:
-        seut_report(self, context, 'ERROR', False, 'E008')
-        scene.seut.renderToggle = 'off'
-        return {'CANCELLED'}
-
     collection = create_seut_collection(scene, 'render')
-    
-    if scene.render.filepath == '/tmp\\':
-        scene.render.filepath = '//'
 
     # Spawn holder empty
     bpy.ops.object.add(type='EMPTY', location=scene.seut.renderEmptyLocation, rotation=scene.seut.renderEmptyRotation)
@@ -194,6 +186,10 @@ class SEUT_OT_IconRenderPreview(Operator):
 
     @classmethod
     def poll(cls, context):
+        if context.scene.render.filepath == '/tmp\\':
+            Operator.poll_message_set("A render folder must first be defined.")
+            return False
+    
         return context.scene.seut.renderToggle == 'on'
 
 
