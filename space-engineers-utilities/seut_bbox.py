@@ -120,7 +120,7 @@ class SEUT_OT_BBox(Operator):
 
 
     def create_batch(self):
-        self.shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
+        self.shader = gpu.shader.from_builtin('UNIFORM_COLOR')
         self.batch = batch_for_shader(self.shader, 'LINES', {"pos": self.coords}, indices=self.indices)
 
 
