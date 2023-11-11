@@ -182,6 +182,7 @@ classes = (
     SEUT_PT_Panel_Mirroring,
     SEUT_PT_Panel_Mountpoints,
     SEUT_PT_Panel_IconRender,
+    SEUT_PT_Panel_Animation,
     SEUT_PT_Panel_Export,
     SEUT_PT_Panel_Import,
     SEUT_PT_Panel_Materials,
@@ -287,7 +288,6 @@ classes = (
     SEUT_OT_Animation_Action_Remove,
     SEUT_UL_Animations,
     SEUT_UL_AnimationObjects,
-    SEUT_PT_Panel_Animation,
     SEUT_PT_Panel_Keyframes,
 
     SEUT_OT_QuickTools_BS_ApplyConstruction,
