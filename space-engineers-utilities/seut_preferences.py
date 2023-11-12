@@ -9,7 +9,7 @@ from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
 
 from .utils.seut_repositories       import *
 from .seut_errors                   import seut_report, get_abs_path
-from .seut_utils                    import get_preferences, get_addon, get_seut_blend_data
+from .seut_utils                    import get_preferences, get_addon, get_seut_blend_data, wrap_text
 from .seut_bau                      import draw_bau_ui, get_config, set_config
 
 
@@ -212,12 +212,6 @@ class SEUT_AddonPreferences(AddonPreferences):
         data = get_seut_blend_data()
         preferences = get_preferences()
 
-        if bpy.app.version < (3, 0, 0):
-            row = layout.row()
-            row.alert = True
-            row.label(text="SEUT requires Blender 3.0+. Please update your Blender installation!")
-            return
-
         self.dev_mode = get_addon().bl_info['dev_version'] > 0
 
         preview_collections = get_icons()
@@ -229,6 +223,17 @@ class SEUT_AddonPreferences(AddonPreferences):
         link = row.operator('wm.semref_link', text="", icon='INFO')
         link.section = 'reference'
         link.page = '6127826/SEUT+Preferences'
+
+        if bpy.app.version < (4, 0, 0):
+            box = layout.box()
+            row = box.row()
+            row.alert = True
+            row.label(text="Version Incompatibility", icon='ERROR')
+            for l in wrap_text("SEUT requires Blender 4.0 or later. Using an earlier version may lead to unexpected and non-obvious errors. Please update your Blender installation!", int(context.region.width / 7)):
+                row = box.row()
+                row.scale_y = 0.75
+                row.alert = True
+                row.label(text=l)
 
         try:
             draw_bau_ui(self, context)
