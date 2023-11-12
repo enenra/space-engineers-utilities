@@ -123,7 +123,12 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
     # BLENDER: object type, etc.
     _fbx.elem_data_single_int32(model, b"MultiLayer", 0)
     _fbx.elem_data_single_int32(model, b"MultiTake", 0)
-    _fbx.elem_data_single_char(model, b"Shading", b"\x01")
+
+    if bpy.app.version < (4, 0, 0):
+        _fbx.elem_data_single_bool(model, b"Shading", True)
+    else:
+        _fbx.elem_data_single_char(model, b"Shading", b"\x01")
+        
     _fbx.elem_data_single_string(model, b"Culling", b"CullingOff")
 
     if obj_type == b"Camera":
