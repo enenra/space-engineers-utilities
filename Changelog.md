@@ -11,6 +11,7 @@ Relevant Milestone: [SEUT 1.2.0](https://github.com/enenra/space-engineers-utili
 * Improved: Export errors now properly interrupt the entire export process. (Beta 1)
 * Improved: Switched material technique error to warning. (Beta 1)
 * Improved: The way some error messages would display empty paths. (Beta 1)
+* Improved: Warning when using outdated version of Blender. (Beta 2)
 * Changed [#371](https://github.com/enenra/space-engineers-utilities/issues/371) & [#372](https://github.com/enenra/space-engineers-utilities/issues/372): Updated the way the `Bounding Box` is drawn to ensure Blender 4.0 compatibility. (Beta 1)
 * Fixed [#378](https://github.com/enenra/space-engineers-utilities/issues/378): BAU would not offer to update to a newer release version if user was on a dev version. (Beta 1)
 * Fixed: Longstanding bug that would lead to subpart duplication. (Beta 1)
@@ -19,7 +20,7 @@ Relevant Milestone: [SEUT 1.2.0](https://github.com/enenra/space-engineers-utili
 * Fixed: `Complete Import` not setting `HKT` path correctly. (Beta 1)
 * Fixed: Issue during SEUT patching process. (Beta 1)
 * Fixed: Issue during `Planet Editor` baking process when image nodes were not present in materials. (Beta 1)
-* Fixed: Export errors with Blender 4.0 . (Beta 1)
+* Fixed: Export error with Blender 4.0 . (Beta 1)
 
 # Installation
 Refer to the [install guide](https://semref.atlassian.net/wiki/spaces/tutorials/pages/131411/SEUT+Installation+Guide).
