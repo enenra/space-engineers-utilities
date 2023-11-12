@@ -396,8 +396,16 @@ class SEUT_AddonPreferences(AddonPreferences):
         box = layout.box()
         box.label(text="SEUT Panels", icon="META_PLANE")
         row = box.row()
-        row.prop(self, "quick_tools")
-        row.prop(self, "animation")
+
+        box1 = row.box()
+        box1.prop(self, "quick_tools")
+        row1 = box1.row()
+        row1.label(text="An assortment of shortcuts for modelling SE objects.")
+
+        box2 = row.box()
+        box2.prop(self, "animation")
+        row2 = box2.row()
+        row2.label(text="Animation setup and export for the AnimationEngine framework.")
 
 
 def load_icons():
