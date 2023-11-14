@@ -518,7 +518,7 @@ def revert_mat_after_export(self, context, material):
             seut_report(self, context, 'INFO', False, 'I005', material.name)
 
 
-vanilla_bones = ['SE_RigPelvis', 'SE_RigLThigh', 'SE_RigLCalf', 'SE_RigLFoot', 'SE_RigLR_Foot_tip1', 'SE_RigSpine1', 'SE_RigSpine2', 'SE_RigSpine3', 'SE_RigSpine4', 'SE_RigRibcage', 'SE_RigNeck', 'SE_RigHead', 'SE_RigHelmetGlassBone', 'SE_RigL_Eye', 'SE_RigL_EyeLidUpper', 'SE_RigL_EyeLidLower', 'SE_RigR_Eye', 'SE_RigR_EyeLidUpper', 'SE_RigR_EyeLidLower', 'SE_RigLCollarbone', 'SE_RigLUpperarm', 'SE_RigLForearm1', 'SE_RigLForearm2', 'SE_RigLForearm3', 'SE_RigLPalm', 'SE_RigL_Thumb_1', 'SE_RigL_Thumb_2', 'SE_RigL_Thumb_3', 'SE_RigL_Index_1', 'SE_RigL_Index_2', 'SE_RigL_Index_3', 'SE_RigL_Middle_1', 'SE_RigL_Middle_2', 'SE_RigL_Middle_3', 'SE_RigL_Ring_1', 'SE_RigL_Ring_2', 'SE_RigL_Ring_3', 'SE_RigL_Little_1', 'SE_RigL_Little_2', 'SE_RigL_Little_3', 'SE_RigRCollarbone', 'SE_RigRUpperarm', 'SE_RigRForearm1', 'SE_RigRForearm2', 'SE_RigRForearm3', 'SE_RigRPalm', 'SE_RigR_Thumb_1', 'SE_RigR_Thumb_2', 'SE_RigR_Thumb_3', 'SE_RigR_Index_1', 'SE_RigR_Index_2', 'SE_RigR_Index_3', 'SE_RigR_Middle_1', 'SE_RigR_Middle_2', 'SE_RigR_Middle_3', 'SE_RigR_Ring_1', 'SE_RigR_Ring_2', 'SE_RigR_Ring_3', 'SE_RigR_Little_1', 'SE_RigR_Little_2', 'SE_RigR_Little_3', 'SE_RigRibcageBone001', 'SE_RigRThigh', 'SE_RigRCalf', 'SE_RigRFoot', 'SE_RigRR_Foot_tip1']
+vanilla_bones = ['SE_RigPelvis', 'SE_RigLThigh', 'SE_RigLCalf', 'SE_RigLFoot', 'SE_RigLR_Foot_tip1', 'SE_RigSpine1', 'SE_RigSpine2', 'SE_RigSpine3', 'SE_RigSpine4', 'SE_RigRibcage', 'SE_RigNeck', 'SE_RigHead', 'SE_RigHelmetGlassBone', 'SE_RigL_Eye', 'SE_RigL_EyeLidUpper', 'SE_RigL_EyeLidLower', 'SE_RigR_Eye', 'SE_RigR_EyeLidUpper', 'SE_RigR_EyeLidLower', 'SE_RigLCollarbone', 'SE_RigLUpperarm', 'SE_RigLForearm1', 'SE_RigLForearm2', 'SE_RigLForearm3', 'SE_RigLPalm', 'SE_RigL_Thumb_1', 'SE_RigL_Thumb_2', 'SE_RigL_Thumb_3', 'SE_RigL_Index_1', 'SE_RigL_Index_2', 'SE_RigL_Index_3', 'SE_RigL_Middle_1', 'SE_RigL_Middle_2', 'SE_RigL_Middle_3', 'SE_RigL_Ring_1', 'SE_RigL_Ring_2', 'SE_RigL_Ring_3', 'SE_RigL_Little_1', 'SE_RigL_Little_2', 'SE_RigL_Little_3', 'SE_RigRCollarbone', 'SE_RigRUpperarm', 'SE_RigRForearm1', 'SE_RigRForearm2', 'SE_RigRForearm3', 'SE_RigRPalm', 'SE_RigR_Thumb_1', 'SE_RigR_Thumb_2', 'SE_RigR_Thumb_3', 'SE_RigR_Index_1', 'SE_RigR_Index_2', 'SE_RigR_Index_3', 'SE_RigR_Middle_1', 'SE_RigR_Middle_2', 'SE_RigR_Middle_3', 'SE_RigR_Ring_1', 'SE_RigR_Ring_2', 'SE_RigR_Ring_3', 'SE_RigR_Little_1', 'SE_RigR_Little_2', 'SE_RigR_Little_3', 'SE_RigRibcageBone001', 'SE_RigRThigh', 'SE_RigRCalf', 'SE_RigRFoot', 'SE_RigRR_Foot_tip1', 'SE_RigL_Weapon_pin', 'SE_RigR_Weapon_pin']
 
 
 def export_collection(self, context, collection):
@@ -532,21 +532,21 @@ def export_collection(self, context, collection):
     if context.scene.seut.sceneType == 'character':
 
         # Displays warning if non-vanilla bone names are detected
-        non_vanilla_bones = False
+        non_vanilla_bones = []
         for obj in context.scene.objects:
             if obj.type != 'ARMATURE':
                 continue
 
             for b in bpy.data.armatures[obj.data.name].bones:
                 if b.name not in vanilla_bones:
-                    non_vanilla_bones = True
+                    non_vanilla_bones.append(b.name)
 
             if obj.scale == (1.0, 1.0, 1.0):
                 seut_report(self, context, 'ERROR', False, 'E052')
                 return {'CANCELLED'}
 
-        if non_vanilla_bones:
-            seut_report(self, context, 'WARNING', False, 'W018')
+        if len(non_vanilla_bones) > 0:
+            seut_report(self, context, 'WARNING', False, 'W018', str(non_vanilla_bones))
 
         current_scn = context.scene
         bpy.ops.scene.new(type='FULL_COPY')
