@@ -208,7 +208,7 @@ def export_main(self, context):
     unparented_objects = 0
     for obj in collections['main'][0].objects:
 
-        if scene.seut.sceneType == 'chraracter' and check_weights(context, obj) is False:
+        if scene.seut.sceneType == 'character' and check_weights(context, obj) is False:
             return {'CANCELLED'}
 
         if obj is not None and obj.type == 'ARMATURE':
