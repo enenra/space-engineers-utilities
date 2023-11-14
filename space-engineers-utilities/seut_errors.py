@@ -239,15 +239,51 @@ def check_weights(context, obj):
     if obj is None or obj.data is None or obj.data.vertices is None or len(obj.data.vertices) <= 0:
         return None
 
+    ungrouped = False
+    weightless = False
+    grp_ungrouped = "Problematic - Ungrouped"
+    grp_weightless = "Problematic - Unweighted"
     for v in obj.data.vertices:
-        if len(v.groups) == 0:
-            seut_report(None, context, 'ERROR', True, 'E051', obj.name, "Vertex is not grouped in vertex group.")
-            return False
+        
+        if len(v.groups) == 0 or len(v.groups) == 1 and obj.vertex_groups[v.groups[0].group].name in [grp_ungrouped, grp_weightless]:
+            if grp_ungrouped in obj.vertex_groups:
+                grp = obj.vertex_groups[grp_ungrouped]
+            else:
+                grp = obj.vertex_groups.new(name=grp_ungrouped)
+            grp.add([v.index], 0.0, 'ADD')
+            ungrouped = True
+        else:
+            if any(obj.vertex_groups[x.group].name == grp_ungrouped for x in v.groups):
+                obj.vertex_groups[grp_ungrouped].remove([v.index])
 
+
+        total_weight = 0
         for g in v.groups:
-            if g.weight < 0:
-                seut_report(None, context, 'ERROR', True, 'E051', obj.name, "Vertex is not weight-painted.")
-                return False
+            total_weight += g.weight
+        
+        if total_weight == 0:
+            if grp_weightless in obj.vertex_groups:
+                grp = obj.vertex_groups[grp_weightless]
+            else:
+                grp = obj.vertex_groups.new(name=grp_weightless)
+            grp.add([v.index], 0.0, 'ADD')
+            weightless = True
+        else:
+            if any(obj.vertex_groups[x.group].name == grp_weightless for x in v.groups):
+                obj.vertex_groups[grp_weightless].remove([v.index])
+
+
+    if grp_ungrouped in obj.vertex_groups and len([v for v in obj.data.vertices if obj.vertex_groups[grp_ungrouped].index in [vg.group for vg in v.groups]]) == 0:
+        obj.vertex_groups.remove(obj.vertex_groups[grp_ungrouped])
+    if grp_weightless in obj.vertex_groups and len([v for v in obj.data.vertices if obj.vertex_groups[grp_weightless].index in [vg.group for vg in v.groups]]) == 0:
+        obj.vertex_groups.remove(obj.vertex_groups[grp_weightless])
+
+    if grp_ungrouped in obj.vertex_groups and ungrouped:
+        seut_report(None, context, 'ERROR', True, 'E051', obj.name, f"Vertex is not grouped in vertex group. Added to vertex group '{grp_ungrouped}'.")
+        return False
+    if grp_weightless in obj.vertex_groups and weightless:
+        seut_report(None, context, 'ERROR', True, 'E051', obj.name, f"One or multiple vertices are not weight-painted. Added to vertex group '{grp_weightless}'.")
+        return False
     
     return True
 
