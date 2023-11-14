@@ -91,6 +91,8 @@ class SEUT_PT_Panel_Keyframes(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
+        if context.active_editable_fcurve is None:
+            return False
         bezier = any(k.interpolation == 'BEZIER' for k in bpy.context.active_editable_fcurve.keyframe_points)
         return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers and bpy.context.active_editable_fcurve is not None and bezier and get_preferences().animation
 
