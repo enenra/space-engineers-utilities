@@ -72,7 +72,7 @@ def remap_materials(self, context, all_objects = False):
 
             obj.select_set(True)
 
-            bpy.ops.object.material_slot_remove_unused({'object': obj})
+            bpy.ops.object.material_slot_remove_unused()
 
             obj.select_set(False)
 
