@@ -78,7 +78,7 @@ warnings = {
     'W008': "Scene '{variable_1}' is of type '{variable_2}' but does not contain any armatures.",
     'W009': "Scene '{variable_1}'  is of type '{variable_2}' but contains armatures.",
     'W010': "Library '{variable_1}' could not be relocated in '{variable_2}'.",
-    'W011': "Loading of image '{variable_1}' failed.",
+    'W011': "Loading of image '{variable_1}' for material '{variable_2}' failed.",
     'W012': "Material '{variable_1}' is a DLC material. Keen requires any model using it to be DLC-locked.",
     'W013': "Object '{variable_1}' has no geometry.",
     'W014': "Material '{variable_1}' has no valid texture defined in the '{variable_2}'-slot.",

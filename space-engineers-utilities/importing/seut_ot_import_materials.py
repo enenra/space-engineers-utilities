@@ -126,16 +126,16 @@ def import_materials(self, context, filepath):
                         break
 
             elif param.attrib['Name'] == 'ColorMetalTexture':
-                cm_img = load_image(self, context, param.text, materials_path)
+                cm_img = load_image(self, context, param.text, materials_path, material)
 
             elif param.attrib['Name'] == 'NormalGlossTexture':
-                ng_img = load_image(self, context, param.text, materials_path)
+                ng_img = load_image(self, context, param.text, materials_path, material)
 
             elif param.attrib['Name'] == 'AddMapsTexture':
-                add_img = load_image(self, context, param.text, materials_path)
+                add_img = load_image(self, context, param.text, materials_path, material)
 
             elif param.attrib['Name'] == 'AlphamaskTexture':
-                am_img = load_image(self, context, param.text, materials_path)
+                am_img = load_image(self, context, param.text, materials_path, material)
 
             elif param.attrib['Name'] == 'Facing':
                 material.seut.facing = param.text
@@ -194,7 +194,7 @@ def import_materials(self, context, filepath):
         return {'FINISHED'}
 
 
-def load_image(self, context, path: str, materials_path: str):
+def load_image(self, context, path: str, materials_path: str, material: bpy.types.Material):
     """Returns image by first checking if it already is in Blender, if not, loading it from the given path."""
 
     seut_path = os.path.dirname(materials_path)
@@ -207,7 +207,7 @@ def load_image(self, context, path: str, materials_path: str):
             break
         
     if not os.path.exists(img_path):
-        seut_report(self, context, 'WARNING', True, 'W011', img_path)
+        seut_report(self, context, 'WARNING', True, 'W011', img_path, material.name)
         return
 
     if name in bpy.data.images:
@@ -216,5 +216,5 @@ def load_image(self, context, path: str, materials_path: str):
     try:
         return bpy.data.images.load(img_path)
     except:
-        seut_report(self, context, 'WARNING', True, 'W011', img_path)
+        seut_report(self, context, 'WARNING', True, 'W011', img_path, material.name)
         return
