@@ -110,7 +110,7 @@ infos = {
     'I017': "Mountpoint Area {variable_1} saved: {variable_2}.",
     'I018': "Icon successfully saved to '{variable_1}'.",
     'I019': "Successfully imported {variable_1} materials from '{variable_2}': {variable_3}",
-    'I020': "Material '{variable_1}' was skipped because it already exists in the BLEND file.",
+    'I020': "The import of {variable_1} materials was skipped because they already exist in the BLEND file: {variable_2}",
     'I021': "{variable_1} of {variable_2} files successfully imported. Refer to Blender System Console for details.",
     'I022': "Export of collision collection '{variable_1}' was skipped because the collection is not attached to the main or a BS collection.",
 }

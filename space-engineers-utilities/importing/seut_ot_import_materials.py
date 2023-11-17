@@ -69,7 +69,7 @@ def import_materials(self, context, filepath):
         return {'CANCELLED'}
 
     imported = []
-
+    not_imported = []
     for mat in root:
         if mat.tag != 'Material':
             continue
@@ -82,7 +82,7 @@ def import_materials(self, context, filepath):
                     found = True
 
             if found:
-                seut_report(self, context, 'INFO', True, 'I020', mat.attrib['Name'])
+                not_imported.append(mat.attrib['Name'])
                 continue
             else:
                 for node in nodes:
@@ -168,6 +168,15 @@ def import_materials(self, context, filepath):
             material.node_tree.nodes.remove(am_node)
         
         imported.append(material.name)
+
+    if len(not_imported) > 0:
+        materials_string = ""
+        for name in imported:
+            if materials_string == "":
+                materials_string = name
+            else:
+                materials_string = materials_string + ", " + name
+        seut_report(self, context, 'INFO', True, 'I020', len(not_imported), materials_string)
         
     if len(imported) <= 0:
         seut_report(self, context, 'INFO', True, 'E041', filepath)
