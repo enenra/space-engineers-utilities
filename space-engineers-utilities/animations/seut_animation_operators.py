@@ -2,6 +2,15 @@ import bpy
 import os
 
 from bpy.types              import Operator
+from bpy.props              import (EnumProperty,
+                                    FloatProperty,
+                                    FloatVectorProperty,
+                                    IntProperty,
+                                    StringProperty,
+                                    BoolProperty,
+                                    PointerProperty,
+                                    CollectionProperty
+                                    )
 from bpy_extras.io_utils    import ImportHelper
 
 from ..seut_errors      import get_abs_path
@@ -71,7 +80,7 @@ class SEUT_OT_Animation_Add(Operator):
 
 
 class SEUT_OT_Animation_Remove(Operator):
-    """Removes an Animation to the Animation UL"""
+    """Removes an Animation from the Animation UL"""
     bl_idname = "animation.remove_animation"
     bl_label = "Remove Animation"
     bl_options = {'REGISTER', 'UNDO'}
@@ -88,6 +97,26 @@ class SEUT_OT_Animation_Remove(Operator):
 
         data.seut.animations.remove(data.seut.animations_index)
         data.seut.animations_index = min(max(0, data.seut.animations_index - 1), len(data.seut.animations) - 1)
+
+        return {'FINISHED'}
+
+
+class SEUT_OT_Animation_Update(Operator):
+    """Propagates the changes to the Animation Set to all subparts"""
+    bl_idname = "animation.update_animation"
+    bl_label = "Propagate Changes"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType in ['mainScene', 'subpart'] and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        from ..seut_text import update_animations_index
+        update_animations_index(self, context)
 
         return {'FINISHED'}
 

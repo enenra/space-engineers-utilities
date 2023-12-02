@@ -61,6 +61,7 @@ class SEUT_PT_Panel_Animation(Panel):
         col = row.column(align=True)
         col.operator("animation.add_animation", icon='ADD', text="")
         col.operator("animation.remove_animation", icon='REMOVE', text="")
+        col.operator("animation.update_animation", icon='FILE_REFRESH', text="")
 
         if len(data.seut.animations) > 0:
             animation_set = data.seut.animations[data.seut.animations_index]
