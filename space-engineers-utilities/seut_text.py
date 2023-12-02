@@ -59,7 +59,6 @@ def update_texconv_input_file(self, context):
 
 def update_animations_index(self, context):
     data = get_seut_blend_data()
-    scene = context.scene
     animation_set = data.seut.animations[data.seut.animations_index]
 
     for scn in bpy.data.scenes:
@@ -76,9 +75,14 @@ def update_animations_index(self, context):
         if sp.obj.animation_data.action is not sp.action:
             sp.obj.animation_data.action = sp.action
             
-    if scene.seut.linkSubpartInstances:
-        scene.seut.linkSubpartInstances = False
-        scene.seut.linkSubpartInstances = True
+    for obj in bpy.data.objects:
+        if obj is not None and obj.type == 'EMPTY' and obj.seut.linked and obj.seut.linkedScene is not None and obj.seut.linkedScene.name in bpy.data.scenes:
+            for sp in animation_set.subparts:
+                if sp.obj.seut.linkedScene == obj.seut.linkedScene:
+                    if obj.animation_data is not None and obj.animation_data.action.name[:-4] in bpy.data.actions:
+                        bpy.data.actions.remove(obj.animation_data.action)
+                    obj.animation_data.action = sp.obj.animation_data.action
+                    break
 
         
 def update_qt_lod_view(self, context):
