@@ -41,14 +41,6 @@ def update_animation_name(self, context):
     self.name_prev = self.name
 
 
-def poll_setVisible_empty(self, object):
-    return object.type == 'EMPTY' and 'file' in object and not object.seut.linked
-
-
-def poll_playParticle_empty(self, object):
-    return object.type == 'EMPTY' and not 'file' in object and not 'highlight' in object and not object.seut.linked
-
-
 class SEUT_AnimationObjects(PropertyGroup):
     """SEUT Animation Object prop holder"""
 
