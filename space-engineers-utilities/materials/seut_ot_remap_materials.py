@@ -86,6 +86,8 @@ def remap_materials(self, context, all_objects = False):
 
         for slot in obj.material_slots:
             if slot.material is not None and slot.material.library is None:
+                if slot.material.name == "SEUT Material":
+                    continue
                 old_material = slot.material
                 new_material = None
 
