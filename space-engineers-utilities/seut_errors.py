@@ -388,7 +388,7 @@ def init_logging():
             if message == previous_message:
                 return
             previous_message = message
-            self.out.write(anonymize_paths(message))
+            self.out.write(message)
 
         def flush(self):
             self.out.flush()
@@ -405,7 +405,7 @@ def init_logging():
             if message == previous_message:
                 return
             previous_message = message
-            self.out.write(anonymize_paths(message))
+            self.out.write(message)
 
         def flush(self):
             self.terminal.flush()
@@ -416,17 +416,17 @@ def init_logging():
 
 
 def anonymize_paths(message):
-    
-    if "\\\\Users\\\\" in message:
-        loc = message.find("\\\\Users\\\\")
-        start = message[len("\\\\Users\\\\") + loc:]
-        end = start.find("\\\\")
-        message = message[:len("\\\\Users\\\\") + loc] + "SEUT-USER" + message[-len(start) + end:]
 
-    elif "\\Users\\" in message:
-        loc = message.find("\\Users\\")
-        start = message[len("\\Users\\") + loc:]
-        end = start.find("\\")
-        message = message[:len("\\Users\\") + loc] + "SEUT-USER" + message[-len(start) + end:]
+    if "\\Users\\" in message:
+        start = message.find("\\Users\\") + len("\\Users\\")
+        cut = message[message.find("\\Users\\") + len("\\Users\\"):]
+        end = cut.find("\\") + start
+        username = message[start:end]
+
+        if username == "":
+            return message
+        
+        while username in message:
+            message = message.replace(username, "SEUT-USER")
 
     return message

@@ -213,15 +213,15 @@ class SEUT_OT_ExportLog(Operator):
             f"Blender:\t\t{bpy.app.version_string}",
             f"SEUT:\t\t\t{seut_version}",
             f"----------------------------------------------------------------",
-            f"Game Dir:\t\t\t{anonymize_paths(preferences.game_path)}",
-            f"Assets:\t\t\t{data.seut.repos['seut-assets'].current_version}\t Path: {anonymize_paths(preferences.asset_path)}",
-            f"MWMB:\t\t\t{data.seut.repos['MWMBuilder'].current_version}\t Path: {anonymize_paths(preferences.mwmb_path)}",
-            f"Havok Path:\t\t\t{anonymize_paths(preferences.havok_path)}",
+            f"Game Dir:\t\t\t{preferences.game_path}",
+            f"Assets:\t\t\t{data.seut.repos['seut-assets'].current_version}\t Path: {preferences.asset_path}",
+            f"MWMB:\t\t\t{data.seut.repos['MWMBuilder'].current_version}\t Path: {preferences.mwmb_path}",
+            f"Havok Path:\t\t\t{preferences.havok_path}",
             f"----------------------------------------------------------------",
-            f"BLEND Path:\t\t{anonymize_paths(bpy.data.filepath)}",
-            f"Icon Path:\t\t{anonymize_paths(scene.render.filepath)}",
-            f"Mod Path:\t\t{anonymize_paths(scene.seut.mod_path)}",
-            f"Export Path:\t{anonymize_paths(scene.seut.export_exportPath)}",
+            f"BLEND Path:\t\t{bpy.data.filepath}",
+            f"Icon Path:\t\t{scene.render.filepath}",
+            f"Mod Path:\t\t{scene.seut.mod_path}",
+            f"Export Path:\t{scene.seut.export_exportPath}",
             f"----------------------------------------------------------------\n"
         ]
 
@@ -231,6 +231,13 @@ class SEUT_OT_ExportLog(Operator):
             for l in info:
                 print(l, file=f)
             print(log.getvalue(), file=f)
+        f.close()
+
+        data = open(path, "r").read()
+        f.close()
+        with open(path, "w") as f:
+            print(anonymize_paths(data), file=f)
+        f.close()
 
         subprocess.Popen(f'explorer /select,"{path}"')
         
