@@ -170,6 +170,8 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
         _fbx.elem_props_template_set(tmpl, props, "p_double", b"restitution", rbo.restitution)
         _fbx.elem_props_template_set(tmpl, props, "p_string", b"hkTypeShape", "hkShape")
         _fbx.elem_props_template_set(tmpl, props, "p_string", b"shapeType", shapeType)
+        if rbo.use_margin:
+            _fbx.elem_props_template_set(tmpl, props, "p_double", b"extraRadius", rbo.collision_margin)
 
     # ------------------------ CUSTOM PART ENDS HERE ------------------------ #
 
