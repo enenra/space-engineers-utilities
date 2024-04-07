@@ -12,7 +12,10 @@ from bpy.props      import (EnumProperty,
                             BoolProperty)
 
 from ..seut_pt_toolbar      import check_display_panels
-from ..seut_utils           import get_seut_blend_data
+from ..seut_utils           import get_seut_blend_data, get_preferences, prep_context
+from ..seut_errors          import get_abs_path, seut_report
+
+from ..seut_preferences             import loaded_json
 
 def update_technique(self, context):
     if context.active_object is not None and context.active_object.active_material is not None:
@@ -451,3 +454,36 @@ def get_seut_texture_path(texture_type: str, material) -> str:
             path = bpy.data.images[image].filepath
 
     return path
+
+
+class SEUT_PT_Panel_Shading(Panel):
+    """Creates the shading panel for SEUT"""
+    bl_idname = "SEUT_PT_Panel_Shading"
+    bl_label = "Space Engineers Utilities"
+    bl_category = "SEUT"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "material"
+
+
+    @classmethod
+    def poll(cls, context):
+
+        match_material = False
+        if context.object.active_material.name in loaded_json:
+            match_material = True
+        else:
+            for mat in loaded_json['material_variations']:
+                for var in loaded_json['material_variations'][mat]:
+                    if mat + var == context.object.active_material.name:
+                        match_material = True
+                        break
+
+        return check_display_panels(context) and match_material
+
+
+    def draw(self, context):
+        layout = self.layout
+        obj = context.object
+
+        layout.prop(obj.seut, 'material_variant')

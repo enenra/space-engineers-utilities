@@ -1,4 +1,5 @@
 import bpy
+import os
 
 from bpy.types  import PropertyGroup
 from bpy.props  import (EnumProperty,
@@ -15,7 +16,9 @@ from .export.seut_export_utils      import get_subpart_reference
 from .empties.seut_empties          import SEUT_EmptyHighlights
 from .seut_collections              import get_collections
 from .seut_errors                   import seut_report
-from .seut_utils                    import link_subpart_scene, unlink_subpart_scene, get_parent_collection
+from .seut_utils                    import *
+
+from .seut_preferences              import loaded_json
 
 
 def update_linkedScene(self, context):
@@ -74,6 +77,93 @@ def poll_linkedScene(self, object):
         or any(x in obj.name for x in ['dummy_electric_motor', 'dummy_TopBlock'])
         and object.seut.sceneType == 'mainScene'
     )
+
+
+def get_base_material(material):
+    for mat in loaded_json['material_variations']:
+        for var in loaded_json['material_variations'][mat]:
+            if mat + var == material.name:
+                return mat
+
+
+def get_material_variant(material):
+    variant = ""
+    for var in loaded_json['material_variations'][get_base_material(material)]:   # NOTE: This will error after a reload of the addon.
+        if material.name.endswith(var) and var != "":
+            variant = var.replace("_", "")
+            break
+
+    if var == "":
+        variant = "Default"
+    
+    return variant, var
+
+
+def items_material_variant(self, context):
+    items = []
+    for var in loaded_json['material_variations'][get_base_material(context.object.active_material)]:   # NOTE: This will error after a reload of the addon.
+        if var == "":
+            var = "Default"
+            cleaned = var
+
+        cleaned = var.replace("_", "")
+        
+        if var not in items:
+            items.append((var, cleaned, ""))
+    
+    # variant, key = get_material_variant(context.object.active_material)
+    # items.insert(0, items.pop(items.index((key, variant, ''))))
+    
+    return items
+
+
+def link_material(self, context, material_name):
+    preferences = get_preferences()
+
+    if material_name in bpy.data.materials:
+        context.object.active_material = bpy.data.materials[material_name]
+
+    else:
+        materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
+        if not os.path.exists(materials_path):
+            seut_report(self, context, 'ERROR', True, 'E012', "Asset Directory", get_abs_path(preferences.asset_path))
+            return
+        
+        blends = []
+        for file in os.listdir(materials_path):
+            if file is not None and file.endswith(".blend"):
+                blends.append(file)
+
+        if blends == []:
+            seut_report(self, context, 'ERROR', True, 'E021', materials_path)
+            return
+
+        for file in blends:
+            with bpy.data.libraries.load(os.path.join(materials_path, file), link=True) as (data_from, data_to):
+                data_to.materials = data_from.materials
+
+        context.object.active_material = bpy.data.materials[material_name]
+
+        for mat in bpy.data.materials:
+            if mat is not None and mat.library is not None and mat.users < 1:
+                bpy.data.materials.remove(mat, do_unlink=True)
+    
+        for img in bpy.data.images:
+            if img is not None and img.library is not None and img.users < 1:
+                bpy.data.images.remove(img, do_unlink=True)
+                
+        for ng in bpy.data.node_groups:
+            if ng is not None and ng.library is not None and ng.users < 1:
+                bpy.data.node_groups.remove(ng, do_unlink=True)
+
+
+def update_material_variant(self, context):
+    base_material_name = get_base_material(context.object.active_material)
+    
+    if self.material_variant == "Default":
+        link_material(self, context, base_material_name)
+    else:
+        link_material(self, context, base_material_name + self.material_variant)
 
 
 class SEUT_Object(PropertyGroup):
@@ -150,4 +240,12 @@ class SEUT_Object(PropertyGroup):
         name='Highlight Object',
         description="Which object this empty links to",
         type=bpy.types.Object
+    )
+
+    material_variant: EnumProperty(
+        name="Variants",
+        description="Allows the selection of material variants to replace the active material with",
+        default=0,
+        items=items_material_variant,
+        update=update_material_variant
     )

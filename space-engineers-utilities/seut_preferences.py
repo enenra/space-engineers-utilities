@@ -15,6 +15,7 @@ from .seut_bau                      import draw_bau_ui, get_config, set_config
 
 preview_collections = {}
 empties = {}
+loaded_json = {}
 
 
 class SEUT_OT_SetDevPaths(Operator):
@@ -496,6 +497,31 @@ def load_configs():
     load_empty_json('highlight_empties')
     load_empty_json('preset_subparts')
 
+    load_json('material_variations')
+
+
+def load_json(json_type):
+    """Loads an individual config file for an empty type."""
+
+    preferences = get_preferences()
+    path = os.path.join(preferences.asset_path, "Config", json_type + ".cfg")
+    global loaded_json
+    loaded_json[json_type]= {}
+
+    if not os.path.exists(path):
+        return
+
+    with open(path) as cfg_file:
+        data = json.load(cfg_file)
+
+    if not json_type in data:
+        return
+
+    entries = data[json_type]
+
+    for key, entry in entries.items():
+        loaded_json[json_type][key] = entry
+        
 
 def load_empty_json(empty_type):
     """Loads an individual config file for an empty type."""

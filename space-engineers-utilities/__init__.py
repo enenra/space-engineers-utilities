@@ -55,6 +55,7 @@ from .importing.seut_ot_import_materials        import SEUT_OT_Import_Materials
 from .materials.seut_materials                  import SEUT_Materials
 from .materials.seut_materials                  import SEUT_PT_Panel_Materials
 from .materials.seut_materials                  import SEUT_PT_Panel_TextureConversion
+from .materials.seut_materials                  import SEUT_PT_Panel_Shading
 from .materials.seut_ot_remap_materials         import SEUT_OT_RemapMaterials
 from .materials.seut_ot_create_material         import SEUT_OT_MatCreate
 from .materials.seut_ot_texture_conversion      import SEUT_OT_ConvertTextures
@@ -190,6 +191,7 @@ classes = (
     SEUT_PT_Panel_TextureConversion,
     SEUT_PT_Panel_Asset,
     SEUT_PT_EmptyLink,
+    SEUT_PT_Panel_Shading,
     SEUT_Asset,
     SEUT_EmptyHighlights,
     SEUT_OT_HighlightObjectAdd,
