@@ -269,11 +269,10 @@ def patch_paint_color():
             continue
         
         vl = scn.view_layers["SEUT"]
-        vl["Paint Color"] = (0.25, 0.25, 0.25)
+        vl["Paint Color"] = (0.0, 0.0, 0.0)
         prop_manager = vl.id_properties_ui("Paint Color")
         prop_manager.update(
-            description="This color is applied to all materials that support it",
-            default= (0.25, 0.25, 0.25),
+            default= (0.0, 0.0, 0.0),
             min=0.0,
             max=1.0,
             subtype='COLOR'

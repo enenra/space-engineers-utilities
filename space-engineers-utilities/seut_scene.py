@@ -60,6 +60,22 @@ def update_sceneType(self, context):
     self.previous_scene_type = self.sceneType
 
 
+def update_paint_color(self, context):
+    scene = context.scene
+    vl = scene.view_layers["SEUT"]
+
+    if "Paint Color" not in vl:
+        vl["Paint Color"] = (self.paint_color[0]-0.25, self.paint_color[1]-0.25, self.paint_color[2]-0.25)
+        prop_manager = vl.id_properties_ui("Paint Color")
+        prop_manager.update(
+            min=0.0,
+            max=1.0,
+            subtype='COLOR'
+        )
+    else:
+        vl["Paint Color"] = (self.paint_color[0]-0.25, self.paint_color[1]-0.25, self.paint_color[2]-0.25)
+
+
 def update_GridScale(self, context):
     
     scene = context.scene
@@ -418,6 +434,16 @@ class SEUT_Scene(PropertyGroup):
     )
     subtypeBefore: StringProperty(
         name="Previous SubtypeId"
+    )
+    paint_color: FloatVectorProperty(
+        name="Paint Color",
+        description="This color is applied to all materials that support it",
+        subtype='COLOR',
+        size=3,
+        min=0.0,
+        max=1.0,
+        default=(0.25, 0.25, 0.25),
+        update=update_paint_color
     )
 
     # Grid Scale

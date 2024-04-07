@@ -119,7 +119,7 @@ class SEUT_PT_Panel(Panel):
 
                 if scene.seut.sceneType in ['mainScene', 'subpart', 'character']:
                     row = box.row(align=True)
-                    row.prop(context.view_layer, '["Paint Color"]', text='Paint Color')
+                    row.prop(scene.seut, 'paint_color')
                     row.prop(context.view_layer, '["UV Grid Overlay"]', text="", icon='UV')
                 
                 box = layout.box()
