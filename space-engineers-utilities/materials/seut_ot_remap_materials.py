@@ -58,10 +58,11 @@ def remap_materials(self, context, all_objects = False):
             continue
         
         parent_lc = None
-        for lc in scene.view_layers['SEUT'].layer_collection.children[f"SEUT ({scene.seut.subtypeId})"].children:
-            if obj.name in lc.collection.objects:
-                parent_lc = lc
-                break
+        if f"SEUT ({scene.seut.subtypeId})" in scene.view_layers['SEUT'].layer_collection.children:
+            for lc in scene.view_layers['SEUT'].layer_collection.children[f"SEUT ({scene.seut.subtypeId})"].children:
+                if obj.name in lc.collection.objects:
+                    parent_lc = lc
+                    break
             
         try:
             context.view_layer.objects.active = obj
