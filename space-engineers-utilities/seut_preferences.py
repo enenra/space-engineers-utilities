@@ -403,10 +403,11 @@ class SEUT_AddonPreferences(AddonPreferences):
         row1 = box1.row()
         row1.label(text="An assortment of shortcuts for modelling SE objects.")
 
-        box2 = row.box()
-        box2.prop(self, "animation", text="  Animations Panel")
-        row2 = box2.row()
-        row2.label(text="Animation setup and export for the AnimationEngine framework.")
+        if self.dev_mode:
+            box2 = row.box()
+            box2.prop(self, "animation", text="  Animations Panel")
+            row2 = box2.row()
+            row2.label(text="Animation setup and export for the AnimationEngine framework.")
 
 
 def load_icons():
