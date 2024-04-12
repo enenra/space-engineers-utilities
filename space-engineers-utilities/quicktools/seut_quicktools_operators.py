@@ -260,7 +260,10 @@ class SEUT_OT_QuickTools_MAIN_AddBevels(Operator):
         for obj in context.selected_objects:
             context.view_layer.objects.active = obj
 
-            bpy.ops.object.shade_smooth(use_auto_smooth=True)
+            if bpy.app.version < (4, 1, 0):
+                bpy.ops.object.shade_smooth(use_auto_smooth=True)
+            else:
+                bpy.ops.object.shade_smooth_by_angle()
 
             mods = {m.name for m in obj.modifiers}
             bpy.ops.object.modifier_add(type='BEVEL')
