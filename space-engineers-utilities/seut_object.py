@@ -101,6 +101,8 @@ def get_material_variant(material):
 
 def items_material_variant(self, context):
     items = []
+    if context.object is None or context.object.active_material is None:
+        return items
     for var in loaded_json['material_variations'][get_base_material(context.object.active_material)]:   # NOTE: This will error after a reload of the addon.
         if var == "":
             var = "Default"
