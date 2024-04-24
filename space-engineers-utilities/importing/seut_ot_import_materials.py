@@ -148,7 +148,7 @@ def import_materials(self, context, filepath):
 
         if not cm_img is None:
             cm_node.image = cm_img
-            ng_node.image.alpha_mode = 'CHANNEL_PACKED'
+            cm_node.image.alpha_mode = 'CHANNEL_PACKED'
         else:
             material.node_tree.nodes.remove(cm_node)
 
