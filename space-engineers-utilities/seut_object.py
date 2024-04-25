@@ -82,14 +82,14 @@ def poll_linkedScene(self, object):
 def get_base_material(material):
     for mat in loaded_json['material_variations']:
         for var in loaded_json['material_variations'][mat]:
-            if mat + var == material.name:
+            if mat + var == material.name or mat + var == material.name[:-4]:
                 return mat
 
 
 def get_material_variant(material):
     variant = ""
     for var in loaded_json['material_variations'][get_base_material(material)]:   # NOTE: This will error after a reload of the addon.
-        if material.name.endswith(var) and var != "":
+        if (material.name.endswith(var) or material.name[:-4].endswith(var)) and var != "":
             variant = var.replace("_", "")
             break
 
