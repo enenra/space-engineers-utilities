@@ -39,6 +39,8 @@ A Blender 3.0+ addon to streamline working on assets for Space Engineers.
 
 ## Installation
 Please follow the [installation guide](https://semref.atlassian.net/wiki/spaces/tutorials/pages/131411/SEUT+Installation+Guide).
+> [!WARNING]
+> As of Blender 4.0, when using SEUT release 1.1.0, exporting causes errors. You may want to stick to Blender 3 if you want to use a stable SEUT release. This issue is fixed in release 1.2.0-beta.2, but considering it is a developpement release, it might not be suitable for first time user.
 
 ## Credits	
 * **Stollie** - So much general help but also writing everything character, export and MWM-related, which I wouldn't have been able to do at all.	
