@@ -112,10 +112,10 @@ class SEUT_OT_IssueDisplay(Operator):
             if issue.issue_type == 'ERROR':
                 row.alert = True
             if issue.issue_type == 'ERROR' or issue.issue_type == 'WARNING':
-                semref = row.operator('wm.semref_link', text="How to Fix", icon='INFO')
-                semref.section = 'tools'
-                semref.page = '4260391/Troubleshooting'
-                semref.code = '#' + issue.code
+                docu = row.operator('wm.docu_link', text="How to Fix", icon='INFO')
+                docu.section = 'Tools/SEUT/'
+                docu.page = 'Notifications/'
+                docu.code = issue.code
                 
             op = split.operator('wm.delete_issue', icon='REMOVE', text="", emboss=False)
             op.idx = index

@@ -312,9 +312,9 @@ class SEUT_PT_Panel_Materials(Panel):
             box = layout.box()
             split = box.split(factor=0.85)
             split.label(text=material.name, icon_value=layout.icon(material))
-            link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'reference'
-            link.page = '6095000/SEUT+Shader+Editor'
+            link = split.operator('wm.docu_link', text="", icon='INFO')
+            link.section = 'Reference/Tools/SEUT/'
+            link.page = 'Shader_Editor'
 
             row = box.row(align=True)
             box.prop(material.seut, 'technique', icon='IMGDISPLAY')
@@ -384,9 +384,9 @@ class SEUT_PT_Panel_Materials(Panel):
 
         split = box.split(factor=0.85)
         split.label(text="Create SEUT Material", icon='MATERIAL')
-        link = split.operator('wm.semref_link', text="", icon='INFO')
-        link.section = 'tutorials'
-        link.page = '6095265/Create+Material+Tutorial'
+        link = split.operator('wm.docu_link', text="", icon='INFO')
+        link.section = 'Tutorials/Tools/SEUT/'
+        link.page = 'Material'
 
         box.operator('object.create_material', icon='ADD')
         box.operator('wm.import_materials', icon='IMPORT')

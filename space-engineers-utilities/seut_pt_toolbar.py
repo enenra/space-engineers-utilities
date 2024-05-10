@@ -103,9 +103,9 @@ class SEUT_PT_Panel(Panel):
                 box = layout.box()
                 split = box.split(factor=0.85)
                 split.label(text=scene.name, icon_value=layout.icon(scene))
-                link = split.operator('wm.semref_link', text="", icon='INFO')
-                link.section = 'reference'
-                link.page = '6094866/SEUT+Main+Panel'
+                link = split.operator('wm.docu_link', text="", icon='INFO')
+                link.section = 'Reference/Tools/SEUT/'
+                link.page = 'Main_Panel'
 
                 box.prop(scene.seut, 'sceneType')
                 if scene.seut.sceneType == 'mainScene' or scene.seut.sceneType == 'subpart':
@@ -175,9 +175,9 @@ class SEUT_PT_Panel_Collections(Panel):
                 row = box.row(align=True)
                 row.label(text=seut_collections[scene.seut.sceneType][active_col.seut.col_type]['type'])
                 if active_col.seut.col_type == 'hkt':
-                    link = row.operator('wm.semref_link', text="", icon='INFO')
-                    link.section = 'tutorials'
-                    link.page = '10944513/Create+Collision+Model+Tutorial'
+                    link = row.operator('wm.docu_link', text="", icon='INFO')
+                    link.section = 'Tutorials/Tools/SEUT/'
+                    link.page = 'Collisions'
             elif active_col.seut.col_type == 'seut':
                 box.label(text='SEUT Collection Container')
 
@@ -276,9 +276,9 @@ class SEUT_PT_Panel_Mirroring(Panel):
             split = layout.split(factor=0.85)
             row = split.row()
             row.prop(scene.seut, 'mirroringToggle', expand=True)
-            link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'tutorials'
-            link.page = '6095170/Mirroring+Tutorial'
+            link = split.operator('wm.docu_link', text="", icon='INFO')
+            link.section = 'Tutorials/Tools/SEUT/'
+            link.page = 'Mirroring'
             
             layout.prop(scene.seut, 'mirroringScene', text="Model", icon='MOD_MIRROR')
         else:
@@ -309,9 +309,9 @@ class SEUT_PT_Panel_Mountpoints(Panel):
             split = layout.split(factor=0.85)
             row = split.row()
             row.prop(scene.seut, 'mountpointToggle', expand=True)
-            link = split.operator('wm.semref_link', text="", icon='INFO')
-            link.section = 'tutorials'
-            link.page = '6160894/Mountpoint+Tutorial'
+            link = split.operator('wm.docu_link', text="", icon='INFO')
+            link.section = 'Tutorials/Tools/SEUT/'
+            link.page = 'Mountpoints'
 
             if not context.active_object is None and context.active_object.name in bpy.data.collections['Mountpoints (' + scene.seut.subtypeId + ')'].objects and not context.active_object.type == 'EMPTY':
                 box = layout.box()
@@ -439,9 +439,9 @@ class SEUT_PT_Panel_Export(Panel):
         
         split = layout.split(factor=0.85, align=True)
         split.operator('scene.export_materials', icon='EXPORT')
-        link = split.operator('wm.semref_link', text="", icon='INFO')
-        link.section = 'tutorials'
-        link.page = '6128098/Create+MatLib+Tutorial'
+        link = split.operator('wm.docu_link', text="", icon='INFO')
+        link.section = 'Tutorials/Tools/SEUT/'
+        link.page = 'Material_Library'
 
         # Options
         box = layout.box()
@@ -522,9 +522,9 @@ class SEUT_PT_Panel_Import(Panel):
         row = box2.row()
         row.label(text="Model Fixes", icon='EMPTY_AXIS')
         row.alignment = 'RIGHT'
-        link = row.operator('wm.semref_link', text="", icon='INFO')
-        link.section = 'tutorials'
-        link.page = '71827457'
+        #link = row.operator('wm.docu_link', text="", icon='INFO')
+        #link.section = 'Tutorials/Tools/SEUT/'
+        #link.page = '71827457'
 
         col = box2.column(align=True)
         col.operator('object.apply_scale_rotation', icon='ORIENTATION_GIMBAL')

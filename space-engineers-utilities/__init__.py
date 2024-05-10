@@ -20,7 +20,7 @@ bl_info = {
     "dev_tag": "beta",
     "blender": (4, 0, 0),
     "location": "View3D > Tools",
-    "doc_url": "https://semref.atlassian.net/wiki/spaces/tools/pages/33261/Space+Engineers+Utilities",
+    "doc_url": "https://spaceengineers.wiki.gg/wiki/Modding/Tools/Space_Engineers_Utilities",
     "tracker_url": "https://github.com/enenra/space-engineers-utilities/issues",
     "git_url": "https://github.com/enenra/space-engineers-utilities",
     "support": "COMMUNITY",
@@ -135,7 +135,7 @@ from .utils.seut_repositories                   import SEUT_OT_CheckUpdate
 from .utils.seut_repositories                   import SEUT_OT_DownloadUpdate
 from .utils.seut_repositories                   import update_register_repos, check_all_repo_updates
 from .utils.seut_patch_blend                    import SEUT_OT_PatchBLEND
-from .utils.seut_ot_semref_link                 import SEUT_OT_SEMREFLink
+from .utils.seut_ot_docu_link                   import SEUT_OT_DocuLink
 from .utils.seut_ot_discord_link                import SEUT_OT_DiscordLink
 from .utils.seut_ot_issue_display               import SEUT_OT_IssueDisplay
 from .utils.seut_ot_issue_display               import SEUT_OT_DeleteIssue
@@ -201,7 +201,7 @@ classes = (
     SEUT_OT_GetUpdate,
     SEUT_OT_CheckUpdate,
     SEUT_OT_DownloadUpdate,
-    SEUT_OT_SEMREFLink,
+    SEUT_OT_DocuLink,
     SEUT_OT_DiscordLink,
     SEUT_OT_IssueDisplay,
     SEUT_OT_DeleteIssue,

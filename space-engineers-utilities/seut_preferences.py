@@ -221,9 +221,9 @@ class SEUT_AddonPreferences(AddonPreferences):
         row = layout.row()
         row.alignment = 'RIGHT'
         row.operator('wm.discord_link', text="", icon_value=pcoll['discord'].icon_id)
-        link = row.operator('wm.semref_link', text="", icon='INFO')
-        link.section = 'reference'
-        link.page = '6127826/SEUT+Preferences'
+        link = row.operator('wm.docu_link', text="", icon='INFO')
+        link.section = 'Reference/Tools/SEUT/'
+        link.page = 'Addon_Preferences'
 
         if bpy.app.version < (4, 0, 0):
             box = layout.box()
