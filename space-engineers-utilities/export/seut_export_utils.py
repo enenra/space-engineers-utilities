@@ -101,9 +101,7 @@ def export_xml(self, context, collection) -> str:
                     if not check_vanilla_texture(nodes[img_type].image.filepath):
                         export_material_textures(self, context, mat)
                         break
-
-            if mat.seut.technique in ['GLASS', 'HOLO', 'SHIELD'] and scene.seut.export_sbc_type in ['update', 'new']:
-                export_transparent_mat(self, context, mat.name)
+                    
         else:
             matRef = ET.SubElement(model, 'MaterialRef')
             matRef.set('Name', mat.name)

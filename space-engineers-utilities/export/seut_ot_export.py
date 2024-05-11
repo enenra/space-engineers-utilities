@@ -12,6 +12,7 @@ from .havok.seut_havok_hkt          import convert_fbx_to_fbxi_hkt, convert_fbxi
 from .seut_mwmbuilder               import mwmbuilder
 from .seut_export_utils             import ExportSettings, export_to_fbxfile, create_relative_path
 from .seut_export_utils             import correct_for_export_type, export_collection, get_col_filename, convert_position_to_cell
+from .seut_export_transparent_mat   import export_transparent_mat
 from ..utils.seut_xml_utils         import *
 from ..seut_collections             import get_collections, get_rev_ref_cols, get_cols_by_type, get_first_free_index
 from ..seut_errors                  import *
@@ -42,7 +43,7 @@ class SEUT_OT_Export(Operator):
         return result
 
 
-def export(self, context):
+def export(self, context, export_materials=True):
     """Exports all collections in the current scene and compiles them to MWM"""
     
     scene = context.scene
@@ -128,7 +129,7 @@ def export(self, context):
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\small\\", "\large\\")
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\small", "\large")
         
-        result = export_all(self, context)
+        result = export_all(self, context, export_materials)
 
         # Resetting the variables
         scene.seut.subtypeId = subtype_id
@@ -152,7 +153,7 @@ def export(self, context):
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\large\\", "\small\\")
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\large", "\small")
         
-        result = export_all(self, context)
+        result = export_all(self, context, export_materials)
 
         # Resetting the variables
         scene.seut.subtypeId = subtype_id
@@ -168,7 +169,7 @@ def export(self, context):
     return result
 
 
-def export_all(self, context):
+def export_all(self, context, export_materials=True):
     """Exports all collections"""
 
     scene = context.scene
@@ -180,8 +181,11 @@ def export_all(self, context):
     results.append(export_main(self, context))
     results.append(export_hkt(self, context))
 
-    if scene.seut.export_sbc_type in ['update', 'new'] and scene.seut.sceneType == 'mainScene':
-        results.append(export_sbc(self, context))
+    if scene.seut.export_sbc_type in ['update', 'new']:
+        if scene.seut.sceneType == 'mainScene':
+            results.append(export_sbc(self, context))
+        if export_materials:
+            results.append(export_tms(self, context))
     
     if {'CANCELLED'} not in results:
         export_mwm(self, context)
@@ -783,5 +787,18 @@ def export_sbc(self, context):
         seut_report(self, context, 'INFO', False, 'I004', target_file)
     else:
         seut_report(self, context, 'INFO', False, 'I015', scene.seut.subtypeId, target_file)
+
+    return {'FINISHED'}
+
+
+def export_tms(self, context):
+    """Exports all relevant TMs"""
+
+    for mat in bpy.data.materials:
+        if mat is None or mat.node_tree is None or mat.users == 0 or (mat.users == 1 and mat.use_fake_user):
+            continue
+        if mat.library is None:
+            if mat.seut.technique in ['GLASS', 'HOLO', 'SHIELD']:
+                export_transparent_mat(self, context, mat.name)
 
     return {'FINISHED'}

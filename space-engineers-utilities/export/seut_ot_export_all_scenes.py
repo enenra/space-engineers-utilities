@@ -55,7 +55,7 @@ class SEUT_OT_ExportAllScenes(Operator):
         scene_counter = 0
         failed_counter = 0
 
-        for scn in bpy.data.scenes:
+        for idx, scn in enumerate(bpy.data.scenes):
 
             if 'SEUT' not in scn.view_layers:
                 continue
@@ -66,7 +66,7 @@ class SEUT_OT_ExportAllScenes(Operator):
                 context.window.scene = scn
 
                 try:
-                    result = export(self, context)
+                    result = export(self, context, idx != 0)
 
                     if result != {'FINISHED'}:
                         failed_counter += 1

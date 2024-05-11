@@ -8,6 +8,7 @@ Relevant Milestone: [SEUT 1.2.0](https://github.com/enenra/space-engineers-utili
 * Added: Material variation dropdown menu, allowing the user to quickly switch between versions of a material. (RC 1)
 * Added: Checkboxes to `Addon Preferences` to enable `Quick Tools` and `Animation Support`. (Beta 1)
 * Changed: Switched all documentation links to instead link to the new [Space Engineers Official Wiki](https://spaceengineers.wiki.gg/). SEMREF will be retired, but all its content has been migrated to the SE wiki. (RC 1)
+* Improved [#394](https://github.com/enenra/space-engineers-utilities/issues/394): `TransparentMaterial` files are no longer exported per `MWM` file but per `BLEND`-file. (RC 1)
 * Improved [#389](https://github.com/enenra/space-engineers-utilities/issues/389): Mountpoint mode now works better when editing mountpoint areas in `EDIT`-mode (origins are set to geometry automatically). (RC 1)
 * Improved [#373](https://github.com/enenra/space-engineers-utilities/issues/373): Added error for incompatible physics shape (`COMPOUND`). (Beta 1)
 * Improved [#374](https://github.com/enenra/space-engineers-utilities/issues/374): Added warning for exporting to a different grid size than scene is set to while subpart empties are present. (Beta 1)
