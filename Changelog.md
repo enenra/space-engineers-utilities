@@ -3,6 +3,7 @@ Relevant Milestone: [SEUT 1.2.0](https://github.com/enenra/space-engineers-utili
 # Changelog
 * Added [#379](https://github.com/enenra/space-engineers-utilities/issues/379): Mark unpainted and ungrouped vertices in groups. (RC 1)
 * Added: [#392](https://github.com/enenra/space-engineers-utilities/issues/392): Support for `CouplingTag` on mountpoints. (RC 1)
+* Added: [#391](https://github.com/enenra/space-engineers-utilities/issues/391): Error for when both an external collision file is referenced and objects exist in the collision collection. (RC 1)
 * Added: `SEUT QuickTools` - shortcuts for various commonly used actions when making SE models. (Beta 1)
 * Added: Material variation dropdown menu, allowing the user to quickly switch between versions of a material. (RC 1)
 * Added: Checkboxes to `Addon Preferences` to enable `Quick Tools` and `Animation Support`. (Beta 1)
