@@ -712,7 +712,7 @@ class ExportSettings:
             if logtextInspector is not None:
                 logtextInspector(out)
 
-            out_str = out.decode("utf-8")
+            out_str = out.decode("utf-8", "ignore")
             if out_str.find(": ERROR:") != -1:
                 if out_str.find("Assimp.AssimpException: Error loading unmanaged library from path: Assimp32.dll") != -1:
                     seut_report(self, context, 'ERROR', False, 'E039')
