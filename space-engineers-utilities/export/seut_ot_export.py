@@ -262,7 +262,13 @@ def export_hkt(self, context):
 
             # Use external file
             if col.seut.hkt_file != "":
-                shutil.copyfile(get_abs_path(col.seut.hkt_file), join(path, f"{get_col_filename(col)}.hkt"))
+                ext_hkt_path = get_abs_path(col.seut.hkt_file)
+                if os.path.exists(ext_hkt_path):
+                    shutil.copyfile(ext_hkt_path, join(path, f"{get_col_filename(col)}.hkt"))
+                else:
+                    seut_report(self, context, 'ERROR', True, 'E003', f"External Collision (set in Collision collection '{col.name}') file", ext_hkt_path)
+                    cancelled = True
+                    break
 
             else:
                 result = check_collection(self, context, scene, col, True)
@@ -641,7 +647,7 @@ def export_sbc(self, context):
                     add_attrib(def_Mountpoint, 'i_Default', str(area.default).lower())
                 if area.pressurized:
                     add_attrib(def_Mountpoint, 'j_PressurizedWhenOpen', str(area.pressurized).lower())
-                if area.coupling_tag is not "":
+                if area.coupling_tag != "":
                     add_attrib(def_Mountpoint, 'k_CouplingTag', area.coupling_tag)
 
         if update_sbc:
