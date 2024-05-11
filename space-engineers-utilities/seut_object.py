@@ -236,6 +236,11 @@ class SEUT_Object(PropertyGroup):
         min=0,
         max=255
     )
+    coupling_tag: StringProperty(
+        name="Coupling Tag",
+        description="A string defined in this field is used to determine which mountpoint areas of other blocks it can be attached to. A mountpoint area with a coupling tag will only connect to another mountpoint if it has the same coupling tag set",
+        default=""
+    )
     
     # Deprecated with SEUT 0.9.95
     linkedObject: PointerProperty(

@@ -121,6 +121,7 @@ def setup_mountpoints(self, context):
             plane.seut.enabled = area.enabled
             plane.seut.exclusion_mask = area.exclusion_mask
             plane.seut.properties_mask = area.properties_mask
+            plane.seut.coupling_tag = area.coupling_tag
 
             mask = str(area.exclusion_mask) + ":" + str(area.properties_mask)
             if mask in valid_masks:
@@ -217,6 +218,7 @@ def save_mountpoint(self, context, collection):
                 item.enabled = child.seut.enabled
                 item.exclusion_mask = child.seut.exclusion_mask
                 item.properties_mask = child.seut.properties_mask
+                item.coupling_tag = child.seut.coupling_tag
 
     for area in areas:
         seut_report(self, context, 'INFO', False, 'I017', area.side, f"Location x: {round(area.x, 2)} y: {round(area.y, 2)} Dimension x: {round(area.xDim, 2)} y: {round(area.yDim, 2)}")

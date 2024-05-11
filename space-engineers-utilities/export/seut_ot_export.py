@@ -641,6 +641,8 @@ def export_sbc(self, context):
                     add_attrib(def_Mountpoint, 'i_Default', str(area.default).lower())
                 if area.pressurized:
                     add_attrib(def_Mountpoint, 'j_PressurizedWhenOpen', str(area.pressurized).lower())
+                if area.coupling_tag is not "":
+                    add_attrib(def_Mountpoint, 'k_CouplingTag', area.coupling_tag)
 
         if update_sbc:
             lines_entry = convert_back_xml(def_Mountpoints, 'MountPoints', lines_entry)
@@ -746,6 +748,7 @@ def export_sbc(self, context):
     xml_formatted = xml_formatted.replace("h_Enabled", "Enabled")
     xml_formatted = xml_formatted.replace("i_Default", "Default")
     xml_formatted = xml_formatted.replace("j_PressurizedWhenOpen", "PressurizedWhenOpen")
+    xml_formatted = xml_formatted.replace("k_CouplingTag", "CouplingTag")
 
     if update_sbc:
         target_file = file_to_update

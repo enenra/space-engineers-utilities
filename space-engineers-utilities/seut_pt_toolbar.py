@@ -326,6 +326,8 @@ class SEUT_PT_Panel_Mountpoints(Panel):
                     if context.active_object.seut.mask_preset == 'custom':
                         box.prop(context.active_object.seut, 'exclusion_mask')
                         box.prop(context.active_object.seut, 'properties_mask')
+
+                    box.prop(context.active_object.seut, 'coupling_tag', icon='LINKED')
                 
             layout.operator('scene.add_mountpoint_area', icon='ADD')
         else:

@@ -397,6 +397,10 @@ class SEUT_MountpointAreas(PropertyGroup):
         min=0,
         max=255
     )
+    coupling_tag: StringProperty(
+        name="Coupling Tag",
+        default=""
+    )
 
 
 class SEUT_Scene(PropertyGroup):
