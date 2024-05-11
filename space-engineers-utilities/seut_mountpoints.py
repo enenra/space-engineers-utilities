@@ -206,7 +206,9 @@ def save_mountpoint(self, context, collection):
         elif empty.type == 'EMPTY' and empty.name.find('Mountpoints ') != -1 and empty.children is not None:
             side = empty.name[12:]
 
-            for child in empty.children:                    
+            set_origin_to_geometry(empty.children)
+            for child in empty.children:
+
                 item = areas.add()
                 item.side = side.lower()
                 item.x = child.location.x

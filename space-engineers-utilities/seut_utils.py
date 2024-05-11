@@ -4,6 +4,7 @@ import os
 
 from bpy.types      import Operator
 from math           import pi
+from mathutils      import Matrix, Vector
 
 from .seut_collections              import get_collections, get_cols_by_type
 from .seut_errors                   import check_collection, get_abs_path, seut_report
@@ -366,3 +367,18 @@ def link_material(name: str, source: str, link: bool = True) -> bpy.types.Materi
         material.asset_clear()
 
     return material
+
+
+def set_origin_to_geometry(objs: list):
+    """Sets the origins of all objects in the list to their individual geometry"""
+
+    mesh_obs = [obj for obj in objs if obj.type == 'MESH']
+
+    for obj in mesh_obs:
+        me = obj.data
+        mw = obj.matrix_world
+        origin = sum((v.co for v in me.vertices), Vector()) / len(me.vertices)
+
+        T = Matrix.Translation(-origin)
+        me.transform(T)
+        mw.translation = mw @ origin
