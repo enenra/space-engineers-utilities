@@ -1,6 +1,7 @@
 Relevant Milestone: [SEUT 1.2.0](https://github.com/enenra/space-engineers-utilities/milestone/30)
 
 # Changelog
+* Added [#387](https://github.com/enenra/space-engineers-utilities/pull/387): Ability to set a collision object's collision radius - thanks to @quantum-unicorn! (RC 2)
 * Added [#379](https://github.com/enenra/space-engineers-utilities/issues/379): Mark unpainted and ungrouped vertices in groups. (RC 1)
 * Added: [#392](https://github.com/enenra/space-engineers-utilities/issues/392): Support for `CouplingTag` on mountpoints. (RC 1)
 * Added: [#391](https://github.com/enenra/space-engineers-utilities/issues/391): Error for when both an external collision file is referenced and objects exist in the collision collection. (RC 1)
