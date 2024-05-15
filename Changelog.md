@@ -15,7 +15,7 @@ Relevant Milestone: [SEUT 1.2.0](https://github.com/enenra/space-engineers-utili
 * Improved [#373](https://github.com/enenra/space-engineers-utilities/issues/373): Added error for incompatible physics shape (`COMPOUND`). (Beta 1)
 * Improved [#374](https://github.com/enenra/space-engineers-utilities/issues/374): Added warning for exporting to a different grid size than scene is set to while subpart empties are present. (Beta 1)
 * Improved [#375](https://github.com/enenra/space-engineers-utilities/issues/375): Ignore Collision collections that are not associated with a main or BS collection. (Beta 1)
-* Improved [#376](https://github.com/enenra/space-engineers-utilities/issues/376): Added error for trying to launch `Mountpoint` or `Mirror Mode` while not having set an `Asset` path.(Beta 1)
+* Improved [#376](https://github.com/enenra/space-engineers-utilities/issues/376): Added error for trying to launch `Mountpoint` or `Mirror Mode` while not having set an `Asset` path. (Beta 1)
 * Improved: Channel settings on imported images. (RC 1)
 * Improved: Paint Color handling. This will unfortunately reset all paint color in your exisitng `BLEND`-files. (RC 1)
 * Improved: Sum up imported materials instead of reporting them one by one. (RC 1)
