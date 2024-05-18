@@ -38,7 +38,7 @@ Relevant Milestone: [SEUT 1.2.0](https://github.com/enenra/space-engineers-utili
 * Fixed: Export error with Blender 4.0 . (Beta 1)
 
 # Installation
-Refer to the [install guide](https://semref.atlassian.net/wiki/spaces/tutorials/pages/131411/SEUT+Installation+Guide).
+Refer to the [install guide](https://spaceengineers.wiki.gg/wiki/Modding/Tutorials/Tools/SEUT/Installation_Guide).
 
 # How to Update
 ## Manually
