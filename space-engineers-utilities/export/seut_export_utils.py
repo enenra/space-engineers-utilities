@@ -284,9 +284,6 @@ def export_fbx(self, context, collection, path_override = None) -> str:
     for empty in collection.objects:
         if empty is not None and empty.type == 'EMPTY':
 
-            # This not being 1.0 can cause some issues ingame.
-            empty.empty_display_size = 1.0
-
             # Remove numbers
             # To ensure they work ingame (where duplicate names are no issue) this will remove the ".001" etc. from the name (and cause another empty to get this numbering)
             if re.search("\.[0-9]{3}", empty.name[-4:]) != None and not empty.seut.linked:
@@ -305,10 +302,7 @@ def export_fbx(self, context, collection, path_override = None) -> str:
                 seut_report(self, context, 'WARNING', True, 'W006', empty.name, empty.parent.name, collection.name)
 
             # Additional parenting checks
-            rescale = False
             if 'highlight' in empty:
-                rescale = True
-
                 if len(empty.seut.highlight_objects) > 0:
 
                     highlights = ""
@@ -335,12 +329,14 @@ def export_fbx(self, context, collection, path_override = None) -> str:
                 empty['file'] = reference
                 unlink_subpart_scene(empty)
 
-            # Blender FBX export halves empty size on export, this works around it
-            if rescale:
-                empty.scale.x *= 2
-                empty.scale.y *= 2
-                empty.scale.z *= 2
-                context.view_layer.update()
+            # Resetting empty size
+            if empty.empty_display_size == 1.0:
+                empty.empty_display_size = 0.5
+                if 'file' not in empty:
+                    empty.scale.x *= 1.5
+                    empty.scale.y *= 1.5
+                    empty.scale.z *= 1.5
+                    context.view_layer.update()
 
     # Prepare materials for export
     for mat in bpy.data.materials:
@@ -376,14 +372,6 @@ def export_fbx(self, context, collection, path_override = None) -> str:
 
                     link_subpart_scene(self, scene, empty, empty.users_collection[0])
                     empty['file'] = reference
-
-            # Resetting empty size
-            if empty.empty_display_size == 1.0:
-                empty.empty_display_size = 0.5
-                if 'file' not in empty:
-                    empty.scale.x *= 1.5
-                    empty.scale.y *= 1.5
-                    empty.scale.z *= 1.5
 
     bpy.context.scene.collection.children.unlink(collection)
 
