@@ -520,19 +520,6 @@ class SEUT_PT_Panel_Import(Panel):
         row.prop(data.seut, 'remap_all', text="", icon='SCENE_DATA')
         box.operator('wm.convert_structure', icon='OUTLINER')
 
-        box2 = box.box()
-        row = box2.row()
-        row.label(text="Model Fixes", icon='EMPTY_AXIS')
-        row.alignment = 'RIGHT'
-        #link = row.operator('wm.docu_link', text="", icon='INFO')
-        #link.section = 'Tutorials/Tools/SEUT/'
-        #link.page = '71827457'
-
-        col = box2.column(align=True)
-        col.operator('object.apply_scale_rotation', icon='ORIENTATION_GIMBAL')
-        col.operator('object.fix_positioning', icon='TRACKING_CLEAR_FORWARDS')
-        col.operator('object.apply_location', icon='CON_OBJECTSOLVER')
-
         if scene.seut.sceneType == 'character' or scene.seut.sceneType == 'character_animation':
             # Bones
             box = layout.box()

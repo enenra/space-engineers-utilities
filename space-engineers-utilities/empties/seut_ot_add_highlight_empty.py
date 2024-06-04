@@ -84,6 +84,7 @@ class SEUT_OT_AddHighlightEmpty(Operator):
         empty = bpy.context.view_layer.objects.active
         empty.parent = target_object.parent
         empty.empty_display_type = 'CUBE'
+        empty.empty_display_size = 0.5
 
         if uses_index:
             empty.name = empty_name + str(self.index)

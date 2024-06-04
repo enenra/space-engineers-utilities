@@ -68,6 +68,7 @@ class SEUT_OT_AddDummy(Operator):
                 break
 
         empty.empty_display_type = display_type
+        empty.empty_display_size = 0.5
 
         if uses_index:
             empty.name = empty_name + str(self.index)

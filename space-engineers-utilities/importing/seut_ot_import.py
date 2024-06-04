@@ -19,10 +19,11 @@ from bpy.types import (Panel,
 from bpy.types                  import Operator
 
 from .seut_ot_import_materials              import import_materials
+from ..utils.seut_tool_utils                import *
 from ..empties.seut_empties                 import empty_types
 from ..materials.seut_ot_remap_materials    import remap_materials
 from ..seut_errors                          import seut_report
-from ..seut_utils                           import create_relative_path, get_seut_blend_data
+from ..seut_utils                           import create_relative_path, to_radians
 
 
 class SEUT_OT_Import(Operator):
@@ -62,19 +63,119 @@ class SEUT_OT_Import(Operator):
         return {'RUNNING_MODAL'}
 
 
+def import_gltf(self, context, filepath):
+    scene = context.scene
+
+    existing_objects = set(scene.objects)
+    glb_path = os.path.splitext(filepath)[0] + '.glb'
+
+    if not os.path.exists(glb_path) or os.path.getmtime(filepath) > os.path.getmtime(glb_path):
+        if os.path.exists(glb_path):
+            os.remove(glb_path)
+
+        args = [os.path.join(get_tool_dir(), 'FBX2glTF-windows-x64.exe'), '-b', '--user-properties', '-i', filepath, '-o', glb_path]
+            
+        result = call_tool(args)
+        if result[1] is not None:
+            result[1] = result[1].decode("utf-8", "ignore")
+        else:
+            result[1] = "None"
+    
+    bpy.ops.import_scene.gltf(filepath=glb_path)
+
+    new_objects = set(scene.objects)
+    imported_objects = new_objects.copy()
+
+    for new in new_objects:
+        for existing in existing_objects:
+            if new == existing:
+                imported_objects.remove(new)
+
+    root = None
+    for obj in imported_objects:
+
+        obj.rotation_mode = 'XYZ'
+        obj.select_set(False)
+        
+        if context.collection != scene.collection:
+            context.collection.objects.link(obj)
+            scene.collection.objects.unlink(obj)
+
+        if obj.type == 'EMPTY':
+            if obj.name.startswith("RootNode") and obj.parent is None:
+                bpy.data.objects.remove(obj)
+                root = obj
+                continue
+
+            obj.empty_display_size = 0.5
+            obj.empty_display_type = next(
+                (
+                    empty_types[key]
+                    for key in empty_types.keys()
+                    if obj.name[: len(key)] == key
+                ),
+                'CUBE',
+            )
+            if scene.seut.sceneType not in ['character']:
+                obj.scale.x *= 0.01
+                obj.scale.y *= 0.01
+                obj.scale.z *= 0.01
+
+            custom_props = obj.get("fromFBX")
+            if custom_props:
+                custom_props = dict(custom_props)
+                for item in custom_props["userProperties"]:
+                    obj[item] = custom_props['userProperties'][item]['value']
+
+                if 'file' in obj and obj['file'] in bpy.data.scenes:
+                    obj.seut.linkedScene = bpy.data.scenes[obj['file']]
+
+                if 'highlight' in obj:
+                    if obj['highlight'].find(";") == -1:
+                        if obj['highlight'] in bpy.data.objects:
+                            new = obj.seut.highlight_objects.add()
+                            new.obj = bpy.data.objects[obj['highlight']]
+                    else:
+                        split = obj['highlight'].split(";")
+                        for entry in split:
+                            if entry in bpy.data.objects:
+                                new = obj.seut.highlight_objects.add()
+                                new.obj = bpy.data.objects[entry]
+    
+    imported_objects.remove(root)
+    
+    for obj in imported_objects:
+        if obj.type == 'EMPTY' and obj.parent is not None:
+            obj.rotation_euler[0] += obj.parent.rotation_euler[0] * -1
+            obj.rotation_euler[1] += obj.parent.rotation_euler[1] * -1
+            obj.rotation_euler[2] += obj.parent.rotation_euler[2] * -1
+
+    for obj in imported_objects:
+        if obj.parent is None:
+            context.view_layer.objects.active = obj
+            obj.select_set(True)
+            bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+            if scene.seut.sceneType == 'mainScene':
+                obj.rotation_euler[2] += to_radians(180)
+            break
+
+    xml_path = f'{os.path.splitext(filepath)[0]}.xml'
+    if os.path.exists(xml_path):
+        import_materials(self, context, xml_path)
+
+    seut_report(self, context, 'INFO', True, 'I014', filepath)
+
+    return {'FINISHED'}
+
+
 def import_fbx(self, context, filepath):
     """Imports FBX and adjusts them for use in SEUT"""
     
     scene = context.scene
-    data = get_seut_blend_data()
-
     existing_objects = set(scene.objects)
 
     try:
-        if addon_utils.check("better_fbx") == (True, True) and data.seut.better_fbx:
-            bpy.ops.better_import.fbx(filepath=filepath)
-
-        elif scene.seut.sceneType == ['character_animation'] or (
+        if scene.seut.sceneType == ['character_animation'] or (
             scene.seut.sceneType != ['character'] and 
             create_relative_path(filepath, 'Characters') != False and 
             create_relative_path(filepath, 'Animations') != False
@@ -121,12 +222,7 @@ def import_fbx(self, context, filepath):
                 )
 
         else:
-            bpy.ops.import_scene.fbx(
-                filepath=filepath,
-                use_manual_orientation=True,
-                axis_forward='Z',
-                axis_up='Y'
-                )
+            return import_gltf(self, context, filepath)
 
     except RuntimeError as error:
         seut_report(self, context, 'ERROR', True, 'E036', str(error))
@@ -146,9 +242,7 @@ def import_fbx(self, context, filepath):
         return {'CANCELLED'}
 
     for obj in imported_objects:
-
         if obj.type == 'EMPTY':
-
             obj.empty_display_type = next(
                 (
                     empty_types[key]
@@ -157,26 +251,6 @@ def import_fbx(self, context, filepath):
                 ),
                 'CUBE',
             )
-            if scene.seut.sceneType not in ['character']:
-                # Empties are imported at 2x the size they should be, this fixes that issue
-                obj.scale.x *= 0.5
-                obj.scale.y *= 0.5
-                obj.scale.z *= 0.5
-
-            if 'file' in obj and obj['file'] in bpy.data.scenes:
-                obj.seut.linkedScene = bpy.data.scenes[obj['file']]
-
-            if 'highlight' in obj:
-                if obj['highlight'].find(";") == -1:
-                    if obj['highlight'] in bpy.data.objects:
-                        new = obj.seut.highlight_objects.add()
-                        new.obj = bpy.data.objects[obj['highlight']]
-                else:
-                    split = obj['highlight'].split(";")
-                    for entry in split:
-                        if entry in bpy.data.objects:
-                            new = obj.seut.highlight_objects.add()
-                            new.obj = bpy.data.objects[entry]
 
     xml_path = f'{os.path.splitext(filepath)[0]}.xml'
     if os.path.exists(xml_path):

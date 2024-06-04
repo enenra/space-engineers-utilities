@@ -37,6 +37,7 @@ class SEUT_OT_AddCustomSubpart(Operator):
         bpy.ops.object.add(type='EMPTY')
         empty = context.view_layer.objects.active
         empty.name = self.name
+        empty.empty_display_size = 0.5
 
         if not target_object is None:
             empty.parent = target_object

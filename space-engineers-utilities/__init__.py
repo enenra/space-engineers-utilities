@@ -47,9 +47,6 @@ from .export.seut_ot_export_materials           import SEUT_OT_ExportMaterials
 from .export.seut_ot_copy_export_options        import SEUT_OT_CopyExportOptions
 from .importing.seut_ot_import                  import SEUT_OT_Import
 from .importing.seut_ot_import_complete         import SEUT_OT_ImportComplete
-from .importing.seut_ot_fix_positioning         import SEUT_OT_FixPositioning
-from .importing.seut_ot_fix_positioning         import SEUT_OT_FixPositioningPre
-from .importing.seut_ot_fix_positioning         import SEUT_OT_FixPositioningPost
 from .importing.seut_ot_structure_conversion    import SEUT_OT_StructureConversion
 from .importing.seut_ot_import_materials        import SEUT_OT_Import_Materials
 from .materials.seut_materials                  import SEUT_Materials
@@ -219,9 +216,6 @@ classes = (
     SEUT_OT_ImportComplete,
     SEUT_OT_StructureConversion,
     SEUT_OT_Import_Materials,
-    SEUT_OT_FixPositioning,
-    SEUT_OT_FixPositioningPre,
-    SEUT_OT_FixPositioningPost,
     SEUT_OT_RemapMaterials,
     SEUT_OT_ConvertBonesToBlenderFormat,
     SEUT_OT_ConvertBonesToSEFormat,
