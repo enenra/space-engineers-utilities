@@ -347,7 +347,7 @@ class SEUT_PT_Panel_IconRender(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return scene.seut.sceneType == 'mainScene' and check_display_panels(context)
+        return scene.seut.sceneType in ['mainScene', 'character_animation'] and check_display_panels(context)
 
 
     def draw(self, context):
