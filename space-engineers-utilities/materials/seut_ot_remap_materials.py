@@ -18,7 +18,7 @@ class SEUT_OT_RemapMaterials(Operator):
         data = get_seut_blend_data()
         return remap_materials(self, context, data.seut.remap_all)
 
-    
+
 
 # The original version of this code was written by Kamikaze
 def remap_materials(self, context, all_objects = False):
@@ -56,14 +56,14 @@ def remap_materials(self, context, all_objects = False):
     for obj in objs:
         if obj.type != 'MESH':
             continue
-        
+
         parent_lc = None
         if f"SEUT ({scene.seut.subtypeId})" in scene.view_layers['SEUT'].layer_collection.children:
             for lc in scene.view_layers['SEUT'].layer_collection.children[f"SEUT ({scene.seut.subtypeId})"].children:
                 if obj.name in lc.collection.objects:
                     parent_lc = lc
                     break
-            
+
         try:
             context.view_layer.objects.active = obj
 
@@ -86,7 +86,7 @@ def remap_materials(self, context, all_objects = False):
 
 
         for slot in obj.material_slots:
-            if slot.material is not None and slot.material.library is None:
+            if slot.material is not None and slot.material.library is None and slot.material.asset_data is None:
                 if slot.material.name == "SEUT Material":
                     continue
                 old_material = slot.material
@@ -96,7 +96,7 @@ def remap_materials(self, context, all_objects = False):
                     new_material = old_material.name[:-4]
                 else:
                     new_material = old_material.name
-                
+
                 if data.seut.fix_scratched_materials and new_material is not None and "Scratched_" in new_material and new_material.replace("Scratched", "") in bpy.data.materials:
                     new_material = new_material.replace("Scratched", "")
 
@@ -108,11 +108,11 @@ def remap_materials(self, context, all_objects = False):
     for mat in bpy.data.materials:
         if mat is not None and mat.library is not None and mat.users < 1:
             bpy.data.materials.remove(mat, do_unlink=True)
-    
+
     for img in bpy.data.images:
         if img is not None and img.library is not None and img.users < 1:
             bpy.data.images.remove(img, do_unlink=True)
-            
+
     for ng in bpy.data.node_groups:
         if ng is not None and ng.library is not None and ng.users < 1:
             bpy.data.node_groups.remove(ng, do_unlink=True)

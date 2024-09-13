@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
 from os.path                                import join
-from mathutils                              import Matrix	
+from mathutils                              import Matrix
 from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..importing.seut_ot_import             import import_fbx
@@ -57,7 +57,7 @@ def export_xml(self, context, collection) -> str:
         # This is a legacy check to filter out the old material presets.
         if mat.name[:5] == 'SMAT_':
             continue
-        
+
         for link in mat.node_tree.links:
 
             # Check for invalid node tree
@@ -101,7 +101,7 @@ def export_xml(self, context, collection) -> str:
                     if not check_vanilla_texture(nodes[img_type].image.filepath):
                         export_material_textures(self, context, mat)
                         break
-                    
+
         else:
             matRef = ET.SubElement(model, 'MaterialRef')
             matRef.set('Name', mat.name)
@@ -132,7 +132,7 @@ def get_col_filename(collection: object) -> str:
         'main': "{subtypeId}",
         'hkt': "{ref_col_name}",
         'bs': "{subtypeId}_BS{type_index}",
-        'lod': "{ref_col_name}_LOD{type_index}" 
+        'lod': "{ref_col_name}_LOD{type_index}"
     }
 
     subtypeId = collection.seut.scene.seut.subtypeId
@@ -148,7 +148,7 @@ def get_col_filename(collection: object) -> str:
 
 def add_subelement(parent, name: str, value):
     """Adds a subelement to XML definition"""
-    
+
     param = ET.SubElement(parent, 'Parameter')
     param.set('Name', name)
     param.text = str(value)
@@ -156,15 +156,15 @@ def add_subelement(parent, name: str, value):
 
 def create_texture_entry(self, context, mat_entry, mat_name: str, images: dict, tex_type: str, tex_name: str, tex_name_long: str):
     """Creates a texture entry for a texture type into the XML tree"""
-    
+
     rel_path = create_relative_path(images[tex_type].filepath, "Textures")
-    
+
     if not rel_path:
         seut_report(self, context, 'ERROR', False, 'E007', tex_name, mat_name)
         return
     else:
         add_subelement(mat_entry, tex_name_long, os.path.splitext(rel_path)[0] + ".dds")
-    
+
     if not images[tex_type].size[0] == 0 and images[tex_type].size[1] == 0:
         if not is_valid_resolution(images[tex_type].size[0]) or not is_valid_resolution(images[tex_type].size[1]):
             seut_report(self, context, 'WARNING', True, 'W004', tex_name, mat_name, f"{images[tex_type].size[0]}x{images[tex_type].size[1]}")
@@ -172,7 +172,7 @@ def create_texture_entry(self, context, mat_entry, mat_name: str, images: dict, 
 
 def is_valid_resolution(number: int) -> bool:
     """Returns True if number is a valid resolution (a square of 2)"""
-    
+
     if number <= 0:
         return False
 
@@ -193,7 +193,7 @@ def create_mat_entry(self, context, tree, mat):
         add_subelement(mat_entry, 'WindScale', round(mat.seut.windScale, 3))
     if mat.seut.windFrequency != 0:
         add_subelement(mat_entry, 'WindFrequency', round(mat.seut.windFrequency, 3))
-    
+
     images = {
         'cm': None,
         'ng': None,
@@ -229,7 +229,7 @@ def create_mat_entry(self, context, tree, mat):
 
 def create_lod_entry(tree, distance: int, path: str, filename: str):
     """Creates a LOD entry into the XML tree"""
-    
+
     lod = ET.SubElement(tree, 'LOD')
     lod.set('Distance', str(distance))
     lodModel = ET.SubElement(lod, 'Model')
@@ -247,7 +247,7 @@ def format_xml(self, context, tree) -> str:
         seut_report(self, context, 'ERROR', False, 'E033')
 
     xml_string = xml.dom.minidom.parseString(temp_string)
-    
+
     return xml_string.toprettyxml()
 
 
@@ -367,7 +367,7 @@ def export_fbx(self, context, collection, path_override = None) -> str:
         if empty is not None and empty.type == 'EMPTY':
 
             if scene.seut.linkSubpartInstances:
-                if 'file' in empty and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:                    
+                if 'file' in empty and empty.seut.linkedScene is not None and empty.seut.linkedScene.name in bpy.data.scenes:
                     reference = get_subpart_reference(empty, collections)
 
                     link_subpart_scene(self, scene, empty, empty.users_collection[0])
@@ -429,7 +429,7 @@ def correct_for_export_type(scene, reference: str) -> str:
 
 def prepare_mat_for_export(self, context, material):
     """Switches material around so that SE can properly read it"""
-    
+
     # See if relevant nodes already exist
     dummy_shader_node = None
     dummy_image_node = None
@@ -462,7 +462,7 @@ def prepare_mat_for_export(self, context, material):
         dummy_shader_node = material.node_tree.nodes.new('ShaderNodeBsdfPrincipled')
         dummy_shader_node.name = 'EXPORT_DUMMY'
         dummy_shader_node.label = 'EXPORT_DUMMY'
-    
+
     if material_output is None:
         material_output = material.node_tree.nodes.new('ShaderNodeOutputMaterial')
         material.seut.nodeLinkedToOutputName = ""
@@ -497,7 +497,7 @@ def revert_mat_after_export(self, context, material):
             material_output = node
         elif node.name == material.seut.nodeLinkedToOutputName:
             node_linked_to_output = node
-    
+
     # link the node group back to output
     if node_linked_to_output is not None:
         try:
@@ -563,7 +563,7 @@ def export_collection(self, context, collection):
             collections['seut'][0].objects.unlink(obj)
 
         result_fbx = export_fbx(self, context, corr_col, filepath)
-        
+
         context.window.scene = current_scn
 
         for col in bpy.data.collections:
@@ -600,7 +600,7 @@ def convert_position_to_cell(context, grid_size, medium_grid_scalar, empty) -> l
         loc_y += parent_obj.location.y
         loc_z += parent_obj.location.z
         parent_obj = parent_obj.parent
-    
+
     x = math.floor((loc_x + (scene.seut.bBox_X * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
     y = math.floor((loc_x + (scene.seut.bBox_Y * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
     z = math.floor((loc_x + (scene.seut.bBox_Z * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
@@ -669,13 +669,13 @@ class ExportSettings:
         self.depsgraph = depsgraph
         self.operator = STDOUT_OPERATOR
         self.isLogToolOutput = True
-        
+
         # set on first access, see properties below
         self._fbximporter = None
         self._havokfilter = None
         self._mwmbuilder = None
 
-        
+
     @property
     def fbximporter(self):
         if self._fbximporter == None:
@@ -707,13 +707,13 @@ class ExportSettings:
                 if out_str.find("Assimp.AssimpException: Error loading unmanaged library from path: Assimp32.dll") != -1:
                     seut_report(self, context, 'ERROR', False, 'E039')
                     return False
-                    
+
                 elif out_str.find("System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.") != -1:
                     temp_string = out_str[out_str.find("\\Models\\") + len("\\Models\\"):]
                     temp_string = temp_string[:temp_string.find(".fbx")]
                     seut_report(self, context, 'ERROR', False, 'E043', temp_string + ".fbx")
                     return False
-            
+
                 else:
                     seut_report(self, context, 'ERROR', False, 'E044')
                     return False
@@ -735,7 +735,7 @@ class ExportSettings:
                 raise
 
             return False
-    
+
     def __getitem__(self, key): # makes all attributes available for parameter substitution
         if not type(key) is str or key.startswith('_'):
             raise KeyError(key)
@@ -751,13 +751,13 @@ class ExportSettings:
 # HARAG: FWD = 'Z'
 # HARAG: MATRIX_NORMAL = axis_conversion(to_forward=FWD, to_up=UP).to_4x4()
 # HARAG: MATRIX_SCALE_DOWN = Matrix.Scale(0.2, 4) * MATRIX_NORMAL
-def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavokfbxfile = False, kwargs = None):	
-    kwargs = {	
-        
+def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavokfbxfile = False, kwargs = None):
+    kwargs = {
+
         # Operator settings
         'version': 'BIN7400',
         'path_mode': 'AUTO',
-        'batch_mode': 'OFF', # STOLLIE: Part of Save method not save single in Blender source, default = OFF.	
+        'batch_mode': 'OFF', # STOLLIE: Part of Save method not save single in Blender source, default = OFF.
 
         # Include settings.
         'object_types': {'MESH', 'EMPTY'}, # STOLLIE: Is None in Blender source.
@@ -768,7 +768,7 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         'apply_scale_options': 'FBX_SCALE_NONE',
         'axis_forward': 'Z', # STOLLIE: Normally a Y in Blender source. -Z is correct forward.
         'axis_up': 'Y',	 # STOLLIE: Normally a Z in Blender source.	Y aligns correctly in SE.
-        
+
         # HARAG: The export to Havok needs this, it's off for the MwmFileNode (bake_space_transform).
         # STOLLIE: This is False on Blender source. If set to True on MWM exports it breaks subpart orientations (bake_space_transform).
         'bake_space_transform': False,
@@ -778,11 +778,11 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         'use_subsurf': False,
         'use_mesh_modifiers': True,
         'use_mesh_edges': False, # STOLLIE: True in Blender source.
-        'use_tspace': False, # BLENDER: Why? Unity is expected to support tspace import...	
+        'use_tspace': False, # BLENDER: Why? Unity is expected to support tspace import...
         'use_mesh_modifiers_render': True,
 
          # For amature.
-        'primary_bone_axis': 'X', # STOLLIE: Swapped for SE, Y in Blender source.	
+        'primary_bone_axis': 'X', # STOLLIE: Swapped for SE, Y in Blender source.
         'secondary_bone_axis': 'Y', # STOLLIE: Swapped for SE, X in Blender source.
         'armature_nodetype': 'NULL',
         'use_armature_deform_only': False,
@@ -796,23 +796,23 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         'bake_anim_force_startend_keying': True,
         'bake_anim_step': 1.0,
         'bake_anim_simplify_factor': 1.0,
-                
+
         # Random properties not seen in Blender FBX export UI.
         'ui_tab': 'SKIP_SAVE',
         'global_matrix': Matrix(),
         'use_metadata': True,
         'embed_textures': False,
         'use_anim' : False, # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.
-        'use_anim_action_all' : True, # Not a Blender property.	
-        'use_default_take' : True, # Not a Blender property.	
-        'use_anim_optimize' : True, # Not a Blender property.	
-        'anim_optimize_precision' : 6.0, # Not a Blender property.	
+        'use_anim_action_all' : True, # Not a Blender property.
+        'use_default_take' : True, # Not a Blender property.
+        'use_anim_optimize' : True, # Not a Blender property.
+        'anim_optimize_precision' : 6.0, # Not a Blender property.
         'use_batch_own_dir': True,	# STOLLIE: Part of Save method not save single in Blender source, default = False.
-    }	
+    }
 
-    if kwargs:	
-        if isinstance(kwargs, bpy.types.PropertyGroup):	
-            kwargs = {prop : getattr(kwargs, prop) for prop in kwargs.rna_type.properties.keys()}	
+    if kwargs:
+        if isinstance(kwargs, bpy.types.PropertyGroup):
+            kwargs = {prop : getattr(kwargs, prop) for prop in kwargs.rna_type.properties.keys()}
         kwargs.update(**kwargs)
 
     # These cannot be overriden and are always set here
@@ -820,8 +820,8 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
     kwargs['context_objects'] = objects	# STOLLIE: Is None in Blender Source.
 
     if ishavokfbxfile:
-        kwargs['bake_space_transform'] = True        
-    
+        kwargs['bake_space_transform'] = True
+
     if scene.seut.sceneType == 'subpart':
         kwargs['axis_forward'] = '-Z'
 
@@ -829,8 +829,8 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         kwargs['global_scale'] = 1.00
         kwargs['axis_forward'] = '-Z'
         kwargs['object_types'] = {'MESH', 'EMPTY', 'ARMATURE'} # STOLLIE: Is None in Blender source.
-        kwargs['add_leaf_bones'] = False # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.     
-        kwargs['apply_unit_scale'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.    
+        kwargs['add_leaf_bones'] = False # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.
+        kwargs['apply_unit_scale'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.
 
     if scene.seut.sceneType == 'character_animation':
         kwargs['axis_forward'] = '-Z'
@@ -839,7 +839,7 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         kwargs['bake_anim'] = True # HARAG: no animation export to SE by default - STOLLIE: True in Blender source.
         kwargs['bake_anim_simplify_factor'] = 0.0
         kwargs['use_anim'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.
-        kwargs['apply_unit_scale'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.    
+        kwargs['apply_unit_scale'] = True # HARAG: No animation export to SE by default - STOLLIE: Not a Blender property.
 
     # if scene.seut.sceneType != 'character' and scene.seut.sceneType != 'character_animation':
     global_matrix = axis_conversion(to_forward=kwargs['axis_forward'], to_up=kwargs['axis_up']).to_4x4()
@@ -851,11 +851,11 @@ def export_to_fbxfile(settings: ExportSettings, scene, filepath, objects, ishavo
         global_matrix = Matrix.Scale(scale, 4) @ global_matrix
 
     kwargs['global_matrix'] = global_matrix
-    
-    return save_single(	
-        settings.operator,	
-        settings.scene,	
-        settings.depsgraph,	
-        filepath=filepath,	
-        **kwargs # Stores any number of Keyword Arguments into a dictionary called 'fbxSettings'.	
+
+    return save_single(
+        settings.operator,
+        settings.scene,
+        settings.depsgraph,
+        filepath=filepath,
+        **kwargs # Stores any number of Keyword Arguments into a dictionary called 'fbxSettings'.
     )
