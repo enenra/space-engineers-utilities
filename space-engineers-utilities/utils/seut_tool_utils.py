@@ -3,8 +3,6 @@ import os
 import subprocess
 import threading
 
-from multiprocessing    import Pool
-
 from ..seut_errors          import get_abs_path
 
 
@@ -15,12 +13,12 @@ def call_tool(args: list, logfile=None) -> list:
         if logfile is not None:
             write_to_log(logfile, out, args=args)
         return [0, out, args]
-    
+
     except subprocess.CalledProcessError as e:
         if logfile is not None:
             write_to_log(logfile, e.output, args=args)
         return [e.returncode, e.output, args]
-    
+
     except Exception as e:
         print(e)
 
@@ -30,7 +28,7 @@ def call_tool_threaded(commands: list, thread_count: int, logfile=None):
     threads = []
     results = []
     commands_left = commands
-        
+
     while len(commands_left) > 0:
         if len(threads) < thread_count:
             c = commands_left[0]
@@ -42,10 +40,10 @@ def call_tool_threaded(commands: list, thread_count: int, logfile=None):
             t = threads[0]
             threads.remove(t)
             t.join()
-    
+
     for i in threads:
         i.join()
-    
+
     if logfile is not None:
         output = ""
 
@@ -53,7 +51,7 @@ def call_tool_threaded(commands: list, thread_count: int, logfile=None):
             output += r[1].decode("utf-8", "ignore") + '\n'
 
         write_to_log(logfile, output.encode())
-    
+
     return results
 
 
