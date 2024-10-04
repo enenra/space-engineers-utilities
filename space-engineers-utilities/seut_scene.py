@@ -42,7 +42,7 @@ def update_sceneType(self, context):
     for key, cols in collections.items():
         if cols is None:
             continue
-        
+
         if not key in seut_collections[scene.seut.sceneType] and key != 'seut':
             for col in cols:
                 if len(col.objects) <= 0:
@@ -56,7 +56,7 @@ def update_sceneType(self, context):
                         bpy.data.collections.remove(col)
                     else:
                         col.color_tag = 'COLOR_07'
-    
+
     self.previous_scene_type = self.sceneType
 
 
@@ -77,7 +77,7 @@ def update_paint_color(self, context):
 
 
 def update_GridScale(self, context):
-    
+
     scene = context.scene
 
     # Grid scale is SE block size divided by 2 because else the lines don't line up with the block edges.
@@ -119,7 +119,7 @@ def update_mirroringScene(self, context):
     toggle_mode(self, context, 'MIRRORING')
 
 
-def update_MountpointToggle(self, context):  
+def update_MountpointToggle(self, context):
     toggle_mode(self, context, 'MOUNTPOINT')
 
 
@@ -216,11 +216,11 @@ def update_renderDistance(self, context):
     if 'Key Light' in bpy.data.objects:
         key_light = bpy.data.objects['Key Light']
         key_light.data.energy = 7500.0 * scene.seut.renderDistance
-    
+
     if 'Fill Light' in bpy.data.objects:
         fill_light = bpy.data.objects['Fill Light']
         fill_light.data.energy = 5000.0 * scene.seut.renderDistance
-    
+
     if 'Rim Light' in bpy.data.objects:
         rim_light = bpy.data.objects['Rim Light']
         rim_light.data.energy = 10000.0 * scene.seut.renderDistance
@@ -229,7 +229,7 @@ def update_renderDistance(self, context):
 def update_subtypeId(self, context):
     scene = context.scene
 
-    if scene.seut.subtypeId == "":
+    if scene.seut.subtypeId == "" or len(scene.seut.subtypeId) > 45:
         scene.seut.subtypeId = scene.name
         scene.seut.subtypeBefore = scene.name
 
@@ -289,7 +289,7 @@ def update_export_smallGrid(self, context):
 
     if not self.export_largeGrid and not self.export_smallGrid:
         self.export_largeGrid = True
-    
+
     if not self.export_smallGrid and self.export_medium_grid:
         self.export_medium_grid = False
 
@@ -322,7 +322,7 @@ def update_mod_path(self, context):
     if not os.path.isdir(get_abs_path(self.mod_path)):
         seut_report(self, context, 'ERROR', False, 'E003', "Mod", self.mod_path)
         self.mod_path = ""
-    
+
     if self.export_exportPath == "":
         if scene.seut.sceneType in ['mainScene', 'subpart']:
             self.export_exportPath = os.path.join(self.mod_path, "Models", "Cubes", self.gridScale)
@@ -332,7 +332,7 @@ def update_mod_path(self, context):
             self.export_exportPath = os.path.join(self.mod_path, "Models", "Characters", "Animations")
     else:
         self.export_exportPath = os.path.join(self.mod_path, self.export_exportPath[self.export_exportPath.rfind("Models"):])
-    
+
     if scene.render.filepath in ["", "/tmp\\", "//"]:
         scene.render.filepath = os.path.join(get_abs_path(self.mod_path), "Textures", "GUI", "Icons", "Cubes")
     else:
@@ -344,7 +344,7 @@ def poll_linkedScene(self, object):
 
 
 class SEUT_MountpointAreas(PropertyGroup):
-    
+
     side: EnumProperty(
         name='Side',
         items=(
@@ -355,7 +355,7 @@ class SEUT_MountpointAreas(PropertyGroup):
             ('top', 'Top', ''),
             ('bottom', 'Bottom', '')
             ),
-        default='front'        
+        default='front'
     )
     x: FloatProperty(
         name="Location X",
@@ -602,7 +602,7 @@ class SEUT_Scene(PropertyGroup):
     mountpointAreas: CollectionProperty(
         type=SEUT_MountpointAreas
     )
-    
+
 
     # Export
     export_deleteLooseFiles: BoolProperty(
@@ -810,7 +810,7 @@ class SEUT_Scene(PropertyGroup):
         description="Defines the range of degrees over which the Surface Detail texture fades away",
         min=0
     )
-    
+
     hill_params_min: FloatProperty(
         name="Hills Parameter Minimum",
         min=-1,
@@ -860,7 +860,7 @@ class SEUT_Scene(PropertyGroup):
         min=0,
         default=1
     )
-    
+
     surface_gravity: FloatProperty(
         name="Surface Gravity",
         description="The gravity on height zero on the planet, falling off with distance",
