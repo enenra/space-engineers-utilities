@@ -29,7 +29,7 @@ class SEUT_OT_QuickTools_BS_ApplyConstruction(Operator):
         if 'Construction' not in bpy.data.materials:
             Operator.poll_message_set("Material 'Construction' not found. Link it to this BLEND-file to use this operator.")
             return False
-        
+
         return 'SEUT' in scene.view_layers
 
 
@@ -44,14 +44,14 @@ class SEUT_OT_QuickTools_BS_ApplyConstruction(Operator):
                         slot.material = bpy.data.materials[name]
                     else:
                         slot.material = bpy.data.materials['Construction']
-                
+
                 elif slot.material.name.endswith("_Darker"):
                     name = f"{slot.material.name[:-len('_Darker')]}_Chrome"
                     if name in bpy.data.materials:
                         slot.material = bpy.data.materials[name]
                     else:
                         slot.material = bpy.data.materials['Construction']
-                
+
                 else:
                     slot.material = bpy.data.materials['Construction']
 
@@ -75,15 +75,15 @@ class SEUT_OT_QuickTools_BS_CutAndSolidify(Operator):
         if context.active_object.mode != 'EDIT':
             Operator.poll_message_set("Must be in edit mode.")
             return False
-        
+
         bm = bmesh.from_edit_mesh(context.active_object.data)
 
         if len([f for f in bm.faces if f.select]) < 1:
             Operator.poll_message_set("Must have faces selected to run this operator.")
             return False
-        
+
         return 'SEUT' in scene.view_layers
-    
+
 
     inset_thickness: FloatProperty(
         name="Inset Thickness",
@@ -97,7 +97,7 @@ class SEUT_OT_QuickTools_BS_CutAndSolidify(Operator):
 
     def execute(self, context):
         obj = context.view_layer.objects.active
-        
+
         bpy.ops.mesh.inset(thickness=self.inset_thickness, depth=0, use_individual=True, release_confirm=True)
         bpy.ops.mesh.delete(type='FACE')
 
@@ -123,7 +123,7 @@ class SEUT_OT_QuickTools_BS_CutAndSolidify(Operator):
         bpy.ops.mesh.select_mode(type='FACE')
 
         return {'FINISHED'}
-    
+
 
     def draw(self, context):
         layout = self.layout
@@ -150,9 +150,9 @@ class SEUT_OT_QuickTools_GEN_OriginToSelected(Operator):
         if context.active_object.mode != 'EDIT':
             Operator.poll_message_set("Must be in edit mode.")
             return False
-        
+
         bm = bmesh.from_edit_mesh(context.active_object.data)
-        
+
         verts = len([v for v in bm.verts if v.select])
         edges = len([e for e in bm.edges if e.select])
         faces = len([f for f in bm.faces if f.select])
@@ -160,12 +160,12 @@ class SEUT_OT_QuickTools_GEN_OriginToSelected(Operator):
         if (bm.select_mode == 'VERT' and verts != 1) or (bm.select_mode == 'EDGE' and edges != 1) or (bm.select_mode == 'FACE' and faces != 1):
             Operator.poll_message_set("Must have one item selected to run this operator.")
             return False
-        
+
         return 'SEUT' in scene.view_layers
 
 
     def execute(self, context):
-        
+
         bpy.ops.view3d.snap_cursor_to_selected()
         bpy.ops.object.mode_set(mode='OBJECT')
         bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN')
@@ -192,9 +192,9 @@ class SEUT_OT_QuickTools_GEN_MirrorAndApply(Operator):
         if context.active_object.mode != 'OBJECT':
             Operator.poll_message_set("Must be in object mode.")
             return False
-        
+
         return 'SEUT' in scene.view_layers
-    
+
 
     axis: EnumProperty(
         name="Mirror Axis",
@@ -209,11 +209,14 @@ class SEUT_OT_QuickTools_GEN_MirrorAndApply(Operator):
 
 
     def execute(self, context):
-        
+
+        if context.active_object.type != 'MESH':
+            return {'CANCELLED'}
+
         bpy.ops.transform.mirror(
-            orient_type='GLOBAL', 
-            orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), 
-            orient_matrix_type='GLOBAL', 
+            orient_type='GLOBAL',
+            orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+            orient_matrix_type='GLOBAL',
             constraint_axis=(self.axis == 'x', self.axis == 'y', self.axis == 'z')
         )
         bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
@@ -245,7 +248,7 @@ class SEUT_OT_QuickTools_MAIN_AddBevels(Operator):
         if context.active_object.mode != 'OBJECT':
             Operator.poll_message_set("Must be in object mode.")
             return False
-        
+
         return 'SEUT' in scene.view_layers
 
 
@@ -273,7 +276,7 @@ class SEUT_OT_QuickTools_MAIN_AddBevels(Operator):
                 mod_name = list(mods_new)[0]
             else:
                 mod_name = list(mods_new - mods)[0]
-                
+
             modifier = obj.modifiers[mod_name]
             modifier.width = 0.0025
             modifier.harden_normals = True
@@ -298,14 +301,14 @@ class SEUT_OT_QuickTools_LOD_RemoveBevels(Operator):
         if context.active_object.mode != 'OBJECT':
             Operator.poll_message_set("Must be in object mode.")
             return False
-        
+
         return 'SEUT' in scene.view_layers
 
 
     def execute(self, context):
         context.view_layer.objects.active = context.active_object
 
-        for obj in context.selected_objects:            
+        for obj in context.selected_objects:
             for mod in obj.modifiers:
                 if mod.type == 'BEVEL':
                     obj.modifiers.remove(mod)
@@ -330,7 +333,7 @@ class SEUT_OT_QuickTools_HKT_ApplyTransforms(Operator):
         if context.active_object.mode != 'OBJECT':
             Operator.poll_message_set("Must be in object mode.")
             return False
-        
+
         return 'SEUT' in scene.view_layers
 
 
