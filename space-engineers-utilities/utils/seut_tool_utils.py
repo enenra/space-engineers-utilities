@@ -76,4 +76,4 @@ def write_to_log(logfile: str, content: str, args=None, cwd=None):
 
 
 def get_tool_dir() -> str:
-    return os.path.join(bpy.utils.user_resource("SCRIPTS"), 'addons', __package__[:__package__.find(".")], 'tools')
+    return os.path.join(os.path.dirname(__file__), 'tools')

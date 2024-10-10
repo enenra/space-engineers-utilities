@@ -86,7 +86,7 @@ def setup_mirroring(self, context):
             smat_y = mat
         elif mat.name == 'SMAT_Mirror_Z':
             smat_z = mat
-    
+
     if smat_x is None:
         smat_x = link_material('.SMAT_Mirror_X', 'SEUT.blend')
     if smat_y is None:
@@ -95,7 +95,7 @@ def setup_mirroring(self, context):
         smat_z = link_material('.SMAT_Mirror_Z', 'SEUT.blend')
 
     collection = create_seut_collection(scene, 'mirroring')
-    
+
     # Compile rotation / position / size information
     empty_x_rot_raw = mirroring_presets[scene.seut.mirroring_X]
     empty_y_rot_raw = mirroring_presets[scene.seut.mirroring_Y]
@@ -178,7 +178,7 @@ def setup_mirroring(self, context):
     source_scene = scene
     if scene.seut.mirroringScene is not None:
         source_scene = scene.seut.mirroringScene
-    
+
     empty_x.seut.linkedScene = source_scene
     link_subpart_scene(self, scene, empty_x, collection)
     empty_y.seut.linkedScene = source_scene
@@ -248,9 +248,9 @@ def save_rotation(self, context, empty):
 
             elif empty.name.find("Mirror TopBottom") != -1:
                 scene.seut.mirroring_Z = key
-            
+
             seut_report(self, context, 'INFO', False, 'I016', empty.name, str(rot_converted), str(key))
-    
+
     if not found:
         seut_report(self, context, 'ERROR', False, 'E023', empty.name, str(rot_converted))
 

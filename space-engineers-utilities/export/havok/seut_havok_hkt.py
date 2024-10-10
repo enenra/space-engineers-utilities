@@ -21,16 +21,16 @@ def convert_fbx_to_fbxi_hkt(context, settings: ExportSettings, source: str, targ
 
 def convert_fbxi_hkt_to_hkt(self, context, settings: ExportSettings, source: str, target: str, adjustments: dict = None):
     """Converts the HKT created by FBXImporter to the final HKT."""
-    
+
     havok_options = get_hko_content(adjustments)
 
-    hko = tempfile.NamedTemporaryFile(mode='wt', prefix='space_engineers_', suffix=".hko", delete=False) # wt mode is write plus text mode.	
+    hko = tempfile.NamedTemporaryFile(mode='wt', prefix='space_engineers_', suffix=".hko", delete=False) # wt mode is write plus text mode.
     try:
         with hko.file as tempfile_to_process:
             tempfile_to_process.write(havok_options)
 
-        # -t is for standard ouput, -s designates a filter set (hko created above), -p designates path.	
-        # Above referenced from running "hctStandAloneFilterManager.exe -h"	
+        # -t is for standard ouput, -s designates a filter set (hko created above), -p designates path.
+        # Above referenced from running "hctStandAloneFilterManager.exe -h"
         result = settings.callTool(
             context,
             [settings.havokfilter, '-t', '-s', hko.name, '-p', target, source],
@@ -52,7 +52,7 @@ def get_hko_content(adjustments: dict = None) -> str:
 
     # This file is taken entirely from Balmung's fork of Harag's plugin. No reason to reinvent the wheel.
     # https://github.com/Hotohori/se-blender/blob/master/src/python/space_engineers/havok_options.py
-    path = os.path.join(bpy.utils.user_resource("SCRIPTS"), 'addons', __package__[:__package__.find(".")], 'export', 'havok', 'default.hko')
+    path = os.path.join(os.path.dirname(__file__), 'default.hko')
 
     with open(path, 'r') as file:
         hko = file.read()
@@ -61,5 +61,5 @@ def get_hko_content(adjustments: dict = None) -> str:
         for elem, value in adjustments.items():
             hko = update_subelement(hko, 'hkparam', value, elem)
         hko = format_entry(hko)
-    
+
     return hko
