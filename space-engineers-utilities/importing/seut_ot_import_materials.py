@@ -50,7 +50,7 @@ def import_materials(self, context, filepath):
 
     preferences = get_preferences()
     materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
-    
+
     if preferences.asset_path == "":
         seut_report(self, context, 'ERROR', True, 'E012', "Asset Directory", get_abs_path(preferences.asset_path))
         return {'CANCELLED'}
@@ -89,7 +89,7 @@ def import_materials(self, context, filepath):
                     nodes.remove(node)
                 material = create_material(bpy.data.materials[mat.attrib['Name']])
                 material.name = mat.attrib['Name']
-        
+
         else:
             material = create_material()
             material.name = mat.attrib['Name']
@@ -161,16 +161,16 @@ def import_materials(self, context, filepath):
 
         if not add_img is None:
             add_node.image = add_img
-            ng_node.image.alpha_mode = 'CHANNEL_PACKED'
+            ng_node.image.alpha_mode = 'CHANNEL_PACKED' # TODO: This doesn't work consistently.
         else:
             material.node_tree.nodes.remove(add_node)
 
         if not am_img is None:
             am_node.image = am_img
-            ng_node.image.alpha_mode = 'CHANNEL_PACKED'
+            ng_node.image.alpha_mode = 'CHANNEL_PACKED' # TODO: This doesn't work consistently.
         else:
             material.node_tree.nodes.remove(am_node)
-        
+
         imported.append(material.name)
 
     if len(not_imported) > 0:
@@ -181,7 +181,7 @@ def import_materials(self, context, filepath):
             else:
                 materials_string = materials_string + ", " + name
         seut_report(self, context, 'INFO', True, 'I020', len(not_imported), materials_string)
-        
+
     if len(imported) <= 0:
         seut_report(self, context, 'INFO', True, 'E041', filepath)
         return {'FINISHED'}
@@ -209,7 +209,7 @@ def load_image(self, context, path: str, materials_path: str, material: bpy.type
         if os.path.exists(f"{img_path}.{o}") or os.path.exists(f"{img_path}.{o.lower()}"):
             img_path += f".{o.lower()}"
             break
-        
+
     if not os.path.exists(img_path):
         seut_report(self, context, 'WARNING', True, 'W011', img_path, material.name)
         return

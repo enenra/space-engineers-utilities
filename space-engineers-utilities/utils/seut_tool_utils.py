@@ -76,4 +76,4 @@ def write_to_log(logfile: str, content: str, args=None, cwd=None):
 
 
 def get_tool_dir() -> str:
-    return os.path.join(os.path.dirname(__file__), 'tools')
+    return os.path.join(os.path.dirname(os.path.dirname(__file__)), 'tools')

@@ -41,7 +41,7 @@ class SEUT_OT_ConvertTextures(Operator):
 
 
     def execute(self, context):
-        
+
         data = get_seut_blend_data()
 
         if data.seut.texconv_output_dir == "":
@@ -49,7 +49,7 @@ class SEUT_OT_ConvertTextures(Operator):
                 data.seut.texconv_output_dir = os.path.dirname(data.seut.texconv_input_file)
             else:
                 data.seut.texconv_output_dir = data.seut.texconv_input_dir
-        
+
         settings = []
 
         if data.seut.texconv_preset == 'custom':
@@ -71,7 +71,7 @@ class SEUT_OT_ConvertTextures(Operator):
             if data.seut.texconv_pdd:
                 settings.append('-if')
                 settings.append('POINT_DITHER_DIFFUSION')
-        
+
         output_path = get_abs_path(data.seut.texconv_output_dir)
         if not os.path.exists(output_path):
             os.makedirs(output_path)
@@ -94,9 +94,9 @@ class SEUT_OT_ConvertTextures(Operator):
                 return {'CANCELLED'}
             else:
                 seut_report(self, context, 'INFO', True, 'I009', converted, "")
-        
+
         return {'FINISHED'}
-        
+
 
 class SEUT_OT_MassConvertTextures(Operator):
     """Mass converts DDS textures to TIF.\nWARNING: This can lock up Blender for up to 30min for a full conversion"""
@@ -166,7 +166,7 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
 
                 if os.path.splitext(source)[1].upper()[1:] not in supported_image_types:
                     continue
-                
+
                 if skip_list != []:
                     skip = False
                     for i in skip_list:
@@ -175,7 +175,7 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
                             break
                     if skip:
                         continue
-                
+
                 if target_dir.find('\Textures\\') == -1 and not target_dir.endswith('\Textures'):
                     target = os.path.join(target_dir, os.path.splitext(file)[0] + '.' + output_type)
                 else:
@@ -186,7 +186,7 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
 
     commands = []
     for tex in files_to_convert:
-        os.makedirs(os.path.dirname(tex[1]), exist_ok=True)    
+        os.makedirs(os.path.dirname(tex[1]), exist_ok=True)
         commands.append(get_conversion_args(preset, tex[0], os.path.dirname(tex[1]), settings))
 
     total = len(files_to_convert)
@@ -234,7 +234,7 @@ def convert_texture(path_in: str, path_out: str, preset: str, settings=[]):
 
     if preset in presets:
         args = get_conversion_args(preset, path_in, path_out, settings)
-        
+
         result = call_tool(args)
         if result[1] is not None:
             result[1] = result[1].decode("utf-8", "ignore")
