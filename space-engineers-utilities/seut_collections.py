@@ -113,6 +113,26 @@ seut_collections = {
             'color': 'COLOR_04'
             },
     },
+    'item': {
+        'main': {
+            'name': 'Main',
+            'type': 'Generic Item',
+            'schema': 'Main ({subtpye_id})',
+            'color': 'COLOR_04'
+            },
+        'hkt': {
+            'name': 'Collision',
+            'type': 'Collision Objects',
+            'schema': 'Collision - {ref_col_name}{ref_col_type_index} ({subtpye_id})',
+            'color': 'COLOR_08'
+            },
+        'lod': {
+            'name': 'LOD',
+            'type': 'Level of Detail',
+            'schema': 'LOD{type_index} ({subtpye_id})',
+            'color': 'COLOR_01'
+            },
+    },
     'planet_editor': {
         'main': {
             'name': 'Main',
@@ -135,7 +155,7 @@ def update_ref_col(self, context):
                 del cols[key]
                 break
         self.type_index = get_first_free_index(cols)
-        
+
         if self.col_type == 'lod':
             if self.type_index - 1 in cols:
                 col = cols[self.type_index - 1]
@@ -165,7 +185,7 @@ def poll_ref_col(self, object):
         if hkt != []:
             is_self = hkt[0].seut == self
         return check and (hkt == [] or is_self)
-    
+
     elif self.col_type == 'lod':
         return check
 
@@ -196,11 +216,11 @@ def update_hkt_file(self, context):
     if self.hkt_file in ["", self.hkt_file_before]:
         self.hkt_file_before = self.hkt_file
         return
-    
+
     if os.path.isdir(self.hkt_file) or os.path.splitext(self.hkt_file)[1].lower() != '.hkt':
         seut_report(self, context, 'ERROR', False, 'E015', 'External Collision File', '.hkt')
         self.hkt_file = self.hkt_file_before
-        
+
     self.hkt_file_before = self.hkt_file
 
 
@@ -212,11 +232,11 @@ class SEUT_Collection(PropertyGroup):
         description="Used as a reference to patch the SEUT collection properties to newer versions",
         default=0 # current: 3
     )
-    
+
     scene: PointerProperty(
         type = bpy.types.Scene
     )
-    
+
     col_type: EnumProperty(
         items=(
             ('none', 'None', ''),
@@ -390,7 +410,7 @@ def get_collections(scene: object, inclusive: bool = False) -> dict:
             continue
         if not col.seut.scene is scene:
             continue
-        
+
         if col.seut.col_type == 'none':
             continue
         else:
@@ -402,13 +422,13 @@ def get_collections(scene: object, inclusive: bool = False) -> dict:
             if collections[col.seut.col_type] is None:
                 collections[col.seut.col_type] = []
             collections[col.seut.col_type].append(col)
-    
+
     return collections
 
 
 def rename_collections(scene: object):
     """Scans existing collections to find the SEUT ones and renames them if the tag has changed."""
-    
+
     # This ensures that after a full copy of a scene, the collections are reassigned to the new scene
     if len(scene.view_layers['SEUT'].layer_collection.children) < 1:
         return
@@ -526,7 +546,7 @@ def create_seut_collection(scene, col_type: str, type_index=None, ref_col=None):
     lod_distance = 0
     ref_col_name = ""
     ref_col_type_index = ""
-    
+
     if 'seut' not in collections or collections['seut'] is None or col_type not in collections:
         collections = create_collections(scene)
 
@@ -571,7 +591,7 @@ def create_seut_collection(scene, col_type: str, type_index=None, ref_col=None):
                     type_index = len(cols)
                 else:
                     type_index = 1
-            
+
             if type_index == 1:
                 lod_distance = 25
             else:
@@ -583,7 +603,7 @@ def create_seut_collection(scene, col_type: str, type_index=None, ref_col=None):
                 ref_col_type_index = ref_col.seut.type_index
                 name = f"{ref_col_name}{ref_col.seut.type_index}_{seut_collections[scene.seut.sceneType]['lod']['name']}{type_index} ({scene.seut.subtypeId})"
                 color = 'COLOR_06'
-    
+
     if type_index is None:
         type_index = 0
     name = name.format(subtpye_id=scene.seut.subtypeId, ref_col_name=ref_col_name, ref_col_type_index=ref_col_type_index, type_index=type_index)
@@ -599,7 +619,7 @@ def create_seut_collection(scene, col_type: str, type_index=None, ref_col=None):
     if lod_distance != 0:
         collection.seut.lod_distance = lod_distance
     collection.color_tag = color
-    
+
     if 'seut' in collections and collections['seut'] is not None:
         collections['seut'][0].children.link(collection)
     elif f"SEUT ({scene.seut.subtypeId})" in scene.view_layers['SEUT'].layer_collection.children:
@@ -627,7 +647,7 @@ def sort_collections(scene, context = None):
 
     seut_cols = collections['seut'][0].children
     vl_cols = scene.view_layers['SEUT'].layer_collection.children[collections['seut'][0].name].children
-    
+
     if 'bs' in collections and collections['bs'] is not None:
         for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
             hide = vl_cols[bs.name].hide_viewport
@@ -640,14 +660,14 @@ def sort_collections(scene, context = None):
                 seut_cols.unlink(hkt[0])
                 seut_cols.link(hkt[0])
                 vl_cols[hkt[0].name].hide_viewport = hide
-    
+
     if 'lod' in collections and collections['lod'] is not None:
         for lod in sorted(get_cols_by_type(scene, 'lod', collections['main'][0]).values(), key=lambda lod: lod.seut.type_index):
             hide = vl_cols[lod.name].hide_viewport
             seut_cols.unlink(lod)
             seut_cols.link(lod)
             vl_cols[lod.name].hide_viewport = hide
-    
+
     if 'bs' in collections and 'lod' in collections and collections['bs'] is not None and collections['lod'] is not None:
         for bs in sorted(collections['bs'], key=lambda bs: bs.seut.type_index):
             for lod in sorted(get_cols_by_type(scene, 'lod', bs).values(), key=lambda lod: lod.seut.type_index):
@@ -655,7 +675,7 @@ def sort_collections(scene, context = None):
                 seut_cols.unlink(lod)
                 seut_cols.link(lod)
                 vl_cols[lod.name].hide_viewport = hide
-    
+
     if context is not None:
         layer_col_parent = scene.view_layers['SEUT'].layer_collection.children[f"SEUT ({scene.seut.subtypeId})"]
         name = ""
@@ -700,7 +720,7 @@ def get_seut_collection(scene, col_type: str, ref_col_type: str = None, type_ind
             if type_index is not None and col.seut.type_index != type_index:
                 continue
             return col
-    
+
     return None
 
 
@@ -718,7 +738,7 @@ def get_rev_ref_cols(collections: dict, collection: object, col_type: str) -> li
     for col in collections[col_type]:
         if col.seut.ref_col == collection:
             output.append(col)
-            
+
     return output
 
 
@@ -732,5 +752,5 @@ def get_first_free_index(collections: dict) -> int:
         while temp_key in collections:
             temp_key += 1
         index = temp_key
-    
+
     return index

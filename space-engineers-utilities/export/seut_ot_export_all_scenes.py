@@ -23,7 +23,7 @@ class SEUT_OT_ExportAllScenes(Operator):
 
     def execute(self, context):
         """Exports all collections in all scenes and compresses them to MWM."""
-        
+
         preferences = get_preferences()
 
         # Check for availability of FBX Importer
@@ -60,7 +60,7 @@ class SEUT_OT_ExportAllScenes(Operator):
             if 'SEUT' not in scn.view_layers:
                 continue
 
-            if scn.seut.sceneType in ['mainScene','subpart','character','character_animation',]:
+            if scn.seut.sceneType in ['mainScene', 'subpart', 'character', 'character_animation', 'item']:
 
                 scene_counter += 1
                 context.window.scene = scn

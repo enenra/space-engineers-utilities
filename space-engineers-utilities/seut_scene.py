@@ -330,6 +330,8 @@ def update_mod_path(self, context):
             self.export_exportPath = os.path.join(self.mod_path, "Models", "Characters")
         elif scene.seut.sceneType == 'character_animation':
             self.export_exportPath = os.path.join(self.mod_path, "Models", "Characters", "Animations")
+        elif scene.seut.sceneType == 'item':
+            self.export_exportPath = os.path.join(self.mod_path, "Models", "Items")
     else:
         self.export_exportPath = os.path.join(self.mod_path, self.export_exportPath[self.export_exportPath.rfind("Models"):])
 
@@ -419,6 +421,7 @@ class SEUT_Scene(PropertyGroup):
             ('subpart', 'Subpart', 'This scene is a subpart of a main scene'),
             ('character', 'Character', 'This scene contains a character model'),
             ('character_animation', 'Character Animation', 'This scene contains a character animation or pose'),
+            ('item', 'Generic Item', 'This scene contains an inventory or environment item'),
             ('planet_editor', 'Planet Editor (Alpha)', 'This scene can be used to create a Space Engineers planet with. Only one can exist per BLEND file'),
             ),
         default='mainScene',
