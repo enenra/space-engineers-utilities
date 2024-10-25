@@ -112,6 +112,12 @@ seut_collections = {
             'schema': 'Main ({subtpye_id})',
             'color': 'COLOR_04'
             },
+        'render': {
+            'name': 'Render',
+            'type': 'Render Rig',
+            'schema': 'Render ({subtpye_id})',
+            'color': 'COLOR_03'
+            }
     },
     'item': {
         'main': {
@@ -132,6 +138,12 @@ seut_collections = {
             'schema': 'LOD{type_index} ({subtpye_id})',
             'color': 'COLOR_01'
             },
+        'render': {
+            'name': 'Render',
+            'type': 'Render Rig',
+            'schema': 'Render ({subtpye_id})',
+            'color': 'COLOR_03'
+            }
     },
     'planet_editor': {
         'main': {
