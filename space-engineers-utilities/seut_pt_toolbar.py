@@ -369,7 +369,9 @@ class SEUT_PT_Panel_IconRender(Panel):
             layout.operator('scene.icon_render_preview', icon='RENDER_RESULT')
 
             box = layout.box()
-            box.label(text='View', icon='CAMERA_DATA')
+            row = box.row(align=True)
+            row.label(text='View', icon='CAMERA_DATA')
+            row.operator('scene.copy_render_offset', text="", icon='PASTEDOWN')
             if camera is not None:
                 box.prop(scene.seut, 'renderZoom')
 
@@ -394,11 +396,9 @@ class SEUT_PT_Panel_IconRender(Panel):
                 box.prop(scene.seut, 'renderEmptyRotation')
 
             box = layout.box()
-            split = box.split(factor=0.85)
-            col = split.column()
-            col.label(text='Options', icon='SETTINGS')
-            col = split.column()
-            col.operator('scene.copy_render_options', text="", icon='PASTEDOWN')
+            row = box.row(align=True)
+            row.label(text='Options', icon='SETTINGS')
+            row.operator('scene.copy_render_options', text="", icon='PASTEDOWN')
 
             box.prop(scene.seut, 'renderColorOverlay', invert_checkbox=True)
             box.prop(scene.seut, 'renderResolution')

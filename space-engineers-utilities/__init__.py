@@ -59,7 +59,7 @@ from .materials.seut_ot_texture_conversion      import SEUT_OT_ConvertTextures
 from .materials.seut_ot_texture_conversion      import SEUT_OT_MassConvertTextures
 
 from .planets.seut_planet_operators             import (SEUT_OT_Planet_RecreateSetup,
-                                                        SEUT_OT_Planet_MaterialGroup_Add, 
+                                                        SEUT_OT_Planet_MaterialGroup_Add,
                                                         SEUT_OT_Planet_MaterialGroup_Remove,
                                                         SEUT_OT_Planet_DistributionRule_Add,
                                                         SEUT_OT_Planet_DistributionRule_Remove,
@@ -86,9 +86,9 @@ from .planets.seut_planet_ui                    import (SEUT_UL_PlanetDistributi
                                                         SEUT_UL_PlanetItems,
                                                         SEUT_UL_PlanetEnvironmentItems,
                                                         SEUT_UL_PlanetOreMappings,
-                                                        SEUT_PT_Panel_Planet, 
-                                                        SEUT_PT_Panel_PlanetComplexMaterials, 
-                                                        SEUT_PT_Panel_PlanetEnvironmentItems, 
+                                                        SEUT_PT_Panel_Planet,
+                                                        SEUT_PT_Panel_PlanetComplexMaterials,
+                                                        SEUT_PT_Panel_PlanetEnvironmentItems,
                                                         SEUT_PT_Panel_PlanetOreMappings,
                                                         SEUT_PT_Panel_PlanetExport,
                                                         SEUT_PT_Panel_PlanetImport)
@@ -161,6 +161,7 @@ from .seut_collections                  import SEUT_OT_CreateCollection
 from .seut_ot_simple_navigation         import SEUT_OT_SimpleNavigation
 from .seut_icon_render                  import SEUT_OT_IconRenderPreview
 from .seut_icon_render                  import SEUT_OT_CopyRenderOptions
+from .seut_icon_render                  import SEUT_OT_CopyRenderOffset
 from .seut_scene                        import SEUT_MountpointAreas
 from .seut_scene                        import SEUT_Scene
 from .seut_object                       import SEUT_Object
@@ -230,9 +231,10 @@ classes = (
     SEUT_Materials,
     SEUT_OT_IconRenderPreview,
     SEUT_OT_CopyRenderOptions,
+    SEUT_OT_CopyRenderOffset,
 
     SEUT_OT_Planet_RecreateSetup,
-    SEUT_OT_Planet_MaterialGroup_Add, 
+    SEUT_OT_Planet_MaterialGroup_Add,
     SEUT_OT_Planet_MaterialGroup_Remove,
     SEUT_OT_Planet_DistributionRule_Add,
     SEUT_OT_Planet_DistributionRule_Remove,
@@ -260,8 +262,8 @@ classes = (
     SEUT_UL_PlanetEnvironmentItems,
     SEUT_UL_PlanetOreMappings,
     SEUT_PT_Panel_Planet,
-    SEUT_PT_Panel_PlanetComplexMaterials, 
-    SEUT_PT_Panel_PlanetEnvironmentItems, 
+    SEUT_PT_Panel_PlanetComplexMaterials,
+    SEUT_PT_Panel_PlanetEnvironmentItems,
     SEUT_PT_Panel_PlanetOreMappings,
     SEUT_PT_Panel_PlanetExport,
     SEUT_PT_Panel_PlanetImport,
@@ -320,7 +322,7 @@ def register():
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
     bpy.types.Collection.seut = PointerProperty(type=SEUT_Collection)
     bpy.types.Text.seut = PointerProperty(type=SEUT_Text)
-    
+
     bpy.app.handlers.load_post.append(load_handler)
 
     from .seut_bau import bau_register
@@ -334,7 +336,7 @@ def register():
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-        
+
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
     bpy.types.VIEW3D_MT_add.remove(menu_draw)
 
@@ -366,7 +368,7 @@ def menu_draw(self, context):
 
 @persistent
 def load_handler(dummy):
-    
+
     try:
         init_relocate_matlibs()
         update_register_repos()

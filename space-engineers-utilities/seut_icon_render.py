@@ -311,3 +311,25 @@ class SEUT_OT_CopyRenderOptions(Operator):
         seut_report(self, context, 'INFO', True, 'I006', "Icon Render")
 
         return {'FINISHED'}
+
+
+class SEUT_OT_CopyRenderOffset(Operator):
+    """Copies the icon render offset of the current scene to all other scenes"""
+    bl_idname = "scene.copy_render_offset"
+    bl_label = "Copy Icon Render Offset"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    def execute(self, context):
+
+        scene = context.scene
+
+        for scn in bpy.data.scenes:
+            scn.seut.renderZoom = scene.seut.renderZoom
+            scn.seut.renderDistance = scene.seut.renderDistance
+            scn.seut.renderEmptyLocation = scene.seut.renderEmptyLocation
+            scn.seut.renderEmptyRotation = scene.seut.renderEmptyRotation
+
+        seut_report(self, context, 'INFO', True, 'I006', "Icon Render")
+
+        return {'FINISHED'}
