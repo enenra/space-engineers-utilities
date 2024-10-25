@@ -430,11 +430,34 @@ def correct_for_export_type(scene, reference: str) -> str:
 def prepare_mat_for_export(self, context, material):
     """Switches material around so that SE can properly read it"""
 
+    # In Blender 4.2 something changed and it's no longer possible to insert images into the image nodes of linked materials. This is the workaround - make override of linked material, alter it, then revert that after.
+    if bpy.app.version >= (4, 2, 0):
+        if material.library:
+
+            # If the material is a library and not used, remove it.
+            if material.users < 1:
+                bpy.data.materials.remove(material)
+                return
+
+            # If the material has a local version: Remap library to local if local has asset, else remap local to linked.
+            for mat in bpy.data.materials:
+                if mat.name == material.name and mat.library is None:
+                    if mat.asset_data is not None:
+                        material.user_remap(mat)
+                        bpy.data.materials.remove(material)
+                    else:
+                        mat.user_remap(material)
+                        bpy.data.materials.remove(mat)
+                    break
+
+            material = material.override_create(remap_local_usages=True)
+
     # See if relevant nodes already exist
     dummy_shader_node = None
     dummy_image_node = None
     dummy_image = None
     material_output = None
+    normal_map = None
 
     for node in material.node_tree.nodes:
         if node.type == 'BSDF_PRINCIPLED' and node.name == 'EXPORT_DUMMY':
@@ -443,6 +466,8 @@ def prepare_mat_for_export(self, context, material):
             dummy_image_node = node
         elif node.type == 'OUTPUT_MATERIAL':
             material_output = node
+        elif node.type == 'NORMAL_MAP':
+            normal_map = node
 
     # Iterate through images to find the dummy image
     for img in bpy.data.images:
@@ -457,6 +482,10 @@ def prepare_mat_for_export(self, context, material):
 
     if dummy_image is None:
         dummy_image = bpy.data.images.new('DUMMY', 1, 1)
+
+    if normal_map is None:
+        normal_map = material.node_tree.nodes.new('ShaderNodeNormalMap')
+        normal_map.name = 'NORMAL_MAP_DUMMY'
 
     if dummy_shader_node is None:
         dummy_shader_node = material.node_tree.nodes.new('ShaderNodeBsdfPrincipled')
@@ -477,6 +506,7 @@ def prepare_mat_for_export(self, context, material):
     # link nodes, add image to node
     material.node_tree.links.new(dummy_image_node.outputs[0], dummy_shader_node.inputs[0])
     material.node_tree.links.new(dummy_shader_node.outputs[0], material_output.inputs[0])
+    material.node_tree.links.new(normal_map.outputs['Normal'], dummy_shader_node.inputs['Normal'])
     dummy_image_node.image = dummy_image
 
 
@@ -493,6 +523,8 @@ def revert_mat_after_export(self, context, material):
             material.node_tree.nodes.remove(node)
         elif node.type == 'BSDF_PRINCIPLED' and node.name == 'EXPORT_DUMMY':
             material.node_tree.nodes.remove(node)
+        elif node.type == 'NORMAL_MAP' and node.name == 'NORMAL_MAP_DUMMY':
+            material.node_tree.nodes.remove(node)
         elif node.type == 'OUTPUT_MATERIAL':
             material_output = node
         elif node.name == material.seut.nodeLinkedToOutputName:
@@ -504,6 +536,10 @@ def revert_mat_after_export(self, context, material):
             material.node_tree.links.new(node_linked_to_output.outputs[0], material_output.inputs[0])
         except IndexError:
             seut_report(self, context, 'INFO', False, 'I005', material.name)
+
+    if bpy.app.version >= (4, 2, 0):
+        if material.override_library is not None:
+            material.override_library.destroy()
 
 
 vanilla_bones = ['SE_RigPelvis', 'SE_RigLThigh', 'SE_RigLCalf', 'SE_RigLFoot', 'SE_RigLR_Foot_tip1', 'SE_RigSpine1', 'SE_RigSpine2', 'SE_RigSpine3', 'SE_RigSpine4', 'SE_RigRibcage', 'SE_RigNeck', 'SE_RigHead', 'SE_RigHelmetGlassBone', 'SE_RigL_Eye', 'SE_RigL_EyeLidUpper', 'SE_RigL_EyeLidLower', 'SE_RigR_Eye', 'SE_RigR_EyeLidUpper', 'SE_RigR_EyeLidLower', 'SE_RigLCollarbone', 'SE_RigLUpperarm', 'SE_RigLForearm1', 'SE_RigLForearm2', 'SE_RigLForearm3', 'SE_RigLPalm', 'SE_RigL_Thumb_1', 'SE_RigL_Thumb_2', 'SE_RigL_Thumb_3', 'SE_RigL_Index_1', 'SE_RigL_Index_2', 'SE_RigL_Index_3', 'SE_RigL_Middle_1', 'SE_RigL_Middle_2', 'SE_RigL_Middle_3', 'SE_RigL_Ring_1', 'SE_RigL_Ring_2', 'SE_RigL_Ring_3', 'SE_RigL_Little_1', 'SE_RigL_Little_2', 'SE_RigL_Little_3', 'SE_RigRCollarbone', 'SE_RigRUpperarm', 'SE_RigRForearm1', 'SE_RigRForearm2', 'SE_RigRForearm3', 'SE_RigRPalm', 'SE_RigR_Thumb_1', 'SE_RigR_Thumb_2', 'SE_RigR_Thumb_3', 'SE_RigR_Index_1', 'SE_RigR_Index_2', 'SE_RigR_Index_3', 'SE_RigR_Middle_1', 'SE_RigR_Middle_2', 'SE_RigR_Middle_3', 'SE_RigR_Ring_1', 'SE_RigR_Ring_2', 'SE_RigR_Ring_3', 'SE_RigR_Little_1', 'SE_RigR_Little_2', 'SE_RigR_Little_3', 'SE_RigRibcageBone001', 'SE_RigRThigh', 'SE_RigRCalf', 'SE_RigRFoot', 'SE_RigRR_Foot_tip1', 'SE_RigL_Weapon_pin', 'SE_RigR_Weapon_pin']
