@@ -1,5 +1,6 @@
 import bpy
 import os
+import re
 
 from bpy.types              import Operator
 
@@ -88,6 +89,8 @@ def remap_materials(self, context, all_objects = False):
         for slot in obj.material_slots:
             if slot.material is not None and slot.material.library is None and slot.material.asset_data is None:
                 if slot.material.name == "SEUT Material":
+                    continue
+                if slot.material.asset_data is not None and re.search("\.[0-9]{3}", slot.material.name[-4:]) == None:
                     continue
                 old_material = slot.material
                 new_material = None
