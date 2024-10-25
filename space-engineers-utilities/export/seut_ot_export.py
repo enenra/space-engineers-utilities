@@ -33,7 +33,7 @@ class SEUT_OT_Export(Operator):
     @classmethod
     def poll(cls, context):
         return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT'
-        
+
 
     def execute(self, context):
         """Calls the function to export all collections"""
@@ -45,7 +45,7 @@ class SEUT_OT_Export(Operator):
 
 def export(self, context, export_materials=True):
     """Exports all collections in the current scene and compiles them to MWM"""
-    
+
     scene = context.scene
     preferences = get_preferences()
 
@@ -77,7 +77,7 @@ def export(self, context, export_materials=True):
     if not result == {'CONTINUE'}:
         scene.seut.linkSubpartInstances = subparts
         return result
-        
+
     if not os.path.exists(get_abs_path(scene.seut.export_exportPath)):
         os.makedirs(get_abs_path(scene.seut.export_exportPath))
 
@@ -101,18 +101,18 @@ def export(self, context, export_materials=True):
         return {'CANCELLED'}
     elif not os.path.isdir(materials_path):
         os.makedirs(materials_path, exist_ok=True)
-    
+
     # Character animations need at least one keyframe
     if scene.seut.sceneType == 'character_animation' and len(scene.timeline_markers) <= 0:
         scene.timeline_markers.new('F_00', frame=0)
-        
+
     grid_scale = str(scene.seut.gridScale)
     global orig_grid_scale
     orig_grid_scale = grid_scale
     subtype_id = str(scene.seut.subtypeId)
     rescale_factor = int(scene.seut.export_rescaleFactor)
     path = str(scene.seut.export_exportPath)
-    
+
     # Exports large grid and character-type scenes
     if scene.seut.export_largeGrid or scene.seut.sceneType in ['character','character_animation']:
         scene.seut.gridScale = 'large'
@@ -128,7 +128,7 @@ def export(self, context, export_materials=True):
         if scene.seut.export_exportPath.find("\small\\") != -1 or scene.seut.export_exportPath.endswith("\small"):
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\small\\", "\large\\")
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\small", "\large")
-        
+
         result = export_all(self, context, export_materials)
 
         # Resetting the variables
@@ -136,7 +136,7 @@ def export(self, context, export_materials=True):
         scene.seut.gridScale = grid_scale
         scene.seut.export_rescaleFactor = rescale_factor
         scene.seut.export_exportPath = path
-    
+
     # Exports small grid scenes
     if scene.seut.export_smallGrid:
         scene.seut.gridScale = 'small'
@@ -152,7 +152,7 @@ def export(self, context, export_materials=True):
         if scene.seut.export_exportPath.find("\large\\") != -1 or scene.seut.export_exportPath.endswith("\large"):
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\large\\", "\small\\")
             scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\large", "\small")
-        
+
         result = export_all(self, context, export_materials)
 
         # Resetting the variables
@@ -160,9 +160,9 @@ def export(self, context, export_materials=True):
         scene.seut.gridScale = grid_scale
         scene.seut.export_rescaleFactor = rescale_factor
         scene.seut.export_exportPath = path
-        
+
     scene.seut.linkSubpartInstances = subparts
-    
+
     context.area.type = current_area
     context.view_layer.active_layer_collection = active_col
 
@@ -186,7 +186,7 @@ def export_all(self, context, export_materials=True):
             results.append(export_sbc(self, context))
         if export_materials:
             results.append(export_tms(self, context))
-    
+
     if {'CANCELLED'} not in results:
         export_mwm(self, context)
         return {'FINISHED'}
@@ -224,7 +224,7 @@ def export_main(self, context):
         # Check for missing UVMs (this might not be 100% reliable)
         if check_uvms(self, context, obj) != {'CONTINUE'}:
             return {'CANCELLED'}
-        
+
         if obj.type == 'EMPTY' and 'file' in obj and not obj.seut.linked:
             if orig_grid_scale == 'large' and scene.seut.export_smallGrid or orig_grid_scale == 'small' and scene.seut.export_largeGrid:
                 seut_report(self, context, 'WARNING', True, 'W020', scene.name, obj.name)
@@ -240,7 +240,7 @@ def export_main(self, context):
         seut_report(self, context, 'ERROR', True, 'E031', collections['main'][0].name)
         return {'CANCELLED'}
 
-    results = export_collection(self, context, collections['main'][0])            
+    results = export_collection(self, context, collections['main'][0])
     if {'CANCELLED'} in results:
         return {'CANCELLED'}
 
@@ -324,7 +324,7 @@ def export_bs(self, context):
     scene = context.scene
     bs_cols = get_cols_by_type(scene, 'bs')
     result = check_export_col_dict(self, context, bs_cols)
-    
+
     return result
 
 
@@ -382,7 +382,7 @@ def check_export_col_dict(self, context, cols: dict):
                     return {'CANCELLED'}
                 if scene.seut.sceneType == 'character' and check_weights(context, obj) is False:
                     return {'CANCELLED'}
-            
+
             results = export_collection(self, context, col)
             if {'CANCELLED'} in results:
                 return {'CANCELLED'}
@@ -390,7 +390,7 @@ def check_export_col_dict(self, context, cols: dict):
 
 def export_mwm(self, context):
     """Compiles to MWM from the previously exported temp files"""
-    
+
     scene = context.scene
     preferences = get_preferences()
     path = get_abs_path(scene.seut.export_exportPath)
@@ -456,7 +456,7 @@ def export_sbc(self, context):
         lines = output[1]
         start = output[2]
         end = output[3]
-    
+
     if output is not None and start is not None and end is not None and scene.seut.export_sbc_type == 'update':
         update_sbc = True
         lines_entry = lines[start:end]
@@ -499,7 +499,7 @@ def export_sbc(self, context):
         grid_size = 0.5
         if (abs(scene.seut.export_rescaleFactor - 0.6) < 0.01): # floating point comparison
             medium_grid_scalar = 3.0 # Small grid block is going to be 3 times larger than expected
-    
+
     def_Size = 'Size'
     if not update_sbc:
         add_subelement(def_definition, 'BlockTopology', 'TriangleMesh')
@@ -515,7 +515,7 @@ def export_sbc(self, context):
             break
 
     if center_empty is not None:
-        loc = convert_position_to_cell(context, grid_size, medium_grid_scalar, center_empty)
+        loc = convert_position_to_cell(context, grid_size, center_empty)
 
         def_Center = 'Center'
         if not update_sbc:
@@ -547,7 +547,7 @@ def export_sbc(self, context):
     # Mountpoints
     if collections['mountpoints'] != None:
         scene.seut.mountpointToggle == 'off'
-    
+
     if len(scene.seut.mountpointAreas) > 0:
 
         # gridScale here is modified when exporting both types, use rescaleFactor to determine original gridScale used to define mountpoints
@@ -606,7 +606,7 @@ def export_sbc(self, context):
                         start_y = 0.0
                     else:
                         start_y = abs(area.y + (area.yDim / 2) - (bbox_z / 2)) / scale
-                        
+
                     end_x = abs(area.x - (area.xDim / 2) - (bbox_y / 2)) / scale
                     end_y = abs(area.y - (area.yDim / 2) - (bbox_z / 2)) / scale
 
@@ -656,7 +656,7 @@ def export_sbc(self, context):
 
         if update_sbc:
             lines_entry = convert_back_xml(def_Mountpoints, 'MountPoints', lines_entry)
-        
+
     # Build Stages
     if not collections['bs'] is None and len(collections['bs']) > 0:
 
@@ -683,7 +683,7 @@ def export_sbc(self, context):
                     add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format((bs + 1) * percentage)[:4])
 
                 add_attrib(def_BS_Model, 'File', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm'))
-            
+
             if update_sbc:
                 lines_entry = convert_back_xml(def_BuildProgressModels, 'BuildProgressModels', lines_entry)
 
@@ -709,13 +709,13 @@ def export_sbc(self, context):
         lines_entry = update_add_optional_subelement(def_definition, 'MirroringZ', scene.seut.mirroring_Y, update_sbc, lines_entry)
     elif update_sbc and scene.seut.mirroring_Y == 'None' and get_subelement(lines_entry, 'MirroringZ') != -1:
         lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringZ'),"")
-    
+
     # If a MirroringScene is defined, set it in SBC but also set the reference to the base scene in the mirror scene SBC
     if scene.seut.mirroringScene is not None and scene.seut.mirroringScene.name in bpy.data.scenes:
         lines_entry = update_add_optional_subelement(def_definition, 'MirroringBlock', scene.seut.mirroringScene.seut.subtypeId, update_sbc, lines_entry)
     elif update_sbc and scene.seut.mirroringScene == 'None' and get_subelement(lines_entry, 'MirroringBlock') != -1:
         lines_entry = lines_entry.replace(get_subelement(lines_entry, 'MirroringBlock'),"")
-    
+
     mirroringcenter_empty = None
     for obj in collections['main'][0].objects:
         if obj is not None and obj.type == 'EMPTY' and obj.name.startswith('MirroringCenter'):
@@ -723,7 +723,7 @@ def export_sbc(self, context):
             break
 
     if mirroringcenter_empty is not None:
-        loc = convert_position_to_cell(context, grid_size, medium_grid_scalar, mirroringcenter_empty)
+        loc = convert_position_to_cell(context, grid_size, mirroringcenter_empty)
 
         def_MirroringCenter = 'MirroringCenter'
         if not update_sbc:
@@ -741,7 +741,7 @@ def export_sbc(self, context):
             seut_report(self, context, 'ERROR', True, 'E033')
         xml_string = xml.dom.minidom.parseString(temp_string)
         xml_formatted = xml_string.toprettyxml()
-    
+
     else:
         xml_formatted = lines.replace(lines[start:end], lines_entry)
         xml_formatted = format_entry(xml_formatted)
@@ -767,7 +767,7 @@ def export_sbc(self, context):
         target_file = os.path.join(path_data, "CubeBlocks", filename + ".sbc")
         if not os.path.exists(os.path.join(path_data, "CubeBlocks")):
             os.makedirs(os.path.join(path_data, "CubeBlocks"))
-        
+
         # This covers the case where a file exists but the SBC export setting forces new file creation.
         counter = 1
         while os.path.exists(target_file):

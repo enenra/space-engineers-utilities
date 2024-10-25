@@ -620,7 +620,7 @@ def export_collection(self, context, collection):
     return result_xml, result_fbx
 
 
-def convert_position_to_cell(context, grid_size, medium_grid_scalar, empty) -> list:
+def convert_position_to_cell(context, grid_size, empty) -> list:
     """Converts the location of an object to its cell location within the block bounds"""
 
     scene = context.scene
@@ -637,11 +637,12 @@ def convert_position_to_cell(context, grid_size, medium_grid_scalar, empty) -> l
         loc_z += parent_obj.location.z
         parent_obj = parent_obj.parent
 
-    x = math.floor((loc_x + (scene.seut.bBox_X * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
-    y = math.floor((loc_x + (scene.seut.bBox_Y * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
-    z = math.floor((loc_x + (scene.seut.bBox_Z * (grid_size * medium_grid_scalar / 2))) / grid_size * medium_grid_scalar)
+    dimensions = [scene.seut.bBox_X * grid_size, scene.seut.bBox_Y * grid_size, scene.seut.bBox_Z * grid_size]
+    origin = [dimensions[0] / 2 - grid_size / 2, dimensions[1] / 2 - grid_size / 2, (dimensions[2] / 2 - grid_size / 2) * -1]
 
-    return [x, y, z]
+    coordinates = [math.floor(abs(loc_x - origin[0]) * 2), math.floor(abs(loc_y - origin[1]) * 2), math.floor(abs(loc_z - origin[2]) * 2)]
+
+    return coordinates
 
 
 # STOLLIE: Standard output error operator class for catching error return codes.
