@@ -8,7 +8,7 @@ from .materials.seut_ot_texture_conversion  import convert_texture
 from .seut_collections                      import get_collections, create_seut_collection
 from .seut_errors                           import check_collection, check_collection_excluded, seut_report, get_abs_path
 from .seut_utils                            import to_radians, clear_selection, prep_context, seut_report, get_seut_blend_data
-    
+
 
 def setup_icon_render(self, context):
     """Sets up render utilities"""
@@ -32,7 +32,7 @@ def setup_icon_render(self, context):
     empty.scale.z = scene.seut.renderDistance
     empty.name = 'Icon Render'
     empty.empty_display_type = 'SPHERE'
-    
+
     # Spawn camera
     bpy.ops.object.camera_add(location=(0.0, -15, 0.0), rotation=(to_radians(90), 0.0, 0.0))
     camera = bpy.context.view_layer.objects.active
@@ -48,19 +48,19 @@ def setup_icon_render(self, context):
     key_light.parent = empty
     key_light.name = 'Key Light'
     key_light.data.energy = 7500.0 * scene.seut.renderDistance
-    
+
     bpy.ops.object.light_add(type='POINT', location=(10.0, -10.0, -2.5), rotation=(0.0, 0.0, 0.0))
     fill_light = bpy.context.view_layer.objects.active
     fill_light.parent = empty
     fill_light.name = 'Fill Light'
     fill_light.data.energy = 5000.0 * scene.seut.renderDistance
-    
+
     bpy.ops.object.light_add(type='SPOT', location=(0.0, 15.0, 0.0), rotation=(to_radians(-90), 0.0, 0.0))
     rim_light = bpy.context.view_layer.objects.active
     rim_light.parent = empty
     rim_light.name = 'Rim Light'
     rim_light.data.energy = 10000.0 * scene.seut.renderDistance
-    
+
     parent_collection = empty.users_collection[0]
     if parent_collection != collection:
         collection.objects.link(empty)
@@ -123,19 +123,24 @@ def setup_icon_render(self, context):
     node_color_correction.shadows_gain = 2.5
 
     node_rgb.outputs[0].default_value = (0.23074, 0.401978, 0.514918, 1)  # 84AABE
-    
+
     node_mix_rgb.blend_type = 'COLOR'
 
     node_bright_contrast.inputs[1].default_value = 0.35
     node_bright_contrast.inputs[2].default_value = 0.35
-    
+
     node_rgb.mute = scene.seut.renderColorOverlay
     node_rgb_to_bw.mute = scene.seut.renderColorOverlay
     node_combine_color.mute = scene.seut.renderColorOverlay
 
     # Force update render resolution
     scene.seut.renderResolution = scene.seut.renderResolution
-    scene.render.engine = 'BLENDER_EEVEE'
+
+    if bpy.app.version < (4, 2, 0):
+        scene.render.engine = 'BLENDER_EEVEE'
+    else:
+        scene.render.engine = 'BLENDER_EEVEE_NEXT'
+
     scene.render.film_transparent = True
 
     clear_selection(context)
@@ -189,7 +194,7 @@ class SEUT_OT_IconRenderPreview(Operator):
         if context.scene.render.filepath == '/tmp\\':
             Operator.poll_message_set("A render folder must first be defined.")
             return False
-    
+
         return context.scene.seut.renderToggle == 'on'
 
 
@@ -218,7 +223,7 @@ class SEUT_OT_IconRenderPreview(Operator):
         for key, value in collections.items():
             if value is None:
                 continue
-            
+
             if key in ['hkt', 'bs', 'lod']:
                 for sub_col in value:
                     for obj in sub_col.objects:
@@ -253,11 +258,11 @@ class SEUT_OT_IconRenderPreview(Operator):
             result = convert_texture(scene.render.filepath, path, 'icon', [])
             os.remove(scene.render.filepath)
             os.rename(os.path.join(get_abs_path(path), scene.seut.subtypeId + '.DDS'), os.path.splitext(scene.render.filepath)[0] + '.dds')
-        
+
         for key, value in collections.items():
             if value is None:
                 continue
-            
+
             if key in ['hkt', 'bs', 'lod']:
                 for sub_col in value:
                     for obj in sub_col.objects:
@@ -296,13 +301,13 @@ class SEUT_OT_CopyRenderOptions(Operator):
 
         if not os.path.exists(get_abs_path(scene.render.filepath)):
             os.makedirs(get_abs_path(scene.render.filepath))
-        
+
         for scn in bpy.data.scenes:
             scn.render.filepath = scene.render.filepath
             scn.seut.renderColorOverlay = scene.seut.renderColorOverlay
             scn.seut.renderResolution = scene.seut.renderResolution
             scn.seut.render_output_type = scene.seut.render_output_type
-        
+
         seut_report(self, context, 'INFO', True, 'I006', "Icon Render")
 
         return {'FINISHED'}
