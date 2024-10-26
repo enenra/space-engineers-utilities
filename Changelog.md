@@ -4,7 +4,7 @@ Relevant Milestone: [SEUT 1.2.1](https://github.com/enenra/space-engineers-utili
 * Added [#381](https://github.com/enenra/space-engineers-utilities/issues/381): New scene type: Generic item. For environment items, hand items, components, etc. (Alpha 1)
 * Added [#402](https://github.com/enenra/space-engineers-utilities/issues/402): Option for icon render in character animation scenes. (Alpha 1)
 * Added [#410](https://github.com/enenra/space-engineers-utilities/issues/410): Button to copy icon render offset options to all scenes. (Alpha 1)
-* Improved: Changed FBX import to use GLTF as an intermediary format to fix imported objects being weirdly arranged. ASCII FBX can now also be imported through this workaround. (Alpha 1)
+* Improved: Changed FBX import to use GLTF as an intermediary format to fix imported objects being weirdly arranged. ASCII FBX can now also be imported through this workaround. Thanks to @quantum-unicorn for the help on this. (Alpha 1)
 * Improved: Remap materials no longer remaps materials that have asset data - to enable local overrides. (Alpha 1)
 * Improved: Prevent too long SubtypeIds as they can break SEUT. (Alpha 1)
 * Fixed[#400](https://github.com/enenra/space-engineers-utilities/issues/400): Center empty SBC output was incorrect. (Alpha 1)
