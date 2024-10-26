@@ -2,6 +2,8 @@ import bpy
 import os
 import addon_utils
 
+import mathutils as mu
+
 from bpy.props import (StringProperty,
                        BoolProperty,
                        IntProperty,
@@ -59,7 +61,7 @@ class SEUT_OT_Import(Operator):
     def invoke(self, context, event):
 
         context.window_manager.fileselect_add(self)
-        
+
         return {'RUNNING_MODAL'}
 
 
@@ -74,13 +76,13 @@ def import_gltf(self, context, filepath):
             os.remove(glb_path)
 
         args = [os.path.join(get_tool_dir(), 'FBX2glTF-windows-x64.exe'), '-b', '--user-properties', '-i', filepath, '-o', glb_path]
-            
+
         result = call_tool(args)
         if result[1] is not None:
             result[1] = result[1].decode("utf-8", "ignore")
         else:
             result[1] = "None"
-    
+
     bpy.ops.import_scene.gltf(filepath=glb_path)
 
     new_objects = set(scene.objects)
@@ -93,19 +95,45 @@ def import_gltf(self, context, filepath):
 
     root = None
     for obj in imported_objects:
+        if obj.parent is None and obj.type == 'EMPTY' and obj.name.startswith("RootNode"):
+            if obj.children is None or len(obj.children) < 1:
+                bpy.data.objects.remove(obj)
+                return {'FINISHED'}
+
+            root = obj.children[0]
+            bpy.data.objects.remove(obj)
+            break
+
+    imported_objects.remove(obj)
+
+    root.rotation_mode = 'XYZ'
+
+    root_rotation = root.rotation_euler
+    root_vec_rotation = mu.Vector(root_rotation)
+    root_eul_rotation = mu.Euler(root_rotation)
+    root_mat_rotation = root_eul_rotation.to_matrix()
+
+    for obj in imported_objects:
 
         obj.rotation_mode = 'XYZ'
         obj.select_set(False)
-        
+
         if context.collection != scene.collection:
             context.collection.objects.link(obj)
             scene.collection.objects.unlink(obj)
 
         if obj.type == 'EMPTY':
-            if obj.name.startswith("RootNode") and obj.parent is None:
-                bpy.data.objects.remove(obj)
-                root = obj
+            if obj.parent is None:
                 continue
+
+            obj_vec_rotation = mu.Vector(obj.rotation_euler)
+            obj.rotation_euler = obj_vec_rotation - root_vec_rotation
+
+            s = mu.Matrix.Diagonal(obj.scale)
+            s = root_mat_rotation @ s
+            s = s.col[0] + s.col[1] + s.col[2]
+            s = ( abs(s[0]), abs(s[1]), abs(s[2]) )
+            obj.scale = s
 
             obj.empty_display_size = 0.5
             obj.empty_display_type = next(
@@ -141,14 +169,6 @@ def import_gltf(self, context, filepath):
                             if entry in bpy.data.objects:
                                 new = obj.seut.highlight_objects.add()
                                 new.obj = bpy.data.objects[entry]
-    
-    imported_objects.remove(root)
-    
-    for obj in imported_objects:
-        if obj.type == 'EMPTY' and obj.parent is not None:
-            obj.rotation_euler[0] += obj.parent.rotation_euler[0] * -1
-            obj.rotation_euler[1] += obj.parent.rotation_euler[1] * -1
-            obj.rotation_euler[2] += obj.parent.rotation_euler[2] * -1
 
     for obj in imported_objects:
         if obj.parent is None:
@@ -170,17 +190,17 @@ def import_gltf(self, context, filepath):
 
 def import_fbx(self, context, filepath):
     """Imports FBX and adjusts them for use in SEUT"""
-    
+
     scene = context.scene
     existing_objects = set(scene.objects)
 
     try:
         if scene.seut.sceneType == ['character_animation'] or (
-            scene.seut.sceneType != ['character'] and 
-            create_relative_path(filepath, 'Characters') != False and 
+            scene.seut.sceneType != ['character'] and
+            create_relative_path(filepath, 'Characters') != False and
             create_relative_path(filepath, 'Animations') != False
             ):
-            
+
             scene.seut.sceneType = 'character_animation'
 
             bpy.ops.import_scene.fbx(
@@ -199,11 +219,11 @@ def import_fbx(self, context, filepath):
                 )
 
         elif scene.seut.sceneType == ['character'] or (
-            scene.seut.sceneType != ['character_animation'] and 
-            create_relative_path(filepath, 'Characters') != False and 
+            scene.seut.sceneType != ['character_animation'] and
+            create_relative_path(filepath, 'Characters') != False and
             create_relative_path(filepath, 'Animations') == False
             ):
-            
+
             scene.seut.sceneType = 'character'
 
             bpy.ops.import_scene.fbx(
