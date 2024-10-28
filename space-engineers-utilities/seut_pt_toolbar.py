@@ -507,9 +507,6 @@ class SEUT_PT_Panel_Import(Panel):
         box = layout.box()
         box.label(text='Options', icon='SETTINGS')
 
-        if addon_utils.check("better_fbx") == (True, True):
-            box.prop(data.seut, 'better_fbx', icon='CHECKMARK')
-
         box.prop(data.seut, 'fix_scratched_materials', icon='MATERIAL')
 
         # Repair

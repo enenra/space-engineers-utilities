@@ -66,7 +66,7 @@ def update_animations_index(self, context):
         scn.render.fps = 60
         for vl in scn.view_layers:
             vl.update()
-    
+
     for sp in animation_set.subparts:
         if sp is None or sp.obj is None:
             continue
@@ -74,7 +74,7 @@ def update_animations_index(self, context):
             sp.obj.animation_data_create()
         if sp.obj.animation_data.action is not sp.action:
             sp.obj.animation_data.action = sp.action
-            
+
     for obj in bpy.data.objects:
         if obj is not None and obj.type == 'EMPTY' and obj.seut.linked and obj.seut.linkedScene is not None and obj.seut.linkedScene.name in bpy.data.scenes:
             for sp in animation_set.subparts:
@@ -84,7 +84,7 @@ def update_animations_index(self, context):
                     obj.animation_data.action = sp.obj.animation_data.action
                     break
 
-        
+
 def update_qt_lod_view(self, context):
     scene = context.scene
 
@@ -108,7 +108,7 @@ def update_qt_lod_view(self, context):
         area = next(area for area in bpy.context.screen.areas if area.type == 'VIEW_3D')
         area.spaces[0].region_3d.view_perspective = 'CAMERA'
         context.view_layer.objects.active = active_obj
-    
+
     else:
         if 'LOD_VIEW' in bpy.data.objects:
             camera = bpy.data.objects['LOD_VIEW']
@@ -186,12 +186,6 @@ class SEUT_Text(PropertyGroup):
         description="Automatically sets all non-active collections to hidden",
         default=False,
         update=update_simple_navigation
-    )
-
-    better_fbx: BoolProperty(
-        name = "Better FBX",
-        description = "Whether SEUT should be using the Better FBX Importer",
-        default = False
     )
 
     convert_textures: BoolProperty(
