@@ -256,8 +256,6 @@ def export_fbx(self, context, collection, path_override = None) -> str:
 
     scene = context.scene
     collections = get_collections(scene)
-    depsgraph = context.evaluated_depsgraph_get()
-    settings = ExportSettings(scene, depsgraph)
 
     path = get_abs_path(scene.seut.export_exportPath)
 
@@ -349,7 +347,7 @@ def export_fbx(self, context, collection, path_override = None) -> str:
     else:
         path = path_override
     try:
-        export_to_fbxfile(settings, scene, path, collection.objects, ishavokfbxfile=False)
+        export_to_fbxfile(ExportSettings(scene, context.evaluated_depsgraph_get()), scene, path, collection.objects, ishavokfbxfile=False)
 
     except RuntimeError as error:
         seut_report(self, context, 'ERROR', False, 'E017')
