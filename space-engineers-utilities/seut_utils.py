@@ -56,7 +56,7 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
         empty.seut.linkedScene = None
         empty['file'] = None
         return
-    
+
     # This prevents instancing loops.
     for obj in subpart_col.objects:
         if obj is not None and obj.type == 'EMPTY' and obj.seut.linkedScene == origin_scene:
@@ -64,11 +64,11 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
             empty.seut.linkedScene = None
             empty['file'] = None
             return
-    
+
     # Switch to subpart_scene to get collections
     context.window.scene = subpart_scene
     current_area = prep_context(context)
-    
+
     for obj in bpy.context.selected_objects:
         obj.select_set(False)
 
@@ -81,14 +81,14 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
         if obj is not None and (obj.parent is None or obj.parent.type != 'EMPTY' or not 'file' in obj.parent) and not obj.seut.linked:
             obj.hide_viewport = False
             existing_objects = set(subpart_col.objects)
-            
+
             # Create instance of object
             if context.window.view_layer.objects.active is not None:
                 context.window.view_layer.objects.active.select_set(state=False, view_layer=context.window.view_layer)
             context.window.view_layer.objects.active = obj
             obj.select_set(state=True, view_layer=context.window.view_layer)
             bpy.ops.object.duplicate(linked=False)
-        
+
             new_objects = set(subpart_col.objects)
             created_objects = new_objects.copy()
             delete_objects = set()
@@ -101,10 +101,10 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                 if new_obj in created_objects and new_obj.seut.linked:
                     created_objects.remove(new_obj)
                     delete_objects.add(new_obj)
-            
+
             for obj in delete_objects:
                 bpy.data.objects.remove(obj, do_unlink=True)
-            
+
             # Rename instance
             linked_object = None
             for obj in created_objects:
@@ -139,10 +139,10 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                             except Exception as e:
                                 print(f"Exception: '{e}'")
                                 pass
-                        
+
                     bpy.ops.object.transform_apply(location = True, scale = True, rotation = True)
                     context.window.view_layer.objects.active = old_active
-                
+
                 lock_object(linked_object)
                 subpart_col.objects.unlink(linked_object)
                 linked_object.parent = empty
@@ -156,7 +156,7 @@ def link_subpart_scene(self, origin_scene, empty, target_collection):
                             bpy.data.actions.remove(duplicate_action)
 
                     link_subpart_scene(self, origin_scene, linked_object, target_collection)
-        
+
 
     # Switch back to previous scene
     context.area.type = current_area
@@ -182,14 +182,14 @@ def unlink_objects_in_hierarchy(obj):
 def get_parent_collection(context, obj):
     scene = context.scene
     collections = get_collections(scene)
-    
+
     for col_type in collections.values():
         if col_type is None:
             continue
         for col in col_type:
             if obj.name in col.objects:
                 return col
-    
+
     return None
 
 
@@ -225,7 +225,7 @@ def prep_context(context):
         current_area = context.area.type
 
     clear_selection(context)
-    
+
     return current_area
 
 
@@ -274,7 +274,7 @@ def lock_object(target):
 
 def create_relative_path(path: str, folder_name: str):
     """Returns the path capped off before the last occurrence of the foldername, returns False if foldername is not found in path"""
-    
+
     path = get_abs_path(path)
     offset = path.rfind("\\" + folder_name + "\\")
 
@@ -292,7 +292,7 @@ def wrap_text(text: str, width: int):
 
     lines = text.splitlines()
     lines_new = []
-    
+
     for l in lines:
         if len(l) > width:
             temp = l[:width]
@@ -307,7 +307,7 @@ def wrap_text(text: str, width: int):
             lines_new.insert(len(lines_new), overflow)
         else:
             lines_new.append(l)
-    
+
     return lines_new
 
 
@@ -318,7 +318,7 @@ def get_enum_items(rna_type, property: str, id: str = None) -> dict:
     prop = rna_type.bl_rna.properties[property]
     for p in prop.enum_items:
         output[p.identifier] = [p.name, p.description]
-    
+
     if id is not None:
         return output[id]
 
@@ -348,23 +348,49 @@ def get_seut_blend_data():
     return data
 
 
-def link_material(name: str, source: str, link: bool = True) -> bpy.types.Material:
+def link_material(name: str, source: str = None, link: bool = True) -> bpy.types.Material:
     """Links a material from a specified source blend file in the Materials folder to the current file"""
 
     if name in bpy.data.materials:
-        return bpy.data.materials[name]
+        if link and bpy.data.materials[name].library is not None:
+            return bpy.data.materials[name]
+        elif not link and bpy.data.materials[name].library is None:
+            return bpy.data.materials[name]
 
     preferences = get_preferences()
     materials_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
 
-    with bpy.data.libraries.load(os.path.join(materials_path, source), link=link) as (data_from, data_to):
-        if name in data_from.materials:
-            data_to.materials = [data_from.materials[data_from.materials.index(name)]]
+    if source is None:
+        blends = []
+        for file in os.listdir(materials_path):
+            if file is not None and file.endswith(".blend"):
+                blends.append(file)
 
-    material = bpy.data.materials[name]
-    
-    if not link:
-        material.asset_clear()
+        if blends == []:
+            seut_report(self, context, 'ERROR', True, 'E021', materials_path)
+            return
+
+        for file in blends:
+            with bpy.data.libraries.load(os.path.join(materials_path, file), link=link) as (data_from, data_to):
+                if name in data_from.materials:
+                    data_to.materials = [data_from.materials[data_from.materials.index(name)]]
+                    break
+
+    else:
+        with bpy.data.libraries.load(os.path.join(materials_path, source), link=link) as (data_from, data_to):
+            if name in data_from.materials:
+                data_to.materials = [data_from.materials[data_from.materials.index(name)]]
+
+    for mat in bpy.data.materials:
+        if link and mat.name == name and mat.library is not None:
+            material = mat
+            break
+        elif not link and mat.name == name and mat.library is None:
+            material = mat
+            material.asset_clear()
+            break
+        else:
+            material = None
 
     return material
 
