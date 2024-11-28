@@ -310,7 +310,9 @@ class SEUT_OT_RecreateCollections(Operator):
         if 'SEUT' not in scene.view_layers:
             scene.view_layers[0].name = 'SEUT'
             scene.seut.version = 4
-            scene.eevee.use_bloom = True
+
+            if bpy.app.version < (4, 3, 0):
+                scene.eevee.use_bloom = True
 
             vl = scene.view_layers["SEUT"]
 
