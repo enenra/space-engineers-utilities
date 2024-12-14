@@ -325,13 +325,19 @@ def update_mod_path(self, context):
 
     if self.export_exportPath == "":
         if scene.seut.sceneType in ['mainScene', 'subpart']:
-            self.export_exportPath = os.path.join(self.mod_path, "Models", "Cubes", self.gridScale)
+            export_path = os.path.join(self.mod_path, "Models", "Cubes", self.gridScale)
         elif scene.seut.sceneType == 'character':
-            self.export_exportPath = os.path.join(self.mod_path, "Models", "Characters")
+            export_path = os.path.join(self.mod_path, "Models", "Characters")
         elif scene.seut.sceneType == 'character_animation':
-            self.export_exportPath = os.path.join(self.mod_path, "Models", "Characters", "Animations")
+            export_path = os.path.join(self.mod_path, "Models", "Characters", "Animations")
         elif scene.seut.sceneType == 'item':
-            self.export_exportPath = os.path.join(self.mod_path, "Models", "Items")
+            export_path = os.path.join(self.mod_path, "Models", "Items")
+
+        if self.mod_path == "//" and export_path.startswith("//\\"):
+            self.export_exportPath = export_path.replace("//\\", "//").replace("\\", "/")
+        else:
+            self.export_exportPath = export_path
+
     else:
         self.export_exportPath = os.path.join(self.mod_path, self.export_exportPath[self.export_exportPath.rfind("Models"):])
 

@@ -131,7 +131,7 @@ def check_export(self, context, can_report=True):
     elif path == "":
         seut_report(self, context, 'ERROR', can_report, 'E019', "Export", scene.name)
         return {'CANCELLED'}
-    
+
     if not path.startswith(get_abs_path(scene.seut.mod_path)):
         seut_report(self, context, 'ERROR', can_report, 'E045', get_abs_path(scene.seut.mod_path))
         return {'CANCELLED'}
@@ -156,7 +156,7 @@ def check_collection(self, context, scene, collection, partial_check=True):
         if not partial_check:
             seut_report(self, context, 'ERROR', False, 'E002')
         return {'CANCELLED'}
-            
+
     is_excluded = check_collection_excluded(scene, collection)
     if is_excluded or is_excluded is None:
         if not partial_check:
@@ -167,7 +167,7 @@ def check_collection(self, context, scene, collection, partial_check=True):
         if not partial_check:
             seut_report(self, context, 'ERROR', False, 'E002', '"' + collection.name + '"')
         return {'CANCELLED'}
-    
+
     return {'CONTINUE'}
 
 
@@ -183,7 +183,7 @@ def check_toolpath(self, context, tool_path: str, tool_name: str, tool_filename:
     if tool_filename != file_name:
         seut_report(self, context, 'ERROR', True, 'E013', tool_name, tool_filename, file_name)
         return {'CANCELLED'}
-    
+
     return {'CONTINUE'}
 
 
@@ -193,12 +193,12 @@ def check_collection_excluded(scene, collection) -> bool:
     for col in scene.view_layers['SEUT'].layer_collection.children:
         if col.name == collection.name:
             return col.exclude
-            
+
         if collection.name in col.children.keys():
             for child in col.children:
                 if child.name == collection.name:
                     return child.exclude
-    
+
     return False
 
 
@@ -206,7 +206,7 @@ def check_uvms(self, context, obj):
     """Checks whether object has UV layers"""
 
     if obj is not None and obj.type == 'MESH':
-    
+
         if len(obj.data.uv_layers) < 1:
             seut_report(self, context, 'ERROR', True, 'E032', obj.name)
             return {'CANCELLED'}
@@ -217,7 +217,7 @@ def check_uvms(self, context, obj):
             uv = obj.data.uv_layers.active.data[loop.index].uv
             if uv == Vector((0.0, 0.0)):
                 at_zero += 1
-        
+
         if obj_total <= 0:
             seut_report(self, context, 'WARNING', False, 'W013', obj.name)
             return {'CONTINUE'}
@@ -227,7 +227,7 @@ def check_uvms(self, context, obj):
             return {'CANCELLED'}
         elif (at_zero / obj_total) > 0.005 and at_zero > 10:
             seut_report(self, context, 'WARNING', True, 'W002', obj.name)
-    
+
     return {'CONTINUE'}
 
 
@@ -236,7 +236,7 @@ def check_weights(context, obj):
 
     if obj.type != 'MESH':
         return None
-    
+
     if obj is None or obj.data is None or obj.data.vertices is None or len(obj.data.vertices) <= 0:
         return None
 
@@ -245,7 +245,7 @@ def check_weights(context, obj):
     grp_ungrouped = "Problematic - Ungrouped"
     grp_weightless = "Problematic - Unweighted"
     for v in obj.data.vertices:
-        
+
         if len(v.groups) == 0 or len(v.groups) == 1 and obj.vertex_groups[v.groups[0].group].name in [grp_ungrouped, grp_weightless]:
             if grp_ungrouped in obj.vertex_groups:
                 grp = obj.vertex_groups[grp_ungrouped]
@@ -261,7 +261,7 @@ def check_weights(context, obj):
         total_weight = 0
         for g in v.groups:
             total_weight += g.weight
-        
+
         if total_weight == 0:
             if grp_weightless in obj.vertex_groups:
                 grp = obj.vertex_groups[grp_weightless]
@@ -285,7 +285,7 @@ def check_weights(context, obj):
     if grp_weightless in obj.vertex_groups and weightless:
         seut_report(None, context, 'ERROR', True, 'E051', obj.name, f"One or multiple vertices are not weight-painted. Added to vertex group '{grp_weightless}'.")
         return False
-    
+
     return True
 
 
@@ -296,7 +296,7 @@ def get_abs_path(path: str) -> str:
         return ""
     else:
         return os.path.abspath(bpy.path.abspath(path))
-                        
+
 
 def show_popup_report(context, title, text: str):
     """Displays a popup message that looks like an error report."""
@@ -338,7 +338,7 @@ def seut_report(self, context, report_type: str, can_report: bool, code: str, va
         print(f"SEUT Warning: {text} ({code})")
     elif report_type == 'INFO':
         print(f"SEUT Info: {text} ({code})")
-    
+
     add_to_issues(context, report_type, text, code, None)
 
 
@@ -356,9 +356,9 @@ def add_to_issues(context, issue_type: str, text: str, code: str, reference: str
                 oldest = index
             elif issues[index].timestamp < oldest:
                 oldest = index
-    
+
         issues.remove(oldest)
-    
+
     issue = issues.add()
     issue.timestamp = time.time()
     issue.issue_type = issue_type
@@ -426,7 +426,7 @@ def anonymize_paths(message):
 
         if username == "":
             return message
-        
+
         while username in message:
             message = message.replace(username, "SEUT-USER")
 
