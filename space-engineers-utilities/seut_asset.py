@@ -11,14 +11,14 @@ from bpy.props  import (EnumProperty,
                         PointerProperty,
                         CollectionProperty
                         )
-                        
+
 from bpy_extras.asset_utils import SpaceAssetInfo
 
 
 def update_vanilla_dlc(self, context):
     if self.is_dlc and not self.is_vanilla:
         self.is_vanilla = True
-    
+
     elif not self.is_vanilla and self.is_dlc:
         self.is_dlc = False
 
@@ -38,7 +38,7 @@ class SEUT_Asset(PropertyGroup):
         default=False,
         update=update_vanilla_dlc
     )
-    
+
 
 class SEUT_PT_Panel_Asset(Panel):
     """Creates the asset panel for SEUT"""
@@ -53,13 +53,21 @@ class SEUT_PT_Panel_Asset(Panel):
     @classmethod
     def poll(cls, context):
         scene = context.scene
-        return 'SEUT' in scene.view_layers and SpaceAssetInfo.is_asset_browser_poll(context) and SpaceAssetInfo.get_active_asset(context) is not None
+
+        if bpy.app.version <= (4, 3, 0):
+            return 'SEUT' in scene.view_layers and SpaceAssetInfo.is_asset_browser_poll(context) and context.asset is not None
+        else:
+            return 'SEUT' in scene.view_layers and SpaceAssetInfo.is_asset_browser_poll(context) and SpaceAssetInfo.get_active_asset(context) is not None
 
 
     def draw(self, context):
         layout = self.layout
-        asset = SpaceAssetInfo.get_active_asset(context)
-        
+
+        if bpy.app.version <= (4, 3, 0):
+            asset = context.asset.metadata
+        else:
+            asset = SpaceAssetInfo.get_active_asset(context)
+
         box = layout.box()
         box.label(text="Asset Properties", icon='PROPERTIES')
         row = box.row(align=True)
