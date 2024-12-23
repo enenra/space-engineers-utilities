@@ -95,7 +95,7 @@ def remap_materials(self, context, all_objects = False):
                 old_material = slot.material
                 new_material = None
 
-                if old_material.name[:-4] in bpy.data.materials:
+                if re.search("\.[0-9]{3}", old_material.name) != None and old_material.name[:-4] in bpy.data.materials:
                     new_material = old_material.name[:-4]
                 else:
                     new_material = old_material.name
