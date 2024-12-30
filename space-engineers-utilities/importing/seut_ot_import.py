@@ -25,7 +25,7 @@ from ..utils.seut_tool_utils                import *
 from ..empties.seut_empties                 import empty_types
 from ..materials.seut_ot_remap_materials    import remap_materials
 from ..seut_errors                          import seut_report
-from ..seut_utils                           import create_relative_path, to_radians
+from ..seut_utils                           import create_relative_path, get_preferences, to_radians
 
 
 class SEUT_OT_Import(Operator):
@@ -67,6 +67,7 @@ class SEUT_OT_Import(Operator):
 
 def import_gltf(self, context, filepath):
     scene = context.scene
+    preferences = get_preferences()
 
     existing_objects = set(scene.objects)
     glb_path = os.path.splitext(filepath)[0] + '.glb'
@@ -182,6 +183,9 @@ def import_gltf(self, context, filepath):
     xml_path = f'{os.path.splitext(filepath)[0]}.xml'
     if os.path.exists(xml_path):
         import_materials(self, context, xml_path)
+
+    if not preferences.keep_glb:
+        os.remove(glb_path)
 
     seut_report(self, context, 'INFO', True, 'I014', filepath)
 

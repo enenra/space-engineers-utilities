@@ -207,6 +207,11 @@ class SEUT_AddonPreferences(AddonPreferences):
         description="Enable or disable the SEUT Animations menu panel being displayed.\nNote that animations are not working yet",
         default= False,
     )
+    keep_glb: BoolProperty(
+        name="Keep GLB Files",
+        description="SEUT import uses GLB as an intermediary format for import. If GLB files are not deleted, repeated import is quicker",
+        default= True,
+    )
 
     def draw(self, context):
         layout = self.layout
@@ -248,7 +253,7 @@ class SEUT_AddonPreferences(AddonPreferences):
                 update_register_repos()
             except Exception:
                 pass
-                
+
         if 'space-engineers-utilities' in data.seut.repos:
             if addon_utils.check('blender_addon_updater') != (True, True):
                 row = layout.row()
@@ -394,20 +399,26 @@ class SEUT_AddonPreferences(AddonPreferences):
         box.label(text="External Tools", icon='TOOL_SETTINGS')
         box.prop(self, "havok_path", text="Havok Filter Manager", expand=True)
 
-        box = layout.box()
-        box.label(text="SEUT Panels", icon="META_PLANE")
-        row = box.row()
+        box0 = layout.box()
+        box0.label(text="SEUT Panels", icon="META_PLANE")
+        row = box0.row()
 
         box1 = row.box()
         box1.prop(self, "quick_tools", text="  Quick Tools")
         row1 = box1.row()
         row1.label(text="An assortment of shortcuts for modelling SE objects.")
 
+        box2 = row.box()
+        box2.prop(self, "keep_glb", text="  Keep GLB Files")
+        row2 = box2.row()
+        row2.label(text="Intermediary import file for quicker repeated import.")
+
         if self.dev_mode:
-            box2 = row.box()
-            box2.prop(self, "animation", text="  Animations Panel")
-            row2 = box2.row()
-            row2.label(text="Animation setup and export for the AnimationEngine framework.")
+            row = box0.row()
+            box3 = row.box()
+            box3.prop(self, "animation", text="  Animations Panel")
+            row3 = box3.row()
+            row3.label(text="Animation setup and export for the AnimationEngine framework.")
 
 
 def load_icons():
@@ -522,7 +533,7 @@ def load_json(json_type):
 
     for key, entry in entries.items():
         loaded_json[json_type][key] = entry
-        
+
 
 def load_empty_json(empty_type):
     """Loads an individual config file for an empty type."""
