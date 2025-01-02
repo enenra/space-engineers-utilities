@@ -455,9 +455,9 @@ class SEUT_PT_Panel_Export(Panel):
 
         box.prop(scene.seut, "export_deleteLooseFiles", icon='TEMP')
         box.prop(data.seut, "convert_textures", icon='NODE_TEXTURE')
-        row = box.row()
 
         if scene.seut.sceneType not in ['character', 'character_animation', 'item']:
+            row = box.row()
             row.prop(scene.seut, "export_sbc_type", expand=True)
 
             box2 = box.box()
@@ -469,6 +469,9 @@ class SEUT_PT_Panel_Export(Panel):
             col.prop(scene.seut, "export_smallGrid", icon='META_CUBE')
             if scene.seut.export_smallGrid:
                 col.prop(scene.seut, "export_medium_grid", icon='CUBE')
+
+        else:
+            box.prop(scene.seut, "rotate_character", icon='ORIENTATION_GIMBAL')
 
         box.prop(scene.seut, "mod_path", text="Mod")
         if scene.seut.mod_path != "":

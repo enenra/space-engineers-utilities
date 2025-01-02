@@ -664,6 +664,11 @@ class SEUT_Scene(PropertyGroup):
         subtype="DIR_PATH",
         update=update_mod_path
     )
+    rotate_character: BoolProperty(
+        name="Rotate Character",
+        description="Disable this only if working on a character not based on the male or female astronaut skeleton",
+        default=True
+    )
 
     # These are pre 0.9.95 legacy, not directly used anymore --> moved to being saved onto collections
     export_lod1Distance: IntProperty(

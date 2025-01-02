@@ -40,7 +40,7 @@ def export_xml(self, context, collection) -> str:
     else:
         add_subelement(model, 'RescaleFactor', '0.01')
 
-    if scene.seut.sceneType in ['character', 'character_animation']:
+    if scene.seut.sceneType in ['character', 'character_animation'] and scene.seut.rotate_character:
         add_subelement(model, 'RotationY', '180')
 
     path = get_abs_path(scene.seut.export_exportPath)

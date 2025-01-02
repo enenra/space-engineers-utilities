@@ -4,6 +4,7 @@ Relevant Milestone: [SEUT 1.2.1](https://github.com/enenra/space-engineers-utili
 * Added [#381](https://github.com/enenra/space-engineers-utilities/issues/381): New scene type: Generic item. For environment items, hand items, components, etc. (Alpha 1)
 * Added [#402](https://github.com/enenra/space-engineers-utilities/issues/402): Option for icon render in character animation scenes. (Alpha 1)
 * Added [#410](https://github.com/enenra/space-engineers-utilities/issues/410): Button to copy icon render offset options to all scenes. (Alpha 1)
+* Added: Option to disable character rotation on export. This is needed for characters not based on the male / female skeleton. (Alpha 3)
 * Added: Option to disable preserving GLB files on import. (Alpha 2)
 * Improved: Remap materials duplicate detection. (Alpha 2)
 * Improved: Changed FBX import to use GLTF as an intermediary format to fix imported objects being weirdly arranged. ASCII FBX can now also be imported through this workaround. Thanks to @quantum-unicorn for the help on this. (Alpha 1)
