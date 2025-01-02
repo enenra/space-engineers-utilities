@@ -456,10 +456,10 @@ class SEUT_PT_Panel_Export(Panel):
         box.prop(scene.seut, "export_deleteLooseFiles", icon='TEMP')
         box.prop(data.seut, "convert_textures", icon='NODE_TEXTURE')
         row = box.row()
+
         if scene.seut.sceneType not in ['character', 'character_animation', 'item']:
             row.prop(scene.seut, "export_sbc_type", expand=True)
 
-        if scene.seut.sceneType not in ['character', 'character_anmiation', 'item']:
             box2 = box.box()
             box2.label(text="Grid Export", icon='GRID')
             split = box2.split(factor=0.5)
