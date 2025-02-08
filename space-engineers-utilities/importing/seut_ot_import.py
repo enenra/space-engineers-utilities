@@ -153,8 +153,10 @@ def import_gltf(self, context, filepath):
             custom_props = obj.get("fromFBX")
             if custom_props:
                 custom_props = dict(custom_props)
+
                 for item in custom_props["userProperties"]:
-                    obj[item] = custom_props['userProperties'][item]['value']
+                    if item != "fromFBX":
+                        obj[item] = custom_props['userProperties'][item]['value']
 
                 if 'file' in obj and obj['file'] in bpy.data.scenes:
                     obj.seut.linkedScene = bpy.data.scenes[obj['file']]
