@@ -16,7 +16,8 @@ class SEUT_OT_BBox(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.draw_handle = None
         self.draw_event = None
 
@@ -110,7 +111,7 @@ class SEUT_OT_BBox(Operator):
         )
 
         self.create_batch()
-        
+
         return {'PASS_THROUGH'}
 
 
@@ -126,7 +127,7 @@ class SEUT_OT_BBox(Operator):
 
     def draw_callback_3d(self, op, context):
         data = get_seut_blend_data()
-        
+
         try:
             blend_state = gpu.state.blend_get()
             gpu.state.blend_set('ALPHA')
