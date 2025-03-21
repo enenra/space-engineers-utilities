@@ -330,7 +330,7 @@ def export_fbx(self, context, collection, path_override = None) -> str:
             # Resetting empty size
             if empty.empty_display_size == 1.0:
                 empty.empty_display_size = 0.5
-                if 'file' not in empty:
+                if 'highlight' in empty:
                     empty.scale.x *= 1.5
                     empty.scale.y *= 1.5
                     empty.scale.z *= 1.5
