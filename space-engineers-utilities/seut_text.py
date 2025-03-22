@@ -225,6 +225,12 @@ class SEUT_Text(PropertyGroup):
         default = True
     )
 
+    use_alt_importer: BoolProperty(
+        name = "Use Alternate Importer",
+        description = "Whether SEUT should use the alternative importer that works better on newer models (also applies for Complete Import)",
+        default = False
+    )
+
     # Texture Conversion
     setup_conversion_filetype: EnumProperty(
         name="Output Type",

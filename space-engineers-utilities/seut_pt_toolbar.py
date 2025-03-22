@@ -501,9 +501,10 @@ class SEUT_PT_Panel_Import(Panel):
 
         # Import
 
-        row = layout.row()
+        row = layout.row(align=True)
         row.scale_y = 2.0
         row.operator('scene.import', icon='IMPORT')
+        row.prop(data.seut, 'use_alt_importer', text="", icon='KEY_OPTION')
 
         layout.operator('scene.import_complete', icon='IMPORT')
 

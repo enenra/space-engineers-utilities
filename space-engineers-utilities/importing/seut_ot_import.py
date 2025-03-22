@@ -25,7 +25,7 @@ from ..utils.seut_tool_utils                import *
 from ..empties.seut_empties                 import empty_types
 from ..materials.seut_ot_remap_materials    import remap_materials
 from ..seut_errors                          import seut_report
-from ..seut_utils                           import create_relative_path, get_preferences, to_radians
+from ..seut_utils                           import create_relative_path, get_preferences, get_seut_blend_data, to_radians
 
 
 class SEUT_OT_Import(Operator):
@@ -102,10 +102,9 @@ def import_gltf(self, context, filepath):
                 return {'FINISHED'}
 
             root = obj.children[0]
+            imported_objects.remove(obj)
             bpy.data.objects.remove(obj)
             break
-
-    imported_objects.remove(obj)
 
     root.rotation_mode = 'XYZ'
 
@@ -115,6 +114,8 @@ def import_gltf(self, context, filepath):
     root_mat_rotation = root_eul_rotation.to_matrix()
 
     for obj in imported_objects:
+        if obj is None:
+            continue
 
         obj.rotation_mode = 'XYZ'
         obj.select_set(False)
@@ -197,6 +198,7 @@ def import_gltf(self, context, filepath):
 def import_fbx(self, context, filepath):
     """Imports FBX and adjusts them for use in SEUT"""
 
+    data = get_seut_blend_data()
     scene = context.scene
     existing_objects = set(scene.objects)
 
@@ -248,7 +250,16 @@ def import_fbx(self, context, filepath):
                 )
 
         else:
-            return import_gltf(self, context, filepath)
+            if data.seut.use_alt_importer:
+                bpy.ops.import_scene.fbx(
+                    filepath=filepath,
+                    use_manual_orientation=True,
+                    axis_forward='Z',
+                    axis_up='Y'
+                    )
+
+            else:
+                return import_gltf(self, context, filepath)
 
     except RuntimeError as error:
         seut_report(self, context, 'ERROR', True, 'E036', str(error))
