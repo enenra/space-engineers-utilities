@@ -470,7 +470,7 @@ class SEUT_PT_Panel_Export(Panel):
             if scene.seut.export_smallGrid:
                 col.prop(scene.seut, "export_medium_grid", icon='CUBE')
 
-        else:
+        elif scene.seut.sceneType != 'item':
             box.prop(scene.seut, "rotate_character", icon='ORIENTATION_GIMBAL')
 
         box.prop(scene.seut, "mod_path", text="Mod")
