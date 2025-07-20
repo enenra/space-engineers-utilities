@@ -483,7 +483,7 @@ def export_sbc(self, context):
 
     icon_path = 'Textures\GUI\Icons\AstronautBackpack.dds'
     icon_target_path = get_abs_path(os.path.join(scene.render.filepath, scene.seut.subtypeId + '.dds'))
-    if (os.path.exists(icon_target_path) or os.path.exists(os.path.splitext(icon_target_path)[0] + '.png')) and icon_target_path.find('Textures') != -1:
+    if (os.path.exists(icon_target_path) or os.path.exists(icon_target_path.replace("_LG_", "_SG_")) or os.path.exists(icon_target_path.replace("_SG_", "_LG_")) or os.path.exists(os.path.splitext(icon_target_path)[0] + '.png')) and icon_target_path.find('Textures') != -1:
         icon_path = os.path.join('Textures', icon_target_path.split('Textures\\')[1])
     lines_entry = update_add_subelement(def_definition, 'Icon', icon_path, update_sbc, lines_entry)
 
