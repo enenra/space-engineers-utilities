@@ -161,13 +161,13 @@ def import_materials(self, context, filepath):
 
         if not add_img is None:
             add_node.image = add_img
-            ng_node.image.alpha_mode = 'CHANNEL_PACKED' # TODO: This doesn't work consistently.
+            add_node.image.alpha_mode = 'CHANNEL_PACKED'
         else:
             material.node_tree.nodes.remove(add_node)
 
         if not am_img is None:
             am_node.image = am_img
-            ng_node.image.alpha_mode = 'CHANNEL_PACKED' # TODO: This doesn't work consistently.
+            am_node.image.alpha_mode = 'CHANNEL_PACKED'
         else:
             material.node_tree.nodes.remove(am_node)
 
