@@ -120,7 +120,7 @@ def import_gltf(self, context, filepath):
         obj.rotation_mode = 'XYZ'
         obj.select_set(False)
 
-        if context.collection != scene.collection:
+        if bpy.app.version < (4, 5, 0) and context.collection != scene.collection:
             context.collection.objects.link(obj)
             scene.collection.objects.unlink(obj)
 
