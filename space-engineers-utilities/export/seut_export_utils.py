@@ -46,7 +46,16 @@ def export_xml(self, context, collection) -> str:
     path = get_abs_path(scene.seut.export_exportPath)
 
     # Write local materials as material entries into XML, write library materials as matrefs into XML
-    for mat in bpy.data.materials:
+    used_materials = []
+    for obj in collection.objects:
+        if obj.type != 'MESH':
+            continue
+        for slot in obj.material_slots:
+            if slot.material in used_materials:
+                continue
+            used_materials.append(slot.material)
+
+    for mat in used_materials:
 
         if mat is None:
             continue
