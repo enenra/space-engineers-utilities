@@ -951,6 +951,9 @@ class SEUT_Scene(PropertyGroup):
     planet: PointerProperty(
         type=bpy.types.Object
     )
+    planet_preview: PointerProperty(
+        type=bpy.types.Object
+    )
     bake_type: EnumProperty(
         name='Bake Type',
         description="Which map type to bake from the current planet material",

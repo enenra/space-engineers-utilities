@@ -21,7 +21,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
         lines = output[1]
         start = output[2]
         end = output[3]
-    
+
     if output is not None and start is not None and end is not None and scene.seut.export_sbc_type == 'update':
         update_sbc = True
         lines_entry = lines[start:end]
@@ -42,7 +42,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
         def_Id = add_subelement(def_definition, 'Id')
         add_subelement(def_Id, 'TypeId', 'PlanetGeneratorDefinition')
         add_subelement(def_Id, 'SubtypeId', scene.seut.subtypeId)
-    
+
         def_planetMaps = add_subelement(def_definition, 'PlanetMaps')
         add_attrib(def_planetMaps, 'Material', 'true')
         add_attrib(def_planetMaps, 'Ores', 'true')
@@ -58,7 +58,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
         def_step = add_subelement(def_postprocessingSteps, 'Step')
         add_attrib(def_step, 'xsi:type', 'MyObjectBuilder_VoxelPostprocessingDecimate')
         add_attrib(def_step, 'ForPhysics', 'true')
-        
+
         def_lodSettings = add_subelement(def_step, 'LodSettings')
 
         def_settings = ET.SubElement(def_lodSettings, 'Settings')
@@ -82,7 +82,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
         add_subelement(def_settings, 'EdgeThreshold', 0.06)
         add_subelement(def_settings, 'PlaneThreshold', 0.06)
 
-    
+
     # Hill Params
     def_HillParams = 'HillParams'
     if not update_sbc:
@@ -101,7 +101,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
         material = 'DebugMaterial'
     lines_entry = update_add_attrib(def_defaultSurfaceMaterial, 'Material', material, update_sbc, lines_entry)
     lines_entry = update_add_attrib(def_defaultSurfaceMaterial, 'MaxDepth', scene.seut.default_surface_material_max, update_sbc, lines_entry)
-   
+
     def_defaultSubSurfaceMaterial = 'DefaultSubSurfaceMaterial'
     if not update_sbc:
         def_defaultSubSurfaceMaterial = add_subelement(def_definition, 'DefaultSubSurfaceMaterial')
@@ -114,7 +114,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
     lines_entry = update_add_subelement(def_definition, 'DefaultSurfaceTemperature', scene.seut.default_surface_temperature, update_sbc, lines_entry)
 
     lines_entry = update_add_subelement(def_definition, 'MinimumSurfaceLayerDepth', scene.seut.min_surface_layer_depth, update_sbc, lines_entry)
-        
+
     # Surface Detail
     def_SurfaceDetail = 'SurfaceDetail'
     if not update_sbc:
@@ -137,14 +137,14 @@ def export_planet_sbc(self, context: bpy.types.Context):
     lines_entry = update_add_attrib(def_SD_Slope, 'Max', scene.seut.sd_slope_max, update_sbc, lines_entry)
 
     lines_entry = update_add_subelement(def_SurfaceDetail, 'Transition', scene.seut.sd_transition, update_sbc, lines_entry)
-    
+
     # Ore Mappings
     if len(scene.seut.ore_mappings) > 0:
         if not update_sbc:
             def_OreMappings = add_subelement(def_definition, 'OreMappings')
         else:
             def_OreMappings = ET.Element('OreMappings')
-        
+
         for om in scene.seut.ore_mappings:
             def_Ore = ET.SubElement(def_OreMappings, 'Ore')
             add_attrib(def_Ore, 'Value', om.value)
@@ -157,7 +157,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
             add_attrib(def_Ore, 'Depth', om.depth)
             add_attrib(def_Ore, 'TargetColor', '#%02x%02x%02x' % (int(om.target_color[0] * 255), int(om.target_color[1] * 255), int(om.target_color[2] * 255)))
             add_attrib(def_Ore, 'ColorInfluence', 256) # This is ignored by the game.
-        
+
         if update_sbc:
             lines_entry = convert_back_xml(def_OreMappings, 'OreMappings', lines_entry, 'PlanetGeneratorDefinition')
 
@@ -167,12 +167,12 @@ def export_planet_sbc(self, context: bpy.types.Context):
             def_ComplexMaterials = add_subelement(def_definition, 'ComplexMaterials')
         else:
             def_ComplexMaterials = ET.Element('ComplexMaterials')
-        
+
         for mg in scene.seut.material_groups:
             def_MaterialGroup = ET.SubElement(def_ComplexMaterials, 'MaterialGroup')
             add_attrib(def_MaterialGroup, 'Name', mg.name)
             add_attrib(def_MaterialGroup, 'Value', mg.value)
-            
+
             if len(mg.rules) > 0:
                 for r in mg.rules:
                     def_Rule = ET.SubElement(def_MaterialGroup, 'Rule')
@@ -188,15 +188,15 @@ def export_planet_sbc(self, context: bpy.types.Context):
                                 material = 'DebugMaterial'
                             add_attrib(def_Layer, 'Material', material)
                             add_attrib(def_Layer, 'Depth', l.depth)
-                    
+
                     def_Height = add_subelement(def_Rule, 'Height')
                     add_attrib(def_Height, 'Min', round(r.height_min, 2))
                     add_attrib(def_Height, 'Max', round(r.height_max, 2))
-                    
+
                     def_Latitude = add_subelement(def_Rule, 'Latitude')
                     add_attrib(def_Latitude, 'Min', round(r.latitude_min, 2))
                     add_attrib(def_Latitude, 'Max', round(r.latitude_max, 2))
-                    
+
                     def_Slope = add_subelement(def_Rule, 'Slope')
                     add_attrib(def_Slope, 'Min', round(r.slope_min, 2))
                     add_attrib(def_Slope, 'Max', round(r.slope_max, 2))
@@ -251,18 +251,18 @@ def export_planet_sbc(self, context: bpy.types.Context):
                     def_Height = add_subelement(def_Rule, 'Height')
                     add_attrib(def_Height, 'Min', round(r.height_min, 2))
                     add_attrib(def_Height, 'Max', round(r.height_max, 2))
-                    
+
                     def_Latitude = add_subelement(def_Rule, 'Latitude')
                     add_attrib(def_Latitude, 'Min', round(r.latitude_min, 2))
                     add_attrib(def_Latitude, 'Max', round(r.latitude_max, 2))
-                    
+
                     def_Slope = add_subelement(def_Rule, 'Slope')
                     add_attrib(def_Slope, 'Min', round(r.slope_min, 2))
                     add_attrib(def_Slope, 'Max', round(r.slope_max, 2))
 
         if update_sbc:
             lines_entry = convert_back_xml(def_EnvironmentItems, 'EnvironmentItems', lines_entry, 'PlanetGeneratorDefinition')
-    
+
     # Atmosphere Settings
     lines_entry = update_add_subelement(def_definition, 'SurfaceGravity', round(scene.seut.surface_gravity, 2), update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'GravityFalloffPower', round(scene.seut.gravity_falloff_power, 2), update_sbc, lines_entry)
@@ -271,7 +271,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
     def_Atmosphere = 'Atmosphere'
     if not update_sbc:
         def_Atmosphere = add_subelement(def_definition, 'Atmosphere')
-        
+
     lines_entry = update_add_subelement(def_Atmosphere, 'Breathable', str(scene.seut.atm_breathable).lower(), update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_Atmosphere, 'OxygenDensity', round(scene.seut.atm_oxygen_density, 2), update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_Atmosphere, 'Density', round(scene.seut.atm_density, 2), update_sbc, lines_entry)
@@ -287,7 +287,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
             seut_report(self, context, 'ERROR', True, 'E033')
         xml_string = xml.dom.minidom.parseString(temp_string)
         xml_formatted = xml_string.toprettyxml()
-    
+
     else:
         xml_formatted = lines.replace(lines[start:end], lines_entry)
         xml_formatted = format_entry(xml_formatted)
@@ -300,7 +300,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
         target_file = os.path.join(path_data, "PlanetDataFiles", filename + ".sbc")
         if not os.path.exists(os.path.join(path_data, "PlanetDataFiles")):
             os.makedirs(os.path.join(path_data, "PlanetDataFiles"))
-        
+
         # This covers the case where a file exists but the SBC export setting forces new file creation.
         counter = 1
         while os.path.exists(target_file):
@@ -335,6 +335,7 @@ def export_planet_maps(scene: bpy.types.Scene):
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
                 scene.render.image_settings.color_depth = '16'
                 scene.render.image_settings.color_mode = 'BW'
+                scene.render.image_settings.linear_colorspace_settings.name = 'Non-Color'
                 scene.render.image_settings.compression = 0
                 img.save_render(filepath=filepath, scene=scene, quality=100)
 
@@ -342,6 +343,7 @@ def export_planet_maps(scene: bpy.types.Scene):
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
                 scene.render.image_settings.color_depth = '8'
                 scene.render.image_settings.color_mode = 'RGB'
+                scene.render.image_settings.linear_colorspace_settings.name = 'sRGB'
                 scene.render.image_settings.compression = 0
                 img.save(filepath=filepath, quality=100)
 
@@ -349,6 +351,7 @@ def export_planet_maps(scene: bpy.types.Scene):
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
                 scene.render.image_settings.color_depth = '8'
                 scene.render.image_settings.color_mode = 'RGB'
+                scene.render.image_settings.linear_colorspace_settings.name = 'sRGB'
                 scene.render.image_settings.compression = 0
                 img.save(filepath=filepath, quality=100)
 
@@ -363,6 +366,7 @@ def bake_planet_map(context: bpy.types.Context):
     bake_type = scene.seut.bake_type
     bake_resolution = int(scene.seut.bake_resolution)
     planet = scene.seut.planet
+    preview = scene.seut.planet_preview
 
     engine = scene.render.engine
     scene.render.engine = 'CYCLES'
@@ -374,39 +378,56 @@ def bake_planet_map(context: bpy.types.Context):
             img = bpy.data.images[name]
             bpy.data.images.remove(img)
 
+        if '_mat' in name or '_add' in name:
+            is_data = False
+        else:
+            is_data = True
+
         img = bpy.data.images.new(
             name=name,
             width=resolution,
-            height=resolution, 
+            height=resolution,
             alpha=False,
             float_buffer=True,
-            is_data=True,
+            is_data=is_data,
             tiled=False
         )
 
+        if '_mat' in name or '_add' in name:
+            img.colorspace_settings.name = 'sRGB'
+        else:
+            img.colorspace_settings.name = 'Non-Color'
+
         return img
-    
+
     mats = []
     for slot in planet.material_slots:
         mats.append(slot.material)
+    mats_preview = []
+    for slot in preview.material_slots:
+        mats_preview.append(slot.material)
 
     # TODO: SURFACE material changes go in here
     if bake_type == 'height':
         suffix = ""
         scene.render.bake.image_settings.color_depth = '16'
         scene.render.bake.image_settings.color_mode = 'BW'
+        scene.render.bake.image_settings.linear_colorspace_settings.name = 'Non-Color'
         scene.render.bake.image_settings.compression = 0
         scene.cycles.samples = 4096
     elif bake_type == 'biome':
         suffix = "_mat"
+
         scene.render.bake.image_settings.color_depth = '8'
         scene.render.bake.image_settings.color_mode = 'RGB'
+        scene.render.bake.image_settings.linear_colorspace_settings.name = 'sRGB'
         scene.render.bake.image_settings.compression = 0
         scene.cycles.samples = 1
     else:
         suffix = "_add"
         scene.render.bake.image_settings.color_depth = '8'
         scene.render.bake.image_settings.color_mode = 'RGB'
+        scene.render.bake.image_settings.linear_colorspace_settings.name = 'sRGB'
         scene.render.bake.image_settings.compression = 0
         scene.cycles.samples = 1
 
@@ -419,13 +440,38 @@ def bake_planet_map(context: bpy.types.Context):
             node.name = 'IMAGE'
         else:
             node = mat.node_tree.nodes['IMAGE']
-            
+
         node.image = create_image(mat.name + suffix, bake_resolution)
         for n in mat.node_tree.nodes:
             n.select = False
         node.select = True
         mat.node_tree.nodes.active = node
-        
+
+    for mat in mats_preview:
+        if mat is None:
+            continue
+
+        if 'IMAGE' not in mat.node_tree.nodes:
+            node = mat.node_tree.nodes.new(type='ShaderNodeTexImage')
+            node.name = 'IMAGE'
+        else:
+            node = mat.node_tree.nodes['IMAGE']
+
+        if 'IMAGE_MAT' not in mat.node_tree.nodes:
+            node_mat = mat.node_tree.nodes.new(type='ShaderNodeTexImage')
+            node_mat.name = 'IMAGE'
+        else:
+            node_mat = mat.node_tree.nodes['IMAGE_MAT']
+
+        if mat.name.replace("_preview", "") in bpy.data.images:
+            node.image = bpy.data.images[mat.name.replace("_preview", "")]
+        if mat.name.replace("_preview", "") + "_mat" in bpy.data.images:
+            node_mat.image = bpy.data.images[mat.name.replace("_preview", "") + "_mat"]
+
+        for n in mat.node_tree.nodes:
+            n.select = False
+        node.select = True
+        mat.node_tree.nodes.active = node
 
     planet.hide_viewport = False
     planet.select_set(True)
@@ -477,7 +523,7 @@ def import_planet_sbc(self, context):
                 break
 
     for elem in planet_root:
-        
+
         if elem.tag == 'OreMappings' and self.import_ore_mappings:
             for ore in elem:
                 ore_mapping = add_ore_mapping(context)

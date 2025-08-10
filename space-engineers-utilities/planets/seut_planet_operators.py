@@ -32,7 +32,7 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
         scene = context.scene
 
         if scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers:
-            if scene.seut.planet is not None:
+            if scene.seut.planet is not None or scene.seut.planet_preview is not None:
                 Operator.poll_message_set("All objects are present.")
                 return False
         return True
@@ -85,6 +85,14 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
                 return {'CANCELLED'}
             else:
                 scene.seut.planet = appended_obj
+
+        if scene.seut.planet_preview is None:
+            appended_obj = append_object(context, file_path, 'Preview')
+            if appended_obj == -1:
+                seut_report(self, context, 'ERROR', True, 'E049')
+                return {'CANCELLED'}
+            else:
+                scene.seut.planet_preview = appended_obj
 
         mats = ['front', 'back', 'right', 'left', 'up', 'down']
         for mat in bpy.data.materials:
@@ -565,7 +573,7 @@ class SEUT_OT_Planet_Bake(Operator):
     def poll(cls, context):
         scene = context.scene
         if scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers:
-            if scene.seut.planet is None:
+            if scene.seut.planet is None or scene.seut.planet_preview is None:
                 Operator.poll_message_set("Bake source or bake target are missing.")
                 return False
             return True
