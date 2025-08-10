@@ -28,11 +28,11 @@ class SEUT_PT_Panel(Panel):
         wm = context.window_manager
         data = get_seut_blend_data()
 
-        if bpy.app.version < (3, 0, 0):
+        if bpy.app.version < (4, 5, 0):
             row = layout.row()
             row.alert = True
             row.scale_y = 0.75
-            row.label(text="SEUT requires Blender 3.0+.")
+            row.label(text="SEUT requires Blender 4.5+.")
             row = layout.row()
             row.alert = True
             row.scale_y = 0.75

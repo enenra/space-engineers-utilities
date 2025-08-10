@@ -41,7 +41,8 @@ class SEUT_OT_Import(Operator):
         )
 
     filepath: StringProperty(
-        subtype="FILE_PATH"
+        subtype="FILE_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'}
         )
 
 
@@ -120,7 +121,7 @@ def import_gltf(self, context, filepath):
         obj.rotation_mode = 'XYZ'
         obj.select_set(False)
 
-        if bpy.app.version < (4, 5, 0) and context.collection != scene.collection:
+        if context.collection != scene.collection:
             context.collection.objects.link(obj)
             scene.collection.objects.unlink(obj)
 

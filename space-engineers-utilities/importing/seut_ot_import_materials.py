@@ -24,7 +24,8 @@ class SEUT_OT_Import_Materials(Operator):
         )
 
     filepath: StringProperty(
-        subtype="FILE_PATH"
+        subtype="FILE_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'}
         )
 
 

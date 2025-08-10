@@ -22,10 +22,10 @@ def _clone_fbx_module():
                 del sys.modules[SPECIFICATION]
 
 # STOLLIE: Assign the clone of the loaded specification to global variable.
-_fbx = _clone_fbx_module() 
+_fbx = _clone_fbx_module()
 
 # STOLLIE: Assign a copy of the function from the loaded specification to a global variable.
-_original_fbx_template_def_model = _fbx.fbx_template_def_model 
+_original_fbx_template_def_model = _fbx.fbx_template_def_model
 
 # HARAG: Extend the "fbx_template_def_model" function with further SE properties by using the overrides.
 # Reference material: https://github.com/rjstone/SEMT/issues/1
@@ -66,10 +66,10 @@ HAVOK_SHAPE_NAMES = {
 
 # HARAG: No easy way to extend, so copied from export_fbx_bin.py and modified.
 def fbx_data_object_elements(root, ob_obj, scene_data):
-    
+
     # Write the Object (Model) data blocks.
     # Note this "Model" can also be bone or dupli!
-    
+
     obj_type = b"Null"  # default, sort of empty...
     if ob_obj.is_bone:
         obj_type = b"LimbNode"
@@ -89,8 +89,8 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
     model.add_string(obj_type)
 
     # STOLLIE: The modifications in this method are assigned to our cloned function instead of Blenders orginial.
-    # https://developer.blender.org/diffusion/BA/browse/master/io_scene_fbx/export_fbx_bin.py$1664 
-    _fbx.elem_data_single_int32(model, b"Version", _fbx.FBX_MODELS_VERSION) 
+    # https://developer.blender.org/diffusion/BA/browse/master/io_scene_fbx/export_fbx_bin.py$1664
+    _fbx.elem_data_single_int32(model, b"Version", _fbx.FBX_MODELS_VERSION)
 
     # BLENDER: Object transform info.
     loc, rot, scale, matrix, matrix_rot = ob_obj.fbx_object_tx(scene_data)
@@ -124,11 +124,8 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
     _fbx.elem_data_single_int32(model, b"MultiLayer", 0)
     _fbx.elem_data_single_int32(model, b"MultiTake", 0)
 
-    if bpy.app.version < (4, 0, 0):
-        _fbx.elem_data_single_bool(model, b"Shading", True)
-    else:
-        _fbx.elem_data_single_char(model, b"Shading", b"\x01")
-        
+    _fbx.elem_data_single_char(model, b"Shading", b"\x01")
+
     _fbx.elem_data_single_string(model, b"Culling", b"CullingOff")
 
     if obj_type == b"Camera":
@@ -143,18 +140,18 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
         _fbx.elem_props_template_set(tmpl, props, "p_bool", b"ViewFrustum", True)
         _fbx.elem_props_template_set(tmpl, props, "p_enum", b"BackgroundMode", 0)  # BLENDER: Don't know what it means
         _fbx.elem_props_template_set(tmpl, props, "p_bool", b"ForegroundTransparent", True)
-        
+
     # ----------------------- CUSTOM PART BEGINS HERE ----------------------- #
 
     # This is the link from empties to files and/or highlights to meshes.
-    
+
     """
     if obj_type == b"Empty" and bpy.data.objects[ob_obj.name]['file'] is not None:
         customProp = bpy.data.objects[ob_obj.name]['file']
 
         if customProp is not None:
             _fbx.elem_props_template_set(tmpl, props, "p_string", b"file", customProp)
-    
+
     """
     if obj_type == b"Empty":
         for key in ob_obj.bdata.keys():
@@ -180,7 +177,7 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
 # STOLLIE: Assign the blender defined and custom properties above to the copied function from the loaded specification by calling the above function.
 _fbx.fbx_data_object_elements = fbx_data_object_elements
 
-# HARAG: Export these two functions as our own so that clients of this module don't have to depend on 
+# HARAG: Export these two functions as our own so that clients of this module don't have to depend on
 # HARAG: the cloned fbx_experimental.export_fbx_bin module
 save_single = _fbx.save_single
 save = _fbx.save

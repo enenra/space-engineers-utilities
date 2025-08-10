@@ -188,12 +188,8 @@ def update_renderColorOverlay(self, context):
         scene.node_tree.nodes['RGB'].mute = scene.seut.renderColorOverlay
     if scene.node_tree.nodes['RGB to BW'] is not None:
         scene.node_tree.nodes['RGB to BW'].mute = scene.seut.renderColorOverlay
-    if bpy.app.version < (3, 4, 0):
-        if scene.node_tree.nodes['Combine RGBA'] is not None:
-            scene.node_tree.nodes['Combine RGBA'].mute = scene.seut.renderColorOverlay
-    else:
-        if scene.node_tree.nodes['Combine Color'] is not None:
-            scene.node_tree.nodes['Combine Color'].mute = scene.seut.renderColorOverlay
+    if scene.node_tree.nodes['Combine Color'] is not None:
+        scene.node_tree.nodes['Combine Color'].mute = scene.seut.renderColorOverlay
 
 
 def update_renderZoom(self, context):
@@ -656,12 +652,14 @@ class SEUT_Scene(PropertyGroup):
         name="Model Folder",
         description="What folder to export this scene to. Must be located within Mod-folder",
         subtype="DIR_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'},
         update=update_export_exportPath
     )
     mod_path: StringProperty(
         name="Mod Folder",
         description="The root folder of the mod",
         subtype="DIR_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'},
         update=update_mod_path
     )
     rotate_character: BoolProperty(
@@ -794,7 +792,8 @@ class SEUT_Scene(PropertyGroup):
     sd_texture: StringProperty(
         name="Texture",
         description="This texture is used like a heightmap on defined slopes in the terrain to add additional detail",
-        subtype="FILE_PATH"
+        subtype="FILE_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'}
     )
     sd_size: IntProperty(
         name="Size",

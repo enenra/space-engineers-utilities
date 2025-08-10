@@ -90,10 +90,7 @@ def setup_icon_render(self, context):
     node_render_layers = tree.nodes.new(type='CompositorNodeRLayers')
     node_color_correction = tree.nodes.new(type='CompositorNodeColorCorrection')
     node_rgb_to_bw = tree.nodes.new(type='CompositorNodeRGBToBW')
-    if bpy.app.version < (3, 4, 0):
-        node_combine_color = tree.nodes.new(type='CompositorNodeCombRGBA')
-    else:
-        node_combine_color = tree.nodes.new(type='CompositorNodeCombineColor')
+    node_combine_color = tree.nodes.new(type='CompositorNodeCombineColor')
     node_rgb = tree.nodes.new(type='CompositorNodeRGB')
     node_mix_rgb = tree.nodes.new(type='CompositorNodeMixRGB')
     node_bright_contrast = tree.nodes.new(type='CompositorNodeBrightContrast')
@@ -136,10 +133,7 @@ def setup_icon_render(self, context):
     # Force update render resolution
     scene.seut.renderResolution = scene.seut.renderResolution
 
-    if bpy.app.version < (4, 2, 0):
-        scene.render.engine = 'BLENDER_EEVEE'
-    else:
-        scene.render.engine = 'BLENDER_EEVEE_NEXT'
+    scene.render.engine = 'BLENDER_EEVEE_NEXT'
 
     scene.render.film_transparent = True
 

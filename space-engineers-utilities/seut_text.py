@@ -268,15 +268,18 @@ class SEUT_Text(PropertyGroup):
     texconv_input_dir: StringProperty(
         name="Input Directory",
         subtype="DIR_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'},
     )
     texconv_input_file: StringProperty(
         name="Input File",
         subtype="FILE_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'},
         update=update_texconv_input_file,
     )
     texconv_output_dir: StringProperty(
         name="Output Folder",
         subtype="DIR_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'},
     )
     texconv_output_filetype: EnumProperty(
         name="Output Type",

@@ -54,19 +54,13 @@ class SEUT_PT_Panel_Asset(Panel):
     def poll(cls, context):
         scene = context.scene
 
-        if bpy.app.version < (4, 3, 0):
-            return 'SEUT' in scene.view_layers and SpaceAssetInfo.is_asset_browser_poll(context) and SpaceAssetInfo.get_active_asset(context) is not None
-        else:
-            return 'SEUT' in scene.view_layers and SpaceAssetInfo.is_asset_browser_poll(context) and context.asset is not None
+        return 'SEUT' in scene.view_layers and SpaceAssetInfo.is_asset_browser_poll(context) and context.asset is not None
 
 
     def draw(self, context):
         layout = self.layout
 
-        if bpy.app.version < (4, 3, 0):
-            asset = SpaceAssetInfo.get_active_asset(context)
-        else:
-            asset = context.asset.metadata
+        asset = context.asset.metadata
 
         box = layout.box()
         box.label(text="Asset Properties", icon='PROPERTIES')

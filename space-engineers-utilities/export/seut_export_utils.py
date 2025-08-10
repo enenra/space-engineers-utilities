@@ -437,27 +437,25 @@ def correct_for_export_type(scene, reference: str) -> str:
 def prepare_mat_for_export(self, context, material):
     """Switches material around so that SE can properly read it"""
 
-    # In Blender 4.2 something changed and it's no longer possible to insert images into the image nodes of linked materials. This is the workaround - make override of linked material, alter it, then revert that after.
-    if bpy.app.version >= (4, 2, 0):
-        if material.library:
+    if material.library:
 
-            # If the material is a library and not used, remove it.
-            if material.users < 1:
-                bpy.data.materials.remove(material)
-                return
+        # If the material is a library and not used, remove it.
+        if material.users < 1:
+            bpy.data.materials.remove(material)
+            return
 
-            # If the material has a local version: Remap library to local if local has asset, else remap local to linked.
-            for mat in bpy.data.materials:
-                if mat.name == material.name and mat.library is None:
-                    if mat.asset_data is not None:
-                        material.user_remap(mat)
-                        bpy.data.materials.remove(material)
-                    else:
-                        mat.user_remap(material)
-                        bpy.data.materials.remove(mat)
-                    break
+        # If the material has a local version: Remap library to local if local has asset, else remap local to linked.
+        for mat in bpy.data.materials:
+            if mat.name == material.name and mat.library is None:
+                if mat.asset_data is not None:
+                    material.user_remap(mat)
+                    bpy.data.materials.remove(material)
+                else:
+                    mat.user_remap(material)
+                    bpy.data.materials.remove(mat)
+                break
 
-            material = material.override_create(remap_local_usages=True)
+        material = material.override_create(remap_local_usages=True)
 
     # See if relevant nodes already exist
     dummy_shader_node = None
@@ -544,9 +542,8 @@ def revert_mat_after_export(self, context, material):
         except IndexError:
             seut_report(self, context, 'INFO', False, 'I005', material.name)
 
-    if bpy.app.version >= (4, 2, 0):
-        if material.override_library is not None:
-            material.override_library.destroy()
+    if material.override_library is not None:
+        material.override_library.destroy()
 
 
 vanilla_bones = ['SE_RigPelvis', 'SE_RigLThigh', 'SE_RigLCalf', 'SE_RigLFoot', 'SE_RigLR_Foot_tip1', 'SE_RigSpine1', 'SE_RigSpine2', 'SE_RigSpine3', 'SE_RigSpine4', 'SE_RigRibcage', 'SE_RigNeck', 'SE_RigHead', 'SE_RigHelmetGlassBone', 'SE_RigL_Eye', 'SE_RigL_EyeLidUpper', 'SE_RigL_EyeLidLower', 'SE_RigR_Eye', 'SE_RigR_EyeLidUpper', 'SE_RigR_EyeLidLower', 'SE_RigLCollarbone', 'SE_RigLUpperarm', 'SE_RigLForearm1', 'SE_RigLForearm2', 'SE_RigLForearm3', 'SE_RigLPalm', 'SE_RigL_Thumb_1', 'SE_RigL_Thumb_2', 'SE_RigL_Thumb_3', 'SE_RigL_Index_1', 'SE_RigL_Index_2', 'SE_RigL_Index_3', 'SE_RigL_Middle_1', 'SE_RigL_Middle_2', 'SE_RigL_Middle_3', 'SE_RigL_Ring_1', 'SE_RigL_Ring_2', 'SE_RigL_Ring_3', 'SE_RigL_Little_1', 'SE_RigL_Little_2', 'SE_RigL_Little_3', 'SE_RigRCollarbone', 'SE_RigRUpperarm', 'SE_RigRForearm1', 'SE_RigRForearm2', 'SE_RigRForearm3', 'SE_RigRPalm', 'SE_RigR_Thumb_1', 'SE_RigR_Thumb_2', 'SE_RigR_Thumb_3', 'SE_RigR_Index_1', 'SE_RigR_Index_2', 'SE_RigR_Index_3', 'SE_RigR_Middle_1', 'SE_RigR_Middle_2', 'SE_RigR_Middle_3', 'SE_RigR_Ring_1', 'SE_RigR_Ring_2', 'SE_RigR_Ring_3', 'SE_RigR_Little_1', 'SE_RigR_Little_2', 'SE_RigR_Little_3', 'SE_RigRibcageBone001', 'SE_RigRThigh', 'SE_RigRCalf', 'SE_RigRFoot', 'SE_RigRR_Foot_tip1', 'SE_RigL_Weapon_pin', 'SE_RigR_Weapon_pin']

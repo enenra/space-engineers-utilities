@@ -51,11 +51,11 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
         if not os.path.exists(file_path):
             seut_report(self, context, 'ERROR', True, 'E049')
             return {'CANCELLED'}
-        
+
         if not 'main' in collections or collections['main'] == [] or collections['main'][0] is None:
             seut_report(self, context, 'ERROR', True, 'E049')
             return {'CANCELLED'}
-        
+
         context.view_layer.active_layer_collection = scene.view_layers['SEUT'].layer_collection.children[collections['seut'][0].name].children[collections['main'][0].name]
 
         def append_object(context: bpy.context, file_path: os.path, name: str) -> object:
@@ -72,7 +72,7 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
                 for existing in existing_objects:
                     if new == existing:
                         imported_objects.remove(new)
-            
+
             if len(imported_objects) < 1:
                 return -1
 
@@ -85,12 +85,12 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
                 return {'CANCELLED'}
             else:
                 scene.seut.planet = appended_obj
-        
+
         mats = ['front', 'back', 'right', 'left', 'up', 'down']
         for mat in bpy.data.materials:
             if mat.name in mats:
                 mat.use_fake_user = True
-        
+
         return {'FINISHED'}
 
 
@@ -108,7 +108,7 @@ class SEUT_OT_Planet_MaterialGroup_Add(Operator):
 
 
     def execute(self, context):
-        
+
         add_material_group(context)
 
         return {'FINISHED'}
@@ -199,7 +199,7 @@ class SEUT_OT_Planet_DistributionRule_Remove(Operator):
 
     def execute(self, context):
         scene = context.scene
-        
+
         if self.rule_type == 'material_group':
             rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
         elif self.rule_type == 'environment_item':
@@ -231,7 +231,7 @@ class SEUT_OT_Planet_DistributionRuleLayer_Add(Operator):
 
     def execute(self, context):
         scene = context.scene
-        
+
         if self.rule_type == 'material_group':
             rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
         elif self.rule_type == 'environment_item':
@@ -265,7 +265,7 @@ class SEUT_OT_Planet_DistributionRuleLayer_Remove(Operator):
 
     def execute(self, context):
         scene = context.scene
-        
+
         if self.rule_type == 'material_group':
             rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
         elif self.rule_type == 'environment_item':
@@ -340,7 +340,7 @@ class SEUT_OT_Planet_Biome_Add(Operator):
 
 
     def execute(self, context):
-        
+
         add_biome(context)
 
         return {'FINISHED'}
@@ -365,7 +365,7 @@ class SEUT_OT_Planet_Biome_Remove(Operator):
 
         environment_item.biomes.remove(environment_item.biomes_index)
         environment_item.biomes_index = min(max(0, environment_item.biomes_index - 1), len(environment_item.biomes) - 1)
-        
+
         for c in scene.seut.biomes_palette.colors:
             found = False
             for ei in scene.seut.environment_items:
@@ -483,7 +483,7 @@ class SEUT_OT_Planet_OreMappings_Add(Operator):
 
 
     def execute(self, context):
-        
+
         add_ore_mapping(context)
 
         return {'FINISHED'}
@@ -595,11 +595,11 @@ def items_planet_def(self, context):
         for f in os.listdir(os.path.dirname(self.filepath)):
             if os.path.splitext(f)[1] != '.sbc':
                 continue
-            
+
             file = os.path.join(os.path.dirname(self.filepath), f)
             with open(file) as f_open:
                 if '<TypeId>PlanetGeneratorDefinition</TypeId>' in f_open.read():
-                    
+
                     try:
                         tree = ET.parse(file)
                     except:
@@ -632,7 +632,7 @@ def items_planet_def(self, context):
                                             valid_files[file].append((elem2.text, elem2.text, ""))
                                             break
                                     break
-                                
+
         last_dir = os.path.dirname(self.filepath)
         if self.filepath in valid_files:
             return valid_files[self.filepath]
@@ -654,7 +654,8 @@ class SEUT_OT_Planet_ImportSBC(Operator, ImportHelper):
         options={'HIDDEN'}
     )
     filepath: StringProperty(
-        subtype="FILE_PATH"
+        subtype="FILE_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'}
     )
     planet_def: EnumProperty(
         name='Planet',
@@ -711,5 +712,5 @@ class SEUT_OT_Planet_ImportSBC(Operator, ImportHelper):
     def invoke(self, context, event):
 
         context.window_manager.fileselect_add(self)
-        
+
         return {'RUNNING_MODAL'}

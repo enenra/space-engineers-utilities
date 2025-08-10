@@ -287,11 +287,13 @@ class SEUT_Collection(PropertyGroup):
         name = "Ext. File",
         description = "External HKT file to be used as the collision instead of any objects defined in this collision collection",
         subtype = "FILE_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'},
         update = update_hkt_file
         )
 
     hkt_file_before: StringProperty(
-        subtype = "FILE_PATH"
+        subtype = "FILE_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'}
         )
 
 
@@ -311,9 +313,6 @@ class SEUT_OT_RecreateCollections(Operator):
             scene.view_layers[0].name = 'SEUT'
             scene.seut.version = 4
             scene.seut.gridScale = 'large'
-
-            if bpy.app.version < (4, 3, 0):
-                scene.eevee.use_bloom = True
 
             vl = scene.view_layers["SEUT"]
 

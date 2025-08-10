@@ -175,27 +175,32 @@ class SEUT_AddonPreferences(AddonPreferences):
         name="Asset Directory",
         description="This directory contains all SEUT assets. It contains both a Materials- and a Textures-folder",
         subtype='DIR_PATH',
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'},
         update=update_asset_path
     )
     game_path: StringProperty(
         name="Game Directory",
         description="This is the path to the directory where Space Engineers is installed",
         subtype='DIR_PATH',
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'},
         update=update_game_path
     )
     havok_path: StringProperty(
         name="Havok Standalone Filter Manager",
         description="This tool is required to create Space Engineers collision models",
         subtype='FILE_PATH',
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'},
         update=update_havok_path
     )
     havok_path_before: StringProperty(
-        subtype='FILE_PATH'
+        subtype='FILE_PATH',
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'}
     )
     mwmb_path: StringProperty(
         name="MWM Builder",
         description="This tool converts the individual 'loose files' that the export yields into MWM files the game can read",
-        subtype='FILE_PATH'
+        subtype='FILE_PATH',
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'}
     )
     quick_tools: BoolProperty(
         name="Quick Tools",
@@ -230,12 +235,12 @@ class SEUT_AddonPreferences(AddonPreferences):
         link.section = 'Reference/Tools/SEUT/'
         link.page = 'Addon_Preferences'
 
-        if bpy.app.version < (4, 0, 0):
+        if bpy.app.version < (4, 5, 0):
             box = layout.box()
             row = box.row()
             row.alert = True
             row.label(text="Version Incompatibility", icon='ERROR')
-            for l in wrap_text("SEUT requires Blender 4.0 or later. Using an earlier version may lead to unexpected and non-obvious errors. Please update your Blender installation!", int(context.region.width / 7)):
+            for l in wrap_text("SEUT requires Blender 4.5 or later. Using an earlier version may lead to unexpected and non-obvious errors. Please update your Blender installation!", int(context.region.width / 7)):
                 row = box.row()
                 row.scale_y = 0.75
                 row.alert = True
