@@ -35,7 +35,7 @@ def update_technique(self, context):
                 switch = i
         if switch is None:
             return
-        
+
         if self.technique in ['GLASS', 'HOLO', 'SHIELD']:
             switch.default_value = 1
             material.blend_method = 'BLEND'
@@ -53,7 +53,7 @@ def update_color(self, context):
             ng = node
     if ng is None:
         return
-    
+
     override = None
     override_alpha = None
     overlay = None
@@ -92,7 +92,7 @@ class SEUT_Materials(PropertyGroup):
         description="Used as a reference to patch the SEUT material properties to newer versions",
         default=0
     )
-    
+
     technique: EnumProperty(
         name='Technique',
         description="The technique with which the material is rendered ingame",
@@ -319,10 +319,9 @@ class SEUT_PT_Panel_Materials(Panel):
             row = box.row(align=True)
             box.prop(material.seut, 'technique', icon='IMGDISPLAY')
             box.prop(material.seut, 'facing')
-            
-            if material.seut.technique in ['FOLIAGE', 'ALPHA_MASKED']:
-                box.prop(material.seut, 'windScale', icon='SORTSIZE')
-                box.prop(material.seut, 'windFrequency', icon='GROUP')
+
+            box.prop(material.seut, 'windScale', icon='SORTSIZE')
+            box.prop(material.seut, 'windFrequency', icon='GROUP')
 
             if material.seut.technique in ['GLASS', 'HOLO', 'SHIELD']:
                 box = layout.box()
@@ -345,17 +344,17 @@ class SEUT_PT_Panel_Materials(Panel):
                     col = box3.column(align=True)
                     col.prop(material.seut, 'shadow_multiplier_x')
                     col.prop(material.seut, 'shadow_multiplier_y')
-                    
+
                     box4 = box.box()
                     box4.label(text="Light Influence", icon='LIGHT_POINT')
                     col = box4.column(align=True)
                     col.prop(material.seut, 'light_multiplier_x')
                     col.prop(material.seut, 'light_multiplier_y')
                     col.prop(material.seut, 'light_multiplier_z')
-                
+
                 box2 = box.box()
                 box2.label(text="Reflection Adjustments", icon='MOD_MIRROR')
-                
+
                 col = box2.column(align=True)
                 col.prop(material.seut, 'reflectivity')
                 col.prop(material.seut, 'fresnel')
@@ -438,7 +437,7 @@ class SEUT_PT_Panel_TextureConversion(Panel):
             row.prop(data.seut, 'texconv_pmalpha')
             row.prop(data.seut, 'texconv_sepalpha')
             box.prop(data.seut, 'texconv_pdd')
-        
+
         layout.operator('wm.convert_textures', icon='EXPORT')
 
 
