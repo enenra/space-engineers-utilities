@@ -122,8 +122,9 @@ def import_gltf(self, context, filepath):
         obj.select_set(False)
 
         if context.collection != scene.collection:
-            context.collection.objects.link(obj)
-            scene.collection.objects.unlink(obj)
+            if context.collection not in obj.users_collection:
+                context.collection.objects.link(obj)
+                scene.collection.objects.unlink(obj)
 
         if obj.type == 'EMPTY':
             if obj.parent is None:
