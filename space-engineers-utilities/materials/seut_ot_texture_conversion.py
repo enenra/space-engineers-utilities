@@ -177,9 +177,9 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
                         continue
 
                 if target_dir.find('\Textures\\') == -1 and not target_dir.endswith('\Textures'):
-                    target = os.path.join(target_dir, os.path.splitext(file)[0] + '.' + output_type)
+                    target = os.path.join(target_dir, os.path.splitext(file)[0] + '.' + output_type.lower())
                 else:
-                    target = os.path.join(os.path.dirname(target_dir), create_relative_path(tex_dir, 'Textures'), os.path.splitext(file)[0] + '.' + output_type)
+                    target = os.path.join(os.path.dirname(target_dir), create_relative_path(tex_dir, 'Textures'), os.path.splitext(file)[0] + '.' + output_type.lower())
 
                 if not os.path.exists(target) or os.path.getmtime(source) > os.path.getmtime(target):
                     files_to_convert.append([os.path.join(tex_dir, file), target])
@@ -204,7 +204,7 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
         converted = 0
         for r in results:
             idx_o = r[2].index('-o')
-            target_file = os.path.join(r[2][idx_o + 1], os.path.splitext(os.path.basename(r[2][1]))[0] + '.' + output_type)
+            target_file = os.path.join(r[2][idx_o + 1], os.path.splitext(os.path.basename(r[2][1]))[0] + '.' + output_type.lower())
             if r[0] == 0:
                 converted += 1
                 print(f"OK    - {target_file}")
