@@ -126,11 +126,13 @@ class SEUT_OT_MassConvertTextures(Operator):
             "Models\\Debris",
             "Models\\Characters\\Astronaut",
             "Models\\Characters\\Plushie",
+            "Models\\Characters\\SabiroidPlushie",
             "Models\\Environment\\Bushes",
             "Models\\Environment\\Grass",
             "Models\\Environment\\Trees",
             "Models\\Environment\\Props",
             "Models\\Environment\\SafeZone",
+            "Models\\Environment\\Farming",
             "Models\\Weapons",
             "Models\\Debug",
             "Particles"
