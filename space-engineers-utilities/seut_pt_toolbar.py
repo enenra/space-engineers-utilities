@@ -28,7 +28,7 @@ class SEUT_PT_Panel(Panel):
         wm = context.window_manager
         data = get_seut_blend_data()
 
-        if bpy.app.version < (4, 5, 0):
+        if bpy.app.version < (5, 0, 0):
             row = layout.row()
             row.alert = True
             row.scale_y = 0.75

@@ -235,7 +235,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         link.section = 'Reference/Tools/SEUT/'
         link.page = 'Addon_Preferences'
 
-        if bpy.app.version < (4, 5, 0):
+        if bpy.app.version < (5, 0, 0):
             box = layout.box()
             row = box.row()
             row.alert = True
