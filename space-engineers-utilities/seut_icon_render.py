@@ -84,8 +84,12 @@ def setup_icon_render(self, context):
 
     # Spawn compositor node tree
     scene.use_nodes = True
-    tree = scene.node_tree
-    tree.nodes.clear()
+    tree = scene.compositing_node_group
+
+    if tree is not None:
+        tree.nodes.clear()
+    else:
+        tree = bpy.data.node_groups.new("Icon Render", "CompositorNodeTree")
 
     node_render_layers = tree.nodes.new(type='CompositorNodeRLayers')
     node_color_correction = tree.nodes.new(type='CompositorNodeColorCorrection')
@@ -169,7 +173,7 @@ def clean_icon_render(self, context):
 
     # Delete Node Tree
     try:
-        scene.node_tree.nodes.clear()
+        scene.compositing_node_group.nodes.clear()
     except AttributeError:
         pass
 

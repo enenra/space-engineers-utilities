@@ -184,12 +184,12 @@ def update_renderEmptyLocation(self, context):
 def update_renderColorOverlay(self, context):
     scene = context.scene
 
-    if scene.node_tree.nodes['RGB'] is not None:
-        scene.node_tree.nodes['RGB'].mute = scene.seut.renderColorOverlay
-    if scene.node_tree.nodes['RGB to BW'] is not None:
-        scene.node_tree.nodes['RGB to BW'].mute = scene.seut.renderColorOverlay
-    if scene.node_tree.nodes['Combine Color'] is not None:
-        scene.node_tree.nodes['Combine Color'].mute = scene.seut.renderColorOverlay
+    if scene.compositing_node_group.nodes['RGB'] is not None:
+        scene.compositing_node_group.nodes['RGB'].mute = scene.seut.renderColorOverlay
+    if scene.compositing_node_group.nodes['RGB to BW'] is not None:
+        scene.compositing_node_group.nodes['RGB to BW'].mute = scene.seut.renderColorOverlay
+    if scene.compositing_node_group.nodes['Combine Color'] is not None:
+        scene.compositing_node_group.nodes['Combine Color'].mute = scene.seut.renderColorOverlay
 
 
 def update_renderZoom(self, context):
