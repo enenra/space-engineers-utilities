@@ -227,7 +227,7 @@ class SEUT_Text(PropertyGroup):
 
     use_alt_importer: BoolProperty(
         name = "Use Alternate Importer",
-        description = "Whether SEUT should use the alternative importer that works better on newer models (also applies for Complete Import)",
+        description = "Whether SEUT should use the alternative importer that might work better / be quicker on some models",
         default = False
     )
 
