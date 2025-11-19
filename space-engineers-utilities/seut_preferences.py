@@ -470,10 +470,6 @@ def verify_tool_path(self, context, path: str, name: str, filename: str) -> str:
                 return ""
 
 
-def get_addon_version():
-    return addon_version
-
-
 def save_addon_prefs():
     """Saves params from the addon's preferences to a json cfg."""
 

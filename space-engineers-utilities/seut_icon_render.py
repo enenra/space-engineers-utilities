@@ -7,7 +7,7 @@ from bpy.types      import Operator
 from .materials.seut_ot_texture_conversion  import convert_texture
 from .seut_collections                      import get_collections, create_seut_collection
 from .seut_errors                           import check_collection, check_collection_excluded, seut_report, get_abs_path
-from .seut_utils                            import to_radians, clear_selection, prep_context, seut_report, get_seut_blend_data
+from .seut_utils                            import to_radians, clear_selection, prep_context, seut_report, get_seut_blend_data, link_node_tree
 
 
 def setup_icon_render(self, context):
@@ -83,62 +83,12 @@ def setup_icon_render(self, context):
             parent_collection.objects.unlink(rim_light)
 
     # Spawn compositor node tree
-    scene.use_nodes = True
-    tree = scene.compositing_node_group
-
-    if tree is not None:
-        tree.nodes.clear()
-    else:
-        tree = bpy.data.node_groups.new("Icon Render", "CompositorNodeTree")
-
-    node_render_layers = tree.nodes.new(type='CompositorNodeRLayers')
-    node_color_correction = tree.nodes.new(type='CompositorNodeColorCorrection')
-    node_rgb_to_bw = tree.nodes.new(type='CompositorNodeRGBToBW')
-    node_combine_color = tree.nodes.new(type='CompositorNodeCombineColor')
-    node_rgb = tree.nodes.new(type='CompositorNodeRGB')
-    node_mix_rgb = tree.nodes.new(type='CompositorNodeMixRGB')
-    node_bright_contrast = tree.nodes.new(type='CompositorNodeBrightContrast')
-    node_viewer = tree.nodes.new(type='CompositorNodeViewer')
-
-    node_render_layers.location = (-860.0, 300.0)
-    node_color_correction.location = (-460.0, 300.0)
-    node_rgb_to_bw.location = (40.0, 300.0)
-    node_combine_color.location = (240.0, 280.0)
-    node_rgb.location = (240.0, 60.0)
-    node_mix_rgb.location = (460.0, 300.0)
-    node_bright_contrast.location = (720.0, 300.0)
-    node_viewer.location = (1000.0, 300.0)
-
-    tree.links.new(node_render_layers.outputs[0], node_color_correction.inputs[0])
-    tree.links.new(node_color_correction.outputs[0], node_rgb_to_bw.inputs[0])
-    tree.links.new(node_rgb_to_bw.outputs[0], node_combine_color.inputs[0])
-    tree.links.new(node_rgb_to_bw.outputs[0], node_combine_color.inputs[1])
-    tree.links.new(node_rgb_to_bw.outputs[0], node_combine_color.inputs[2])
-    tree.links.new(node_render_layers.outputs[1], node_combine_color.inputs[3])
-    tree.links.new(node_combine_color.outputs[0], node_mix_rgb.inputs[1])
-    tree.links.new(node_rgb.outputs[0], node_mix_rgb.inputs[2])
-    tree.links.new(node_mix_rgb.outputs[0], node_bright_contrast.inputs[0])
-    tree.links.new(node_bright_contrast.outputs[0], node_viewer.inputs[0])
-
-    node_color_correction.midtones_gain = 2.0
-    node_color_correction.shadows_gain = 2.5
-
-    node_rgb.outputs[0].default_value = (0.23074, 0.401978, 0.514918, 1)  # 84AABE
-
-    node_mix_rgb.blend_type = 'COLOR'
-
-    node_bright_contrast.inputs[1].default_value = 0.35
-    node_bright_contrast.inputs[2].default_value = 0.35
-
-    node_rgb.mute = scene.seut.renderColorOverlay
-    node_rgb_to_bw.mute = scene.seut.renderColorOverlay
-    node_combine_color.mute = scene.seut.renderColorOverlay
+    if scene.compositing_node_group is None or scene.compositing_node_group.name != "Icon Render":
+        scene.compositing_node_group = link_node_tree("Icon Render", None, True)
 
     # Force update render resolution
     scene.seut.renderResolution = scene.seut.renderResolution
-
-    scene.render.engine = 'BLENDER_EEVEE_NEXT'
-
+    scene.render.engine = 'BLENDER_EEVEE'
     scene.render.film_transparent = True
 
     clear_selection(context)
@@ -170,12 +120,6 @@ def clean_icon_render(self, context):
     # Delete collection
     if 'Render' + tag in bpy.data.collections:
         bpy.data.collections.remove(bpy.data.collections['Render' + tag])
-
-    # Delete Node Tree
-    try:
-        scene.compositing_node_group.nodes.clear()
-    except AttributeError:
-        pass
 
     context.area.type = current_area
 

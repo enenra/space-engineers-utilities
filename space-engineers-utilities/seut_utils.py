@@ -395,6 +395,53 @@ def link_material(name: str, source: str = None, link: bool = True) -> bpy.types
     return material
 
 
+def link_node_tree(name: str, source: str = None, link: bool = True) -> bpy.types.NodeTree:
+    """Links a node tree from a specified source blend file"""
+
+    if name in bpy.data.node_groups:
+        if link and bpy.data.node_groups[name].library is not None:
+            return bpy.data.node_groups[name]
+        elif not link and bpy.data.node_groups[name].library is None:
+            return bpy.data.node_groups[name]
+
+    preferences = get_preferences()
+    nt_path = os.path.join(get_abs_path(preferences.asset_path), 'NodeTrees')
+
+    if source is None:
+        blends = []
+        for file in os.listdir(nt_path):
+            if file is not None and file.endswith(".blend"):
+                blends.append(file)
+
+        if blends == []:
+            seut_report(self, context, 'ERROR', True, 'E021', nt_path)
+            return
+
+        for file in blends:
+            with bpy.data.libraries.load(os.path.join(nt_path, file), link=link) as (data_from, data_to):
+                if name in data_from.node_groups:
+                    data_to.node_groups = [data_from.node_groups[data_from.node_groups.index(name)]]
+                    break
+
+    else:
+        with bpy.data.libraries.load(os.path.join(nt_path, source), link=link) as (data_from, data_to):
+            if name in data_from.node_groups:
+                data_to.node_groups = [data_from.node_groups[data_from.node_groups.index(name)]]
+
+    for ng in bpy.data.node_groups:
+        if link and ng.name == name and ng.library is not None:
+            node_group = ng
+            break
+        elif not link and ng.name == name and ng.library is None:
+            node_group = ng
+            node_group.asset_clear()
+            break
+        else:
+            node_group = None
+
+    return node_group
+
+
 def set_origin_to_geometry(objs: list):
     """Sets the origins of all objects in the list to their individual geometry"""
 
