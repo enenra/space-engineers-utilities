@@ -84,7 +84,13 @@ def setup_icon_render(self, context):
 
     # Spawn compositor node tree
     if scene.compositing_node_group is None or scene.compositing_node_group.name != "Icon Render":
-        scene.compositing_node_group = link_node_tree("Icon Render", None, True)
+        scene.compositing_node_group = link_node_tree("Icon Render", None, False)
+
+    if scene.compositing_node_group.nodes is not None:
+        for n in scene.compositing_node_group.nodes:
+            if n.type == 'R_LAYERS':
+                n.scene = scene
+                break
 
     # Force update render resolution
     scene.seut.renderResolution = scene.seut.renderResolution
