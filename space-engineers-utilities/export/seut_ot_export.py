@@ -282,6 +282,9 @@ def export_hkt(self, context):
                 cancelled = False
                 for obj in col.objects:
 
+                    viewport_status = obj.hide_viewport
+                    obj.hide_viewport = False
+
                     # Check for unapplied modifiers
                     if len(obj.modifiers) > 0:
                         seut_report(self, context, 'ERROR', True, 'E034', obj.name)
@@ -297,6 +300,8 @@ def export_hkt(self, context):
                     context.view_layer.objects.active = obj
                     # bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) # This runs on all objects instead of just the active one for some reason. Breaks when there's instanced subparts.
                     bpy.ops.rigidbody.object_add(type='ACTIVE')
+
+                    obj.hide_viewport = viewport_status
 
                 if cancelled:
                     return {'CANCELLED'}
