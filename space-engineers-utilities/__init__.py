@@ -15,10 +15,10 @@ bl_info = {
     "name": "Space Engineers Utilities",
     "description": "This addon offers various utilities to make creating assets for Space Engineers easier.",
     "author": "enenra, Stollie",
-    "version": (1, 2, 1),
-    "dev_version": 0,
-    "dev_tag": "rc",
-    "blender": (4, 5, 0),
+    "version": (1, 2, 2),
+    "dev_version": 1,
+    "dev_tag": "alpha",
+    "blender": (5, 0, 0),
     "location": "View3D > Tools",
     "doc_url": "https://spaceengineers.wiki.gg/wiki/Modding/Tools/Space_Engineers_Utilities",
     "tracker_url": "https://github.com/enenra/space-engineers-utilities/issues",
@@ -151,8 +151,6 @@ from .seut_pt_toolbar                   import SEUT_PT_Panel_Mountpoints
 from .seut_pt_toolbar                   import SEUT_PT_Panel_IconRender
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Export
 from .seut_pt_toolbar                   import SEUT_PT_Panel_Import
-from .seut_asset                        import SEUT_Asset
-from .seut_asset                        import SEUT_PT_Panel_Asset
 from .seut_bbox                         import SEUT_OT_BBox
 from .seut_mountpoints                  import SEUT_OT_AddMountpointArea
 from .seut_collections                  import SEUT_Collection
@@ -187,10 +185,8 @@ classes = (
     SEUT_PT_Panel_Import,
     SEUT_PT_Panel_Materials,
     SEUT_PT_Panel_TextureConversion,
-    SEUT_PT_Panel_Asset,
     SEUT_PT_EmptyLink,
     SEUT_PT_Panel_Shading,
-    SEUT_Asset,
     SEUT_EmptyHighlights,
     SEUT_OT_HighlightObjectAdd,
     SEUT_OT_HighlightObjectRemove,
@@ -316,7 +312,6 @@ def register():
     bpy.types.VIEW3D_MT_object_context_menu.append(menu_draw)
     bpy.types.VIEW3D_MT_add.append(menu_draw)
 
-    bpy.types.AssetMetaData.seut = PointerProperty(type=SEUT_Asset)
     bpy.types.Material.seut = PointerProperty(type=SEUT_Materials)
     bpy.types.Scene.seut = PointerProperty(type=SEUT_Scene)
     bpy.types.Object.seut = PointerProperty(type=SEUT_Object)
@@ -340,7 +335,6 @@ def unregister():
     bpy.types.VIEW3D_MT_object_context_menu.remove(menu_draw)
     bpy.types.VIEW3D_MT_add.remove(menu_draw)
 
-    del bpy.types.AssetMetaData.seut
     del bpy.types.Material.seut
     del bpy.types.Scene.seut
     del bpy.types.Object.seut

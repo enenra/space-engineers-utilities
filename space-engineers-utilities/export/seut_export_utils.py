@@ -82,13 +82,13 @@ def export_xml(self, context, collection) -> str:
                 elif link.to_socket.name in ['ADD Color', 'ADD Alpha'] and mat.seut.technique in ['GLASS', 'SHIELD', 'HOLO']:
                     seut_report(self, context, 'WARNING', False, 'W019', mat.name, 'ADD', mat.seut.technique)
 
-        if mat.asset_data is not None and mat.asset_data.seut.is_dlc:
+        if mat.asset_data is not None and 'is_dlc' in mat.asset_data.tags:
             seut_report(self, context, 'WARNING', False, 'W012', mat.name)
 
         is_unique = False
         # Case 1: linked + asset -> no entry (unless not vanilla)
         if mat.library is not None and mat.asset_data is not None:
-            if not mat.asset_data.seut.is_vanilla:
+            if not 'is_vanilla' in mat.asset_data.tags:
                 is_unique = True
         # Case 2: linked but no asset -> no entry (compatibility)
         elif mat.library is not None and mat.asset_data is None:

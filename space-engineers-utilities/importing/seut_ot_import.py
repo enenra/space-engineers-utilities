@@ -213,6 +213,12 @@ def import_fbx(self, context, filepath):
 
             scene.seut.sceneType = 'character_animation'
 
+            # As of Blender 5.0.0, this importer seems to still be missing several required importer settings
+            """ bpy.ops.wm.fbx_import(
+                filepath=filepath,
+                use_anim=True,
+                ignore_leaf_bones=False
+                ) """
             bpy.ops.import_scene.fbx(
                 filepath=filepath,
                 global_scale=1.0,
@@ -236,6 +242,12 @@ def import_fbx(self, context, filepath):
 
             scene.seut.sceneType = 'character'
 
+            # As of Blender 5.0.0, this importer seems to still be missing several required importer settings
+            """ bpy.ops.wm.fbx_import(
+                filepath=filepath,
+                use_anim=False,
+                ignore_leaf_bones=False
+                ) """
             bpy.ops.import_scene.fbx(
                 filepath=filepath,
                 global_scale=1.0,
@@ -253,15 +265,33 @@ def import_fbx(self, context, filepath):
 
         else:
             if data.seut.use_alt_importer:
-                bpy.ops.import_scene.fbx(
-                    filepath=filepath,
-                    use_manual_orientation=True,
-                    axis_forward='Z',
-                    axis_up='Y'
-                    )
-
-            else:
                 return import_gltf(self, context, filepath)
+            else:
+                bpy.ops.wm.fbx_import(filepath=filepath)
+                new_objects = set(scene.objects)
+                imported_objects = new_objects.copy()
+
+                # Sanity check to catch import failure
+                if imported_objects is None:
+                    seut_report(self, context, 'ERROR', True, 'E001')
+                    return {'CANCELLED'}
+
+                for new in new_objects:
+                    if new.parent is not None:
+                        imported_objects.remove(new)
+                        continue
+                    for existing in existing_objects:
+                        if new == existing:
+                            imported_objects.remove(new)
+
+                for obj in imported_objects:
+                    context.view_layer.objects.active = obj
+                    obj.select_set(True)
+                    bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+                    obj.rotation_euler.z = to_radians(180)
+                    obj.location.x = obj.location.x * -1
+                    obj.location.y = obj.location.y * -1
+                    break
 
     except RuntimeError as error:
         seut_report(self, context, 'ERROR', True, 'E036', str(error))
@@ -281,15 +311,33 @@ def import_fbx(self, context, filepath):
         return {'CANCELLED'}
 
     for obj in imported_objects:
-        if obj.type == 'EMPTY':
-            obj.empty_display_type = next(
-                (
-                    empty_types[key]
-                    for key in empty_types.keys()
-                    if obj.name[: len(key)] == key
-                ),
-                'CUBE',
-            )
+        if not obj.type == 'EMPTY':
+            continue
+
+        obj.empty_display_size = 0.5
+        obj.empty_display_type = next(
+            (
+                empty_types[key]
+                for key in empty_types.keys()
+                if obj.name[: len(key)] == key
+            ),
+            'CUBE',
+        )
+
+        if 'file' in obj and obj['file'] in bpy.data.scenes:
+            obj.seut.linkedScene = bpy.data.scenes[obj['file']]
+
+        if 'highlight' in obj:
+            if obj['highlight'].find(";") == -1:
+                if obj['highlight'] in bpy.data.objects:
+                    new = obj.seut.highlight_objects.add()
+                    new.obj = bpy.data.objects[obj['highlight']]
+            else:
+                split = obj['highlight'].split(";")
+                for entry in split:
+                    if entry in bpy.data.objects:
+                        new = obj.seut.highlight_objects.add()
+                        new.obj = bpy.data.objects[entry]
 
     xml_path = f'{os.path.splitext(filepath)[0]}.xml'
     if os.path.exists(xml_path):

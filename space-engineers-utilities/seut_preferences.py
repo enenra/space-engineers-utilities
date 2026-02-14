@@ -235,7 +235,7 @@ class SEUT_AddonPreferences(AddonPreferences):
         link.section = 'Reference/Tools/SEUT/'
         link.page = 'Addon_Preferences'
 
-        if bpy.app.version < (4, 5, 0):
+        if bpy.app.version < (5, 0, 0):
             box = layout.box()
             row = box.row()
             row.alert = True
@@ -468,10 +468,6 @@ def verify_tool_path(self, context, path: str, name: str, filename: str) -> str:
             else:
                 seut_report(self, context, 'ERROR', False, 'E013', name, filename, os.path.basename(path))
                 return ""
-
-
-def get_addon_version():
-    return addon_version
 
 
 def save_addon_prefs():

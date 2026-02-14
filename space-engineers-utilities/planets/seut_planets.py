@@ -17,14 +17,14 @@ def update_distribution_rules_name(self, context):
 
     if self.name == self.name_prev:
         return
-    
+
     # In case the rule belongs to an environment item and no material groups exist
     if scene.seut.material_groups_index > 0:
         for r in scene.seut.material_groups[scene.seut.material_groups_index].rules:
             if self != r and r.name == self.name:
                 self.name = self.name_prev
                 return
-    
+
     self.name_prev = self.name
 
 
@@ -33,12 +33,12 @@ def update_material_groups_name(self, context):
 
     if self.name == self.name_prev:
         return
-    
+
     for mg in scene.seut.material_groups:
         if self != mg and mg.name == self.name:
             self.name = self.name_prev
             return
-    
+
     self.name_prev = self.name
 
 
@@ -53,7 +53,7 @@ def update_material_groups_value(self, context):
                 found = True
         if not found:
             palette.colors.remove(c)
-    
+
     color = palette.colors.new()
     color.color[0] = round(self.value / 255, 3)
     color.color[1] = 0
@@ -65,12 +65,12 @@ def update_environment_items_name(self, context):
 
     if self.name == self.name_prev:
         return
-    
+
     for ei in scene.seut.environment_items:
         if self != ei and ei.name == self.name:
             self.name = self.name_prev
             return
-    
+
     self.name_prev = self.name
 
 
@@ -86,7 +86,7 @@ def update_biomes_value(self, context):
                     found = True
         if not found:
             palette.colors.remove(c)
-    
+
     color = palette.colors.new()
     color.color[0] = 0
     color.color[1] = round(self.value / 255, 3)
@@ -104,13 +104,13 @@ def update_ore_mappings_value(self, context):
                 found = True
         if not found:
             palette.colors.remove(c)
-    
+
     color = palette.colors.new()
     color.color[0] = 0
     color.color[1] = 0
     color.color[2] = round(self.value / 255, 3)
 
-    
+
 def poll_voxelmaterials(self, object):
     if object.asset_data is None:
         return False
@@ -123,7 +123,7 @@ def poll_voxelmaterials(self, object):
 
 class SEUT_PlanetPropertiesDistributionRulesLayers(PropertyGroup):
     """Layer definitions of Material Group placement rules"""
-    
+
     name: StringProperty()
 
     material: PointerProperty(
@@ -142,7 +142,7 @@ class SEUT_PlanetPropertiesDistributionRulesLayers(PropertyGroup):
 
 class SEUT_PlanetPropertiesDistributionRules(PropertyGroup):
     """Placement rules of Material Groups"""
-    
+
     name: StringProperty(
         name="Name",
         description="The name of the distribution rule",
@@ -165,7 +165,7 @@ class SEUT_PlanetPropertiesDistributionRules(PropertyGroup):
     height_max: FloatProperty(
         name="Height Max",
         description="The maximum height at which this material group should appear.\nNote: The maximum possible height (1.0) is always 6% of the spawned planets diameter in km. Ex.: the maximum height of a 120km diameter planet is 7.2km",
-        default=0,
+        default=1,
         min=0,
         max=1
     )
@@ -179,7 +179,7 @@ class SEUT_PlanetPropertiesDistributionRules(PropertyGroup):
     latitude_max: FloatProperty(
         name="Latitude Max",
         description="The maximum latitude in degrees at which the material group should spawn",
-        default=0,
+        default=90,
         min=-90,
         max=90
     )
@@ -193,7 +193,7 @@ class SEUT_PlanetPropertiesDistributionRules(PropertyGroup):
     slope_max: FloatProperty(
         name="Slope Max",
         description="The maximum slope / angle in degrees on which this material group should be placed",
-        default=0,
+        default=90,
         min=0,
         max=90
     )
@@ -283,7 +283,7 @@ class SEUT_PlanetPropertiesItems(PropertyGroup):
 
 class SEUT_PlanetPropertiesEnvironmentItems(PropertyGroup):
     """Environment Item Entries"""
-    
+
     name: StringProperty(
         name="Name",
         description="The name of this environment items entry",
@@ -318,7 +318,7 @@ class SEUT_PlanetPropertiesEnvironmentItems(PropertyGroup):
 
 class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
     """Ore Mapping Entries"""
-    
+
     name: StringProperty()
 
     value: IntProperty(
