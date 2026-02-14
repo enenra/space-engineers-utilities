@@ -1,4 +1,4 @@
-Relevant Milestone: [SEUT 1.2.1](https://github.com/enenra/space-engineers-utilities/milestone/31)
+Relevant Milestone: [SEUT 1.2.2](https://github.com/enenra/space-engineers-utilities/milestone/32)
 
 # Changelog
 
