@@ -32,7 +32,7 @@ class SEUT_PT_Panel(Panel):
             row = layout.row()
             row.alert = True
             row.scale_y = 0.75
-            row.label(text="SEUT requires Blender 4.5+.")
+            row.label(text="SEUT requires Blender 5.0+.")
             row = layout.row()
             row.alert = True
             row.scale_y = 0.75

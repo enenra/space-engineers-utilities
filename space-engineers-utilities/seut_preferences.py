@@ -240,7 +240,7 @@ class SEUT_AddonPreferences(AddonPreferences):
             row = box.row()
             row.alert = True
             row.label(text="Version Incompatibility", icon='ERROR')
-            for l in wrap_text("SEUT requires Blender 4.5 or later. Using an earlier version may lead to unexpected and non-obvious errors. Please update your Blender installation!", int(context.region.width / 7)):
+            for l in wrap_text("SEUT requires Blender 5.0 or later. Using an earlier version may lead to unexpected and non-obvious errors. Please update your Blender installation!", int(context.region.width / 7)):
                 row = box.row()
                 row.scale_y = 0.75
                 row.alert = True
