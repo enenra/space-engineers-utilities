@@ -450,6 +450,7 @@ def prepare_mat_for_export(self, context, material):
                 if mat.asset_data is not None:
                     material.user_remap(mat)
                     bpy.data.materials.remove(material)
+                    return
                 else:
                     mat.user_remap(material)
                     bpy.data.materials.remove(mat)
