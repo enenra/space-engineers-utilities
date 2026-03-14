@@ -69,7 +69,7 @@ class SEUT_OT_QuickTools_BS_CutAndSolidify(Operator):
     def poll(cls, context):
         scene = context.scene
 
-        if context.active_object is None:
+        if context.active_object is None or context.active_object.type != 'MESH':
             return False
 
         if context.active_object.mode != 'EDIT':
@@ -144,7 +144,7 @@ class SEUT_OT_QuickTools_GEN_OriginToSelected(Operator):
     def poll(cls, context):
         scene = context.scene
 
-        if context.active_object is None:
+        if context.active_object is None or context.active_object.type != 'MESH':
             return False
 
         if context.active_object.mode != 'EDIT':
