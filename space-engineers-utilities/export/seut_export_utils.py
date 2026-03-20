@@ -437,6 +437,9 @@ def correct_for_export_type(scene, reference: str) -> str:
 def prepare_mat_for_export(self, context, material):
     """Switches material around so that SE can properly read it"""
 
+    if material is None:
+        return
+
     if material.library:
 
         # If the material is a library and not used, remove it.
@@ -457,6 +460,9 @@ def prepare_mat_for_export(self, context, material):
                 break
 
         material = material.override_create(remap_local_usages=True)
+
+    if material.node_tree is None:
+        return
 
     # See if relevant nodes already exist
     dummy_shader_node = None
