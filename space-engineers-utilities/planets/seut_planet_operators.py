@@ -102,71 +102,33 @@ class SEUT_OT_Planet_RecreateSetup(Operator):
         return {'FINISHED'}
 
 
-class SEUT_OT_Planet_MaterialGroup_Add(Operator):
-    """Adds a Material Group to a Planet"""
-    bl_idname = "planet.add_material_group"
-    bl_label = "Add Material Group"
-    bl_options = {'REGISTER', 'UNDO'}
+class SEUT_OT_Planet_UIList_Add(Operator):
+    """Adds an entry"""
+    bl_idname = "planet.uilist_add"
+    bl_label = "Add Entry"
+    bl_options = {'UNDO'}
 
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-
-        add_material_group(context)
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_MaterialGroup_Remove(Operator):
-    """Removes a Material Group from a Planet"""
-    bl_idname = "planet.remove_material_group"
-    bl_label = "Remove Material Group"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        scene = context.scene
-
-        scene.seut.material_groups.remove(scene.seut.material_groups_index)
-        scene.seut.material_groups_index = min(max(0, scene.seut.material_groups_index - 1), len(scene.seut.material_groups) - 1)
-
-        for c in scene.seut.material_groups_palette.colors:
-            found = any(
-                mg.value == int(round(c.color[0] * 255))
-                and c.color[1] == 0
-                and c.color[2] == 0
-                for mg in scene.seut.material_groups
-            )
-            if not found:
-                scene.seut.material_groups_palette.colors.remove(c)
-
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_DistributionRule_Add(Operator):
-    """Adds a Distribution Rule"""
-    bl_idname = "planet.add_distribution_rule"
-    bl_label = "Add Distribution Rule"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    rule_type: StringProperty(
+    uilist: EnumProperty(
+        items=(
+            ('material_group', '', ''),
+            ('distribution_rule', '', ''),
+            ('distribution_rule_layer', '', ''),
+            ('environment_item', '', ''),
+            ('biome', '', ''),
+            ('planet_material', '', ''),
+            ('planet_item', '', ''),
+            ('ore_mapping', '', ''),
+            ),
+        default='material_group'
+    )
+    rule_type: EnumProperty(
+        items=(
+            ('material_group', '', ''),
+            ('environment_item', '', ''),
+            ),
         default='material_group'
     )
 
-
     @classmethod
     def poll(cls, context):
         scene = context.scene
@@ -176,29 +138,89 @@ class SEUT_OT_Planet_DistributionRule_Add(Operator):
     def execute(self, context):
         scene = context.scene
 
-        if self.rule_type == 'material_group':
-            rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
-        elif self.rule_type == 'environment_item':
-            rule_type = scene.seut.environment_items[scene.seut.environment_items_index]
+        # material_group
+        if self.uilist == 'material_group':
+            add_material_group(context)
 
-        item = rule_type.rules.add()
-        item.name = "Rule " + str(len(rule_type.rules))
+        # distribution_rule
+        elif self.uilist == 'distribution_rule':
+            if self.rule_type == 'material_group':
+                rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
+            elif self.rule_type == 'environment_item':
+                rule_type = scene.seut.environment_items[scene.seut.environment_items_index]
+
+            item = rule_type.rules.add()
+            item.name = "Rule " + str(len(rule_type.rules))
+
+        # distribution_rule_layer
+        elif self.uilist == 'distribution_rule_layer':
+            if self.rule_type == 'material_group':
+                rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
+            elif self.rule_type == 'environment_item':
+                rule_type = scene.seut.environment_items[scene.seut.environment_items_index]
+
+            rule = rule_type.rules[rule_type.rules_index]
+
+            item = rule.layers.add()
+            item.name = "LayerMaterial"
+
+        # environment_item
+        elif self.uilist == 'environment_item':
+            item = scene.seut.environment_items.add()
+            item.name = f"EnvironmentItem {len(scene.seut.environment_items)}"
+
+            rule = item.rules.add()
+            rule.name = "Rule"
+
+        # biome
+        elif self.uilist == 'biome':
+            add_biome(context)
+
+        # planet_material
+        elif self.uilist == 'planet_material':
+            environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
+            item = environment_item.materials.add()
+            item.name = "VoxelMaterial"
+
+        # planet_item
+        elif self.uilist == 'planet_item':
+            environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
+            item = environment_item.items.add()
+
+        # ore_mapping
+        elif self.uilist == 'ore_mapping':
+            add_ore_mapping(context)
 
         return {'FINISHED'}
 
 
-class SEUT_OT_Planet_DistributionRule_Remove(Operator):
-    """Removes a Distribution Rule"""
-    bl_idname = "planet.remove_distribution_rule"
-    bl_label = "Remove Distribution Rule"
-    bl_options = {'REGISTER', 'UNDO'}
+class SEUT_OT_Planet_UIList_Remove(Operator):
+    """Removes an entry"""
+    bl_idname = "planet.uilist_remove"
+    bl_label = "Remove Entry"
+    bl_options = {'UNDO'}
 
-
-    rule_type: StringProperty(
+    uilist: EnumProperty(
+        items=(
+            ('material_group', '', ''),
+            ('distribution_rule', '', ''),
+            ('distribution_rule_layer', '', ''),
+            ('environment_item', '', ''),
+            ('biome', '', ''),
+            ('planet_material', '', ''),
+            ('planet_item', '', ''),
+            ('ore_mapping', '', ''),
+            ),
+        default='material_group'
+    )
+    rule_type: EnumProperty(
+        items=(
+            ('material_group', '', ''),
+            ('environment_item', '', ''),
+            ),
         default='material_group'
     )
 
-
     @classmethod
     def poll(cls, context):
         scene = context.scene
@@ -208,323 +230,92 @@ class SEUT_OT_Planet_DistributionRule_Remove(Operator):
     def execute(self, context):
         scene = context.scene
 
-        if self.rule_type == 'material_group':
-            rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
-        elif self.rule_type == 'environment_item':
-            rule_type = scene.seut.environment_items[scene.seut.environment_items_index]
-
-        rule_type.rules.remove(rule_type.rules_index)
-        rule_type.rules_index = min(max(0, rule_type.rules_index - 1), len(rule_type.rules) - 1)
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_DistributionRuleLayer_Add(Operator):
-    """Adds a Distribution Rule Layer"""
-    bl_idname = "planet.add_distribution_rule_layer"
-    bl_label = "Add Distribution Rule Layer"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    rule_type: StringProperty(
-        default='material_group'
-    )
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        scene = context.scene
-
-        if self.rule_type == 'material_group':
-            rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
-        elif self.rule_type == 'environment_item':
-            rule_type = scene.seut.environment_items[scene.seut.environment_items_index]
-
-        rule = rule_type.rules[rule_type.rules_index]
-
-        item = rule.layers.add()
-        item.name = "LayerMaterial"
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_DistributionRuleLayer_Remove(Operator):
-    """Removes a Distribution Rule Layer"""
-    bl_idname = "planet.remove_distribution_rule_layer"
-    bl_label = "Remove Distribution Rule Layer"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    rule_type: StringProperty(
-        default='material_group'
-    )
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        scene = context.scene
-
-        if self.rule_type == 'material_group':
-            rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
-        elif self.rule_type == 'environment_item':
-            rule_type = scene.seut.environment_items[scene.seut.environment_items_index]
-
-        rule = rule_type.rules[rule_type.rules_index]
-
-        rule.layers.remove(rule.layers_index)
-        rule.layers_index = min(max(0, rule.layers_index - 1), len(rule.layers) - 1)
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_EnvironmentItem_Add(Operator):
-    """Adds an Environment Item"""
-    bl_idname = "planet.add_environment_item"
-    bl_label = "Add Environment Item"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        scene = context.scene
-
-        item = scene.seut.environment_items.add()
-        item.name = f"EnvironmentItem {len(scene.seut.environment_items)}"
-
-        rule = item.rules.add()
-        rule.name = "Rule"
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_EnvironmentItem_Remove(Operator):
-    """Removes an Environment Item"""
-    bl_idname = "planet.remove_environment_item"
-    bl_label = "Remove Environment Item"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        scene = context.scene
-
-        scene.seut.environment_items.remove(scene.seut.environment_items_index)
-        scene.seut.environment_items_index = min(max(0, scene.seut.environment_items_index - 1), len(scene.seut.environment_items) - 1)
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_Biome_Add(Operator):
-    """Adds a Biome"""
-    bl_idname = "planet.add_biome"
-    bl_label = "Add Biome"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-
-        add_biome(context)
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_Biome_Remove(Operator):
-    """Removes a Biome"""
-    bl_idname = "planet.remove_biome"
-    bl_label = "Remove Biome"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        scene = context.scene
-        environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
-
-        environment_item.biomes.remove(environment_item.biomes_index)
-        environment_item.biomes_index = min(max(0, environment_item.biomes_index - 1), len(environment_item.biomes) - 1)
-
-        for c in scene.seut.biomes_palette.colors:
-            found = False
-            for ei in scene.seut.environment_items:
-                for biome in ei.biomes:
-                    if biome.value == int(round(c.color[1] * 255)) and c.color[0] == 0 and c.color[2] == 0:
-                        found = True
-            if not found:
-                scene.seut.biomes_palette.colors.remove(c)
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_Material_Add(Operator):
-    """Adds a Material"""
-    bl_idname = "planet.add_material"
-    bl_label = "Add Material"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        scene = context.scene
-        environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
-
-        item = environment_item.materials.add()
-        item.name = "VoxelMaterial"
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_Material_Remove(Operator):
-    """Removes a Material"""
-    bl_idname = "planet.remove_material"
-    bl_label = "Remove Material"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        scene = context.scene
-        environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
-
-        environment_item.materials.remove(environment_item.materials_index)
-        environment_item.materials_index = min(max(0, environment_item.materials_index - 1), len(environment_item.materials) - 1)
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_Item_Add(Operator):
-    """Adds an Item"""
-    bl_idname = "planet.add_item"
-    bl_label = "Add Item"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        scene = context.scene
-        environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
-
-        item = environment_item.items.add()
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_Item_Remove(Operator):
-    """Removes an Item"""
-    bl_idname = "planet.remove_item"
-    bl_label = "Remove Item"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        scene = context.scene
-        environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
-
-        environment_item.items.remove(environment_item.items_index)
-        environment_item.items_index = min(max(0, environment_item.items_index - 1), len(environment_item.items) - 1)
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_OreMappings_Add(Operator):
-    """Adds an Ore Mapping to a Planet"""
-    bl_idname = "planet.add_ore_mapping"
-    bl_label = "Add Ore Mapping"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-
-        add_ore_mapping(context)
-
-        return {'FINISHED'}
-
-
-class SEUT_OT_Planet_OreMappings_Remove(Operator):
-    """Removes an Ore Mapping from a Planet"""
-    bl_idname = "planet.remove_ore_mapping"
-    bl_label = "Remove Ore Mapping"
-    bl_options = {'REGISTER', 'UNDO'}
-
-
-    @classmethod
-    def poll(cls, context):
-        scene = context.scene
-        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
-
-
-    def execute(self, context):
-        scene = context.scene
-
-        scene.seut.ore_mappings.remove(scene.seut.ore_mappings_index)
-        scene.seut.ore_mappings_index = min(max(0, scene.seut.ore_mappings_index - 1), len(scene.seut.ore_mappings) - 1)
-
-        for c in scene.seut.ore_mappings_palette.colors:
-            found = any(
-                om.value == int(round(c.color[2] * 255))
-                and c.color[0] == 0
-                and c.color[1] == 0
-                for om in scene.seut.ore_mappings
-            )
-            if not found:
-                scene.seut.ore_mappings_palette.colors.remove(c)
+        # material_group
+        if self.uilist == 'material_group':
+            scene.seut.material_groups.remove(scene.seut.material_groups_index)
+            scene.seut.material_groups_index = min(max(0, scene.seut.material_groups_index - 1), len(scene.seut.material_groups) - 1)
+
+            for c in scene.seut.material_groups_palette.colors:
+                found = any(
+                    mg.value == int(round(c.color[0] * 255))
+                    and c.color[1] == 0
+                    and c.color[2] == 0
+                    for mg in scene.seut.material_groups
+                )
+                if not found:
+                    scene.seut.material_groups_palette.colors.remove(c)
+
+        # distribution_rule
+        elif self.uilist == 'distribution_rule':
+            if self.rule_type == 'material_group':
+                rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
+            elif self.rule_type == 'environment_item':
+                rule_type = scene.seut.environment_items[scene.seut.environment_items_index]
+
+            rule_type.rules.remove(rule_type.rules_index)
+            rule_type.rules_index = min(max(0, rule_type.rules_index - 1), len(rule_type.rules) - 1)
+
+        # distribution_rule_layer
+        elif self.uilist == 'distribution_rule_layer':
+            if self.rule_type == 'material_group':
+                rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
+            elif self.rule_type == 'environment_item':
+                rule_type = scene.seut.environment_items[scene.seut.environment_items_index]
+
+            rule = rule_type.rules[rule_type.rules_index]
+
+            rule.layers.remove(rule.layers_index)
+            rule.layers_index = min(max(0, rule.layers_index - 1), len(rule.layers) - 1)
+
+        # environment_item
+        elif self.uilist == 'environment_item':
+            scene.seut.environment_items.remove(scene.seut.environment_items_index)
+            scene.seut.environment_items_index = min(max(0, scene.seut.environment_items_index - 1), len(scene.seut.environment_items) - 1)
+
+        # biome
+        elif self.uilist == 'biome':
+            environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
+
+            environment_item.biomes.remove(environment_item.biomes_index)
+            environment_item.biomes_index = min(max(0, environment_item.biomes_index - 1), len(environment_item.biomes) - 1)
+
+            for c in scene.seut.biomes_palette.colors:
+                found = False
+                for ei in scene.seut.environment_items:
+                    for biome in ei.biomes:
+                        if biome.value == int(round(c.color[1] * 255)) and c.color[0] == 0 and c.color[2] == 0:
+                            found = True
+                if not found:
+                    scene.seut.biomes_palette.colors.remove(c)
+
+        # planet_material
+        elif self.uilist == 'planet_material':
+            environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
+
+            environment_item.materials.remove(environment_item.materials_index)
+            environment_item.materials_index = min(max(0, environment_item.materials_index - 1), len(environment_item.materials) - 1)
+
+        # planet_item
+        elif self.uilist == 'planet_item':
+            environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
+
+            environment_item.items.remove(environment_item.items_index)
+            environment_item.items_index = min(max(0, environment_item.items_index - 1), len(environment_item.items) - 1)
+
+        # ore_mapping
+        elif self.uilist == 'ore_mapping':
+            scene.seut.ore_mappings.remove(scene.seut.ore_mappings_index)
+            scene.seut.ore_mappings_index = min(max(0, scene.seut.ore_mappings_index - 1), len(scene.seut.ore_mappings) - 1)
+
+            for c in scene.seut.ore_mappings_palette.colors:
+                found = any(
+                    om.value == int(round(c.color[2] * 255))
+                    and c.color[0] == 0
+                    and c.color[1] == 0
+                    for om in scene.seut.ore_mappings
+                )
+                if not found:
+                    scene.seut.ore_mappings_palette.colors.remove(c)
 
         return {'FINISHED'}
 

@@ -261,8 +261,10 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
         row.template_list("SEUT_UL_PlanetMaterialGroups", "", scene.seut, "material_groups", scene.seut, "material_groups_index", rows=3)
 
         col = row.column(align=True)
-        col.operator("planet.add_material_group", icon='ADD', text="")
-        col.operator("planet.remove_material_group", icon='REMOVE', text="")
+        op = col.operator("planet.uilist_add", icon='ADD', text="")
+        op.uilist = 'material_group'
+        op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+        op.uilist = 'material_group'
 
         # Material Groups
         if len(scene.seut.material_groups) > 0:
@@ -277,9 +279,11 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
                 row.template_list("SEUT_UL_PlanetDistributionRules", "", material_group, "rules", material_group, "rules_index", rows=3)
 
                 col = row.column(align=True)
-                op = col.operator("planet.add_distribution_rule", icon='ADD', text="")
+                op = col.operator("planet.uilist_add", icon='ADD', text="")
+                op.uilist = 'distribution_rule'
                 op.rule_type = 'material_group'
-                op = col.operator("planet.remove_distribution_rule", icon='REMOVE', text="")
+                op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+                op.uilist = 'distribution_rule'
                 op.rule_type = 'material_group'
 
                 # Distribution Rules
@@ -313,9 +317,11 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
                         row.template_list("SEUT_UL_PlanetDistributionRulesLayers", "", rule, "layers", rule, "layers_index", rows=3)
 
                         col = row.column(align=True)
-                        op = col.operator("planet.add_distribution_rule_layer", icon='ADD', text="")
+                        op = col.operator("planet.uilist_add", icon='ADD', text="")
+                        op.uilist = 'distribution_rule_layer'
                         op.rule_type = 'material_group'
-                        op = col.operator("planet.remove_distribution_rule_layer", icon='REMOVE', text="")
+                        op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+                        op.uilist = 'distribution_rule_layer'
                         op.rule_type = 'material_group'
 
 
@@ -345,8 +351,10 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
         row.template_list("SEUT_UL_PlanetEnvironmentItems", "", scene.seut, "environment_items", scene.seut, "environment_items_index", rows=3)
 
         col = row.column(align=True)
-        col.operator("planet.add_environment_item", icon='ADD', text="")
-        col.operator("planet.remove_environment_item", icon='REMOVE', text="")
+        op = col.operator("planet.uilist_add", icon='ADD', text="")
+        op.uilist = 'environment_item'
+        op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+        op.uilist = 'environment_item'
 
         # Environment Items
         if len(scene.seut.environment_items) > 0:
@@ -359,8 +367,10 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                 row.template_list("SEUT_UL_PlanetBiomes", "", environment_item, "biomes", environment_item, "biomes_index", rows=3)
 
                 col = row.column(align=True)
-                col.operator("planet.add_biome", icon='ADD', text="")
-                col.operator("planet.remove_biome", icon='REMOVE', text="")
+                op = col.operator("planet.uilist_add", icon='ADD', text="")
+                op.uilist = 'biome'
+                op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+                op.uilist = 'biome'
 
                 box2 = box.box()
                 box2.label(text="Voxels", icon='MATERIAL')
@@ -368,8 +378,10 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                 row.template_list("SEUT_UL_PlanetMaterials", "", environment_item, "materials", environment_item, "materials_index", rows=3)
 
                 col = row.column(align=True)
-                col.operator("planet.add_material", icon='ADD', text="")
-                col.operator("planet.remove_material", icon='REMOVE', text="")
+                op = col.operator("planet.uilist_add", icon='ADD', text="")
+                op.uilist = 'planet_material'
+                op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+                op.uilist = 'planet_material'
 
                 box2 = box.box()
                 box2.label(text="Items", icon='RNA')
@@ -377,8 +389,10 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                 row.template_list("SEUT_UL_PlanetItems", "", environment_item, "items", environment_item, "items_index", rows=3)
 
                 col = row.column(align=True)
-                col.operator("planet.add_item", icon='ADD', text="")
-                col.operator("planet.remove_item", icon='REMOVE', text="")
+                op = col.operator("planet.uilist_add", icon='ADD', text="")
+                op.uilist = 'planet_item'
+                op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+                op.uilist = 'planet_item'
 
                 # Items
                 if len(environment_item.items) > 0:
@@ -441,8 +455,10 @@ class SEUT_PT_Panel_PlanetOreMappings(Panel):
         row.template_list("SEUT_UL_PlanetOreMappings", "", scene.seut, "ore_mappings", scene.seut, "ore_mappings_index", rows=3)
 
         col = row.column(align=True)
-        col.operator("planet.add_ore_mapping", icon='ADD', text="")
-        col.operator("planet.remove_ore_mapping", icon='REMOVE', text="")
+        op = col.operator("planet.uilist_add", icon='ADD', text="")
+        op.uilist = 'ore_mapping'
+        op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+        op.uilist = 'ore_mapping'
 
         # Ore Mappings
         if len(scene.seut.ore_mappings) > 0:
