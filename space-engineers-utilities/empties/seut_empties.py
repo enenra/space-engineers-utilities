@@ -1,10 +1,11 @@
 from distutils.fancy_getopt import wrap_text
 import bpy
+import os
 
 from bpy.types  import Operator, Menu, UIList, PropertyGroup, Panel
 from bpy.props  import PointerProperty, IntProperty, StringProperty
 
-from ..seut_preferences             import empties
+from ..seut_preferences             import empties, get_preferences, get_abs_path
 
 
 empty_types = {
@@ -88,7 +89,7 @@ class SEUT_OT_HighlightObjectAdd(Operator):
         scene = context.scene
         empty = context.active_object
 
-        empty.seut.highlight_objects.add()        
+        empty.seut.highlight_objects.add()
 
         return {'FINISHED'}
 
@@ -112,7 +113,7 @@ class SEUT_OT_HighlightObjectRemove(Operator):
         scene = context.scene
         empty = context.active_object
 
-        empty.seut.highlight_objects.remove(self.idx)        
+        empty.seut.highlight_objects.remove(self.idx)
 
         return {'FINISHED'}
 
@@ -134,6 +135,8 @@ class SEUT_PT_EmptyLink(Panel):
 
         match = False
         for empty_type in ['dummies', 'highlight_empties', 'preset_subparts']:
+            if empty_type not in empties:
+                return True
             hits = [marker for marker in empties[empty_type] if(marker in bpy.context.view_layer.objects.active.name or marker[:-1] in bpy.context.view_layer.objects.active.name)]
             if len(hits) > 0:
                 match = True
@@ -143,11 +146,23 @@ class SEUT_PT_EmptyLink(Panel):
 
 
     def draw(self, context):
+        preferences = get_preferences()
         layout = self.layout
         empty = context.view_layer.objects.active
+        asset_path = os.path.join(get_abs_path(preferences.asset_path), 'Materials')
 
         entry = None
         for empty_type in ['dummies', 'highlight_empties', 'preset_subparts']:
+
+            if empty_type not in empties:
+                box = layout.box()
+                box.alert = True
+                if not os.path.exists(asset_path):
+                    box.label(text="Error loading empty data - SEUT Assets path invalid.", icon='ERROR')
+                else:
+                    box.label(text="Error loading empty data.", icon='ERROR')
+                return
+
             hits = [marker for marker in empties[empty_type] if(marker == empty.name or marker in empty.name or marker[:-1] in empty.name)]
             if len(hits) > 0:
                 if empty.name in hits:
@@ -155,20 +170,20 @@ class SEUT_PT_EmptyLink(Panel):
                 else:
                     entry = hits[0]
                 break
-        
+
         if entry is not None:
             box = layout.box()
             box.label(text=empties[empty_type][entry]['name'], icon='EMPTY_DATA')
-            
+
             paragraphs = empties[empty_type][entry]['description'].split('\n')
-            
+
             for p in paragraphs:
                 lines = wrap_text(p, int(context.region.width / 7.75))
                 for l in lines:
                     row = box.row()
                     row.scale_y = 0.6
                     row.label(text=l)
-            
+
             layout.separator()
 
         if 'file' in empty:
@@ -184,14 +199,14 @@ class SEUT_PT_EmptyLink(Panel):
             # link = col.operator('wm.docu_link', text="", icon='INFO')
             # link.section = 'tutorials'
             # link.page = 'subparts'
-            
+
             layout.prop(empty.seut, 'linkedScene', text="",)
 
         elif 'highlight' in empty:
-            
+
             row = layout.row()
             row.label(text="Highlight Objects:", icon = 'EMPTY_DATA')
-            
+
             col = row.column(align=True)
             link = col.operator('wm.docu_link', text="", icon='INFO')
             link.section = 'Tutorials/Tools/SEUT/'

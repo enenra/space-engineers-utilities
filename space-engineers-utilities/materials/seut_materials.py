@@ -474,11 +474,12 @@ class SEUT_PT_Panel_Shading(Panel):
         if context.object.active_material.name in loaded_json:
             match_material = True
         else:
-            for mat in loaded_json['material_variations']:
-                for var in loaded_json['material_variations'][mat]:
-                    if mat + var == context.object.active_material.name or mat + var == context.object.active_material.name[:-4]:
-                        match_material = True
-                        break
+            if 'material_variations' in loaded_json:
+                for mat in loaded_json['material_variations']:
+                    for var in loaded_json['material_variations'][mat]:
+                        if mat + var == context.object.active_material.name or mat + var == context.object.active_material.name[:-4]:
+                            match_material = True
+                            break
 
         return check_display_panels(context) and match_material
 
