@@ -152,6 +152,12 @@ seut_collections = {
             'schema': 'Main ({subtpye_id})',
             'color': 'COLOR_04'
             },
+        'overlays': {
+            'name': 'Overlays',
+            'type': 'Planet Overlays',
+            'schema': 'Overlays ({subtpye_id})',
+            'color': 'COLOR_03'
+            }
     }
 }
 
@@ -260,6 +266,7 @@ class SEUT_Collection(PropertyGroup):
             ('mountpoints', 'Mountpoints', ''),
             ('mirroring', 'Mirroring', ''),
             ('render', 'Render', ''),
+            ('overlays', 'Overlays', ''),
             )
     )
 

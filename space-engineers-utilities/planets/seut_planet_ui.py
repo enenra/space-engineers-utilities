@@ -64,7 +64,7 @@ class SEUT_UL_PlanetBiomes(UIList):
         row = split.row()
         row.label(text="", icon='WORLD_DATA')
         row.prop(item, 'value', text="")
-        
+
         colors = context.scene.seut.biomes_palette.colors
         for c in colors:
             if int(round(c.color[1] * 255, 0)) == item.value:
@@ -96,7 +96,7 @@ class SEUT_UL_PlanetItems(UIList):
     """Creates the Planet Items UI list"""
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
-        
+
         name = ""
         if item.subtype_id != "":
             name = item.subtype_id
@@ -207,13 +207,13 @@ class SEUT_PT_Panel_Planet(Panel):
         # Atmosphere Settings
         box = layout.box()
         box.label(text="Atmosphere Settings", icon='PROP_OFF')
-        
+
         box.prop(scene.seut, "default_surface_temperature", text="Temperature")
 
         col = box.column(align=True)
         col.prop(scene.seut, "surface_gravity")
         col.prop(scene.seut, "gravity_falloff_power")
-        
+
         col = box.column(align=True)
         col.prop(scene.seut, "has_atmosphere", icon='PROP_CON')
         if scene.seut.has_atmosphere:
@@ -373,14 +373,15 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                     item = environment_item.items[environment_item.items_index]
                     box2.prop(item, 'type_id')
                     box2.prop(item, 'subtype_id')
-                    box2.prop(item, 'group_id')
-                    box2.prop(item, 'modifier_id')
+                    if item.type_id == 'MyObjectBuilder_VoxelMapStorageDefinition' and item.subtype_id == '':
+                        box2.prop(item, 'group_id')
+                        box2.prop(item, 'modifier_id')
                     box2.prop(item, 'density')
-                
+
                 # Distribution Rules
                 box2 = box.box()
                 box2.label(text="Distribution Rule", icon='SYSTEM')
-                
+
                 if len(environment_item.rules) > 0:
                     rule = environment_item.rules[environment_item.rules_index]
 
@@ -477,7 +478,7 @@ class SEUT_PT_Panel_PlanetExport(Panel):
         row.prop(scene.seut, "export_map_height", text="Height", icon='BOIDS')
         row.prop(scene.seut, "export_map_biome", text="Biome", icon='WORLD_DATA')
         row.prop(scene.seut, "export_map_spots", text="Ore Spots", icon='OUTLINER_OB_POINTCLOUD')
-        
+
         box.prop(scene.seut, "mod_path", text="Mod")
 
         layout.separator()
@@ -490,7 +491,7 @@ class SEUT_PT_Panel_PlanetExport(Panel):
         # Options
         box = layout.box()
         box.label(text="Options", icon='SETTINGS')
-        
+
         row = box.row()
         row.prop(scene.seut, "bake_type", expand=True)
         split = box.split(factor=0.40)

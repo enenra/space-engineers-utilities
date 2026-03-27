@@ -343,6 +343,25 @@ def update_mod_path(self, context):
         scene.render.filepath = os.path.join(get_abs_path(self.mod_path), scene.render.filepath[scene.render.filepath.find("Textures"):])
 
 
+def update_bake_type(self, context):
+    if 'SURFACE' not in bpy.data.node_groups:
+        return
+
+    nodes = bpy.data.node_groups['SURFACE'].nodes
+
+    for n in nodes:
+        if n.type == 'GROUP_OUTPUT':
+            if self.bake_type == 'height' and n.label == 'Height':
+                n.is_active_output = True
+                break
+            elif self.bake_type == 'biome' and n.label == 'Biome':
+                n.is_active_output = True
+                break
+            elif self.bake_type == 'visual' and n.label == 'Visual':
+                n.is_active_output = True
+                break
+
+
 def poll_linkedScene(self, object):
     return object != bpy.context.scene and object.seut.sceneType == 'mainScene'
 
@@ -962,7 +981,8 @@ class SEUT_Scene(PropertyGroup):
             ('biome', 'Biome Map', '', 'WORLD_DATA', 1),
             ('spots', 'Ore Spots', '', 'OUTLINER_OB_POINTCLOUD', 2)
             ),
-        default='height'
+        default='height',
+        update=update_bake_type
     )
     bake_resolution: EnumProperty(
         name='Bake Resolution',

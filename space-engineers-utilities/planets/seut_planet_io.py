@@ -2,6 +2,7 @@ import bpy
 import os
 
 from ..utils.seut_xml_utils import *
+from ..seut_collections     import get_collections
 from ..seut_errors          import seut_report
 from ..seut_utils           import get_abs_path, create_relative_path
 from .seut_planet_utils     import *
@@ -343,17 +344,17 @@ def export_planet_maps(scene: bpy.types.Scene):
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
                 scene.render.image_settings.color_depth = '8'
                 scene.render.image_settings.color_mode = 'RGB'
-                scene.render.image_settings.linear_colorspace_settings.name = 'sRGB'
+                scene.render.image_settings.linear_colorspace_settings.name = 'Non-Color'
                 scene.render.image_settings.compression = 0
-                img.save(filepath=filepath, quality=100)
+                img.save_render(filepath=filepath, scene=scene, quality=100)
 
             elif img.name == side + '_add' and scene.seut.export_map_spots:
                 filepath = os.path.join(get_abs_path(scene.seut.mod_path), 'Data', 'PlanetDataFiles', scene.seut.subtypeId, img.name + '.png')
                 scene.render.image_settings.color_depth = '8'
                 scene.render.image_settings.color_mode = 'RGB'
-                scene.render.image_settings.linear_colorspace_settings.name = 'sRGB'
+                scene.render.image_settings.linear_colorspace_settings.name = 'Non-Color'
                 scene.render.image_settings.compression = 0
-                img.save(filepath=filepath, quality=100)
+                img.save_render(filepath=filepath, scene=scene, quality=100)
 
     return {'FINISHED'}
 
@@ -362,6 +363,7 @@ def bake_planet_map(context: bpy.types.Context):
     """Bakes the planet's material"""
 
     scene = context.scene
+    collections = get_collections(scene)
 
     bake_type = scene.seut.bake_type
     bake_resolution = int(scene.seut.bake_resolution)
@@ -370,7 +372,7 @@ def bake_planet_map(context: bpy.types.Context):
 
     engine = scene.render.engine
     scene.render.engine = 'CYCLES'
-    scene.render.bake.use_selected_to_active = False
+    #scene.render.bake.use_selected_to_active = False
     scene.cycles.use_denoising = False
 
     def create_image(name: str, resolution: int) -> bpy.types.Image:
@@ -378,25 +380,17 @@ def bake_planet_map(context: bpy.types.Context):
             img = bpy.data.images[name]
             bpy.data.images.remove(img)
 
-        if '_mat' in name or '_add' in name:
-            is_data = False
-        else:
-            is_data = True
-
         img = bpy.data.images.new(
             name=name,
             width=resolution,
             height=resolution,
             alpha=False,
             float_buffer=True,
-            is_data=is_data,
+            is_data=True,
             tiled=False
         )
 
-        if '_mat' in name or '_add' in name:
-            img.colorspace_settings.name = 'sRGB'
-        else:
-            img.colorspace_settings.name = 'Non-Color'
+        img.colorspace_settings.name = 'Non-Color'
 
         return img
 
@@ -420,14 +414,14 @@ def bake_planet_map(context: bpy.types.Context):
 
         scene.render.bake.image_settings.color_depth = '8'
         scene.render.bake.image_settings.color_mode = 'RGB'
-        scene.render.bake.image_settings.linear_colorspace_settings.name = 'sRGB'
+        scene.render.bake.image_settings.linear_colorspace_settings.name = 'Non-Color'
         scene.render.bake.image_settings.compression = 0
         scene.cycles.samples = 1
     else:
         suffix = "_add"
         scene.render.bake.image_settings.color_depth = '8'
         scene.render.bake.image_settings.color_mode = 'RGB'
-        scene.render.bake.image_settings.linear_colorspace_settings.name = 'sRGB'
+        scene.render.bake.image_settings.linear_colorspace_settings.name = 'Non-Color'
         scene.render.bake.image_settings.compression = 0
         scene.cycles.samples = 1
 
@@ -473,15 +467,49 @@ def bake_planet_map(context: bpy.types.Context):
         node.select = True
         mat.node_tree.nodes.active = node
 
+    overlay_objects = []
+    if 'overlays' in collections and len(collections['overlays']) > 0:
+        for obj in collections['overlays'][0].objects:
+            if obj.type == 'MESH':
+                overlay_objects.append(obj)
+
+        planet.select_set(False)
+        for obj in collections['overlays'][0].objects:
+            if obj.type != 'MESH':
+                obj.select_set(True)
+                context.window.view_layer.objects.active = obj
+                bpy.ops.object.convert(target='MESH', keep_original=True)
+
+        for obj in collections['overlays'][0].objects:
+            if obj.type == 'MESH':
+                obj.select_set(True)
+
+                if obj.active_material is None:
+                    obj.active_material = bpy.data.materials["DUMMY_MATERIAL"]
+
+                if not obj.data.uv_layers:
+                    obj.data.uv_layers.new()
+
+            else:
+                obj.select_set(False)
+
     planet.hide_viewport = False
     planet.select_set(True)
     planet.hide_set(False)
 
     context.window.view_layer.objects.active = planet
 
+    #scene.render.bake.use_selected_to_active = True
+    #scene.render.bake.cage_extrusion = 1
+
     bpy.ops.object.bake(type='EMIT')
 
     scene.render.engine = engine
+
+    if 'overlays' in collections and len(collections['overlays']) > 0:
+        for obj in collections['overlays'][0].objects:
+            if obj.type == 'MESH' and obj not in overlay_objects:
+                bpy.data.objects.remove(obj)
 
     return {'FINISHED'}
 

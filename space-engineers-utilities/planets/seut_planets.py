@@ -55,7 +55,7 @@ def update_material_groups_value(self, context):
             palette.colors.remove(c)
 
     color = palette.colors.new()
-    color.color[0] = round(self.value / 255, 3)
+    color.color[0] = self.value / 255
     color.color[1] = 0
     color.color[2] = 0
 
@@ -89,7 +89,7 @@ def update_biomes_value(self, context):
 
     color = palette.colors.new()
     color.color[0] = 0
-    color.color[1] = round(self.value / 255, 3)
+    color.color[1] = self.value / 255
     color.color[2] = 0
 
 
@@ -108,7 +108,7 @@ def update_ore_mappings_value(self, context):
     color = palette.colors.new()
     color.color[0] = 0
     color.color[1] = 0
-    color.color[2] = round(self.value / 255, 3)
+    color.color[2] = self.value / 255
 
 
 def poll_voxelmaterials(self, object):
@@ -257,9 +257,16 @@ class SEUT_PlanetPropertiesItems(PropertyGroup):
 
     name: StringProperty()
 
-    type_id: StringProperty(
+    type_id: EnumProperty(
         name="TypeId",
-        description="The TypeId of the environment object"
+        description="The TypeId of the environment object",
+        items=(
+            ('MyObjectBuilder_DestroyableItems', 'Destroyable Item', ''),
+            ('MyObjectBuilder_Trees', 'Tree', ''),
+            ('MyObjectBuilder_Forageable', 'Forageable', ''),
+            ('MyObjectBuilder_VoxelMapStorageDefinition', 'Voxel Map', ''),
+            ),
+        default='MyObjectBuilder_DestroyableItems'
     )
     subtype_id: StringProperty(
         name="SubtypeId",
@@ -267,17 +274,17 @@ class SEUT_PlanetPropertiesItems(PropertyGroup):
     )
     group_id: StringProperty(
         name="GroupId",
-        description="The GroupId of the environment object"
+        description="The GroupId of the voxel map. Only used if no SubtypeId is set"
     )
     modifier_id: StringProperty(
         name="ModifierId",
-        description="The ModifierId of the environment object"
+        description="The ModifierId of the voxel map. Only used if no SubtypeId is set"
     )
     density: FloatProperty(
         name="Density",
         description="The density in which this environment item should be placed",
         min=0.01,
-        max=1.00
+        max=1000.00
     )
 
 
