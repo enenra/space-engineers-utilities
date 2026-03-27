@@ -147,6 +147,8 @@ def export_planet_sbc(self, context: bpy.types.Context):
             def_OreMappings = ET.Element('OreMappings')
 
         for om in scene.seut.ore_mappings:
+            if not om.enabled:
+                continue
             def_Ore = ET.SubElement(def_OreMappings, 'Ore')
             add_attrib(def_Ore, 'Value', om.value)
             if om.ore_type is not None:
@@ -170,6 +172,8 @@ def export_planet_sbc(self, context: bpy.types.Context):
             def_ComplexMaterials = ET.Element('ComplexMaterials')
 
         for mg in scene.seut.material_groups:
+            if not mg.enabled:
+                continue
             def_MaterialGroup = ET.SubElement(def_ComplexMaterials, 'MaterialGroup')
             add_attrib(def_MaterialGroup, 'Name', mg.name)
             add_attrib(def_MaterialGroup, 'Value', mg.value)
@@ -213,6 +217,8 @@ def export_planet_sbc(self, context: bpy.types.Context):
             def_EnvironmentItems = ET.Element('EnvironmentItems')
 
         for ei in scene.seut.environment_items:
+            if not ei.enabled:
+                continue
             def_Item = ET.SubElement(def_EnvironmentItems, 'Item')
 
             def_Biomes = ET.SubElement(def_Item, 'Biomes')

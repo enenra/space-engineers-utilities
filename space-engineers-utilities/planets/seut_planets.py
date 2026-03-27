@@ -208,6 +208,11 @@ class SEUT_PlanetPropertiesMaterialGroups(PropertyGroup):
         update=update_material_groups_name
     )
     name_prev: StringProperty()
+    enabled: BoolProperty(
+        name="Enabled",
+        description="Enable or disable this entry from being exported to SBC",
+        default=True
+    )
     value: IntProperty(
         name="Value",
         description="The luminosity value of the color in the Red channel onto which this material group should be placed",
@@ -297,6 +302,11 @@ class SEUT_PlanetPropertiesEnvironmentItems(PropertyGroup):
         update=update_environment_items_name
     )
     name_prev: StringProperty()
+    enabled: BoolProperty(
+        name="Enabled",
+        description="Enable or disable this entry from being exported to SBC",
+        default=True
+    )
     biomes: CollectionProperty(
         type=SEUT_PlanetPropertiesBiomes
     )
@@ -327,7 +337,11 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
     """Ore Mapping Entries"""
 
     name: StringProperty()
-
+    enabled: BoolProperty(
+        name="Enabled",
+        description="Enable or disable this entry from being exported to SBC",
+        default=True
+    )
     value: IntProperty(
         name="Value",
         description="The luminosity value of the color in the Blue channel onto which the Ore Mapping should be placed",

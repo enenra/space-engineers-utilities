@@ -42,8 +42,12 @@ class SEUT_UL_PlanetMaterialGroups(UIList):
 
         split = layout.split(factor=0.85)
         row = split.row()
-        row.label(text="", icon='MATERIAL_DATA')
-        row.prop(item, 'name', text="", emboss=False)
+        row.prop(item, 'enabled', text="")
+        subrow = row.row()
+        subrow.label(text="", icon='MATERIAL_DATA')
+        subrow.prop(item, 'name', text="", emboss=False)
+        if not item.enabled:
+            subrow.enabled = False
 
         colors = context.scene.seut.material_groups_palette.colors
         for c in colors:
@@ -114,8 +118,12 @@ class SEUT_UL_PlanetEnvironmentItems(UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
         row = layout.row()
-        row.label(text="", icon='SCENE_DATA')
-        row.prop(item, 'name', text="", emboss=False)
+        row.prop(item, 'enabled', text="")
+        subrow = row.row()
+        subrow.label(text="", icon='SCENE_DATA')
+        subrow.prop(item, 'name', text="", emboss=False)
+        if not item.enabled:
+            subrow.enabled = False
 
     def invoke(self, context, event):
         pass
@@ -128,12 +136,16 @@ class SEUT_UL_PlanetOreMappings(UIList):
 
         split = layout.split(factor=0.85)
         row = split.row()
+        row.prop(item, 'enabled', text="")
+        subrow = row.row()
         if item.ore_type is not None:
-            row.label(text="", icon='TEXTURE_DATA')
-            row.prop(item, 'ore_type', text="", icon_value=layout.icon(item.ore_type))
+            subrow.label(text="", icon='TEXTURE_DATA')
+            subrow.prop(item, 'ore_type', text="", icon_value=layout.icon(item.ore_type))
         else:
-            row.label(text="", icon='TEXTURE_DATA')
-            row.prop(item, 'ore_type', text="")
+            subrow.label(text="", icon='TEXTURE_DATA')
+            subrow.prop(item, 'ore_type', text="")
+        if not item.enabled:
+            subrow.enabled = False
 
         colors = context.scene.seut.ore_mappings_palette.colors
         for c in colors:
