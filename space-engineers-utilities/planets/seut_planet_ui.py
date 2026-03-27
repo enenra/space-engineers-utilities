@@ -266,6 +266,14 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
         op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
         op.uilist = 'material_group'
 
+        col.separator()
+        op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+        op.uilist = 'material_group'
+        op.direction = 'UP'
+        op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+        op.uilist = 'material_group'
+        op.direction = 'DOWN'
+
         # Material Groups
         if len(scene.seut.material_groups) > 0:
             material_group = scene.seut.material_groups[scene.seut.material_groups_index]
@@ -285,6 +293,14 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
                 op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
                 op.uilist = 'distribution_rule'
                 op.rule_type = 'material_group'
+
+                col.separator()
+                op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+                op.uilist = 'distribution_rule'
+                op.direction = 'UP'
+                op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+                op.uilist = 'distribution_rule'
+                op.direction = 'DOWN'
 
                 # Distribution Rules
                 if len(material_group.rules) > 0:
@@ -324,6 +340,14 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
                         op.uilist = 'distribution_rule_layer'
                         op.rule_type = 'material_group'
 
+                        col.separator()
+                        op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+                        op.uilist = 'distribution_rule_layer'
+                        op.direction = 'UP'
+                        op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+                        op.uilist = 'distribution_rule_layer'
+                        op.direction = 'DOWN'
+
 
 class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
     """Creates the Planet Environment Items menu"""
@@ -356,6 +380,14 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
         op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
         op.uilist = 'environment_item'
 
+        col.separator()
+        op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+        op.uilist = 'environment_item'
+        op.direction = 'UP'
+        op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+        op.uilist = 'environment_item'
+        op.direction = 'DOWN'
+
         # Environment Items
         if len(scene.seut.environment_items) > 0:
             environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
@@ -372,6 +404,14 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                 op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
                 op.uilist = 'biome'
 
+                col.separator()
+                op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+                op.uilist = 'biome'
+                op.direction = 'UP'
+                op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+                op.uilist = 'biome'
+                op.direction = 'DOWN'
+
                 box2 = box.box()
                 box2.label(text="Voxels", icon='MATERIAL')
                 row = box2.row()
@@ -383,6 +423,14 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                 op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
                 op.uilist = 'planet_material'
 
+                col.separator()
+                op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+                op.uilist = 'planet_material'
+                op.direction = 'UP'
+                op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+                op.uilist = 'planet_material'
+                op.direction = 'DOWN'
+
                 box2 = box.box()
                 box2.label(text="Items", icon='RNA')
                 row = box2.row()
@@ -393,6 +441,14 @@ class SEUT_PT_Panel_PlanetEnvironmentItems(Panel):
                 op.uilist = 'planet_item'
                 op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
                 op.uilist = 'planet_item'
+
+                col.separator()
+                op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+                op.uilist = 'planet_item'
+                op.direction = 'UP'
+                op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+                op.uilist = 'planet_item'
+                op.direction = 'DOWN'
 
                 # Items
                 if len(environment_item.items) > 0:
@@ -459,6 +515,14 @@ class SEUT_PT_Panel_PlanetOreMappings(Panel):
         op.uilist = 'ore_mapping'
         op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
         op.uilist = 'ore_mapping'
+
+        col.separator()
+        op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+        op.uilist = 'ore_mapping'
+        op.direction = 'UP'
+        op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+        op.uilist = 'ore_mapping'
+        op.direction = 'DOWN'
 
         # Ore Mappings
         if len(scene.seut.ore_mappings) > 0:

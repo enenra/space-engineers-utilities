@@ -320,6 +320,106 @@ class SEUT_OT_Planet_UIList_Remove(Operator):
         return {'FINISHED'}
 
 
+class SEUT_OT_Planet_UIList_Move(Operator):
+    """Moves an entry"""
+    bl_idname = "planet.uilist_move"
+    bl_label = "Move Entry"
+    bl_options = {'UNDO'}
+
+    uilist: EnumProperty(
+        items=(
+            ('material_group', '', ''),
+            ('distribution_rule', '', ''),
+            ('distribution_rule_layer', '', ''),
+            ('environment_item', '', ''),
+            ('biome', '', ''),
+            ('planet_material', '', ''),
+            ('planet_item', '', ''),
+            ('ore_mapping', '', ''),
+            ),
+        default='material_group'
+    )
+
+    rule_type: EnumProperty(
+        items=(
+            ('material_group', '', ''),
+            ('environment_item', '', ''),
+            ),
+        default='material_group'
+    )
+
+    direction: EnumProperty(
+        items=(
+            ('UP', '', ''),
+            ('DOWN', '', ''),
+            ),
+        default='UP'
+    )
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def execute(self, context):
+        scene = context.scene
+
+        def move_item(direction, idx, group, idx_reference):
+            if direction == 'UP' and idx >= 1:
+                group.move(idx, idx - 1)
+                setattr(idx_reference[0], idx_reference[1], idx - 1)
+            elif direction == 'DOWN' and idx < len(group) - 1:
+                group.move(idx, idx + 1)
+                setattr(idx_reference[0], idx_reference[1], idx + 1)
+
+        # material_group
+        if self.uilist == 'material_group':
+            move_item(self.direction, scene.seut.material_groups_index, scene.seut.material_groups, [scene.seut, 'material_groups_index'])
+
+        # distribution_rule
+        elif self.uilist == 'distribution_rule':
+            if self.rule_type == 'material_group':
+                rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
+            elif self.rule_type == 'environment_item':
+                rule_type = scene.seut.environment_items[scene.seut.environment_items_index]
+            move_item(self.direction, rule_type.rules_index, rule_type.rules, [rule_type, 'rules_index'])
+
+        # distribution_rule_layer
+        elif self.uilist == 'distribution_rule_layer':
+            if self.rule_type == 'material_group':
+                rule_type = scene.seut.material_groups[scene.seut.material_groups_index]
+            elif self.rule_type == 'environment_item':
+                rule_type = scene.seut.environment_items[scene.seut.environment_items_index]
+            rule = rule_type.rules[rule_type.rules_index]
+            move_item(self.direction, rule.layers_index, rule.layers, [rule, 'layers_index'])
+
+        # environment_item
+        elif self.uilist == 'environment_item':
+            move_item(self.direction, scene.seut.environment_items_index, scene.seut.environment_items, [scene.seut, 'environment_items_index'])
+
+        # biome
+        elif self.uilist == 'biome':
+            ei = scene.seut.environment_items[scene.seut.environment_items_index]
+            move_item(self.direction, ei.biomes_index, ei.biomes, [ei, 'biomes_index'])
+
+        # planet_material
+        elif self.uilist == 'planet_material':
+            ei = scene.seut.environment_items[scene.seut.environment_items_index]
+            move_item(self.direction, ei.materials_index, ei.materials, [ei, 'materials_index'])
+
+        # planet_item
+        elif self.uilist == 'planet_item':
+            ei = scene.seut.environment_items[scene.seut.environment_items_index]
+            move_item(self.direction, ei.items_index, ei.items, [ei, "items_index"])
+
+        # ore_mapping
+        elif self.uilist == 'ore_mapping':
+            move_item(self.direction, scene.seut.ore_mappings_index, scene.seut.ore_mappings, [scene.seut, 'ore_mappings_index'])
+
+        return {'FINISHED'}
+
+
 class SEUT_OT_Planet_ExportAll(Operator):
     """Exports all planet data to the Mod Folder"""
     bl_idname = "planet.export_all"

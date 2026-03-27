@@ -61,6 +61,7 @@ from .materials.seut_ot_texture_conversion      import SEUT_OT_MassConvertTextur
 from .planets.seut_planet_operators             import (SEUT_OT_Planet_RecreateSetup,
                                                         SEUT_OT_Planet_UIList_Add,
                                                         SEUT_OT_Planet_UIList_Remove,
+                                                        SEUT_OT_Planet_UIList_Move,
                                                         SEUT_OT_Planet_ExportAll,
                                                         SEUT_OT_Planet_Bake,
                                                         SEUT_OT_Planet_ImportSBC)
@@ -218,6 +219,7 @@ classes = (
     SEUT_OT_Planet_RecreateSetup,
     SEUT_OT_Planet_UIList_Add,
     SEUT_OT_Planet_UIList_Remove,
+    SEUT_OT_Planet_UIList_Move,
     SEUT_OT_Planet_ExportAll,
     SEUT_OT_Planet_Bake,
     SEUT_OT_Planet_ImportSBC,
