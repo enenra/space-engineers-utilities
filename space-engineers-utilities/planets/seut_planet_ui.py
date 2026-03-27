@@ -277,7 +277,12 @@ class SEUT_PT_Panel_PlanetComplexMaterials(Panel):
         # Material Groups
         if len(scene.seut.material_groups) > 0:
             material_group = scene.seut.material_groups[scene.seut.material_groups_index]
-            box.prop(material_group, 'value')
+            row = box.row()
+            for mg in scene.seut.material_groups:
+                if material_group.value == mg.value and mg != material_group:
+                    row.alert = True
+                    break
+            row.prop(material_group, 'value')
             box.separator()
 
             if material_group is not None:
@@ -527,6 +532,10 @@ class SEUT_PT_Panel_PlanetOreMappings(Panel):
         # Ore Mappings
         if len(scene.seut.ore_mappings) > 0:
             ore_mapping = scene.seut.ore_mappings[scene.seut.ore_mappings_index]
+            for om in scene.seut.ore_mappings:
+                if ore_mapping.value == om.value and om != ore_mapping:
+                    row.alert = True
+                    break
             box.prop(ore_mapping, 'value')
             col = box.column(align=True)
             col.prop(ore_mapping, 'start')

@@ -151,6 +151,7 @@ class SEUT_OT_Planet_UIList_Add(Operator):
 
             item = rule_type.rules.add()
             item.name = "Rule " + str(len(rule_type.rules))
+            rule_type.rules_index = len(rule_type.rules) - 1
 
         # distribution_rule_layer
         elif self.uilist == 'distribution_rule_layer':
@@ -163,11 +164,13 @@ class SEUT_OT_Planet_UIList_Add(Operator):
 
             item = rule.layers.add()
             item.name = "LayerMaterial"
+            rule.layers_index = len(rule.layers) - 1
 
         # environment_item
         elif self.uilist == 'environment_item':
             item = scene.seut.environment_items.add()
             item.name = f"EnvironmentItem {len(scene.seut.environment_items)}"
+            scene.seut.environment_items_index = len(scene.seut.environment_items) - 1
 
             rule = item.rules.add()
             rule.name = "Rule"
@@ -181,11 +184,13 @@ class SEUT_OT_Planet_UIList_Add(Operator):
             environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
             item = environment_item.materials.add()
             item.name = "VoxelMaterial"
+            environment_item.materials_index = len(environment_item.materials) - 1
 
         # planet_item
         elif self.uilist == 'planet_item':
             environment_item = scene.seut.environment_items[scene.seut.environment_items_index]
             item = environment_item.items.add()
+            environment_item.items_index = len(environment_item.items) - 1
 
         # ore_mapping
         elif self.uilist == 'ore_mapping':
