@@ -288,7 +288,7 @@ class SEUT_PlanetPropertiesItems(PropertyGroup):
     density: FloatProperty(
         name="Density",
         description="The density in which this environment item should be placed",
-        min=0.01,
+        min=0.0001,
         max=1000.00
     )
 
