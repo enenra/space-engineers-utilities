@@ -229,7 +229,6 @@ def export_planet_sbc(self, context: bpy.types.Context):
 
             def_Materials = ET.SubElement(def_Item, 'Materials')
             if len(ei.materials) > 0:
-                def_Materials = ET.SubElement(def_Item, 'Materials')
                 for mat in ei.materials:
                     def_Material = ET.SubElement(def_Materials, 'Material')
                     if mat.material is not None:
