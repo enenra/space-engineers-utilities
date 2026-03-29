@@ -39,6 +39,11 @@ def update_material_groups_name(self, context):
             self.name = self.name_prev
             return
 
+    if self.name.startswith(" "):
+        self.sub_item = True
+    else:
+        self.sub_item = False
+
     self.name_prev = self.name
 
 
@@ -212,6 +217,9 @@ class SEUT_PlanetPropertiesMaterialGroups(PropertyGroup):
         name="Enabled",
         description="Enable or disable this entry from being exported to SBC",
         default=True
+    )
+    sub_item: BoolProperty(
+        default=False
     )
     value: IntProperty(
         name="Value",

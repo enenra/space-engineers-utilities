@@ -45,6 +45,10 @@ class SEUT_UL_PlanetMaterialGroups(UIList):
         row.prop(item, 'enabled', text="")
         subrow = row.row()
         subrow.label(text="", icon='MATERIAL_DATA')
+
+        if item.sub_item:
+            subrow.label(text="", icon='FILE_PARENT')
+
         subrow.prop(item, 'name', text="", emboss=False)
         if not item.enabled:
             subrow.enabled = False

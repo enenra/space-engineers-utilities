@@ -171,11 +171,22 @@ def export_planet_sbc(self, context: bpy.types.Context):
         else:
             def_ComplexMaterials = ET.Element('ComplexMaterials')
 
+        last_full_group_name = None
+
         for mg in scene.seut.material_groups:
             if not mg.enabled:
                 continue
             def_MaterialGroup = ET.SubElement(def_ComplexMaterials, 'MaterialGroup')
-            add_attrib(def_MaterialGroup, 'Name', mg.name)
+
+            if mg.sub_item:
+                if last_full_group_name is not None:
+                    add_attrib(def_MaterialGroup, 'Name', last_full_group_name + " -" + mg.name)
+                else:
+                    add_attrib(def_MaterialGroup, 'Name', mg.name[1:])
+            else:
+                last_full_group_name = mg.name
+                add_attrib(def_MaterialGroup, 'Name', mg.name)
+
             add_attrib(def_MaterialGroup, 'Value', mg.value)
 
             if len(mg.rules) > 0:
