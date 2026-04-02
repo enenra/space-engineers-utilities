@@ -206,8 +206,8 @@ def export_planet_sbc(self, context: bpy.types.Context):
                             add_attrib(def_Layer, 'Depth', l.depth)
 
                     def_Height = add_subelement(def_Rule, 'Height')
-                    add_attrib(def_Height, 'Min', round(r.height_min, 2))
-                    add_attrib(def_Height, 'Max', round(r.height_max, 2))
+                    add_attrib(def_Height, 'Min', round(r.height_min, 4))
+                    add_attrib(def_Height, 'Max', round(r.height_max, 4))
 
                     def_Latitude = add_subelement(def_Rule, 'Latitude')
                     add_attrib(def_Latitude, 'Min', round(r.latitude_min, 2))
@@ -266,8 +266,8 @@ def export_planet_sbc(self, context: bpy.types.Context):
                     def_Rule = ET.SubElement(def_Item, 'Rule')
 
                     def_Height = add_subelement(def_Rule, 'Height')
-                    add_attrib(def_Height, 'Min', round(r.height_min, 2))
-                    add_attrib(def_Height, 'Max', round(r.height_max, 2))
+                    add_attrib(def_Height, 'Min', round(r.height_min, 4))
+                    add_attrib(def_Height, 'Max', round(r.height_max, 4))
 
                     def_Latitude = add_subelement(def_Rule, 'Latitude')
                     add_attrib(def_Latitude, 'Min', round(r.latitude_min, 2))
