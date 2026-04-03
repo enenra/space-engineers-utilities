@@ -2,11 +2,15 @@ Relevant Milestone: [SEUT 1.2.2](https://github.com/enenra/space-engineers-utili
 
 # Changelog
 
+* Improved: Numerous improvements to the Planet Editor. (Alpha 2)
+* Improved: Better handling if json definitions for empties cannot be found. (Alpha 2)
+* Improved: Error with QuickTools in specific instances. (Alpha 2)
 * Changed: SEUT now uses the asset tag system to determine if a material is `Vanilla` or `DLC`. The previous toolbar is no longer accessible. The corresponding tags are `is_vanilla` and `is_dlc` and can be set like any other asset tag. (Alpha 1)
 * Changed: SEUT now primarily uses the new Blender FBX importer. The GLTF importer is now the alternate mode. (Alpha 1)
 * Changed: Icon Render mode now gets its compositing node tree from SEUT assets - which means it can be locally overridden / adjusted. (Alpha 1)
 * Changed: Planet Editor SBC maximum values now default to their maximum. (Alpha 1)
 * Changed: Minimum supported version of Blender to 5.0 . (Alpha 1)
+* Fixed: Rare error during export when material was removed but remaining code not skipped. (Alpha 2)
 * Fixed: Various issues around Icon Render mode in Blender 5.0 . (Alpha 1)
 
 # Installation
