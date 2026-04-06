@@ -295,6 +295,37 @@ def export_planet_sbc(self, context: bpy.types.Context):
     lines_entry = update_add_subelement(def_Atmosphere, 'LimitAltitude', round(scene.seut.atm_limit_altitude, 2), update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_Atmosphere, 'MaxWindSpeed', round(scene.seut.atm_max_wind_speed, 2), update_sbc, lines_entry)
 
+    # Weather
+    if scene.seut.global_weather:
+        lines_entry = update_add_subelement(def_definition, 'GlobalWeather', str(scene.seut.global_weather).lower(), update_sbc, lines_entry)
+    if scene.seut.persistent_weather is not None:
+        lines_entry = update_add_subelement(def_definition, 'PersistentWeather', scene.seut.persistent_weather, update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'WeatherFrequencyMin', round(scene.seut.weather_frequency_min, 2), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'WeatherFrequencyMax', round(scene.seut.weather_frequency_max, 2), update_sbc, lines_entry)
+    if len(scene.seut.weather_generators) > 0:
+        if not update_sbc:
+            def_WeatherGenerators = add_subelement(def_definition, 'WeatherGenerators')
+        else:
+            def_WeatherGenerators = ET.Element('WeatherGenerators')
+
+        for wg in scene.seut.weather_generators:
+            def_WeatherGenerator = ET.SubElement(def_WeatherGenerators, 'WeatherGenerator')
+            add_subelement(def_WeatherGenerator, 'Voxel', wg.voxel)
+
+            def_Weathers = ET.SubElement(def_WeatherGenerator, 'Weathers')
+            if len(wg.weathers) > 0:
+                for weather in wg.weathers:
+                    def_Weather = ET.SubElement(def_Weathers, 'Weather')
+                    add_subelement(def_Weather, 'Name', weather.name)
+                    add_subelement(def_Weather, 'Weight', weather.weight)
+                    add_subelement(def_Weather, 'MinLength', weather.min_length)
+                    add_subelement(def_Weather, 'MaxLength', weather.max_length)
+                    add_subelement(def_Weather, 'SpawnOffset', weather.spawn_offset)
+
+        if update_sbc:
+            lines_entry = convert_back_xml(def_WeatherGenerators, 'WeatherGenerators', lines_entry, 'PlanetGeneratorDefinition')
+
+
     # Write to file, place in export folder
     if not update_sbc:
         temp_string = ET.tostring(definitions, 'utf-8')

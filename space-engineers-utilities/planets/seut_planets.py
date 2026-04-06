@@ -384,3 +384,57 @@ class SEUT_PlanetPropertiesOreMappings(PropertyGroup):
         min=0,
         max=1.0
     )
+
+
+class SEUT_PlanetPropertiesWeatherGeneratorsWeathers(PropertyGroup):
+    """Planet Weathers"""
+
+    name: StringProperty(
+        name="SubtypeId",
+        description="The SubtypeId of the Weather Definition"
+    )
+    weight: IntProperty(
+        name="Weight",
+        description="Higher numbers increase the chance for this weather to be picked, but the exact chance depends on the other weathers in this list",
+        default=0,
+        min=0
+    )
+    min_length: IntProperty(
+        name="Minimum Length",
+        description="Randomly picked duration between this and Maximum Length, in seconds",
+        default=0
+    )
+    max_length: IntProperty(
+        name="Maximum Length",
+        description="Randomly picked duration between this and Minimum Length, in seconds",
+        default=0
+    )
+    spawn_offset: IntProperty(
+        name="Spawn Offset",
+        description="Generate the weather this many meters away from the player",
+        default=0
+    )
+
+
+class SEUT_PlanetPropertiesWeatherGenerators(PropertyGroup):
+    """Planet Weather Generators"""
+
+    name: StringProperty(
+        name="Name",
+        description="The name of the Weather Generator"
+    )
+    enabled: BoolProperty(
+        name="Enabled",
+        description="Enable or disable this entry from being exported to SBC",
+        default=True
+    )
+    voxel: StringProperty(
+        name="Material Type",
+        description="The MaterialTypeName of a voxel material where the following list of weathers are allowed to spawn"
+    )
+    weathers: CollectionProperty(
+        type=SEUT_PlanetPropertiesWeatherGeneratorsWeathers
+    )
+    weathers_index: IntProperty(
+        default=0
+    )

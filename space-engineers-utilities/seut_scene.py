@@ -13,7 +13,7 @@ from bpy.props  import (EnumProperty,
                         CollectionProperty
                         )
 
-from .planets.seut_planets          import SEUT_PlanetPropertiesEnvironmentItems, SEUT_PlanetPropertiesMaterialGroups, SEUT_PlanetPropertiesOreMappings, poll_voxelmaterials
+from .planets.seut_planets          import *
 from .seut_mirroring                import clean_mirroring, setup_mirroring
 from .seut_mountpoints              import clean_mountpoints, setup_mountpoints
 from .seut_icon_render              import clean_icon_render, setup_icon_render
@@ -1008,4 +1008,30 @@ class SEUT_Scene(PropertyGroup):
         name="Ore Spots Map",
         description="Whether to export the ore spots map",
         default=True
+    )
+
+    global_weather: BoolProperty(
+        name="Global Weather",
+        description="Whether weather is for the entire planet instead of localized. Does not work because of a game bug",
+        default=False
+    )
+    persistent_weather: StringProperty(
+        name="Persistent Weather",
+        description="A SubtypeId of a WeatherEffect Definition to have as constant weather, which also prevents other weather from being used on this planet"
+    )
+    weather_frequency_min: IntProperty(
+        name="Weather Frequency Minimum",
+        description="Minimum amount of seconds between weather changes",
+        default=0
+    )
+    weather_frequency_max: IntProperty(
+        name="Weather Frequency Maximum",
+        description="Maximum amount of seconds between weather changes",
+        default=0
+    )
+    weather_generators: CollectionProperty(
+        type=SEUT_PlanetPropertiesWeatherGenerators
+    )
+    weather_generators_index: IntProperty(
+        default=0
     )

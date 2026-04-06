@@ -54,7 +54,7 @@ def add_subelement(parent, name: str, value=None):
     """Adds a subelement to XML definition."""
 
     ignore_dupes = ['MountPoint', 'Model']
-    
+
     if not name in ignore_dupes:
         for elem in parent:
             if elem.tag == name:
@@ -99,7 +99,7 @@ def update_add_optional_subelement(parent, name: str, value, update_sbc: bool, l
 
 def get_subelement(lines: str, name: str, attrib: str = None):
     """Returns the specified subelement. -1 if not found."""
-    
+
     if attrib is not None and f"<{name} name=\"{attrib}\">" in lines:
         start = lines.find(f"<{name} name=\"{attrib}\">")
         end = start + lines[start:].find(f"</{name}>") + len(f"</{name}>")
@@ -130,7 +130,7 @@ def update_add_attrib(element, name: str, value=None, update=False, lines=None):
 
 def add_attrib(element, name: str, value):
     """Adds an attribute to an element."""
-    
+
     for elem in element:
         if elem.attrib == name:
             if value is not None:
@@ -178,7 +178,7 @@ def convert_back_xml(element, name: str, lines_entry: str, definition_type: str 
     entry = entry[entry.find("\n") + 1:]
 
     start = lines_entry.find('<' + name + '>')
-    
+
     if start == -1:
         start = lines_entry.find(f"</{definition_type}>")
         return lines_entry[:start] + entry + lines_entry[start:]
@@ -195,13 +195,13 @@ def format_entry(lines: str, depth: int = 0) -> str:
     entry = ""
 
     for line in lines_arr:
-        
+
         remove = False
         line = indent * depth + line.strip()
-            
+
         start = line.find('<')
         end = line.rfind('>')
-        
+
         if line.count('<') <= 0 and line.count('>') <= 0:
             if line.strip() == "":
                 remove = True
@@ -220,10 +220,10 @@ def format_entry(lines: str, depth: int = 0) -> str:
             line = line[1:]
         else:
             depth += 1
-        
+
         if line.strip() != lines_arr[-1].strip():
             line = line + "\n"
-        
+
         if not remove:
             entry += line
 

@@ -118,6 +118,8 @@ class SEUT_OT_Planet_UIList_Add(Operator):
             ('planet_material', '', ''),
             ('planet_item', '', ''),
             ('ore_mapping', '', ''),
+            ('weather_generator', '', ''),
+            ('weather', '', ''),
             ),
         default='material_group'
     )
@@ -196,6 +198,18 @@ class SEUT_OT_Planet_UIList_Add(Operator):
         elif self.uilist == 'ore_mapping':
             add_ore_mapping(context)
 
+        # weather_generator
+        elif self.uilist == 'weather_generator':
+            item = scene.seut.weather_generators.add()
+            item.name = f"Weather Generator {len(scene.seut.weather_generators)}"
+            scene.seut.weather_generators_index = len(scene.seut.weather_generators) - 1
+
+        # weather
+        elif self.uilist == 'weather':
+            weather_generator = scene.seut.weather_generators[scene.seut.weather_generators_index]
+            weather_generator.weathers.add()
+            weather_generator.weathers_index = len(weather_generator.weathers) - 1
+
         return {'FINISHED'}
 
 
@@ -215,6 +229,8 @@ class SEUT_OT_Planet_UIList_Remove(Operator):
             ('planet_material', '', ''),
             ('planet_item', '', ''),
             ('ore_mapping', '', ''),
+            ('weather_generator', '', ''),
+            ('weather', '', ''),
             ),
         default='material_group'
     )
@@ -322,6 +338,18 @@ class SEUT_OT_Planet_UIList_Remove(Operator):
                 if not found:
                     scene.seut.ore_mappings_palette.colors.remove(c)
 
+        # weather_generator
+        elif self.uilist == 'weather_generator':
+            scene.seut.weather_generators.remove(scene.seut.weather_generators_index)
+            scene.seut.weather_generators_index = min(max(0, scene.seut.weather_generators_index - 1), len(scene.seut.weather_generators) - 1)
+
+        # weather
+        elif self.uilist == 'weather':
+            weather_generator = scene.seut.weather_generators[scene.seut.weather_generators_index]
+
+            weather_generator.weathers.remove(weather_generator.weathers_index)
+            weather_generator.weathers_index = min(max(0, weather_generator.weathers_index - 1), len(weather_generator.weathers) - 1)
+
         return {'FINISHED'}
 
 
@@ -341,6 +369,8 @@ class SEUT_OT_Planet_UIList_Move(Operator):
             ('planet_material', '', ''),
             ('planet_item', '', ''),
             ('ore_mapping', '', ''),
+            ('weather_generator', '', ''),
+            ('weather', '', ''),
             ),
         default='material_group'
     )
@@ -421,6 +451,15 @@ class SEUT_OT_Planet_UIList_Move(Operator):
         # ore_mapping
         elif self.uilist == 'ore_mapping':
             move_item(self.direction, scene.seut.ore_mappings_index, scene.seut.ore_mappings, [scene.seut, 'ore_mappings_index'])
+
+        # weather_generator
+        elif self.uilist == 'weather_generator':
+            move_item(self.direction, scene.seut.weather_generators_index, scene.seut.weather_generators, [scene.seut, 'weather_generators_index'])
+
+        # weather
+        elif self.uilist == 'weather':
+            wg = scene.seut.weather_generators[scene.seut.weather_generators_index]
+            move_item(self.direction, wg.weathers_index, wg.weathers, [wg, "weathers_index"])
 
         return {'FINISHED'}
 
@@ -579,6 +618,11 @@ class SEUT_OT_Planet_ImportSBC(Operator, ImportHelper):
     import_environment_items: BoolProperty(
         name="Environment Items",
         description="Whether to import Environment Items",
+        default=True
+    )
+    import_weather_generators: BoolProperty(
+        name="Weather Generators",
+        description="Whether to import Weather Generators",
         default=True
     )
 

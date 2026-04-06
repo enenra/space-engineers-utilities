@@ -161,6 +161,37 @@ class SEUT_UL_PlanetOreMappings(UIList):
         pass
 
 
+class SEUT_UL_PlanetWeatherGeneratorsWeathers(UIList):
+    """Creates the Planet Weather Generators Weathers UI list"""
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+
+        row = layout.row()
+        subrow = row.row()
+        subrow.label(text="", icon='OUTLINER_OB_VOLUME')
+        subrow.prop(item, 'name', text="")
+
+    def invoke(self, context, event):
+        pass
+
+
+class SEUT_UL_PlanetWeatherGenerators(UIList):
+    """Creates the Planet Weather Generators UI list"""
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+
+        row = layout.row()
+        row.prop(item, 'enabled', text="")
+        subrow = row.row()
+        subrow.label(text="", icon='FORCE_VORTEX')
+        subrow.prop(item, 'name', text="", emboss=False)
+        if not item.enabled:
+            subrow.enabled = False
+
+    def invoke(self, context, event):
+        pass
+
+
 class SEUT_PT_Panel_Planet(Panel):
     """Creates the Planet menu"""
     bl_idname = "SEUT_PT_Panel_Planet"
@@ -545,6 +576,92 @@ class SEUT_PT_Panel_PlanetOreMappings(Panel):
             col.prop(ore_mapping, 'start')
             col.prop(ore_mapping, 'depth')
             box.prop(ore_mapping, 'target_color')
+
+
+class SEUT_PT_Panel_PlanetWeather(Panel):
+    """Creates the Planet Weather menu"""
+    bl_idname = "SEUT_PT_Panel_PlanetWeather"
+    bl_label = "Weeather"
+    bl_category = "SEUT"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+
+        box = layout.box()
+        box.label(text="Global Settings", icon='NODE_MATERIAL')
+
+        box.prop(scene.seut, 'global_weather', icon='MATSPHERE')
+        split = box.split(factor=0.35)
+        split.label(text="Persistent Weather:")
+        split.prop(scene.seut, 'persistent_weather', text="")
+
+        if scene.seut.persistent_weather == "":
+            row = box.row(align=True)
+            row.label(text="Frequency:")
+            row.prop(scene.seut, 'weather_frequency_min', text="Min")
+            row.prop(scene.seut, 'weather_frequency_max', text="Max")
+
+            box = layout.box()
+            box.label(text="Weather Generators", icon='FORCE_VORTEX')
+            row = box.row()
+            row.template_list("SEUT_UL_PlanetWeatherGenerators", "", scene.seut, "weather_generators", scene.seut, "weather_generators_index", rows=3)
+
+            col = row.column(align=True)
+            op = col.operator("planet.uilist_add", icon='ADD', text="")
+            op.uilist = 'weather_generator'
+            op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+            op.uilist = 'weather_generator'
+
+            col.separator()
+            op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+            op.uilist = 'weather_generator'
+            op.direction = 'UP'
+            op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+            op.uilist = 'weather_generator'
+            op.direction = 'DOWN'
+
+            if len(scene.seut.weather_generators) > 0:
+                weather_generator = scene.seut.weather_generators[scene.seut.weather_generators_index]
+                box.prop(weather_generator, 'voxel')
+
+                box = box.box()
+                box.label(text="Weathers", icon='OUTLINER_OB_VOLUME')
+
+                row = box.row()
+                row.template_list("SEUT_UL_PlanetWeatherGeneratorsWeathers", "", weather_generator, "weathers", weather_generator, "weathers_index", rows=3)
+
+                col = row.column(align=True)
+                op = col.operator("planet.uilist_add", icon='ADD', text="")
+                op.uilist = 'weather'
+                op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+                op.uilist = 'weather'
+
+                col.separator()
+                op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+                op.uilist = 'weather'
+                op.direction = 'UP'
+                op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+                op.uilist = 'weather'
+                op.direction = 'DOWN'
+
+                if len(weather_generator.weathers) > 0:
+                    weather = weather_generator.weathers[weather_generator.weathers_index]
+                    box.prop(weather, 'weight')
+                    row = box.row(align=True)
+                    row.label(text="Length:")
+                    row.prop(weather, 'min_length', text="Min")
+                    row.prop(weather, 'max_length', text="Max")
+                    box.prop(weather, 'spawn_offset')
 
 
 class SEUT_PT_Panel_PlanetExport(Panel):
