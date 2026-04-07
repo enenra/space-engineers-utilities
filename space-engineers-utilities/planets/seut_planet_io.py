@@ -325,6 +325,51 @@ def export_planet_sbc(self, context: bpy.types.Context):
         if update_sbc:
             lines_entry = convert_back_xml(def_WeatherGenerators, 'WeatherGenerators', lines_entry, 'PlanetGeneratorDefinition')
 
+    # Cloud Layers
+    if len(scene.seut.cloud_layers) > 0:
+        if not update_sbc:
+            def_CloudLayers = add_subelement(def_definition, 'CloudLayers')
+        else:
+            def_CloudLayers = ET.Element('CloudLayers')
+
+        for cl in scene.seut.cloud_layers:
+            def_CloudLayer = ET.SubElement(def_CloudLayers, 'CloudLayer')
+
+            path = create_relative_path(cl.model, "Models")
+            if path != False:
+                add_subelement(def_CloudLayer, 'Model', path)
+
+            def_Textures = ET.SubElement(def_CloudLayer, 'Textures')
+            if len(cl.textures) > 0:
+                for texture in cl.textures:
+
+                    path = create_relative_path(texture.texture, "Textures")
+                    if path != False:
+                        path = path.replace("_cm.", ".").replace("_ng.", ".").replace("_add.", ".")
+                        add_subelement(def_Textures, 'Texture', path)
+
+            add_subelement(def_CloudLayer, 'RelativeAltitude', round(cl.relative_altitude,4))
+            add_subelement(def_CloudLayer, 'ScalingEnabled', str(cl.scaling_enabled).lower())
+            add_subelement(def_CloudLayer, 'InitialRotation', round(cl.initial_rotation, 4))
+            add_subelement(def_CloudLayer, 'AngularVelocity', round(cl.angular_velocity, 4))
+
+            def_RotationAxis = ET.SubElement(def_CloudLayer, 'RotationAxis')
+            add_subelement(def_RotationAxis, 'X', round(cl.rotation_axis[0], 2))
+            add_subelement(def_RotationAxis, 'Y', round(cl.rotation_axis[1], 2))
+            add_subelement(def_RotationAxis, 'Z', round(cl.rotation_axis[2], 2))
+
+            add_subelement(def_CloudLayer, 'FadeOutRelativeAltitudeStart', round(cl.fade_out_relative_altitude_start, 4))
+            add_subelement(def_CloudLayer, 'FadeOutRelativeAltitudeEnd', round(cl.fade_out_relative_altitude_end, 4))
+
+            def_CloudLayerColor = ET.SubElement(def_CloudLayer, 'Color')
+            add_subelement(def_CloudLayerColor, 'X', round(cl.color[0], 2))
+            add_subelement(def_CloudLayerColor, 'Y', round(cl.color[1], 2))
+            add_subelement(def_CloudLayerColor, 'Z', round(cl.color[2], 2))
+            add_subelement(def_CloudLayerColor, 'W', round(cl.color[3], 2))
+
+        if update_sbc:
+            lines_entry = convert_back_xml(def_CloudLayers, 'CloudLayers', lines_entry, 'PlanetGeneratorDefinition')
+
 
     # Write to file, place in export folder
     if not update_sbc:

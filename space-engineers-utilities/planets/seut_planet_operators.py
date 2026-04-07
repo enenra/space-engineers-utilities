@@ -120,6 +120,8 @@ class SEUT_OT_Planet_UIList_Add(Operator):
             ('ore_mapping', '', ''),
             ('weather_generator', '', ''),
             ('weather', '', ''),
+            ('cloud_layer', '', ''),
+            ('texture', '', ''),
             ),
         default='material_group'
     )
@@ -210,6 +212,18 @@ class SEUT_OT_Planet_UIList_Add(Operator):
             weather_generator.weathers.add()
             weather_generator.weathers_index = len(weather_generator.weathers) - 1
 
+        # cloud_layer
+        elif self.uilist == 'cloud_layer':
+            item = scene.seut.cloud_layers.add()
+            item.name = f"Cloud Layer {len(scene.seut.cloud_layers)}"
+            scene.seut.cloud_layers_index = len(scene.seut.cloud_layers) - 1
+
+        # texture
+        elif self.uilist == 'texture':
+            cloud_layer = scene.seut.cloud_layers[scene.seut.cloud_layers_index]
+            cloud_layer.textures.add()
+            cloud_layer.textures_index = len(cloud_layer.textures) - 1
+
         return {'FINISHED'}
 
 
@@ -231,6 +245,8 @@ class SEUT_OT_Planet_UIList_Remove(Operator):
             ('ore_mapping', '', ''),
             ('weather_generator', '', ''),
             ('weather', '', ''),
+            ('cloud_layer', '', ''),
+            ('texture', '', ''),
             ),
         default='material_group'
     )
@@ -350,6 +366,18 @@ class SEUT_OT_Planet_UIList_Remove(Operator):
             weather_generator.weathers.remove(weather_generator.weathers_index)
             weather_generator.weathers_index = min(max(0, weather_generator.weathers_index - 1), len(weather_generator.weathers) - 1)
 
+        # cloud_layer
+        elif self.uilist == 'cloud_layer':
+            scene.seut.cloud_layers.remove(scene.seut.cloud_layers_index)
+            scene.seut.cloud_layers_index = min(max(0, scene.seut.cloud_layers_index - 1), len(scene.seut.cloud_layers) - 1)
+
+        # texture
+        elif self.uilist == 'texture':
+            cloud_layer = scene.seut.cloud_layers[scene.seut.cloud_layers_index]
+
+            cloud_layer.textures.remove(cloud_layer.textures_index)
+            cloud_layer.textures_index = min(max(0, cloud_layer.textures_index - 1), len(cloud_layer.textures) - 1)
+
         return {'FINISHED'}
 
 
@@ -371,6 +399,8 @@ class SEUT_OT_Planet_UIList_Move(Operator):
             ('ore_mapping', '', ''),
             ('weather_generator', '', ''),
             ('weather', '', ''),
+            ('cloud_layer', '', ''),
+            ('texture', '', ''),
             ),
         default='material_group'
     )
@@ -460,6 +490,15 @@ class SEUT_OT_Planet_UIList_Move(Operator):
         elif self.uilist == 'weather':
             wg = scene.seut.weather_generators[scene.seut.weather_generators_index]
             move_item(self.direction, wg.weathers_index, wg.weathers, [wg, "weathers_index"])
+
+        # cloud_layer
+        elif self.uilist == 'cloud_layer':
+            move_item(self.direction, scene.seut.cloud_layers_index, scene.seut.cloud_layers, [scene.seut, 'cloud_layers_index'])
+
+        # texture
+        elif self.uilist == 'texture':
+            cl = scene.seut.cloud_layers[scene.seut.cloud_layers_index]
+            move_item(self.direction, cl.textures_index, cl.textures, [cl, "textures_index"])
 
         return {'FINISHED'}
 

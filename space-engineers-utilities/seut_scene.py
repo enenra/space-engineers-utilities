@@ -1035,3 +1035,11 @@ class SEUT_Scene(PropertyGroup):
     weather_generators_index: IntProperty(
         default=0
     )
+
+    # Cloud Layers
+    cloud_layers: CollectionProperty(
+        type=SEUT_PlanetPropertiesCloudLayers
+    )
+    cloud_layers_index: IntProperty(
+        default=0
+    )

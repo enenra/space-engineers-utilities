@@ -438,3 +438,88 @@ class SEUT_PlanetPropertiesWeatherGenerators(PropertyGroup):
     weathers_index: IntProperty(
         default=0
     )
+
+
+class SEUT_PlanetPropertiesCloudLayersTextures(PropertyGroup):
+    """Planet Cloud Layers"""
+
+    name: StringProperty(
+        name="Name",
+        description="The name of the Texture"
+    )
+    texture: StringProperty(
+        name="Texture",
+        description="The game needs 2 textures, a _cm and an _alphamask. To point this definition to them you must write only one entry (it will ignore subsequent entries) and that path must be one of the files but with the _cm or _alphamask removed from the name. This does mean it will point to a file that does not exist, but this is fine because the game will automatically look for 2 files where it inserts the _cm and _alphamask before the .dds extension of your given path",
+        subtype="FILE_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'}
+    )
+
+class SEUT_PlanetPropertiesCloudLayers(PropertyGroup):
+    """Planet Cloud Layers"""
+
+    name: StringProperty(
+        name="Name",
+        description="The name of the Cloud Layer"
+    )
+    enabled: BoolProperty(
+        name="Enabled",
+        description="Enable or disable this entry from being exported to SBC",
+        default=True
+    )
+    model: StringProperty(
+        name="Model",
+        description="The model used for this cloud layer",
+        subtype="FILE_PATH",
+        options={'PATH_SUPPORTS_BLEND_RELATIVE'}
+    )
+    textures: CollectionProperty(
+        type=SEUT_PlanetPropertiesCloudLayersTextures
+    )
+    textures_index: IntProperty(
+        default=0
+    )
+    relative_altitude: FloatProperty(
+        name="Relative Altitude",
+        description="Affects the resulting altitude of the cloud layer",
+        default=0
+    )
+    scaling_enabled: BoolProperty(
+        name="Scaling Enabled",
+        description="If set to true, this affects the Altitude: If the camera distance to center of the planet is farther than 95% of the Altitude, then the Altitude is multiplied in some way",
+        default=False
+    )
+    initial_rotation: FloatProperty(
+        name="Initial Rotation",
+        description="Starting rotation angle in radians",
+        default=0
+    )
+    angular_velocity: FloatProperty(
+        name="Angular Velocity",
+        description="Rotation speed in radians per 10 ticks probably. Can be negative to spin the other way",
+        default=0
+    )
+    rotation_axis: FloatVectorProperty(
+        name="Rotation Axis",
+        description="Axis around which this cloud layer is spinning. Gets automatically normalized therefore can input whatever scale you wish. If set to 0,0,0 it will default to 0,1,0 again",
+        size=3,
+        min=-1.0,
+        max=1.0
+    )
+    fade_out_relative_altitude_start: FloatProperty(
+        name="Fade Out Relative Altitude Start",
+        description="From the camera perspective, relative altitude at which this cloud layer starts fading out (less transparency). The Fade Out Relative Altitude End decides where the completion of that fade out is",
+        default=0
+    )
+    fade_out_relative_altitude_end: FloatProperty(
+        name="Fade Out Relative Altitude End",
+        description="From the camera perspective, relative altitude at which this cloud layer is completely invisible. This supports being either smaller or larger than <FadeOutRelativeAltitudeStart> and it will have different behaviors in each case. If equal to Fade Out Relative Altitude Start then they will do nothing",
+        default=0
+    )
+    color: FloatVectorProperty(
+        name="Color",
+        description="Color multiplier. If Alpha/W is 0 then this layer is skipped",
+        subtype='COLOR_GAMMA',
+        size=4,
+        min=0,
+        max=1.0
+    )

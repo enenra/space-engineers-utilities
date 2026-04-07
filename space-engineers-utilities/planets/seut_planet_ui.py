@@ -1,4 +1,5 @@
 import bpy
+import os
 
 from bpy.types  import Panel, UIList
 
@@ -184,6 +185,37 @@ class SEUT_UL_PlanetWeatherGenerators(UIList):
         row.prop(item, 'enabled', text="")
         subrow = row.row()
         subrow.label(text="", icon='FORCE_VORTEX')
+        subrow.prop(item, 'name', text="", emboss=False)
+        if not item.enabled:
+            subrow.enabled = False
+
+    def invoke(self, context, event):
+        pass
+
+
+class SEUT_UL_PlanetCloudLayersTextures(UIList):
+    """Creates the Planet Cloud Layer Textures UI list"""
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+
+        row = layout.row()
+        subrow = row.row()
+        name = os.path.basename(item.texture)
+        subrow.label(text=name, icon='TEXTURE')
+
+    def invoke(self, context, event):
+        pass
+
+
+class SEUT_UL_PlanetCloudLayers(UIList):
+    """Creates the Planet Cloud Layers UI list"""
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+
+        row = layout.row()
+        row.prop(item, 'enabled', text="")
+        subrow = row.row()
+        subrow.label(text="", icon='RENDERLAYERS')
         subrow.prop(item, 'name', text="", emboss=False)
         if not item.enabled:
             subrow.enabled = False
@@ -581,7 +613,7 @@ class SEUT_PT_Panel_PlanetOreMappings(Panel):
 class SEUT_PT_Panel_PlanetWeather(Panel):
     """Creates the Planet Weather menu"""
     bl_idname = "SEUT_PT_Panel_PlanetWeather"
-    bl_label = "Weeather"
+    bl_label = "Weather"
     bl_category = "SEUT"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -662,6 +694,84 @@ class SEUT_PT_Panel_PlanetWeather(Panel):
                     row.prop(weather, 'min_length', text="Min")
                     row.prop(weather, 'max_length', text="Max")
                     box.prop(weather, 'spawn_offset')
+
+
+class SEUT_PT_Panel_PlanetCloudLayer(Panel):
+    """Creates the Planet Cloud Layer menu"""
+    bl_idname = "SEUT_PT_Panel_PlanetCloudLayer"
+    bl_label = "Cloud Layers"
+    bl_category = "SEUT"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+
+        box = layout.box()
+        box.label(text="Cloud Layers", icon='RENDERLAYERS')
+        row = box.row()
+        row.template_list("SEUT_UL_PlanetCloudLayers", "", scene.seut, "cloud_layers", scene.seut, "cloud_layers_index", rows=3)
+
+        col = row.column(align=True)
+        op = col.operator("planet.uilist_add", icon='ADD', text="")
+        op.uilist = 'cloud_layer'
+        op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+        op.uilist = 'cloud_layer'
+
+        col.separator()
+        op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+        op.uilist = 'cloud_layer'
+        op.direction = 'UP'
+        op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+        op.uilist = 'cloud_layer'
+        op.direction = 'DOWN'
+
+        if len(scene.seut.cloud_layers) > 0:
+            cloud_layer = scene.seut.cloud_layers[scene.seut.cloud_layers_index]
+            box.prop(cloud_layer, 'model')
+
+            box2 = box.box()
+            box2.label(text="Textures", icon='TEXTURE')
+            row = box2.row()
+            row.template_list("SEUT_UL_PlanetCloudLayersTextures", "", cloud_layer, "textures", cloud_layer, "textures_index", rows=3)
+            if len(cloud_layer.textures) > 0:
+                texture = cloud_layer.textures[cloud_layer.textures_index]
+                box2.prop(texture, 'texture')
+
+            col = row.column(align=True)
+            op = col.operator("planet.uilist_add", icon='ADD', text="")
+            op.uilist = 'texture'
+            op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+            op.uilist = 'texture'
+
+            col.separator()
+            op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+            op.uilist = 'texture'
+            op.direction = 'UP'
+            op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+            op.uilist = 'texture'
+            op.direction = 'DOWN'
+
+            box.prop(cloud_layer, 'relative_altitude')
+            box.prop(cloud_layer, 'scaling_enabled', icon='EMPTY_ARROWS')
+            box.prop(cloud_layer, 'initial_rotation')
+            box.prop(cloud_layer, 'angular_velocity')
+            box.prop(cloud_layer, 'rotation_axis')
+
+            box.label(text="Fade Out Relative Altitude:")
+            row = box.row(align=True)
+            row.prop(cloud_layer, 'fade_out_relative_altitude_start', text="Start")
+            row.prop(cloud_layer, 'fade_out_relative_altitude_end', text="End")
+
+            box.prop(cloud_layer, 'color')
 
 
 class SEUT_PT_Panel_PlanetExport(Panel):
