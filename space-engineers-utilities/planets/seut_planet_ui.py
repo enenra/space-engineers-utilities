@@ -764,7 +764,10 @@ class SEUT_PT_Panel_PlanetCloudLayer(Panel):
             box.prop(cloud_layer, 'scaling_enabled', icon='EMPTY_ARROWS')
             box.prop(cloud_layer, 'initial_rotation')
             box.prop(cloud_layer, 'angular_velocity')
-            box.prop(cloud_layer, 'rotation_axis')
+
+            box.label(text="Rotation Axis:")
+            row = box.row(align=True)
+            row.prop(cloud_layer, 'rotation_axis', text="")
 
             box.label(text="Fade Out Relative Altitude:")
             row = box.row(align=True)
