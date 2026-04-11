@@ -1043,3 +1043,11 @@ class SEUT_Scene(PropertyGroup):
     cloud_layers_index: IntProperty(
         default=0
     )
+
+    # Sound Rules
+    sound_rules: CollectionProperty(
+        type=SEUT_PlanetPropertiesSoundRules
+    )
+    sound_rules_index: IntProperty(
+        default=0
+    )

@@ -523,3 +523,57 @@ class SEUT_PlanetPropertiesCloudLayers(PropertyGroup):
         min=0,
         max=1.0
     )
+
+class SEUT_PlanetPropertiesSoundRules(PropertyGroup):
+    """Sound Rules"""
+
+    name: StringProperty(
+        name="Name",
+        description="The name of the Sound Rule"
+    )
+    height_min: FloatProperty(
+        name="Height Min",
+        description="The minimum height at which this sound rule should be used.\nNote: The maximum possible height (1.0) is always 6% of the spawned planets diameter in km. Ex.: the maximum height of a 120km diameter planet is 7.2km",
+        default=0,
+        min=0,
+        max=1
+    )
+    height_max: FloatProperty(
+        name="Height Max",
+        description="The maximum height at which this sound rule should be used.\nNote: The maximum possible height (1.0) is always 6% of the spawned planets diameter in km. Ex.: the maximum height of a 120km diameter planet is 7.2km",
+        default=1,
+        min=0,
+        max=1
+    )
+    latitude_min: FloatProperty(
+        name="Latitude Min",
+        description="The minimum latitude in degrees at which the sound rule should be used",
+        default=0,
+        min=-90,
+        max=90
+    )
+    latitude_max: FloatProperty(
+        name="Latitude Max",
+        description="The maximum latitude in degrees at which the sound rule should be used",
+        default=90,
+        min=-90,
+        max=90
+    )
+    sun_angle_min: FloatProperty(
+        name="Sun Angle Min",
+        description="The minimum angle in degrees from the zenith at which the sound rule should be used",
+        default=0,
+        min=0,
+        max=180
+    )
+    sun_angle_max: FloatProperty(
+        name="Sun Angle Max",
+        description="The maximum angle in degrees from the zenith at which the sound rule should be used",
+        default=180,
+        min=0,
+        max=180
+    )
+    environment_sound: StringProperty(
+        name="Environment Sound",
+        description="The SubtypeId of the sound to be used"
+    )

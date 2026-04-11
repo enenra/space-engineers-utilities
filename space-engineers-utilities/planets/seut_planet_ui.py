@@ -224,6 +224,19 @@ class SEUT_UL_PlanetCloudLayers(UIList):
         pass
 
 
+class SEUT_UL_PlanetSoundRules(UIList):
+    """Creates the Planet Sound Rules UI list"""
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+
+        row = layout.row()
+        row.label(text="", icon='PLAY_SOUND')
+        row.prop(item, 'name', text="", emboss=False)
+
+    def invoke(self, context, event):
+        pass
+
+
 class SEUT_PT_Panel_Planet(Panel):
     """Creates the Planet menu"""
     bl_idname = "SEUT_PT_Panel_Planet"
@@ -696,7 +709,7 @@ class SEUT_PT_Panel_PlanetWeather(Panel):
                     box.prop(weather, 'spawn_offset')
 
 
-class SEUT_PT_Panel_PlanetCloudLayer(Panel):
+class SEUT_PT_Panel_PlanetCloudLayers(Panel):
     """Creates the Planet Cloud Layer menu"""
     bl_idname = "SEUT_PT_Panel_PlanetCloudLayer"
     bl_label = "Cloud Layers"
@@ -775,6 +788,70 @@ class SEUT_PT_Panel_PlanetCloudLayer(Panel):
             row.prop(cloud_layer, 'fade_out_relative_altitude_end', text="End")
 
             box.prop(cloud_layer, 'color')
+
+
+class SEUT_PT_Panel_PlanetSounds(Panel):
+    """Creates the Sounds menu"""
+    bl_idname = "SEUT_PT_Panel_PlanetSounds"
+    bl_label = "Sounds"
+    bl_category = "SEUT"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+
+
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        return scene.seut.sceneType == 'planet_editor' and 'SEUT' in scene.view_layers
+
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+
+        box = layout.box()
+        box.label(text="Sound Rules", icon='PLAY_SOUND')
+        row = box.row()
+        row.template_list("SEUT_UL_PlanetSoundRules", "", scene.seut, "sound_rules", scene.seut, "sound_rules_index", rows=3)
+
+        col = row.column(align=True)
+        op = col.operator("planet.uilist_add", icon='ADD', text="")
+        op.uilist = 'sound_rule'
+        op = col.operator("planet.uilist_remove", icon='REMOVE', text="")
+        op.uilist = 'sound_rule'
+
+        col.separator()
+        op = col.operator("planet.uilist_move", icon='TRIA_UP', text="")
+        op.uilist = 'sound_rule'
+        op.direction = 'UP'
+        op = col.operator("planet.uilist_move", icon='TRIA_DOWN', text="")
+        op.uilist = 'sound_rule'
+        op.direction = 'DOWN'
+
+        if len(scene.seut.sound_rules) > 0:
+            sound_rule = scene.seut.sound_rules[scene.seut.sound_rules_index]
+
+            split = box.split(factor=0.20)
+            split.label(text="Height:")
+            row = split.row(align=True)
+            row.prop(sound_rule, 'height_min', text="Min")
+            row.prop(sound_rule, 'height_max', text="Max")
+
+            split = box.split(factor=0.20)
+            split.label(text="Latitude:")
+            row = split.row(align=True)
+            row.prop(sound_rule, 'latitude_min', text="Min")
+            row.prop(sound_rule, 'latitude_max', text="Max")
+
+            split = box.split(factor=0.20)
+            split.label(text="Sun Angle:")
+            row = split.row(align=True)
+            row.prop(sound_rule, 'sun_angle_min', text="Min")
+            row.prop(sound_rule, 'sun_angle_max', text="Max")
+
+            split = box.split(factor=0.35)
+            split.label(text="Environment Sound:")
+            split.prop(sound_rule, 'environment_sound', text="")
 
 
 class SEUT_PT_Panel_PlanetExport(Panel):

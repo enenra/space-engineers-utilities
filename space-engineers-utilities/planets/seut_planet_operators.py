@@ -122,6 +122,7 @@ class SEUT_OT_Planet_UIList_Add(Operator):
             ('weather', '', ''),
             ('cloud_layer', '', ''),
             ('texture', '', ''),
+            ('sound_rule', '', ''),
             ),
         default='material_group'
     )
@@ -224,6 +225,12 @@ class SEUT_OT_Planet_UIList_Add(Operator):
             cloud_layer.textures.add()
             cloud_layer.textures_index = len(cloud_layer.textures) - 1
 
+        # sound_rule
+        elif self.uilist == 'sound_rule':
+            item = scene.seut.sound_rules.add()
+            item.name = f"Sound Rule {len(scene.seut.sound_rules)}"
+            scene.seut.sound_rules_index = len(scene.seut.sound_rules) - 1
+
         return {'FINISHED'}
 
 
@@ -247,6 +254,7 @@ class SEUT_OT_Planet_UIList_Remove(Operator):
             ('weather', '', ''),
             ('cloud_layer', '', ''),
             ('texture', '', ''),
+            ('sound_rule', '', ''),
             ),
         default='material_group'
     )
@@ -378,6 +386,11 @@ class SEUT_OT_Planet_UIList_Remove(Operator):
             cloud_layer.textures.remove(cloud_layer.textures_index)
             cloud_layer.textures_index = min(max(0, cloud_layer.textures_index - 1), len(cloud_layer.textures) - 1)
 
+        # sound_rule
+        elif self.uilist == 'sound_rule':
+            scene.seut.sound_rules.remove(scene.seut.sound_rules_index)
+            scene.seut.sound_rules_index = min(max(0, scene.seut.sound_rules_index - 1), len(scene.seut.sound_rules) - 1)
+
         return {'FINISHED'}
 
 
@@ -401,6 +414,7 @@ class SEUT_OT_Planet_UIList_Move(Operator):
             ('weather', '', ''),
             ('cloud_layer', '', ''),
             ('texture', '', ''),
+            ('sound_rule', '', ''),
             ),
         default='material_group'
     )
@@ -499,6 +513,10 @@ class SEUT_OT_Planet_UIList_Move(Operator):
         elif self.uilist == 'texture':
             cl = scene.seut.cloud_layers[scene.seut.cloud_layers_index]
             move_item(self.direction, cl.textures_index, cl.textures, [cl, "textures_index"])
+
+        # sound_rule
+        elif self.uilist == 'sound_rule':
+            move_item(self.direction, scene.seut.sound_rules_index, scene.seut.sound_rules, [scene.seut, 'sound_rules_index'])
 
         return {'FINISHED'}
 

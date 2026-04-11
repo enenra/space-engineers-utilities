@@ -280,6 +280,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
         if update_sbc:
             lines_entry = convert_back_xml(def_EnvironmentItems, 'EnvironmentItems', lines_entry, 'PlanetGeneratorDefinition')
 
+
     # Atmosphere Settings
     lines_entry = update_add_subelement(def_definition, 'SurfaceGravity', round(scene.seut.surface_gravity, 2), update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_definition, 'GravityFalloffPower', round(scene.seut.gravity_falloff_power, 2), update_sbc, lines_entry)
@@ -294,6 +295,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
     lines_entry = update_add_subelement(def_Atmosphere, 'Density', round(scene.seut.atm_density, 2), update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_Atmosphere, 'LimitAltitude', round(scene.seut.atm_limit_altitude, 2), update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_Atmosphere, 'MaxWindSpeed', round(scene.seut.atm_max_wind_speed, 2), update_sbc, lines_entry)
+
 
     # Weather
     if scene.seut.global_weather:
@@ -324,6 +326,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
 
         if update_sbc:
             lines_entry = convert_back_xml(def_WeatherGenerators, 'WeatherGenerators', lines_entry, 'PlanetGeneratorDefinition')
+
 
     # Cloud Layers
     if len(scene.seut.cloud_layers) > 0:
@@ -369,6 +372,34 @@ def export_planet_sbc(self, context: bpy.types.Context):
 
         if update_sbc:
             lines_entry = convert_back_xml(def_CloudLayers, 'CloudLayers', lines_entry, 'PlanetGeneratorDefinition')
+
+
+    # Sound Rules
+    if len(scene.seut.sound_rules) > 0:
+        if not update_sbc:
+            def_SoundRules = add_subelement(def_definition, 'SoundRules')
+        else:
+            def_SoundRules = ET.Element('SoundRules')
+
+        for sr in scene.seut.sound_rules:
+            def_SoundRule = ET.SubElement(def_SoundRules, 'SoundRule')
+
+            def_Height = add_subelement(def_SoundRule, 'Height')
+            add_attrib(def_Height, 'Min', round(sr.height_min, 4))
+            add_attrib(def_Height, 'Max', round(sr.height_max, 4))
+
+            def_Latitude = add_subelement(def_SoundRule, 'Latitude')
+            add_attrib(def_Latitude, 'Min', round(sr.latitude_min, 2))
+            add_attrib(def_Latitude, 'Max', round(sr.latitude_max, 2))
+
+            def_AngleFromZenith = add_subelement(def_SoundRule, 'SunAngleFromZenith')
+            add_attrib(def_AngleFromZenith, 'Min', round(sr.sun_angle_min, 2))
+            add_attrib(def_AngleFromZenith, 'Max', round(sr.sun_angle_max, 2))
+
+            add_subelement(def_SoundRule, 'EnvironmentSound', sr.environment_sound)
+
+        if update_sbc:
+            lines_entry = convert_back_xml(def_SoundRules, 'SoundRules', lines_entry, 'PlanetGeneratorDefinition')
 
 
     # Write to file, place in export folder
