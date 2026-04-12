@@ -133,6 +133,7 @@ class SEUT_OT_MassConvertTextures(Operator):
             "Models\\Environment\\Props",
             "Models\\Environment\\SafeZone",
             "Models\\Environment\\Farming",
+            "Models\\Environment\\Terrain",
             "Models\\Weapons",
             "Models\\Debug",
             "Particles"
