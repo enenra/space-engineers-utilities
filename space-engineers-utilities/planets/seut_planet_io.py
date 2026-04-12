@@ -364,11 +364,12 @@ def export_planet_sbc(self, context: bpy.types.Context):
             add_subelement(def_CloudLayer, 'FadeOutRelativeAltitudeStart', round(cl.fade_out_relative_altitude_start, 4))
             add_subelement(def_CloudLayer, 'FadeOutRelativeAltitudeEnd', round(cl.fade_out_relative_altitude_end, 4))
 
-            def_CloudLayerColor = ET.SubElement(def_CloudLayer, 'Color')
-            add_subelement(def_CloudLayerColor, 'X', round(cl.color[0], 2))
-            add_subelement(def_CloudLayerColor, 'Y', round(cl.color[1], 2))
-            add_subelement(def_CloudLayerColor, 'Z', round(cl.color[2], 2))
-            add_subelement(def_CloudLayerColor, 'W', round(cl.color[3], 2))
+            if cl.color[0] != 0 and cl.color[1] != 0 and cl.color[2] != 0 and cl.color[3] != 0:
+                def_CloudLayerColor = ET.SubElement(def_CloudLayer, 'Color')
+                add_subelement(def_CloudLayerColor, 'X', round(cl.color[0], 2))
+                add_subelement(def_CloudLayerColor, 'Y', round(cl.color[1], 2))
+                add_subelement(def_CloudLayerColor, 'Z', round(cl.color[2], 2))
+                add_subelement(def_CloudLayerColor, 'W', round(cl.color[3], 2))
 
         if update_sbc:
             lines_entry = convert_back_xml(def_CloudLayers, 'CloudLayers', lines_entry, 'PlanetGeneratorDefinition')

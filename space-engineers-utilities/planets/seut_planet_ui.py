@@ -200,7 +200,7 @@ class SEUT_UL_PlanetCloudLayersTextures(UIList):
 
         row = layout.row()
         subrow = row.row()
-        name = os.path.basename(item.texture)
+        name = os.path.basename(item.texture).replace("_cm.", ".").replace("_add.", ".").replace("_ng.", ".").replace("_alphamask.", ".")
         subrow.label(text=name, icon='TEXTURE')
 
     def invoke(self, context, event):
