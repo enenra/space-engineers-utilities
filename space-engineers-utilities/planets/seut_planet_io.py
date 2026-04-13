@@ -97,7 +97,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
     if not update_sbc:
         def_defaultSurfaceMaterial = add_subelement(def_definition, 'DefaultSurfaceMaterial')
     if scene.seut.default_surface_material is not None:
-        material = scene.seut.default_surface_material.name
+        material = scene.seut.default_surface_material.name.replace("VM_", "")
     else:
         material = 'DebugMaterial'
     lines_entry = update_add_attrib(def_defaultSurfaceMaterial, 'Material', material, update_sbc, lines_entry)
@@ -107,7 +107,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
     if not update_sbc:
         def_defaultSubSurfaceMaterial = add_subelement(def_definition, 'DefaultSubSurfaceMaterial')
     if scene.seut.default_subsurface_material is not None:
-        material = scene.seut.default_subsurface_material.name
+        material = scene.seut.default_subsurface_material.name.replace("VM_", "")
     else:
         material = 'DebugMaterial'
     lines_entry = update_add_attrib(def_defaultSubSurfaceMaterial, 'Material', material, update_sbc, lines_entry)
@@ -152,7 +152,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
             def_Ore = ET.SubElement(def_OreMappings, 'Ore')
             add_attrib(def_Ore, 'Value', om.value)
             if om.ore_type is not None:
-                material = om.ore_type.name
+                material = om.ore_type.name.replace("VM_", "")
             else:
                 material = 'DebugMaterial'
             add_attrib(def_Ore, 'Type', material)
@@ -199,7 +199,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
                         for l in r.layers:
                             def_Layer = ET.SubElement(def_Layers, 'Layer')
                             if l.material is not None:
-                                material = l.material.name
+                                material = l.material.name.replace("VM_", "")
                             else:
                                 material = 'DebugMaterial'
                             add_attrib(def_Layer, 'Material', material)
@@ -243,7 +243,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
                 for mat in ei.materials:
                     def_Material = ET.SubElement(def_Materials, 'Material')
                     if mat.material is not None:
-                        material = mat.material.name
+                        material = mat.material.name.replace("VM_", "")
                     else:
                         material = 'DebugMaterial'
                     def_Material.text = material
