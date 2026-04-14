@@ -125,9 +125,9 @@ def export(self, context, export_materials=True):
         else:
             scene.seut.export_rescaleFactor = 1.0
 
-        if scene.seut.export_exportPath.find("\small\\") != -1 or scene.seut.export_exportPath.endswith("\small"):
-            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\small\\", "\large\\")
-            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\small", "\large")
+        if scene.seut.export_exportPath.find("\\small\\") != -1 or scene.seut.export_exportPath.endswith("\\small"):
+            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\\small\\", "\\large\\")
+            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\\small", "\\large")
 
         result = export_all(self, context, export_materials)
 
@@ -149,9 +149,9 @@ def export(self, context, export_materials=True):
         else:
             scene.seut.export_rescaleFactor = 1.0
 
-        if scene.seut.export_exportPath.find("\large\\") != -1 or scene.seut.export_exportPath.endswith("\large"):
-            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\large\\", "\small\\")
-            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\large", "\small")
+        if scene.seut.export_exportPath.find("\\large\\") != -1 or scene.seut.export_exportPath.endswith("\\large"):
+            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\\large\\", "\\small\\")
+            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\\large", "\\small")
 
         result = export_all(self, context, export_materials)
 
@@ -486,7 +486,7 @@ def export_sbc(self, context):
         add_subelement(def_definition, 'DisplayName', '{LOC:DisplayName_' + scene.seut.subtypeId + '}')
         add_subelement(def_definition, 'Description', '{LOC:Description_' + scene.seut.subtypeId + '}')
 
-    icon_path = 'Textures\GUI\Icons\AstronautBackpack.dds'
+    icon_path = 'Textures\\GUI\\Icons\\AstronautBackpack.dds'
     icon_target_path = get_abs_path(os.path.join(scene.render.filepath, scene.seut.subtypeId + '.dds'))
     if (os.path.exists(icon_target_path) or os.path.exists(icon_target_path.replace("_LG_", "_SG_")) or os.path.exists(icon_target_path.replace("_SG_", "_LG_")) or os.path.exists(os.path.splitext(icon_target_path)[0] + '.png')) and icon_target_path.find('Textures') != -1:
         icon_path = os.path.join('Textures', icon_target_path.split('Textures\\')[1])
@@ -694,7 +694,7 @@ def export_sbc(self, context):
 
     # BlockPairName
     if not update_sbc:
-        add_subelement(def_definition, 'BlockPairName', scene.seut.subtypeId)
+        add_subelement(def_definition, 'BlockPairName', scene.seut.subtypeId.replace("_LG_", "").replace("_SG_", ""))
 
     # Mirroring
     if collections['mirroring'] != None:
