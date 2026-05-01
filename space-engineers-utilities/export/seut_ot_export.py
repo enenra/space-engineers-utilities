@@ -694,7 +694,7 @@ def export_sbc(self, context):
 
     # BlockPairName
     if not update_sbc:
-        add_subelement(def_definition, 'BlockPairName', scene.seut.subtypeId.replace("_LG_", "").replace("_SG_", ""))
+        add_subelement(def_definition, 'BlockPairName', scene.seut.subtypeId.replace("_LG_", "_").replace("_SG_", "_"))
 
     # Mirroring
     if collections['mirroring'] != None:
