@@ -348,7 +348,9 @@ def export_fbx(self, context, collection, path_override = None) -> str:
     # Prepare materials for export
     for mat in bpy.data.materials:
         if mat is not None and mat.node_tree is not None:
-            prepare_mat_for_export(self, context, mat)
+            result = prepare_mat_for_export(self, context, mat)
+            if result == {'CANCELLED'}:
+                return result
 
     # Export the collection to FBX
     if path_override is None:
@@ -441,6 +443,10 @@ def prepare_mat_for_export(self, context, material):
         return
 
     if material.library:
+
+        if material.library.is_missing:
+            seut_report(self, context, 'ERROR', False, 'E056', material.library.name, material.name)
+            return {'CANCELLED'}
 
         # If the material is a library and not used, remove it.
         if material.users < 1:

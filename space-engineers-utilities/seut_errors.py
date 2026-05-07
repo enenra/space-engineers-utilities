@@ -66,6 +66,7 @@ errors = {
     'E053': "Material '{variable_1}' contains invalid node tree. Custom node trees are not supported by Space Engineers - all changes to a material must be made by altering its texture files.",
     'E054': "The rigid body of collision object '{variable_1}' in collection {variable_2} is set to an unsupported collision shape (COMPOUND).",
     'E055': "An external collision file has been linked to '{variable_1}' but that collision collection also contains objects. It is not possible to use both at the same time.",
+    'E056': "Library '{variable_1}' containing material '{variable_2}' could not be located.",
 }
 
 warnings = {
