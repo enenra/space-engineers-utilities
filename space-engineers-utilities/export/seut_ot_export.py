@@ -221,6 +221,14 @@ def export_main(self, context):
         if obj.parent is None and obj.type != 'LIGHT' and obj.type != 'CAMERA':
             unparented_objects += 1
 
+        if obj.library and obj.library.is_missing:
+            seut_report(self, context, 'ERROR', False, 'E056', obj.library.name, obj.name, "Object")
+            return {'CANCELLED'}
+
+        if obj.data.library and obj.data.library.is_missing:
+            seut_report(self, context, 'ERROR', False, 'E056', obj.data.library.name, obj.data.name, "Data")
+            return {'CANCELLED'}
+
         # Check for missing UVMs (this might not be 100% reliable)
         if check_uvms(self, context, obj) != {'CONTINUE'}:
             return {'CANCELLED'}

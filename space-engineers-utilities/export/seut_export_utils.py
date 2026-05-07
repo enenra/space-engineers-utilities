@@ -445,7 +445,7 @@ def prepare_mat_for_export(self, context, material):
     if material.library:
 
         if material.library.is_missing:
-            seut_report(self, context, 'ERROR', False, 'E056', material.library.name, material.name)
+            seut_report(self, context, 'ERROR', False, 'E056', material.library.name, material.name, "Material")
             return {'CANCELLED'}
 
         # If the material is a library and not used, remove it.
