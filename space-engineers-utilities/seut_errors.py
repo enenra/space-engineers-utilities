@@ -212,6 +212,10 @@ def check_uvms(self, context, obj):
             return {'CANCELLED'}
 
         at_zero = 0
+
+        if obj.data.uv_layers.active is None:
+            obj.data.uv_layers.active = obj.data.uv_layers[0]
+
         obj_total = len(obj.data.uv_layers.active.data)
         for loop in obj.data.loops:
             uv = obj.data.uv_layers.active.data[loop.index].uv
