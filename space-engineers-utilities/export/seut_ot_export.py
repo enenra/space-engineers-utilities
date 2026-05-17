@@ -225,7 +225,7 @@ def export_main(self, context):
             seut_report(self, context, 'ERROR', False, 'E056', obj.library.name, obj.name, "Object")
             return {'CANCELLED'}
 
-        if obj.data.library and obj.data.library.is_missing:
+        if obj.type == 'MESH' and obj.data.library and obj.data.library.is_missing:
             seut_report(self, context, 'ERROR', False, 'E056', obj.data.library.name, obj.data.name, "Data")
             return {'CANCELLED'}
 
