@@ -6,6 +6,7 @@ from ..materials.seut_materials import get_seut_texture_path
 from ..utils.seut_xml_utils     import *
 from ..seut_errors              import *
 from ..seut_utils               import create_relative_path
+from ..utils.seut_paths         import to_content_path
 
 
 def export_transparent_mat(self, context, subtype_id):
@@ -62,6 +63,8 @@ def export_transparent_mat(self, context, subtype_id):
     if cm_path is not None:
         cm_path = os.path.splitext(cm_path)[0] + ".dds"
         cm_path = create_relative_path(cm_path, 'Textures')
+        if cm_path:
+            cm_path = to_content_path(cm_path)
         seut_report(self, context, 'WARNING', True, 'W014', material.name, 'CM')
     lines_entry = update_add_subelement(def_definition, 'Texture', str(cm_path), update, lines_entry)
     
@@ -132,6 +135,8 @@ def export_transparent_mat(self, context, subtype_id):
     if ng_path is not None:
         ng_path = os.path.splitext(ng_path)[0] + ".dds"
         ng_path = create_relative_path(ng_path, 'Textures')
+        if ng_path:
+            ng_path = to_content_path(ng_path)
         seut_report(self, context, 'WARNING', True, 'W014', material.name, 'NG')
     lines_entry = update_add_subelement(def_definition, 'GlossTexture', str(ng_path), update, lines_entry)
 

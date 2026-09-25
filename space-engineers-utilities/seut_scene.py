@@ -327,7 +327,7 @@ def update_export_exportPath(self, context):
         seut_report(self, context, 'ERROR', False, 'E045', get_abs_path(self.mod_path))
         self.export_exportPath = ""
 
-    if path.find("Models\\") != -1 or (path + "\\").find("Models\\") != -1:
+    if path.find("Models" + os.sep) != -1 or (path + os.sep).find("Models" + os.sep) != -1:
         pass
     else:
         seut_report(self, context, 'ERROR', False, 'E014', path, scene.name)
@@ -362,7 +362,7 @@ def update_mod_path(self, context):
     else:
         self.export_exportPath = os.path.join(self.mod_path, self.export_exportPath[self.export_exportPath.rfind("Models"):])
 
-    if scene.render.filepath in ["", "/tmp\\", "//"]:
+    if scene.render.filepath in ["", "/tmp\\", "/tmp/", "//"]:
         scene.render.filepath = os.path.join(get_abs_path(self.mod_path), "Textures", "GUI", "Icons", "Cubes")
     else:
         scene.render.filepath = os.path.join(get_abs_path(self.mod_path), scene.render.filepath[scene.render.filepath.find("Textures"):])

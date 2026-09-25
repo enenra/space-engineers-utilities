@@ -13,7 +13,8 @@ from bpy_extras.io_utils                    import axis_conversion, ExportHelper
 
 from ..importing.seut_ot_import             import import_fbx
 from ..materials.seut_ot_remap_materials    import remap_materials
-from ..utils.seut_tool_utils                import get_tool_dir
+from ..utils.seut_tool_utils                import get_tool_dir, wrap_cmdline, wine_env
+from ..utils.seut_paths                     import to_content_path, is_windows
 from ..seut_collections                     import get_collections, get_rev_ref_cols
 from ..seut_utils                           import *
 from ..seut_errors                          import seut_report, get_abs_path
@@ -172,7 +173,7 @@ def create_texture_entry(self, context, mat_entry, mat_name: str, images: dict, 
         seut_report(self, context, 'ERROR', False, 'E007', tex_name, mat_name)
         return
     else:
-        add_subelement(mat_entry, tex_name_long, os.path.splitext(rel_path)[0] + ".dds")
+        add_subelement(mat_entry, tex_name_long, to_content_path(os.path.splitext(rel_path)[0]) + ".dds")
 
     if not images[tex_type].size[0] == 0 and images[tex_type].size[1] == 0:
         if not is_valid_resolution(images[tex_type].size[0]) or not is_valid_resolution(images[tex_type].size[1]):
@@ -243,6 +244,8 @@ def create_lod_entry(tree, distance: int, path: str, filename: str):
     lod.set('Distance', str(distance))
     lodModel = ET.SubElement(lod, 'Model')
     lodModel.text = create_relative_path(os.path.join(path, filename), "Models")
+    if lodModel.text:
+        lodModel.text = to_content_path(lodModel.text)
 
 
 def format_xml(self, context, tree) -> str:
@@ -753,7 +756,7 @@ class ExportSettings:
 
     def callTool(self, context, cmdline, tooltype, logfile=None, cwd=None, successfulExitCodes=[0], loglines=[], logtextInspector=None):
         try:
-            out = subprocess.check_output(cmdline, cwd=cwd, stderr=subprocess.STDOUT, shell=True)
+            out = subprocess.check_output(wrap_cmdline(cmdline), cwd=cwd, stderr=subprocess.STDOUT, shell=is_windows(), env=wine_env())
             if self.isLogToolOutput and logfile:
                 write_to_log(logfile, out, cmdline=cmdline, cwd=cwd, loglines=loglines)
             if logtextInspector is not None:

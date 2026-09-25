@@ -6,7 +6,7 @@ from bpy.types      import Operator
 
 from .materials.seut_ot_texture_conversion  import convert_texture
 from .seut_collections                      import get_collections, create_seut_collection
-from .seut_errors                           import check_collection, check_collection_excluded, seut_report, get_abs_path
+from .seut_errors                           import check_collection, check_collection_excluded, seut_report, get_abs_path, check_wine
 from .seut_utils                            import to_radians, clear_selection, prep_context, seut_report, get_seut_blend_data, link_node_tree
 
 
@@ -141,7 +141,7 @@ class SEUT_OT_IconRenderPreview(Operator):
 
     @classmethod
     def poll(cls, context):
-        if context.scene.render.filepath == '/tmp\\':
+        if context.scene.render.filepath in ('/tmp\\', '/tmp/'):
             Operator.poll_message_set("A render folder must first be defined.")
             return False
 
@@ -149,6 +149,10 @@ class SEUT_OT_IconRenderPreview(Operator):
 
 
     def execute(self, context):
+
+        result = check_wine(self, context)
+        if result != {'CONTINUE'}:
+            return result
 
         scene = context.scene
         data = get_seut_blend_data()
@@ -195,7 +199,7 @@ class SEUT_OT_IconRenderPreview(Operator):
         file_format = scene.seut.render_output_type.lower()
         if file_format == 'dds':
             file_format = 'png'
-        scene.render.filepath = get_abs_path(scene.render.filepath) + "\\" + scene.seut.subtypeId + '.' + file_format
+        scene.render.filepath = os.path.join(get_abs_path(scene.render.filepath), scene.seut.subtypeId + '.' + file_format)
 
         bpy.ops.render.render()
         bpy.ops.render.view_show('INVOKE_DEFAULT')

@@ -5,6 +5,7 @@ from ..utils.seut_xml_utils import *
 from ..seut_collections     import get_collections
 from ..seut_errors          import seut_report
 from ..seut_utils           import get_abs_path, create_relative_path
+from ..utils.seut_paths     import to_content_path
 from .seut_planet_utils     import *
 
 def export_planet_sbc(self, context: bpy.types.Context):
@@ -125,7 +126,10 @@ def export_planet_sbc(self, context: bpy.types.Context):
         sd_path = ""
     else:
         sd_path = get_abs_path(scene.seut.sd_texture)
-    lines_entry = update_add_subelement(def_SurfaceDetail, 'Texture', create_relative_path(os.path.splitext(sd_path)[0], 'Data'), update_sbc, lines_entry)
+    sd_rel = create_relative_path(os.path.splitext(sd_path)[0], 'Data')
+    if sd_rel:
+        sd_rel = to_content_path(sd_rel)
+    lines_entry = update_add_subelement(def_SurfaceDetail, 'Texture', sd_rel, update_sbc, lines_entry)
 
     lines_entry = update_add_subelement(def_SurfaceDetail, 'Size', scene.seut.sd_size, update_sbc, lines_entry)
     lines_entry = update_add_subelement(def_SurfaceDetail, 'Scale', scene.seut.sd_scale, update_sbc, lines_entry)
@@ -340,7 +344,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
 
             path = create_relative_path(cl.model, "Models")
             if path != False:
-                add_subelement(def_CloudLayer, 'Model', path)
+                add_subelement(def_CloudLayer, 'Model', to_content_path(path))
 
             def_Textures = ET.SubElement(def_CloudLayer, 'Textures')
             if len(cl.textures) > 0:
@@ -349,7 +353,7 @@ def export_planet_sbc(self, context: bpy.types.Context):
                     path = create_relative_path(texture.texture, "Textures")
                     if path != False:
                         path = path.replace("_cm.", ".").replace("_ng.", ".").replace("_add.", ".")
-                        add_subelement(def_Textures, 'Texture', path)
+                        add_subelement(def_Textures, 'Texture', to_content_path(path))
 
             add_subelement(def_CloudLayer, 'RelativeAltitude', round(cl.relative_altitude,4))
             add_subelement(def_CloudLayer, 'ScalingEnabled', str(cl.scaling_enabled).lower())

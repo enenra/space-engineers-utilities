@@ -18,6 +18,7 @@ from ..seut_collections             import get_collections, get_rev_ref_cols, ge
 from ..seut_errors                  import *
 from ..seut_utils                   import prep_context, get_preferences, create_relative_path, get_addon
 from ..utils.seut_tool_utils        import get_tool_dir
+from ..utils.seut_paths             import to_content_path
 
 
 orig_grid_scale = ""
@@ -67,7 +68,7 @@ def export(self, context, export_materials=True):
     subparts = scene.seut.linkSubpartInstances
     scene.seut.linkSubpartInstances = False
 
-    if not os.path.isdir(get_abs_path(scene.seut.mod_path) + '\\'):
+    if not os.path.isdir(get_abs_path(scene.seut.mod_path)):
         seut_report(self, context, 'ERROR', True, 'E019', "Mod", scene.name)
         scene.seut.linkSubpartInstances = subparts
         return {'CANCELLED'}
@@ -80,6 +81,12 @@ def export(self, context, export_materials=True):
 
     if not os.path.exists(get_abs_path(scene.seut.export_exportPath)):
         os.makedirs(get_abs_path(scene.seut.export_exportPath))
+
+    # Check for wine availability
+    result = check_wine(self, context)
+    if not result == {'CONTINUE'}:
+        scene.seut.linkSubpartInstances = subparts
+        return result
 
     # Check for availability of FBX Importer
     result = check_toolpath(self, context, os.path.join(get_tool_dir(), 'FBXImporter.exe'), "Custom FBX Importer", "FBXImporter.exe")
@@ -125,9 +132,9 @@ def export(self, context, export_materials=True):
         else:
             scene.seut.export_rescaleFactor = 1.0
 
-        if scene.seut.export_exportPath.find("\\small\\") != -1 or scene.seut.export_exportPath.endswith("\\small"):
-            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\\small\\", "\\large\\")
-            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\\small", "\\large")
+        if scene.seut.export_exportPath.find(os.sep + "small" + os.sep) != -1 or scene.seut.export_exportPath.endswith(os.sep + "small"):
+            scene.seut.export_exportPath = scene.seut.export_exportPath.replace(os.sep + "small" + os.sep, os.sep + "large" + os.sep)
+            scene.seut.export_exportPath = scene.seut.export_exportPath.replace(os.sep + "small", os.sep + "large")
 
         result = export_all(self, context, export_materials)
 
@@ -149,9 +156,9 @@ def export(self, context, export_materials=True):
         else:
             scene.seut.export_rescaleFactor = 1.0
 
-        if scene.seut.export_exportPath.find("\\large\\") != -1 or scene.seut.export_exportPath.endswith("\\large"):
-            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\\large\\", "\\small\\")
-            scene.seut.export_exportPath = scene.seut.export_exportPath.replace("\\large", "\\small")
+        if scene.seut.export_exportPath.find(os.sep + "large" + os.sep) != -1 or scene.seut.export_exportPath.endswith(os.sep + "large"):
+            scene.seut.export_exportPath = scene.seut.export_exportPath.replace(os.sep + "large" + os.sep, os.sep + "small" + os.sep)
+            scene.seut.export_exportPath = scene.seut.export_exportPath.replace(os.sep + "large", os.sep + "small")
 
         result = export_all(self, context, export_materials)
 
@@ -262,7 +269,7 @@ def export_hkt(self, context):
     collections = get_collections(scene)
     preferences = get_preferences()
     settings = ExportSettings(scene, None)
-    path = get_abs_path(scene.seut.export_exportPath) + "\\"
+    path = get_abs_path(scene.seut.export_exportPath)
 
     # Check for availability of Havok SFM
     result = check_toolpath(self, context, preferences.havok_path, "Havok Standalone Filter Manager", "hctStandAloneFilterManager.exe")
@@ -502,7 +509,7 @@ def export_sbc(self, context):
     icon_path = 'Textures\\GUI\\Icons\\AstronautBackpack.dds'
     icon_target_path = get_abs_path(os.path.join(scene.render.filepath, scene.seut.subtypeId + '.dds'))
     if (os.path.exists(icon_target_path) or os.path.exists(icon_target_path.replace("_LG_", "_SG_")) or os.path.exists(icon_target_path.replace("_SG_", "_LG_")) or os.path.exists(os.path.splitext(icon_target_path)[0] + '.png')) and icon_target_path.find('Textures') != -1:
-        icon_path = os.path.join('Textures', icon_target_path.split('Textures\\')[1])
+        icon_path = 'Textures\\' + to_content_path(icon_target_path.split('Textures' + os.sep)[1])
     lines_entry = update_add_subelement(def_definition, 'Icon', icon_path, update_sbc, lines_entry)
 
     medium_grid_scalar = 1.0 # default to doing nothing unless the 3to5 mode is detected
@@ -549,7 +556,7 @@ def export_sbc(self, context):
         add_attrib(def_ModelOffset, 'z', 0)
 
     # Model
-    lines_entry = update_add_subelement(def_definition, 'Model', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '.mwm'), update_sbc, lines_entry)
+    lines_entry = update_add_subelement(def_definition, 'Model', to_content_path(os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '.mwm')), update_sbc, lines_entry)
 
     # Components
     if not update_sbc:
@@ -700,7 +707,7 @@ def export_sbc(self, context):
                 else:
                     add_attrib(def_BS_Model, 'BuildPercentUpperBound', "{:.2f}".format((bs + 1) * percentage)[:4])
 
-                add_attrib(def_BS_Model, 'File', os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm'))
+                add_attrib(def_BS_Model, 'File', to_content_path(os.path.join(create_relative_path(path_models, "Models"), scene.seut.subtypeId + '_BS' + str(bs + 1) + '.mwm')))
 
             if update_sbc:
                 lines_entry = convert_back_xml(def_BuildProgressModels, 'BuildProgressModels', lines_entry)

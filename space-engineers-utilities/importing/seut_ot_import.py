@@ -22,6 +22,7 @@ from bpy.types                  import Operator
 
 from .seut_ot_import_materials              import import_materials
 from ..utils.seut_tool_utils                import *
+from ..utils.seut_paths                     import is_linux
 from ..empties.seut_empties                 import empty_types
 from ..materials.seut_ot_remap_materials    import remap_materials
 from ..seut_errors                          import seut_report
@@ -77,9 +78,18 @@ def import_gltf(self, context, filepath):
         if os.path.exists(glb_path):
             os.remove(glb_path)
 
-        args = [os.path.join(get_tool_dir(), 'FBX2glTF-windows-x64.exe'), '-b', '--user-properties', '-i', filepath, '-o', glb_path]
+        binary = os.path.join(get_tool_dir(), 'FBX2glTF-linux-x64' if is_linux() else 'FBX2glTF-windows-x64.exe')
+        # addon-zip install drops the +x bit on the bundled Linux binary
+        if is_linux() and not os.access(binary, os.X_OK):
+            try:
+                os.chmod(binary, 0o755)
+            except OSError as e:
+                seut_report(self, context, 'ERROR', True, 'E059', str(e))
+                return
 
-        result = call_tool(args)
+        args = [binary, '-b', '--user-properties', '-i', filepath, '-o', glb_path]
+
+        result = call_tool(args, native=True)
         if result[1] is not None:
             result[1] = result[1].decode("utf-8", "ignore")
         else:

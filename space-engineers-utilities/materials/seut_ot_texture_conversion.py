@@ -5,8 +5,9 @@ import time
 from bpy.types  import Operator
 
 from ..utils.seut_tool_utils        import *
+from ..utils.seut_paths             import to_tool_path
 from ..seut_text                    import supported_image_types
-from ..seut_errors                  import seut_report, get_abs_path
+from ..seut_errors                  import seut_report, get_abs_path, check_wine
 from ..seut_utils                   import create_relative_path, get_preferences, get_seut_blend_data
 
 
@@ -41,6 +42,10 @@ class SEUT_OT_ConvertTextures(Operator):
 
 
     def execute(self, context):
+
+        result = check_wine(self, context)
+        if result != {'CONTINUE'}:
+            return result
 
         data = get_seut_blend_data()
 
@@ -118,24 +123,24 @@ class SEUT_OT_MassConvertTextures(Operator):
         target_dir = os.path.join(preferences.asset_path, 'Textures')
 
         dirs_to_convert = [
-            "Models\\Cubes",
-            "Models\\Cubes\\armor",
-            "Models\\Cubes\\Damaged",
-            "Models\\Cubes\\lods",
-            "Models\\Physical_item",
-            "Models\\Debris",
-            "Models\\Characters\\Astronaut",
-            "Models\\Characters\\Plushie",
-            "Models\\Characters\\SabiroidPlushie",
-            "Models\\Environment\\Bushes",
-            "Models\\Environment\\Grass",
-            "Models\\Environment\\Trees",
-            "Models\\Environment\\Props",
-            "Models\\Environment\\SafeZone",
-            "Models\\Environment\\Farming",
-            "Models\\Environment\\Terrain",
-            "Models\\Weapons",
-            "Models\\Debug",
+            "Models/Cubes",
+            "Models/Cubes/armor",
+            "Models/Cubes/Damaged",
+            "Models/Cubes/lods",
+            "Models/Physical_item",
+            "Models/Debris",
+            "Models/Characters/Astronaut",
+            "Models/Characters/Plushie",
+            "Models/Characters/SabiroidPlushie",
+            "Models/Environment/Bushes",
+            "Models/Environment/Grass",
+            "Models/Environment/Trees",
+            "Models/Environment/Props",
+            "Models/Environment/SafeZone",
+            "Models/Environment/Farming",
+            "Models/Environment/Terrain",
+            "Models/Weapons",
+            "Models/Debug",
             "Particles"
         ]
 
@@ -150,6 +155,10 @@ class SEUT_OT_MassConvertTextures(Operator):
 
 
 def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: str, settings: list = [], skip_list: list = [], log_to_file=False, can_report=False):
+
+    result = check_wine(self, context)
+    if result != {'CONTINUE'}:
+        return result
 
     if preset == 'custom':
         idx_ft = settings.index('-ft')
@@ -179,7 +188,7 @@ def mass_convert_textures(self, context, dirs: list, target_dir: str, preset: st
                     if skip:
                         continue
 
-                if target_dir.find('\Textures\\') == -1 and not target_dir.endswith('\Textures'):
+                if target_dir.find(os.sep + 'Textures' + os.sep) == -1 and not target_dir.endswith(os.sep + 'Textures'):
                     target = os.path.join(target_dir, os.path.splitext(file)[0] + '.' + output_type.lower())
                 else:
                     target = os.path.join(os.path.dirname(target_dir), create_relative_path(tex_dir, 'Textures'), os.path.splitext(file)[0] + '.' + output_type.lower())
@@ -250,8 +259,8 @@ def get_conversion_args(preset: str, path_in: str, path_out: str, settings=[]) -
 
     args = list(presets[preset])
     args[0] = os.path.join(get_tool_dir(), 'texconv.exe')
-    args[1] = path_in
-    args[len(args) - 1] = path_out
+    args[1] = to_tool_path(path_in)
+    args[len(args) - 1] = to_tool_path(path_out)
 
     if preset == 'custom' and settings != []:
         pos = 2

@@ -3,8 +3,11 @@ import sys
 import io
 import os
 import time
+import shutil
 
 from mathutils  import Vector
+
+from .utils.seut_paths import is_linux
 
 
 log = io.StringIO()
@@ -67,6 +70,9 @@ errors = {
     'E054': "The rigid body of collision object '{variable_1}' in collection {variable_2} is set to an unsupported collision shape (COMPOUND).",
     'E055': "An external collision file has been linked to '{variable_1}' but the collision collection also contains objects. It is not possible to use both at the same time.",
     'E056': "Library '{variable_1}' containing data block '{variable_2}' ({variable_3}) could not be located.",
+    'E057': "Wine binary '{variable_1}' could not be found. Set it in the SEUT Addon Preferences.",
+    'E058': "Wine prefix '{variable_1}' is not set or does not exist. Set it in the SEUT Addon Preferences.",
+    'E059': "FBX2glTF could not be made executable: {variable_1}",
 }
 
 warnings = {
@@ -139,7 +145,7 @@ def check_export(self, context, can_report=True):
         seut_report(self, context, 'ERROR', can_report, 'E045', get_abs_path(scene.seut.mod_path))
         return {'CANCELLED'}
 
-    if path.find("Models\\") != -1 or (path + "\\").find("Models\\") != -1:
+    if path.find("Models" + os.sep) != -1 or (path + os.sep).find("Models" + os.sep) != -1:
         pass
     else:
         seut_report(self, context, 'ERROR', can_report, 'E014', path, scene.name)
@@ -185,6 +191,28 @@ def check_toolpath(self, context, tool_path: str, tool_name: str, tool_filename:
     file_name = os.path.basename(tool_path)
     if tool_filename != file_name:
         seut_report(self, context, 'ERROR', True, 'E013', tool_name, tool_filename, file_name)
+        return {'CANCELLED'}
+
+    return {'CONTINUE'}
+
+
+def check_wine(self, context):
+    """Checks wine binary + prefix are configured for running Windows tools on non-Windows."""
+
+    if not is_linux():
+        return {'CONTINUE'}
+
+    from .seut_utils import get_preferences
+    preferences = get_preferences()
+
+    wine = preferences.wine_path or 'wine'
+    if shutil.which(wine) is None and not os.path.isfile(wine):
+        seut_report(self, context, 'ERROR', True, 'E057', wine)
+        return {'CANCELLED'}
+
+    prefix = get_abs_path(preferences.wineprefix_path)
+    if preferences.wineprefix_path == "" or not os.path.isdir(prefix):
+        seut_report(self, context, 'ERROR', True, 'E058', prefix)
         return {'CANCELLED'}
 
     return {'CONTINUE'}
@@ -299,6 +327,7 @@ def check_weights(context, obj):
 def get_abs_path(path: str) -> str:
     """Returns the absolute path"""
 
+    path = os.path.expanduser(path)
     if bpy.path.abspath(path) == "":
         return ""
     else:
@@ -425,14 +454,18 @@ def init_logging():
 
 def anonymize_paths(message):
 
-    if "\\Users\\" in message:
-        start = message.find("\\Users\\") + len("\\Users\\")
-        cut = message[message.find("\\Users\\") + len("\\Users\\"):]
-        end = cut.find("\\") + start
+    # Windows (\Users\), wine tool output (\home\), native Linux (/home/)
+    for marker, sep in (("\\Users\\", "\\"), ("\\home\\", "\\"), ("/home/", "/")):
+        if marker not in message:
+            continue
+
+        start = message.find(marker) + len(marker)
+        cut = message[start:]
+        end = cut.find(sep) + start
         username = message[start:end]
 
         if username == "":
-            return message
+            continue
 
         while username in message:
             message = message.replace(username, "SEUT-USER")

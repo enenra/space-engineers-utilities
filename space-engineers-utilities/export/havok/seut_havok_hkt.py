@@ -5,6 +5,7 @@ import tempfile
 from ..seut_export_utils        import ExportSettings
 from ...utils.called_tool_type  import ToolType
 from ...utils.seut_xml_utils    import update_subelement, format_entry
+from ...utils.seut_paths        import to_tool_path
 from ...seut_errors             import seut_report
 
 
@@ -13,7 +14,7 @@ def convert_fbx_to_fbxi_hkt(context, settings: ExportSettings, source: str, targ
 
     settings.callTool(
         context,
-        [settings.fbximporter, source, target],
+        [settings.fbximporter, to_tool_path(source), to_tool_path(target)],
         ToolType(1),
         logfile=f"{target}.convert.log"
     )
@@ -31,11 +32,13 @@ def convert_fbxi_hkt_to_hkt(self, context, settings: ExportSettings, source: str
 
         # -t is for standard ouput, -s designates a filter set (hko created above), -p designates path.
         # Above referenced from running "hctStandAloneFilterManager.exe -h"
+        # cwd = tool dir so wine finds its sibling DLLs (hctFilterManager.dll)
         result = settings.callTool(
             context,
-            [settings.havokfilter, '-t', '-s', hko.name, '-p', target, source],
+            [settings.havokfilter, '-t', '-s', to_tool_path(hko.name), '-p', to_tool_path(target), to_tool_path(source)],
             ToolType(2),
             logfile=f"{target}.filter.log",
+            cwd=os.path.dirname(settings.havokfilter),
             successfulExitCodes=[0,1]
         )
 

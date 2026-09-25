@@ -3,6 +3,7 @@ import glob
 
 from .seut_export_utils         import ExportSettings
 from ..utils.called_tool_type   import ToolType
+from ..utils.seut_paths         import to_tool_path
 from ..seut_errors              import seut_report
 
 
@@ -13,13 +14,14 @@ def mwmbuilder(self, context, path, mwm_path, settings: ExportSettings, mwmfile:
     result = False
 
     try:
-        cmdline = [settings.mwmbuilder, '/f', '/s:' + path + '', '/m:' + scene.seut.subtypeId + '*.fbx', '/o:' + mwm_path + '', '/x:' + materials_path + '']
-        
+        cmdline = [settings.mwmbuilder, '/f', '/s:' + to_tool_path(path), '/m:' + scene.seut.subtypeId + '*.fbx', '/o:' + to_tool_path(mwm_path), '/x:' + to_tool_path(materials_path)]
+
+        # cwd = tool dir so wine finds its sibling DLLs (assimp32.dll, VRage.*)
         result = settings.callTool(
             context,
             cmdline,
             ToolType(3),
-            cwd=path,
+            cwd=os.path.dirname(settings.mwmbuilder),
             logfile=os.path.join(path, scene.seut.subtypeId + '.mwm.log')
         )
 

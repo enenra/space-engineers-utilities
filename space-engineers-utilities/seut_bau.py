@@ -7,7 +7,8 @@ import time
 from bpy.types      import Operator
 from bpy.props      import StringProperty
 
-from .seut_utils    import get_preferences, wrap_text
+from .seut_utils        import get_preferences, wrap_text
+from .utils.seut_paths  import is_linux
 
 
 def draw_bau_ui(self, context, element=None):
@@ -167,6 +168,9 @@ def get_config() -> dict:
         dict['asset_path'] = preferences.asset_path
     if preferences.havok_path is not None:
         dict['havok_path'] = preferences.havok_path
+    if is_linux():
+        dict['wine_path'] = preferences.wine_path
+        dict['wineprefix_path'] = preferences.wineprefix_path
 
     data['space-engineers-utilities'].append(dict)
     return data
@@ -185,6 +189,11 @@ def set_config(data):
             preferences.asset_path = cfg['asset_path']
         if 'havok_path' in cfg:
             preferences.havok_path = cfg['havok_path']
+        if is_linux():
+            if 'wine_path' in cfg:
+                preferences.wine_path = cfg['wine_path']
+            if 'wineprefix_path' in cfg:
+                preferences.wineprefix_path = cfg['wineprefix_path']
 
 
 def bau_register():

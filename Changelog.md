@@ -2,6 +2,9 @@ Relevant Milestone: [SEUT 1.2.2](https://github.com/enenra/space-engineers-utili
 
 # Changelog
 
+* Added: Linux support - export/import tools now run through Wine, with a native FBX2glTF binary. (Alpha 4)
+* Added: Wine Binary and Wine Prefix preferences, shown on non-Windows platforms. (Alpha 4)
+* Fixed: OS-portable path handling; content paths stay backslash-separated for the game. (Alpha 4)
 * Added: E055 for when both an external collision file is set and collison objects exist in the collision collection. (Alpha 4)
 * Added: W021 for when a material could not be prepared for export. (Alpha 3)
 * Added: Planet Editor - support for Weather Generators, Cloud Layers and Sound Rules. (Alpha 2)

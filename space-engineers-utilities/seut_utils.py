@@ -8,6 +8,7 @@ from mathutils      import Matrix, Vector
 
 from .seut_collections              import get_collections, get_cols_by_type
 from .seut_errors                   import check_collection, get_abs_path, seut_report
+from .utils.seut_paths              import relative_from_folder
 
 
 class SEUT_OT_UpdateSubpartInstances(Operator):
@@ -275,16 +276,7 @@ def lock_object(target):
 def create_relative_path(path: str, folder_name: str):
     """Returns the path capped off before the last occurrence of the foldername, returns False if foldername is not found in path"""
 
-    path = get_abs_path(path)
-    offset = path.rfind("\\" + folder_name + "\\")
-
-    if offset == -1:
-        if path.endswith("\\" + folder_name):
-            return path[path.rfind("\\" + folder_name) + 1:]
-        else:
-            return False
-    else:
-        return path[offset + 1:]
+    return relative_from_folder(get_abs_path(path), folder_name)
 
 
 def wrap_text(text: str, width: int):

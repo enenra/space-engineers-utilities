@@ -26,6 +26,11 @@ class SEUT_OT_ExportAllScenes(Operator):
 
         preferences = get_preferences()
 
+        # Check for wine availability
+        result = check_wine(self, context)
+        if result != {'CONTINUE'}:
+            return result
+
         # Check for availability of FBX Importer
         result = check_toolpath(self, context, os.path.join(get_tool_dir(), 'FBXImporter.exe'), "Custom FBX Importer", "FBXImporter.exe")
         if result != {'CONTINUE'}:
